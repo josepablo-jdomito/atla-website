@@ -1,0 +1,51 @@
+name: QA Link and Sitemap Health
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  validate-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://welovedaily.com
+        run: npm run build
+
+      - name: Start app
+        env:
+          NEXT_PUBLIC_SITE_URL: https://welovedaily.com
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
+          echo $! > /tmp/next.pid
+
+      - name: Wait for app
+        run: node scripts/wait-for-url.mjs http://127.0.0.1:3000
+
+      - name: Check sitemap URLs and internal links
+        env:
+          BASE_URL: http://127.0.0.1:3000
+          EXPECTED_CANONICAL_HOST: welovedaily.com
+        run: node scripts/check-sitemap-links.mjs
+
+      - name: Stop app
+        if: always()
+        run: |
+          if [ -f /tmp/next.pid ]; then kill "$(cat /tmp/next.pid)" || true; fi
+          tail -n 200 /tmp/next.log || true

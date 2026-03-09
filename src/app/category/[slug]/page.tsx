@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity/client'
-import { categoryPageQuery, allCategoriesQuery, categoryLoadMoreQuery } from '@/lib/sanity/queries'
+import { categoryPageQuery, allCategoriesQuery } from '@/lib/sanity/queries'
 import { CategoryChips } from '@/components/feed/CategoryChips'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
@@ -103,8 +103,8 @@ export default async function CategoryPage({ params }: PageProps) {
         {data.posts.length > 0 ? (
           <PostFeed
             initialPosts={data.posts}
-            loadMoreQuery={categoryLoadMoreQuery}
-            loadMoreParams={{ categorySlug: params.slug }}
+            loadMoreMode="category"
+            categorySlug={params.slug}
           />
         ) : (
           <div className="py-16 text-center">

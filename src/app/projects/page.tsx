@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity/client'
-import { allProjectOnlyQuery, allCategoriesQuery, loadMoreProjectOnlyQuery } from '@/lib/sanity/queries'
+import { allProjectOnlyQuery, allCategoriesQuery } from '@/lib/sanity/queries'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { CategoryChips } from '@/components/feed/CategoryChips'
 import { buildMetadata } from '@/lib/utils/metadata'
@@ -57,40 +57,51 @@ export default async function ProjectsPage() {
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-2 py-1">
-        {FILTER_LABELS.map((label, i) => (
-          <span
-            key={label}
-            className={`px-4 py-2 text-[13px] font-medium rounded-full border ${
-              i === 0
-                ? 'bg-wld-ink text-white border-wld-ink'
-                : 'bg-white text-wld-ink border-border'
-            }`}
-          >
-            {label}
-          </span>
-        ))}
-      </div>
+      <section aria-labelledby="projects-filters-heading" className="space-y-5">
+        <h2 id="projects-filters-heading" className="text-[20px] font-semibold text-wld-ink">
+          Explore by focus
+        </h2>
 
-      {categories.length > 0 && <CategoryChips categories={categories} allHref="/projects" />}
-
-      <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
-        <span className="font-medium text-wld-ink">Sort by:</span>
-        <span>Recent</span>
-        <span>Most Viewed</span>
-        <span>Curated</span>
-      </div>
-
-      {projects.length > 0 ? (
-        <PostFeed initialPosts={projects} loadMoreQuery={loadMoreProjectOnlyQuery} ctaFrequency={12} />
-      ) : (
-        <div className="py-16 text-center">
-          <p className="text-[15px] text-wld-ink">Nothing here yet.</p>
-          <a href="/submit" className="text-[14px] text-wld-blue hover:underline">
-            Be the first to submit work in this category. -&gt;
-          </a>
+        <div className="flex flex-wrap items-center gap-2 py-1">
+          {FILTER_LABELS.map((label, i) => (
+            <span
+              key={label}
+              className={`px-4 py-2 text-[13px] font-medium rounded-full border ${
+                i === 0
+                  ? 'bg-wld-ink text-white border-wld-ink'
+                  : 'bg-white text-wld-ink border-border'
+              }`}
+            >
+              {label}
+            </span>
+          ))}
         </div>
-      )}
+
+        {categories.length > 0 && <CategoryChips categories={categories} allHref="/projects" />}
+
+        <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
+          <span className="font-medium text-wld-ink">Sort by:</span>
+          <span>Recent</span>
+          <span>Most Viewed</span>
+          <span>Curated</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="projects-results-heading">
+        <h2 id="projects-results-heading" className="text-[20px] font-semibold text-wld-ink mb-5">
+          All projects
+        </h2>
+        {projects.length > 0 ? (
+          <PostFeed initialPosts={projects} loadMoreMode="projectOnly" ctaFrequency={12} />
+        ) : (
+          <div className="py-16 text-center">
+            <p className="text-[15px] text-wld-ink">Nothing here yet.</p>
+            <a href="/submit" className="text-[14px] text-wld-blue hover:underline">
+              Be the first to submit work in this category. -&gt;
+            </a>
+          </div>
+        )}
+      </section>
     </div>
   )
 }

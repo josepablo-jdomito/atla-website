@@ -13,7 +13,7 @@ const config: Config = {
         },
         card: 'rgb(var(--wld-card-rgb) / 1)',
         border: 'rgb(var(--wld-border-rgb) / 0.12)',
-        muted: 'rgb(var(--wld-muted-rgb) / 0.68)',
+        muted: 'rgb(var(--wld-muted-rgb) / 0.82)',
       },
       fontFamily: {
         primary: [

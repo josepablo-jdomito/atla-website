@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Logo } from './Logo'
 
 interface NavItem {
@@ -72,9 +69,6 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 export function Sidebar() {
-  const pathname = usePathname()
-  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
-
   return (
     <aside
       className={`
@@ -100,10 +94,7 @@ export function Sidebar() {
               flex items-center gap-3 py-2.5 rounded-lg text-[15px]
               transition-colors duration-150
               px-3
-              ${isActive(item.href)
-                ? 'text-wld-ink font-semibold bg-[rgb(var(--wld-ink-rgb)/0.08)]'
-                : 'text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.04)]'
-              }
+              text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.04)]
             `}
           >
             <span className="w-6 h-6 shrink-0">{item.icon}</span>

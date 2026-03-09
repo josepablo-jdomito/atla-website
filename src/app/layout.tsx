@@ -7,12 +7,18 @@ import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
 import { NewsletterPopup } from '@/components/layout/NewsletterPopup'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
+import { SITE_URL } from '@/lib/config/site'
 
 export const metadata: Metadata = {
   title: 'WeLoveDaily',
   description:
     'The global platform for consumer brand design. Curated identities, packaging, rebrands, and brand strategy - for founders, CMOs, and creative directors.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://welovedaily.com'),
+  metadataBase: SITE_URL,
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Preconnect to Sanity CDN for faster image loads */}
         <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-        {/* Preload critical fonts */}
+        {/* Preload only the fonts used above the fold */}
         <link
           rel="preload"
           href="/fonts/parabolica-text-regular.woff2"
@@ -37,28 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link
           rel="preload"
-          href="/fonts/parabolica-medium.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/parabolica-bold.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
           href="/fonts/jha-times-semibold.otf"
-          as="font"
-          type="font/otf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/jha-times-bold.otf"
           as="font"
           type="font/otf"
           crossOrigin="anonymous"

@@ -38,6 +38,7 @@ export function DiscoveryStrip({ categories }: DiscoveryStripProps) {
 
         <Link
           href="/brands"
+          aria-label="Browse all brands"
           className="inline-flex items-center gap-3 text-[30px] font-medium text-wld-ink hover:text-wld-blue transition-colors"
         >
           <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden>
@@ -57,6 +58,7 @@ export function DiscoveryStrip({ categories }: DiscoveryStripProps) {
             <Link
               key={label}
               href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(label)}`}
+              aria-label={`Search for ${label}`}
               className={`px-5 py-2.5 rounded-full border text-[14px] font-medium whitespace-nowrap transition-colors ${
                 index === 0
                   ? 'bg-wld-ink text-white border-wld-ink'

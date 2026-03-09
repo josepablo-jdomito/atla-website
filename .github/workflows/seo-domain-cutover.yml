@@ -1,0 +1,57 @@
+name: SEO Domain Cutover Readiness
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify-domain-metadata:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site_url:
+          - https://welovedaily.com
+          - https://staging.welovedaily.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ matrix.site_url }}
+        run: npm run build
+
+      - name: Start app
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ matrix.site_url }}
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
+          echo $! > /tmp/next.pid
+
+      - name: Wait for app
+        run: node scripts/wait-for-url.mjs http://127.0.0.1:3000
+
+      - name: Validate canonical, OG, and sitemap host consistency
+        env:
+          BASE_URL: http://127.0.0.1:3000
+        run: |
+          EXPECTED_CANONICAL_HOST=$(node -e "console.log(new URL(process.argv[1]).host)" "${{ matrix.site_url }}")
+          export EXPECTED_CANONICAL_HOST
+          node scripts/check-sitemap-links.mjs
+
+      - name: Stop app
+        if: always()
+        run: |
+          if [ -f /tmp/next.pid ]; then kill "$(cat /tmp/next.pid)" || true; fi
+          tail -n 200 /tmp/next.log || true

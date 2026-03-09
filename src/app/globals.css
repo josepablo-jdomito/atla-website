@@ -33,20 +33,6 @@ html[data-theme='dark'] {
 /* ── JHA Times (Display) ───────────────────── */
 @font-face {
   font-family: 'JHA Times';
-  src: url('/fonts/jha-times-light.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'JHA Times';
-  src: url('/fonts/jha-times-light-italic.otf') format('opentype');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'JHA Times';
   src: url('/fonts/jha-times-semibold.otf') format('opentype');
   font-weight: 600;
   font-style: normal;
@@ -54,59 +40,8 @@ html[data-theme='dark'] {
 }
 @font-face {
   font-family: 'JHA Times';
-  src: url('/fonts/jha-times-semibold-italic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'JHA Times';
   src: url('/fonts/jha-times-bold.otf') format('opentype');
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'JHA Times';
-  src: url('/fonts/jha-times-bold-italic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* ── Parabolica Display (secondary) ────────── */
-@font-face {
-  font-family: 'Parabolica';
-  src: url('/fonts/parabolica-light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Parabolica';
-  src: url('/fonts/parabolica-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Parabolica';
-  src: url('/fonts/parabolica-medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Parabolica';
-  src: url('/fonts/parabolica-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Parabolica';
-  src: url('/fonts/parabolica-black.woff2') format('woff2');
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }

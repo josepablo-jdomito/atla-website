@@ -61,9 +61,9 @@ export function PostCardRow({ post }: PostCardRowProps) {
           )}
         </div>
 
-        <h3 className="text-[15px] font-semibold text-wld-ink leading-snug line-clamp-1 group-hover:text-wld-blue transition-colors">
+        <p className="text-[15px] font-semibold text-wld-ink leading-snug line-clamp-1 group-hover:text-wld-blue transition-colors">
           {post.title}
-        </h3>
+        </p>
 
         <p className="mt-1 text-[13px] text-muted leading-relaxed line-clamp-2 hidden sm:block">
           {post.excerpt}

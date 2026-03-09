@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
+import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/config/site'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://welovedaily.com'
-const SITE_NAME = 'WeLoveDaily'
 const DEFAULT_DESCRIPTION =
   'The global platform for consumer brand design. Curated identities, packaging, rebrands, and brand strategy - for founders, CMOs, and creative directors.'
 
@@ -21,13 +20,13 @@ export function buildMetadata({
   noIndex = false,
 }: MetadataParams = {}): Metadata {
   const pageTitle = title || SITE_NAME
-  const url = `${SITE_URL}${path}`
-  const image = ogImage || `${SITE_URL}/og-default.jpg`
+  const url = absoluteUrl(path || '/')
+  const image = ogImage || absoluteUrl('/og-default.jpg')
 
   return {
     title: pageTitle,
     description,
-    metadataBase: new URL(SITE_URL),
+    metadataBase: SITE_URL,
     alternates: {
       canonical: url,
     },

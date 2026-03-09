@@ -13,7 +13,7 @@ export function NewsletterModule({
         <h2 className="font-display text-[28px] md:text-[32px] leading-tight text-white">
           The Edit
         </h2>
-        <p className="text-[15px] leading-relaxed text-white/60">
+        <p className="text-[15px] leading-relaxed text-white/85">
           {copy || 'Sharp analysis, standout projects, and brand signals worth your attention.'}
         </p>
         <Link
@@ -22,7 +22,7 @@ export function NewsletterModule({
         >
           Subscribe - it&apos;s free
         </Link>
-        <p className="text-[12px] text-white/40">Free. Weekly. Unsubscribe anytime.</p>
+        <p className="text-[12px] text-white/75">Free. Weekly. Unsubscribe anytime.</p>
       </div>
     </section>
   )

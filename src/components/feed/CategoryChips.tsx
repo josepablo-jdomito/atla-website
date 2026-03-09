@@ -12,6 +12,7 @@ export function CategoryChips({ categories, activeSlug, allHref = '/' }: Categor
     <div className="flex gap-2 flex-wrap">
       <Link
         href={allHref}
+        aria-label="View all categories"
         className={`px-4 py-2 text-[13px] font-medium rounded-full border transition-all duration-200 ${
           !activeSlug
             ? 'bg-wld-ink text-white border-wld-ink'
@@ -24,13 +25,14 @@ export function CategoryChips({ categories, activeSlug, allHref = '/' }: Categor
         <Link
           key={cat._id}
           href={`/category/${cat.slug}`}
+          aria-label={`View ${cat.name || 'category'} projects`}
           className={`px-4 py-2 text-[13px] font-medium rounded-full border transition-all duration-200 ${
             activeSlug === cat.slug
               ? 'bg-wld-ink text-white border-wld-ink'
               : 'bg-wld-white text-wld-ink border-border hover:border-wld-ink'
           }`}
         >
-          {cat.name}
+          {cat.name || 'Uncategorized'}
         </Link>
       ))}
     </div>

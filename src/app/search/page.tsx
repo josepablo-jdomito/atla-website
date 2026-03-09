@@ -1,7 +1,13 @@
-'use client'
-
 import { Suspense } from 'react'
 import { SearchContent } from './SearchContent'
+import { buildMetadata } from '@/lib/utils/metadata'
+import { SEARCH_INDEXABLE } from '@/lib/utils/searchPolicy'
+
+export const metadata = buildMetadata({
+  title: 'Search - WeLoveDaily',
+  path: '/search',
+  noIndex: !SEARCH_INDEXABLE,
+})
 
 export default function SearchPage() {
   return (

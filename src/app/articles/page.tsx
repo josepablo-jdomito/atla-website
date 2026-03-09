@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity/client'
-import { allArticlesQuery, loadMoreArticlesQuery } from '@/lib/sanity/queries'
+import { allArticlesQuery } from '@/lib/sanity/queries'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { buildMetadata } from '@/lib/utils/metadata'
 import { collectionItemListJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
@@ -42,7 +42,7 @@ export default async function ArticlesPage() {
       {articles.length > 0 ? (
         <PostFeed
           initialPosts={articles}
-          loadMoreQuery={loadMoreArticlesQuery}
+          loadMoreMode="articleOnly"
           ctaFrequency={12}
         />
       ) : (

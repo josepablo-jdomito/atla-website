@@ -104,13 +104,13 @@ export function ShowcaseRail({
             <div className={`absolute inset-0 p-6 flex flex-col ${card.imageUrl ? 'text-white' : 'text-wld-ink'}`}>
               <p className="text-[16px] font-medium">{card.eyebrow}</p>
               <h3 className="mt-1 text-[44px] leading-[0.98] font-semibold max-w-[90%]">{card.title}</h3>
-              <button
-                type="button"
-                className="mt-auto ml-auto w-10 h-10 rounded-full bg-black/75 text-white border border-white/30 group-hover:scale-105 transition-transform"
-                aria-label="Open card"
+              <span
+                role="presentation"
+                aria-hidden
+                className="mt-auto ml-auto w-10 h-10 rounded-full bg-black/75 text-white border border-white/30 group-hover:scale-105 transition-transform inline-flex items-center justify-center"
               >
                 +
-              </button>
+              </span>
             </div>
           </Link>
         ))}
@@ -168,13 +168,13 @@ export function UtilityRail({
                 className="absolute left-0 right-0 bottom-0 w-full h-[52%] object-cover object-bottom"
               />
             ) : null}
-            <button
-              type="button"
+            <span
+              role="presentation"
+              aria-hidden
               className="absolute right-5 bottom-5 w-10 h-10 rounded-full bg-wld-ink text-white group-hover:scale-105 transition-transform"
-              aria-label="Open card"
             >
               +
-            </button>
+            </span>
           </Link>
         ))}
       </div>

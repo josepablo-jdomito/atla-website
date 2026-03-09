@@ -52,9 +52,9 @@ export function PostCard({ post, priority = false }: PostCardProps) {
         <span className="text-[12px] font-medium uppercase tracking-wider text-wld-blue">
           {post.category.name}
         </span>
-        <h3 className="font-primary text-[16px] leading-snug font-semibold text-wld-ink line-clamp-2">
+        <p className="font-primary text-[16px] leading-snug font-semibold text-wld-ink line-clamp-2">
           {post.title}
-        </h3>
+        </p>
         {post.studio && <p className="text-[12px] uppercase tracking-wider text-muted">By {post.studio}</p>}
         {!post.studio && post.brandName && (
           <p className="text-[12px] uppercase tracking-wider text-muted">By {post.brandName}</p>

@@ -54,6 +54,7 @@ export default async function HomePage() {
                 <Link
                   key={chip}
                   href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(chip)}`}
+                  aria-label={`Search for ${chip}`}
                   className={`px-4 h-8 rounded-full border text-[12px] inline-flex items-center whitespace-nowrap ${
                     index === 0
                       ? 'bg-wld-ink text-white border-wld-ink'
@@ -80,9 +81,10 @@ export default async function HomePage() {
                 <Link
                   key={cat._id}
                   href={`/category/${cat.slug}`}
+                  aria-label={`View ${cat.name || 'category'} projects`}
                   className="h-8 px-3 rounded-full border border-border text-[12px] bg-white text-wld-ink hover:border-wld-ink inline-flex items-center"
                 >
-                  {cat.name}
+                  {cat.name || 'Uncategorized'}
                 </Link>
               ))}
             </div>

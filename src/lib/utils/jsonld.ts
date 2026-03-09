@@ -1,5 +1,6 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://welovedaily.com'
-const SITE_NAME = 'WeLoveDaily'
+import { SITE_NAME, SITE_ORIGIN } from '@/lib/config/site'
+
+const SITE_URL = SITE_ORIGIN
 
 /**
  * Organization schema — rendered once in root layout

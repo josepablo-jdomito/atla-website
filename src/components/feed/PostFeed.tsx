@@ -6,14 +6,12 @@ import { PostCardRow } from '@/components/cards/PostCardRow'
 import { CtaCard } from '@/components/cards/CtaCard'
 import { FeedControls, type ViewMode } from '@/components/feed/FeedControls'
 import type { PostCard as PostCardType, CtaCardVariant } from '@/types'
-import { client } from '@/lib/sanity/client'
-import { loadMorePostsQuery } from '@/lib/sanity/queries'
 
 interface PostFeedProps {
   initialPosts: PostCardType[]
   ctaFrequency?: number
-  loadMoreQuery?: string
-  loadMoreParams?: Record<string, string>
+  loadMoreMode?: 'all' | 'projectOnly' | 'articleOnly' | 'category'
+  categorySlug?: string
   showControls?: boolean
 }
 
@@ -22,8 +20,8 @@ const CTA_SEQUENCE: CtaCardVariant[] = ['submit', 'advertise']
 export function PostFeed({
   initialPosts,
   ctaFrequency = 12,
-  loadMoreQuery,
-  loadMoreParams = {},
+  loadMoreMode = 'all',
+  categorySlug,
   showControls = true,
 }: PostFeedProps) {
   const [posts, setPosts] = useState(initialPosts)
@@ -36,14 +34,19 @@ export function PostFeed({
     if (!lastPost) return
 
     startTransition(async () => {
-      const query = loadMoreQuery || loadMorePostsQuery
-      const params: Record<string, string> = {
-        ...loadMoreParams,
+      const search = new URLSearchParams({
+        mode: loadMoreMode,
         lastPublishedAt: lastPost.publishedAt,
         lastId: lastPost._id,
+      })
+
+      if (loadMoreMode === 'category' && categorySlug) {
+        search.set('categorySlug', categorySlug)
       }
 
-      const newPosts = await client.fetch<PostCardType[]>(query, params)
+      const res = await fetch(`/api/feed/load-more?${search.toString()}`)
+      if (!res.ok) return
+      const newPosts = (await res.json()) as PostCardType[]
       if (newPosts.length < 20) setHasMore(false)
       setPosts((prev) => [...prev, ...newPosts])
     })
