@@ -4,7 +4,7 @@ import { parseBody } from 'next-sanity/webhook'
 import { client } from '@/lib/sanity/client'
 import { postSlugByIdQuery } from '@/lib/sanity/queries'
 
-const WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET
+const WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET || process.env.SANITY_REVALIDATE_SECRET
 
 export async function POST(req: NextRequest) {
   try {
