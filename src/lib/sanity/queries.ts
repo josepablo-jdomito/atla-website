@@ -12,6 +12,7 @@ const postCardProjection = groq`{
     alt
   },
   "category": category->{
+    _id,
     name,
     "slug": slug.current
   },

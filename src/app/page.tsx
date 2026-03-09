@@ -10,7 +10,9 @@ export const revalidate = 60
 
 export default async function HomePage() {
   const data = await client.fetch<HomepageData>(homepageQuery)
-  const { config, categories, latestPosts } = data
+  const config = data?.config ?? null
+  const categories = data?.categories ?? []
+  const latestPosts = data?.latestPosts ?? []
 
   return (
     <div className="px-5 lg:px-8 py-6 lg:py-8 space-y-8">
@@ -27,24 +29,30 @@ export default async function HomePage() {
       </div>
 
       {/* Category chips */}
-      <CategoryChips categories={categories} />
+      {categories.length > 0 && <CategoryChips categories={categories} />}
 
       {/* Featured strip */}
-      {config.featuredPost && (
+      {config?.featuredPost && (
         <FeaturedStrip
           featuredPost={config.featuredPost}
-          editorsPicks={config.editorsPicks}
+          editorsPicks={config.editorsPicks ?? []}
         />
       )}
 
       {/* Main feed */}
-      <PostFeed
-        initialPosts={latestPosts}
-        ctaFrequency={config.inFeedCardFrequency || 12}
-      />
+      {latestPosts.length > 0 ? (
+        <PostFeed
+          initialPosts={latestPosts}
+          ctaFrequency={config?.inFeedCardFrequency || 12}
+        />
+      ) : (
+        <div className="py-16 text-center">
+          <p className="text-[15px] text-muted">No posts yet. Check back soon.</p>
+        </div>
+      )}
 
       {/* Newsletter CTA */}
-      <NewsletterModule copy={config.newsletterBlockCopy} />
+      <NewsletterModule copy={config?.newsletterBlockCopy} />
     </div>
   )
 }
