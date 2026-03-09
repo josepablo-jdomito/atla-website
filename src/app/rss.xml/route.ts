@@ -9,8 +9,8 @@ interface RssPost {
   slug: string
   excerpt: string
   publishedAt: string
-  coverImage: { asset: { _ref: string } }
-  category: { name: string }
+  coverImage?: { asset?: { _ref: string } }
+  category?: { name?: string | null } | null
 }
 
 function escapeXml(str: string): string {
@@ -27,7 +27,10 @@ export async function GET() {
 
   const items = posts
     .map((post) => {
-      const imageUrl = urlFor(post.coverImage).width(800).height(500).format('webp').url()
+      const imageUrl = post.coverImage
+        ? urlFor(post.coverImage).width(800).height(500).format('webp').url()
+        : ''
+      const categoryName = post.category?.name || 'Uncategorized'
       return `
     <item>
       <title>${escapeXml(post.title)}</title>
@@ -35,8 +38,8 @@ export async function GET() {
       <guid isPermaLink="true">${SITE_URL}/projects/${post.slug}</guid>
       <description>${escapeXml(post.excerpt)}</description>
       <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
-      <category>${escapeXml(post.category.name)}</category>
-      <enclosure url="${imageUrl}" type="image/webp" />
+      <category>${escapeXml(categoryName)}</category>
+      ${imageUrl ? `<enclosure url="${imageUrl}" type="image/webp" />` : ''}
     </item>`
     })
     .join('')
