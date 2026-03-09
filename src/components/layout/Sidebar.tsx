@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -86,8 +87,40 @@ const BOTTOM_ITEMS: NavItem[] = [
   },
 ]
 
+function CollapseIcon({ collapsed }: { collapsed: boolean }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}
+    >
+      <path d="M12.5 15L7.5 10L12.5 5" />
+    </svg>
+  )
+}
+
 export function Sidebar() {
   const pathname = usePathname()
+  const [collapsed, setCollapsed] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('wld-sidebar')
+    if (saved === 'collapsed') setCollapsed(true)
+    setMounted(true)
+  }, [])
+
+  const toggle = () => {
+    const next = !collapsed
+    setCollapsed(next)
+    localStorage.setItem('wld-sidebar', next ? 'collapsed' : 'expanded')
+  }
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
@@ -95,11 +128,42 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden lg:flex flex-col w-[220px] h-screen sticky top-0 border-r border-border bg-white px-3 py-6">
-      {/* Logo */}
-      <Link href="/" className="px-3 mb-8">
-        <span className="font-display text-[22px] text-wld-ink">welove</span>
-      </Link>
+    <aside
+      className={`
+        hidden lg:flex flex-col h-screen sticky top-0
+        border-r border-border bg-white
+        transition-[width] duration-200 ease-out
+        ${collapsed ? 'w-[68px] px-2' : 'w-[220px] px-3'}
+        py-6
+      `}
+    >
+      {/* Logo + toggle */}
+      <div className={`flex items-center mb-8 ${collapsed ? 'justify-center' : 'justify-between px-3'}`}>
+        <Link href="/" className={collapsed ? '' : ''}>
+          <span className="font-display text-[22px] text-wld-ink">
+            {collapsed ? 'w' : 'welove'}
+          </span>
+        </Link>
+        {mounted && (
+          <button
+            onClick={toggle}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className={`
+              flex items-center justify-center w-7 h-7 rounded-md
+              text-muted hover:text-wld-ink hover:bg-[rgba(29,29,29,0.04)]
+              transition-colors duration-150
+              ${collapsed ? 'mt-3' : ''}
+            `}
+          >
+            <CollapseIcon collapsed={collapsed} />
+          </button>
+        )}
+      </div>
+
+      {/* When collapsed, show toggle below logo */}
+      {collapsed && mounted && (
+        <div className="flex justify-center mb-4" />
+      )}
 
       {/* Main nav */}
       <nav className="flex-1 space-y-1">
@@ -107,9 +171,11 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
+            title={collapsed ? item.label : undefined}
             className={`
-              flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px]
+              flex items-center gap-3 py-2.5 rounded-lg text-[15px]
               transition-colors duration-150
+              ${collapsed ? 'justify-center px-0' : 'px-3'}
               ${isActive(item.href)
                 ? 'text-wld-ink font-semibold bg-[rgba(29,29,29,0.04)]'
                 : 'text-muted hover:text-wld-ink hover:bg-[rgba(29,29,29,0.02)]'
@@ -117,7 +183,7 @@ export function Sidebar() {
             `}
           >
             <span className="w-6 h-6 shrink-0">{item.icon}</span>
-            {item.label}
+            {!collapsed && <span>{item.label}</span>}
           </Link>
         ))}
       </nav>
@@ -128,9 +194,11 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
+            title={collapsed ? item.label : undefined}
             className={`
-              flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px]
+              flex items-center gap-3 py-2.5 rounded-lg text-[14px]
               transition-colors duration-150
+              ${collapsed ? 'justify-center px-0' : 'px-3'}
               ${isActive(item.href)
                 ? 'text-wld-ink font-semibold'
                 : 'text-muted hover:text-wld-ink'
@@ -138,7 +206,7 @@ export function Sidebar() {
             `}
           >
             <span className="w-6 h-6 shrink-0">{item.icon}</span>
-            {item.label}
+            {!collapsed && <span>{item.label}</span>}
           </Link>
         ))}
       </div>
