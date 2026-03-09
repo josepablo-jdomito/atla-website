@@ -6,10 +6,10 @@ import { previewClient } from '@/lib/sanity/client'
  * PUT  /api/draft — Update an existing draft
  * GET  /api/draft?type=categories|brands|post&id=<docId>
  *
- * All requests require Authorization: Bearer <SANITY_REVALIDATE_SECRET>
+ * All requests require Authorization: Bearer <DRAFT_API_SECRET>
  */
 
-const SECRET = process.env.SANITY_REVALIDATE_SECRET
+const SECRET = process.env.DRAFT_API_SECRET
 
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -35,6 +35,23 @@ function slugify(text: string): string {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .slice(0, 96)
+}
+
+function sanitizeUrl(url: unknown): string | null {
+  if (typeof url !== 'string') return null
+  const trimmed = url.trim()
+  if (!trimmed) return null
+
+  try {
+    const parsed = new URL(trimmed)
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'mailto:') {
+      return parsed.toString()
+    }
+  } catch {
+    return null
+  }
+
+  return null
 }
 
 // ── Markdown → Portable Text ──────────────────
@@ -110,9 +127,14 @@ function parseInline(text: string) {
     } else if (match[3]) {
       children.push({ _type: 'span', _key: generateKey(), text: match[3], marks: ['em'] })
     } else if (match[4] && match[5]) {
-      const linkKey = generateKey()
-      markDefs.push({ _type: 'link', _key: linkKey, href: match[5] })
-      children.push({ _type: 'span', _key: generateKey(), text: match[4], marks: [linkKey] })
+      const safeHref = sanitizeUrl(match[5])
+      if (safeHref) {
+        const linkKey = generateKey()
+        markDefs.push({ _type: 'link', _key: linkKey, href: safeHref })
+        children.push({ _type: 'span', _key: generateKey(), text: match[4], marks: [linkKey] })
+      } else {
+        children.push({ _type: 'span', _key: generateKey(), text: match[4], marks: [] })
+      }
     }
 
     lastIndex = match.index + match[0].length
@@ -198,13 +220,16 @@ export async function POST(req: NextRequest) {
       ...(brandId && { brand: { _type: 'reference' as const, _ref: brandId } }),
       tags: tags || [],
       body: portableTextBody,
-      credits: (credits || []).map((c: any) => ({
-        _type: 'object' as const,
-        _key: generateKey(),
-        name: c.name,
-        role: c.role,
-        ...(c.url && { url: c.url }),
-      })),
+      credits: (credits || []).map((c: any) => {
+        const safeUrl = sanitizeUrl(c.url)
+        return {
+          _type: 'object' as const,
+          _key: generateKey(),
+          name: c.name,
+          role: c.role,
+          ...(safeUrl && { url: safeUrl }),
+        }
+      }),
       status: 'draft',
       publishedAt: publishedAt || null,
       isSponsored: isSponsored || false,
@@ -250,13 +275,16 @@ export async function PUT(req: NextRequest) {
     if (updates.body) patch.set({ body: updates.body })
     if (updates.credits) {
       patch.set({
-        credits: updates.credits.map((c: any) => ({
-          _type: 'object',
-          _key: generateKey(),
-          name: c.name,
-          role: c.role,
-          ...(c.url && { url: c.url }),
-        })),
+        credits: updates.credits.map((c: any) => {
+          const safeUrl = sanitizeUrl(c.url)
+          return {
+            _type: 'object',
+            _key: generateKey(),
+            name: c.name,
+            role: c.role,
+            ...(safeUrl && { url: safeUrl }),
+          }
+        }),
       })
     }
     if (updates.seo) {

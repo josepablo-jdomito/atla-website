@@ -1,10 +1,26 @@
 import { PortableText } from '@portabletext/react'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/client'
-import type { PortableTextBlock } from '@portabletext/types'
 
 interface PortableTextBodyProps {
   value: any[]
+}
+
+function sanitizeHref(href: unknown): string | null {
+  if (typeof href !== 'string') return null
+  const trimmed = href.trim()
+  if (!trimmed) return null
+
+  try {
+    const parsed = new URL(trimmed)
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'mailto:') {
+      return parsed.toString()
+    }
+  } catch {
+    return null
+  }
+
+  return null
 }
 
 const components = {
@@ -49,16 +65,22 @@ const components = {
     ),
   },
   marks: {
-    link: ({ children, value }: any) => (
-      <a
-        href={value?.href}
-        target={value?.href?.startsWith('http') ? '_blank' : undefined}
-        rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-        className="text-wld-blue underline underline-offset-2 hover:no-underline"
-      >
-        {children}
-      </a>
-    ),
+    link: ({ children, value }: any) => {
+      const href = sanitizeHref(value?.href)
+      if (!href) return <>{children}</>
+      const isExternal = href.startsWith('http://') || href.startsWith('https://')
+
+      return (
+        <a
+          href={href}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+          className="text-wld-blue underline underline-offset-2 hover:no-underline"
+        >
+          {children}
+        </a>
+      )
+    },
   },
 }
 

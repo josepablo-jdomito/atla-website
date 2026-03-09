@@ -34,7 +34,8 @@ Required variables:
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity project ID
 - `NEXT_PUBLIC_SANITY_DATASET` — Usually `production`
 - `SANITY_API_TOKEN` — Read token for preview/revalidation
-- `SANITY_REVALIDATE_SECRET` — Webhook secret for on-demand ISR
+- `SANITY_WEBHOOK_SECRET` — Webhook secret for on-demand ISR
+- `DRAFT_API_SECRET` — Secret for authenticated `/api/draft` reads/writes
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` — GA4 measurement ID
 - `NEXT_PUBLIC_SITE_URL` — Production URL (e.g. `https://welovedaily.com`)
 - `NEXT_PUBLIC_TYPEFORM_SUBMIT_ID` — Typeform form ID for submissions
@@ -70,7 +71,7 @@ npx sanity deploy
 
 Create a webhook in [sanity.io/manage](https://sanity.io/manage) → API → Webhooks:
 - **URL:** `https://welovedaily.com/api/revalidate`
-- **Secret:** Same as `SANITY_REVALIDATE_SECRET`
+- **Secret:** Same as `SANITY_WEBHOOK_SECRET`
 - **Trigger on:** Create, Update, Delete
 - **Filter:** `_type in ["post", "category", "brand", "homepageConfig"]`
 

@@ -1,16 +1,22 @@
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { parseBody } from 'next-sanity/webhook'
 import { client } from '@/lib/sanity/client'
 import { postSlugByIdQuery } from '@/lib/sanity/queries'
 
+const WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET
+
 export async function POST(req: NextRequest) {
   try {
+    if (!WEBHOOK_SECRET) {
+      return NextResponse.json({ message: 'Webhook secret is not configured' }, { status: 500 })
+    }
+
     const { isValidSignature, body } = await parseBody<{
       _type: string
       _id: string
       slug?: { current: string }
-    }>(req, process.env.SANITY_REVALIDATE_SECRET)
+    }>(req, WEBHOOK_SECRET)
 
     if (!isValidSignature) {
       return NextResponse.json({ message: 'Invalid signature' }, { status: 401 })
