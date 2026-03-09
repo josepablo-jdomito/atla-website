@@ -13,6 +13,16 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
+    label: 'Homepage',
+    href: '/',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
+        <path d="M9 21V12h6v9" />
+      </svg>
+    ),
+  },
+  {
     label: 'Projects',
     href: '/projects',
     icon: (
@@ -32,21 +42,21 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: 'Categories',
-    href: '/categories',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z" />
-      </svg>
-    ),
-  },
-  {
     label: 'Submit',
     href: '/submit',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
         <path d="M12 8v8M8 12h8" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Categories',
+    href: '/categories',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z" />
       </svg>
     ),
   },
@@ -97,7 +107,7 @@ export function Sidebar() {
     localStorage.setItem('wld-sidebar', next ? 'collapsed' : 'expanded')
   }
 
-  const isActive = (href: string) => pathname.startsWith(href)
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
     <aside
