@@ -25,6 +25,7 @@ export const deskStructure = (S: StructureBuilder) =>
                   S.list()
                     .title('Posts by Status')
                     .items([
+                      statusFilter(S, 'Draft', 'draft'),
                       statusFilter(S, 'Submitted', 'submitted'),
                       statusFilter(S, 'Review', 'review'),
                       statusFilter(S, 'Approved', 'approved'),

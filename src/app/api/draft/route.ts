@@ -10,6 +10,7 @@ import { previewClient } from '@/lib/sanity/client'
  */
 
 const SECRET = process.env.DRAFT_API_SECRET
+const ALLOWED_NON_PUBLISH_STATUSES = new Set(['draft', 'submitted', 'review', 'approved'])
 
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -252,8 +253,8 @@ export async function POST(req: NextRequest) {
           ...(safeUrl && { url: safeUrl }),
         }
       }),
-      status: 'submitted',
-      publishedAt: publishedAt || null,
+      status: 'draft',
+      publishedAt: publishedAt || new Date().toISOString(),
       isSponsored: isSponsored || false,
       ...(isSponsored && sponsorshipType && { sponsorshipType }),
       ...(isSponsored && sponsorName && { sponsorName }),
@@ -267,7 +268,7 @@ export async function POST(req: NextRequest) {
       success: true,
       documentId: result._id,
       slug,
-      status: 'submitted',
+      status: 'draft',
       studioUrl: `https://welovedaily.sanity.studio/structure/post;${result._id}`,
     })
   } catch (err: any) {
@@ -338,6 +339,15 @@ export async function PUT(req: NextRequest) {
       patch.set({ seo: updates.seo })
     }
     if (updates.status) {
+      if (updates.status === 'published') {
+        return NextResponse.json(
+          { error: 'Publishing is restricted to manual review in Sanity Studio.' },
+          { status: 403 }
+        )
+      }
+      if (!ALLOWED_NON_PUBLISH_STATUSES.has(updates.status)) {
+        return NextResponse.json({ error: 'Invalid status value' }, { status: 400 })
+      }
       patch.set({ status: updates.status })
     }
     if (updates.isSponsored !== undefined) {

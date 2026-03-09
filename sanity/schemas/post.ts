@@ -202,6 +202,7 @@ export default defineType({
       type: 'string',
       options: {
         list: [
+          { title: 'Draft', value: 'draft' },
           { title: 'Submitted', value: 'submitted' },
           { title: 'Review', value: 'review' },
           { title: 'Approved', value: 'approved' },
@@ -209,7 +210,7 @@ export default defineType({
         ],
         layout: 'radio',
       },
-      initialValue: 'submitted',
+      initialValue: 'draft',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -217,7 +218,7 @@ export default defineType({
       title: 'Published At',
       type: 'datetime',
       validation: (Rule) =>
-        Rule.custom((publishedAt, context) => {
+        Rule.required().custom((publishedAt, context) => {
           const status = (context.document as any)?.status
           if (status === 'published' && !publishedAt) {
             return 'A publish date is required for this status.'
