@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Logo } from './Logo'
 
 interface NavItem {
   label: string
@@ -139,10 +140,12 @@ export function Sidebar() {
     >
       {/* Logo + toggle */}
       <div className={`flex items-center mb-8 ${collapsed ? 'justify-center' : 'justify-between px-3'}`}>
-        <Link href="/" className={collapsed ? '' : ''}>
-          <span className="font-display text-[22px] text-wld-ink">
-            {collapsed ? 'w' : 'welove'}
-          </span>
+        <Link href="/" aria-label="WeLoveDaily home">
+          {collapsed ? (
+            <Logo mark className="w-6 h-auto text-wld-ink" />
+          ) : (
+            <Logo className="h-5 w-auto text-wld-ink" />
+          )}
         </Link>
         {mounted && (
           <button

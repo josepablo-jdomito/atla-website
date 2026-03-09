@@ -17,6 +17,7 @@ const config: Config = {
       },
       fontFamily: {
         primary: [
+          'Parabolica Text',
           'Parabolica',
           'Inter',
           'system-ui',
@@ -25,10 +26,12 @@ const config: Config = {
           'sans-serif',
         ],
         display: [
-          'Times Now',
-          'Times New Roman',
-          'Times',
-          'serif',
+          'Parabolica',
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'sans-serif',
         ],
       },
       borderRadius: {

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from './Logo'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -40,8 +41,8 @@ export function Footer() {
         </div>
 
         <div className="mt-16 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link href="/" className="font-primary text-[18px] font-bold tracking-tight text-wld-ink">
-            welove
+          <Link href="/" aria-label="WeLoveDaily home">
+            <Logo className="h-4 w-auto text-wld-ink" />
           </Link>
           <p className="text-[13px] text-muted">
             &copy; {year} WeLoveDaily. All rights reserved.

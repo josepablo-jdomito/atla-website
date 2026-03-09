@@ -2,7 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Fonts ──────────────────────────────────── */
+/* ── Parabolica Display ────────────────────── */
+@font-face {
+  font-family: 'Parabolica';
+  src: url('/fonts/parabolica-light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: 'Parabolica';
   src: url('/fonts/parabolica-regular.woff2') format('woff2');
@@ -18,16 +25,39 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Times Now';
-  src: url('/fonts/times-now-regular.woff2') format('woff2');
+  font-family: 'Parabolica';
+  src: url('/fonts/parabolica-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Parabolica';
+  src: url('/fonts/parabolica-black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Parabolica Text (optimized for body copy) ── */
+@font-face {
+  font-family: 'Parabolica Text';
+  src: url('/fonts/parabolica-text-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Times Now';
-  src: url('/fonts/times-now-semibold.woff2') format('woff2');
-  font-weight: 600;
+  font-family: 'Parabolica Text';
+  src: url('/fonts/parabolica-text-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Parabolica Text';
+  src: url('/fonts/parabolica-text-bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -36,7 +66,7 @@
 body {
   background-color: #FFF9EF;
   color: #1D1D1D;
-  font-family: 'Parabolica', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Parabolica Text', 'Parabolica', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -4,6 +4,7 @@ import { FeaturedStrip } from '@/components/feed/FeaturedStrip'
 import { CategoryChips } from '@/components/feed/CategoryChips'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
+import { Logo } from '@/components/layout/Logo'
 import type { HomepageData } from '@/types'
 
 export const revalidate = 60
@@ -18,7 +19,7 @@ export default async function HomePage() {
     <div className="px-5 lg:px-8 py-6 lg:py-8 space-y-8">
       {/* Mobile logo (visible only below lg since sidebar has it) */}
       <div className="lg:hidden flex items-center justify-between">
-        <span className="font-display text-[24px] text-wld-ink">welove</span>
+        <Logo className="h-5 w-auto text-wld-ink" />
       </div>
 
       {/* Tagline */}
