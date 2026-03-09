@@ -141,6 +141,37 @@ export function collectionPageJsonLd({
 }
 
 /**
+ * Collection + ItemList schema for index pages
+ */
+export function collectionItemListJsonLd({
+  name,
+  description,
+  path,
+  itemPaths,
+}: {
+  name: string
+  description?: string
+  path: string
+  itemPaths: string[]
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    ...(description && { description }),
+    url: `${SITE_URL}${path}`,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: itemPaths.map((itemPath, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}${itemPath}`,
+      })),
+    },
+  }
+}
+
+/**
  * Brand / Organization profile page schema
  */
 export function brandProfileJsonLd({

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { allCategoriesQuery } from '@/lib/sanity/queries'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { collectionItemListJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { Category } from '@/types'
 
 export const revalidate = 300
@@ -17,6 +18,20 @@ export default async function CategoriesPage() {
 
   return (
     <div className="max-w-container mx-auto px-5 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionItemListJsonLd({
+              name: 'Categories',
+              description: 'Browse all categories on WeLoveDaily.',
+              path: '/categories',
+              itemPaths: categories.slice(0, 24).map((cat) => `/category/${cat.slug}`),
+            })
+          ),
+        }}
+      />
+
       <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-8">
         Categories
       </h1>

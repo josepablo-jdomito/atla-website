@@ -31,9 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // Dynamic: categories
-  const categories = await client.fetch<{ slug: string }[]>(sitemapCategoriesQuery)
+  const categories = await client.fetch<{ slug: string; _updatedAt: string }[]>(sitemapCategoriesQuery)
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
     url: `${SITE_URL}/category/${cat.slug}`,
+    lastModified: new Date(cat._updatedAt),
     changeFrequency: 'weekly',
     priority: 0.6,
   }))

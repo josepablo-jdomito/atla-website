@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { client, urlFor } from '@/lib/sanity/client'
 import { allBrandsQuery } from '@/lib/sanity/queries'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { collectionItemListJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { BrandCard } from '@/types'
 import type { Metadata } from 'next'
 
@@ -33,6 +34,21 @@ export default async function BrandsPage() {
 
   return (
     <div className="px-5 lg:px-8 py-6 lg:py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionItemListJsonLd({
+              name: 'Brands',
+              description:
+                'Discover the brands we love. Curated profiles of thoughtful brands.',
+              path: '/brands',
+              itemPaths: brands.slice(0, 24).map((brand) => `/studio/${brand.slug}`),
+            })
+          ),
+        }}
+      />
+
       {/* Header */}
       <header className="mb-8">
         <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-2">
