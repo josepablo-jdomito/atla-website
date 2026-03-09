@@ -33,6 +33,15 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    label: 'Projects',
+    href: '/projects',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 7h18M3 12h18M3 17h18" />
+      </svg>
+    ),
+  },
+  {
     label: 'Brands',
     href: '/brands',
     icon: (

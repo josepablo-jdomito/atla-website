@@ -21,6 +21,16 @@ const nextConfig = {
         destination: '/studio/:slug',
         permanent: true,
       },
+      {
+        source: '/article/:slug',
+        destination: '/projects/:slug',
+        permanent: true,
+      },
+      {
+        source: '/project/:slug',
+        destination: '/projects/:slug',
+        permanent: true,
+      },
     ]
   },
   async headers() {

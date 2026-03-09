@@ -78,6 +78,10 @@ export const loadMorePostsQuery = groq`
   ] | order(publishedAt desc) [0...20] ${postCardProjection}
 `
 
+export const allProjectsQuery = groq`
+  *[${publishedFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+`
+
 export const articleBySlugQuery = groq`
   *[_type == "post" && slug.current == $slug && status == "published"][0] {
     _id,
