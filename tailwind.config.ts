@@ -19,15 +19,14 @@ const config: Config = {
         primary: [
           'Parabolica Text',
           'Parabolica',
-          'Inter',
           'system-ui',
           '-apple-system',
           'Segoe UI',
           'sans-serif',
         ],
         display: [
+          'JHA Times',
           'Parabolica',
-          'Inter',
           'system-ui',
           '-apple-system',
           'Segoe UI',

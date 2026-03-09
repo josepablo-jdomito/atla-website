@@ -49,6 +49,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          href="/fonts/jha-times-semibold.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/jha-times-bold.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
         {/* Organization + WebSite structured data */}
         <script
           type="application/ld+json"

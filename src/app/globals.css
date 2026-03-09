@@ -23,7 +23,51 @@ html[data-theme='dark'] {
   color-scheme: dark;
 }
 
-/* ── Parabolica Display ────────────────────── */
+/* ── JHA Times (Display) ───────────────────── */
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-light-italic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-semibold-italic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JHA Times';
+  src: url('/fonts/jha-times-bold-italic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── Parabolica Display (secondary) ────────── */
 @font-face {
   font-family: 'Parabolica';
   src: url('/fonts/parabolica-light.woff2') format('woff2');
@@ -87,7 +131,7 @@ html[data-theme='dark'] {
 body {
   background-color: rgb(var(--wld-paper-rgb) / 1);
   color: rgb(var(--wld-ink-rgb) / 1);
-  font-family: 'Parabolica Text', 'Parabolica', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Parabolica Text', 'Parabolica', system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
