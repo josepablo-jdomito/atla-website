@@ -2,6 +2,7 @@ import { groq } from 'next-sanity'
 
 const postCardProjection = groq`{
   _id,
+  contentType,
   title,
   "slug": slug.current,
   excerpt,
@@ -50,16 +51,9 @@ const publishedFilter = groq`
   && publishedAt <= now()
 `
 
-const articleCategoryFilter = groq`
-  category->slug.current in [
-    "brand-breakdown",
-    "cult-brand-index",
-    "the-definition",
-    "industry-signal"
-  ]
-`
+const articleContentFilter = groq`contentType == "article"`
 
-const projectCategoryFilter = groq`!(${articleCategoryFilter})`
+const projectContentFilter = groq`contentType == "project"`
 
 const trendingScore = groq`(coalesce(saveCount, 0) * 4 + coalesce(viewCount, 0))`
 
@@ -94,24 +88,24 @@ export const allProjectsQuery = groq`
 `
 
 export const allProjectOnlyQuery = groq`
-  *[${publishedFilter} && ${projectCategoryFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+  *[${publishedFilter} && ${projectContentFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
 `
 
 export const loadMoreProjectOnlyQuery = groq`
   *[${publishedFilter}
-    && ${projectCategoryFilter}
+    && ${projectContentFilter}
     && (publishedAt < $lastPublishedAt
       || (publishedAt == $lastPublishedAt && _id > $lastId))
   ] | order(publishedAt desc) [0...20] ${postCardProjection}
 `
 
 export const allArticlesQuery = groq`
-  *[${publishedFilter} && ${articleCategoryFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+  *[${publishedFilter} && ${articleContentFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
 `
 
 export const loadMoreArticlesQuery = groq`
   *[${publishedFilter}
-    && ${articleCategoryFilter}
+    && ${articleContentFilter}
     && (publishedAt < $lastPublishedAt
       || (publishedAt == $lastPublishedAt && _id > $lastId))
   ] | order(publishedAt desc) [0...20] ${postCardProjection}
