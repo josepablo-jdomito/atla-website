@@ -78,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NewsletterPopup />
         <ThemeToggle className="fixed right-4 bottom-20 lg:bottom-6 z-50" />
 
-        <div className="flex max-w-full overflow-x-hidden">
+        <div className="flex max-w-full overflow-x-hidden lg:pl-[220px]">
           {/* Desktop: fixed sidebar */}
           <Sidebar />
 

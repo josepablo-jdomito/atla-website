@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from './Logo'
@@ -72,75 +71,23 @@ const NAV_ITEMS: NavItem[] = [
   },
 ]
 
-function CollapseIcon({ collapsed }: { collapsed: boolean }) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}
-    >
-      <path d="M12.5 15L7.5 10L12.5 5" />
-    </svg>
-  )
-}
-
 export function Sidebar() {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('wld-sidebar')
-    if (saved === 'collapsed') setCollapsed(true)
-    setMounted(true)
-  }, [])
-
-  const toggle = () => {
-    const next = !collapsed
-    setCollapsed(next)
-    localStorage.setItem('wld-sidebar', next ? 'collapsed' : 'expanded')
-  }
-
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
     <aside
       className={`
-        hidden lg:flex flex-col h-screen sticky top-0
+        hidden lg:flex fixed top-0 left-0 bottom-0 z-40 flex-col
         border-r border-border bg-white
-        transition-[width] duration-200 ease-out
-        ${collapsed ? 'w-[68px] px-2' : 'w-[220px] px-3'}
-        py-6
+        w-[220px] px-3 py-6
+        overflow-hidden
       `}
     >
-      <div className={`flex items-center mb-8 ${collapsed ? 'justify-center' : 'justify-between px-3'}`}>
+      <div className="flex items-center mb-8 justify-between px-3">
         <Link href="/" aria-label="WeLoveDaily home">
-          {collapsed ? (
-            <Logo mark className="w-6 h-auto text-wld-ink" />
-          ) : (
-            <Logo className="h-5 w-auto text-wld-ink" />
-          )}
+          <Logo className="h-5 w-auto text-wld-ink" />
         </Link>
-        {mounted && (
-          <button
-            onClick={toggle}
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            className={`
-              flex items-center justify-center w-7 h-7 rounded-md
-              text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.08)]
-              transition-colors duration-150
-              ${collapsed ? 'mt-3' : ''}
-            `}
-          >
-            <CollapseIcon collapsed={collapsed} />
-          </button>
-        )}
       </div>
 
       <nav className="flex-1 space-y-1">
@@ -148,11 +95,11 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            title={collapsed ? item.label : undefined}
+            title={item.label}
             className={`
               flex items-center gap-3 py-2.5 rounded-lg text-[15px]
               transition-colors duration-150
-              ${collapsed ? 'justify-center px-0' : 'px-3'}
+              px-3
               ${isActive(item.href)
                 ? 'text-wld-ink font-semibold bg-[rgb(var(--wld-ink-rgb)/0.08)]'
                 : 'text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.04)]'
@@ -160,21 +107,19 @@ export function Sidebar() {
             `}
           >
             <span className="w-6 h-6 shrink-0">{item.icon}</span>
-            {!collapsed && <span>{item.label}</span>}
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>
 
-      {!collapsed && (
-        <div className="pt-4 border-t border-border">
-          <Link
-            href="/newsletter"
-            className="w-full inline-flex items-center justify-center px-4 py-2.5 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
-          >
-            Subscribe -&gt;
-          </Link>
-        </div>
-      )}
+      <div className="pt-4 border-t border-border">
+        <Link
+          href="/newsletter"
+          className="w-full inline-flex items-center justify-center px-4 py-2.5 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
+        >
+          Subscribe -&gt;
+        </Link>
+      </div>
     </aside>
   )
 }
