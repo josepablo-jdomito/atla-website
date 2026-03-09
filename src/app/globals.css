@@ -12,6 +12,13 @@
   --wld-muted-rgb: 29 29 29;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 html[data-theme='dark'] {
   --wld-paper-rgb: 14 16 20;
   --wld-white-rgb: 22 25 30;
@@ -132,6 +139,7 @@ body {
   background-color: rgb(var(--wld-paper-rgb) / 1);
   color: rgb(var(--wld-ink-rgb) / 1);
   font-family: 'Parabolica Text', 'Parabolica', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-width: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
