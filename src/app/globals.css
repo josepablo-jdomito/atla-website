@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Fonts ──────────────────────────────────── */
+@font-face {
+  font-family: 'Parabolica';
+  src: url('/fonts/parabolica-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Parabolica';
+  src: url('/fonts/parabolica-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Times Now';
+  src: url('/fonts/times-now-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Times Now';
+  src: url('/fonts/times-now-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Base ───────────────────────────────────── */
+body {
+  background-color: #FFF9EF;
+  color: #1D1D1D;
+  font-family: 'Parabolica', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
