@@ -86,7 +86,7 @@ export function articleJsonLd({
     '@type': 'Article',
     headline: title,
     description,
-    url: `${SITE_URL}/${slug}`,
+    url: `${SITE_URL}/projects/${slug}`,
     image: {
       '@type': 'ImageObject',
       url: coverImageUrl,
@@ -106,7 +106,7 @@ export function articleJsonLd({
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${SITE_URL}/${slug}`,
+      '@id': `${SITE_URL}/projects/${slug}`,
     },
     articleSection: categoryName,
     ...(isSponsored && { sponsoredBy: { '@type': 'Organization', name: 'Sponsor' } }),
@@ -174,7 +174,7 @@ export function brandProfileJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name,
-    url: website || `${SITE_URL}/brand/${slug}`,
+    url: website || `${SITE_URL}/studio/${slug}`,
     ...(description && { description }),
     ...(logoUrl && {
       logo: { '@type': 'ImageObject', url: logoUrl },

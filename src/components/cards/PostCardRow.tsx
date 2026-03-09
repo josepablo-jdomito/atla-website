@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { urlFor } from '@/lib/sanity/client'
+import { SaveButton } from '@/components/actions/SaveButton'
 import type { PostCard } from '@/types'
 
 interface PostCardRowProps {
@@ -17,9 +18,17 @@ export function PostCardRow({ post }: PostCardRowProps) {
 
   const blurUrl = post.coverImage.asset.metadata?.lqip
 
+  const sponsorText = post.isSponsored
+    ? post.sponsorshipType === 'partnerContent'
+      ? 'Partner Content'
+      : post.sponsorName
+        ? `Sponsored by ${post.sponsorName}`
+        : post.sponsorLabel || 'Sponsored'
+    : null
+
   return (
     <Link
-      href={`/${post.slug}`}
+      href={`/projects/${post.slug}`}
       className="
         group flex gap-4 p-3 rounded-card
         border border-transparent
@@ -45,9 +54,9 @@ export function PostCardRow({ post }: PostCardRowProps) {
           <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue">
             {post.category.name}
           </span>
-          {post.isSponsored && (
+          {sponsorText && (
             <span className="text-[10px] font-medium uppercase tracking-wider text-muted">
-              Sponsored
+              {sponsorText}
             </span>
           )}
         </div>
@@ -65,6 +74,9 @@ export function PostCardRow({ post }: PostCardRowProps) {
             {post.brand.name}
           </span>
         )}
+      </div>
+      <div className="self-start">
+        <SaveButton projectId={post._id} />
       </div>
     </Link>
   )

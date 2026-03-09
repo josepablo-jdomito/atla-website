@@ -49,7 +49,7 @@ export default async function BrandsPage() {
           {brands.map((brand) => (
             <Link
               key={brand._id}
-              href={`/brand/${brand.slug}`}
+              href={`/studio/${brand.slug}`}
               className="group flex items-center gap-4 p-4 rounded-2xl border border-border bg-white hover:border-wld-ink/20 transition-colors"
             >
               {/* Logo */}

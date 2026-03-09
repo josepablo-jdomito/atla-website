@@ -5,7 +5,7 @@ const RESERVED_SLUGS = [
   'search', 'about', 'contact', 'privacy', 'terms', 'brand',
   'robots.txt', 'sitemap.xml', 'rss.xml', 'studio', 'api',
   'popular', 'editors-picks', 'submission-guidelines', 'media-kit',
-  'brands', 'designer', 'directory', 'jobs', 'awards', 'login',
+  'brands', 'designer', 'directory', 'jobs', 'awards', 'login', 'projects',
   'signup', 'admin', 'dashboard', 'settings', 'profile', 'rss',
 ]
 
@@ -13,7 +13,7 @@ const SLUG_FORMAT_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 export default defineType({
   name: 'post',
-  title: 'Post',
+  title: 'Project',
   type: 'document',
   fields: [
     defineField({
@@ -47,10 +47,10 @@ export default defineType({
     }),
     defineField({
       name: 'excerpt',
-      title: 'Excerpt',
+      title: 'Description',
       type: 'text',
-      rows: 3,
-      validation: (Rule) => Rule.required().max(300),
+      rows: 5,
+      validation: (Rule) => Rule.required().max(2000),
     }),
     defineField({
       name: 'coverImage',
@@ -75,6 +75,14 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'categories',
+      title: 'Additional Categories',
+      description: 'Optional extra categories for discovery and SEO pages.',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'category' }] }],
+      validation: (Rule) => Rule.unique(),
+    }),
+    defineField({
       name: 'brand',
       title: 'Brand',
       type: 'reference',
@@ -82,11 +90,47 @@ export default defineType({
       description: 'The brand this post features. Creates a link to the brand profile.',
     }),
     defineField({
+      name: 'brandName',
+      title: 'Brand Name',
+      type: 'string',
+      description: 'Optional explicit brand name for project cards/search when no brand reference is linked.',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: 'studio',
+      title: 'Studio',
+      type: 'string',
+      description: 'Primary studio name for submissions and search.',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: 'designerCredits',
+      title: 'Designers',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+      validation: (Rule) => Rule.max(30).unique(),
+    }),
+    defineField({
       name: 'tags',
       title: 'Tags',
       type: 'array',
       of: [{ type: 'string' }],
       options: { layout: 'tags' },
+    }),
+    defineField({
+      name: 'topic',
+      title: 'Topic',
+      type: 'string',
+      description: 'Primary topic used for related content matching.',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: 'series',
+      title: 'Series',
+      type: 'string',
+      description: 'Optional editorial series name for grouping related projects.',
+      validation: (Rule) => Rule.max(120),
     }),
     defineField({
       name: 'body',
@@ -103,6 +147,22 @@ export default defineType({
           ],
         }),
       ],
+    }),
+    defineField({
+      name: 'galleryImages',
+      title: 'Gallery Images',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({ name: 'alt', title: 'Alt Text', type: 'string' }),
+            defineField({ name: 'caption', title: 'Caption', type: 'string' }),
+          ],
+        }),
+      ],
+      validation: (Rule) => Rule.max(30),
     }),
     defineField({
       name: 'credits',
@@ -142,14 +202,14 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Draft', value: 'draft' },
-          { title: 'In Review', value: 'inReview' },
-          { title: 'Scheduled', value: 'scheduled' },
+          { title: 'Submitted', value: 'submitted' },
+          { title: 'Review', value: 'review' },
+          { title: 'Approved', value: 'approved' },
           { title: 'Published', value: 'published' },
         ],
         layout: 'radio',
       },
-      initialValue: 'draft',
+      initialValue: 'submitted',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -159,17 +219,71 @@ export default defineType({
       validation: (Rule) =>
         Rule.custom((publishedAt, context) => {
           const status = (context.document as any)?.status
-          if ((status === 'published' || status === 'scheduled') && !publishedAt) {
+          if (status === 'published' && !publishedAt) {
             return 'A publish date is required for this status.'
           }
           return true
         }),
     }),
     defineField({
+      name: 'saveCount',
+      title: 'Save Count',
+      type: 'number',
+      initialValue: 0,
+      validation: (Rule) => Rule.integer().min(0),
+    }),
+    defineField({
+      name: 'viewCount',
+      title: 'View Count',
+      type: 'number',
+      initialValue: 0,
+      validation: (Rule) => Rule.integer().min(0),
+    }),
+    defineField({
+      name: 'isFeaturedProject',
+      title: 'Featured Project',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'relatedProjects',
+      title: 'Related Projects',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'post' }] }],
+      validation: (Rule) => Rule.unique().max(8),
+    }),
+    defineField({
+      name: 'isEditorsPick',
+      title: "Editor's Pick",
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'isSponsored',
       title: 'Sponsored Content',
       type: 'boolean',
       initialValue: false,
+    }),
+    defineField({
+      name: 'sponsorshipType',
+      title: 'Sponsorship Type',
+      type: 'string',
+      hidden: ({ document }) => !document?.isSponsored,
+      options: {
+        list: [
+          { title: 'Sponsored By', value: 'sponsoredBy' },
+          { title: 'Partner Content', value: 'partnerContent' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'sponsoredBy',
+    }),
+    defineField({
+      name: 'sponsorName',
+      title: 'Sponsor Name',
+      type: 'string',
+      hidden: ({ document }) => !document?.isSponsored,
+      validation: (Rule) => Rule.max(120),
     }),
     defineField({
       name: 'sponsorLabel',

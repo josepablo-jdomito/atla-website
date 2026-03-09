@@ -71,7 +71,7 @@ export function urlFor(source: SanityImageSource) {
     projectId: resolvedProjectId,
     dataset,
   })
-  return builder.image(source)
+  return builder.image(source).auto('format')
 }
 
 /** Get client based on preview mode */

@@ -16,10 +16,51 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/brand/:slug',
+        destination: '/studio/:slug',
+        permanent: true,
+      },
     ]
   },
   async headers() {
     return [
+      {
+        source: '/category/:slug',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        source: '/categories',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        source: '/projects/:slug',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        source: '/studio/:slug',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400',
+          },
+        ],
+      },
       {
         source: '/fonts/:path*',
         headers: [

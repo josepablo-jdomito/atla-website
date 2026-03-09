@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata({
     title: brand.seo?.metaTitle || brand.name,
     description: brand.seo?.metaDescription || brand.tagline || `${brand.name} on WeLoveDaily.`,
-    path: `/brand/${brand.slug}`,
+    path: `/studio/${brand.slug}`,
     ogImage: brand.seo?.ogImage
       ? urlFor(brand.seo.ogImage).width(1200).height(630).url()
       : brand.coverImage
@@ -100,7 +100,7 @@ export default async function BrandPage({ params }: PageProps) {
             breadcrumbJsonLd([
               { name: 'Home', path: '/' },
               { name: 'Brands', path: '/brands' },
-              { name: brand.name, path: `/brand/${brand.slug}` },
+              { name: brand.name, path: `/studio/${brand.slug}` },
             ])
           ),
         }}

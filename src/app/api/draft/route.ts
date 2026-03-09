@@ -193,10 +193,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const input = await req.json()
-    const { title, excerpt, categoryId, brandId, tags, credits, isSponsored, sponsorLabel, publishedAt, seo, markdown, body } = input
+    const { title, excerpt, description, categoryId, categoryIds, brandId, brandName, studio, designerCredits, topic, series, relatedProjectIds, tags, credits, isSponsored, sponsorshipType, sponsorName, sponsorLabel, publishedAt, seo, markdown, body } = input
+    const normalizedDescription = description || excerpt
 
-    if (!title || !excerpt || !categoryId) {
-      return NextResponse.json({ error: 'Required: title, excerpt, categoryId' }, { status: 400 })
+    if (!title || !normalizedDescription || !categoryId) {
+      return NextResponse.json({ error: 'Required: title, description, categoryId' }, { status: 400 })
     }
 
     const slug = input.slug || slugify(title)
@@ -215,9 +216,30 @@ export async function POST(req: NextRequest) {
       _type: 'post' as const,
       title,
       slug: { _type: 'slug' as const, current: slug },
-      excerpt,
+      excerpt: normalizedDescription,
       category: { _type: 'reference' as const, _ref: categoryId },
+      ...(Array.isArray(categoryIds) &&
+        categoryIds.length > 0 && {
+          categories: categoryIds.map((id: string) => ({
+            _type: 'reference' as const,
+            _ref: id,
+            _key: generateKey(),
+          })),
+        }),
       ...(brandId && { brand: { _type: 'reference' as const, _ref: brandId } }),
+      ...(brandName && { brandName }),
+      ...(studio && { studio }),
+      ...(Array.isArray(designerCredits) && { designerCredits }),
+      ...(topic && { topic }),
+      ...(series && { series }),
+      ...(Array.isArray(relatedProjectIds) &&
+        relatedProjectIds.length > 0 && {
+          relatedProjects: relatedProjectIds.map((id: string) => ({
+            _type: 'reference' as const,
+            _ref: id,
+            _key: generateKey(),
+          })),
+        }),
       tags: tags || [],
       body: portableTextBody,
       credits: (credits || []).map((c: any) => {
@@ -230,9 +252,11 @@ export async function POST(req: NextRequest) {
           ...(safeUrl && { url: safeUrl }),
         }
       }),
-      status: 'draft',
+      status: 'submitted',
       publishedAt: publishedAt || null,
       isSponsored: isSponsored || false,
+      ...(isSponsored && sponsorshipType && { sponsorshipType }),
+      ...(isSponsored && sponsorName && { sponsorName }),
       ...(isSponsored && sponsorLabel && { sponsorLabel }),
       ...(Object.keys(seoFields).length > 0 && { seo: seoFields }),
     }
@@ -243,7 +267,7 @@ export async function POST(req: NextRequest) {
       success: true,
       documentId: result._id,
       slug,
-      status: 'draft',
+      status: 'submitted',
       studioUrl: `https://welovedaily.sanity.studio/structure/post;${result._id}`,
     })
   } catch (err: any) {
@@ -270,7 +294,30 @@ export async function PUT(req: NextRequest) {
     if (updates.slug) patch.set({ slug: { _type: 'slug', current: updates.slug } })
     if (updates.tags) patch.set({ tags: updates.tags })
     if (updates.categoryId) patch.set({ category: { _type: 'reference', _ref: updates.categoryId } })
+    if (updates.categoryIds && Array.isArray(updates.categoryIds)) {
+      patch.set({
+        categories: updates.categoryIds.map((id: string) => ({
+          _type: 'reference',
+          _ref: id,
+          _key: generateKey(),
+        })),
+      })
+    }
     if (updates.brandId) patch.set({ brand: { _type: 'reference', _ref: updates.brandId } })
+    if (updates.brandName) patch.set({ brandName: updates.brandName })
+    if (updates.studio) patch.set({ studio: updates.studio })
+    if (updates.designerCredits) patch.set({ designerCredits: updates.designerCredits })
+    if (updates.topic !== undefined) patch.set({ topic: updates.topic })
+    if (updates.series !== undefined) patch.set({ series: updates.series })
+    if (updates.relatedProjectIds && Array.isArray(updates.relatedProjectIds)) {
+      patch.set({
+        relatedProjects: updates.relatedProjectIds.map((id: string) => ({
+          _type: 'reference',
+          _ref: id,
+          _key: generateKey(),
+        })),
+      })
+    }
     if (updates.markdown) patch.set({ body: markdownToPortableText(updates.markdown) })
     if (updates.body) patch.set({ body: updates.body })
     if (updates.credits) {
@@ -292,6 +339,18 @@ export async function PUT(req: NextRequest) {
     }
     if (updates.status) {
       patch.set({ status: updates.status })
+    }
+    if (updates.isSponsored !== undefined) {
+      patch.set({ isSponsored: updates.isSponsored })
+    }
+    if (updates.sponsorshipType) {
+      patch.set({ sponsorshipType: updates.sponsorshipType })
+    }
+    if (updates.sponsorName) {
+      patch.set({ sponsorName: updates.sponsorName })
+    }
+    if (updates.sponsorLabel) {
+      patch.set({ sponsorLabel: updates.sponsorLabel })
     }
 
     const result = await patch.commit()

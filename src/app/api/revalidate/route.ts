@@ -32,14 +32,14 @@ export async function POST(req: NextRequest) {
         // Revalidate the specific article page
         const slug = body.slug?.current
         if (slug) {
-          revalidatePath(`/${slug}`)
+          revalidatePath(`/projects/${slug}`)
         } else {
           // Slug might not be in the webhook payload; fetch it
           const post = await client.fetch<{ slug: string } | null>(postSlugByIdQuery, {
             id: body._id,
           })
           if (post?.slug) {
-            revalidatePath(`/${post.slug}`)
+            revalidatePath(`/projects/${post.slug}`)
           }
         }
         // Always revalidate homepage and category pages when a post changes
@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       case 'brand': {
         const brandSlug = body.slug?.current
         if (brandSlug) {
+          revalidatePath(`/studio/${brandSlug}`)
           revalidatePath(`/brand/${brandSlug}`)
         }
         revalidatePath('/brands')

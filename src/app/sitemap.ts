@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic: posts
   const posts = await client.fetch<{ slug: string; _updatedAt: string }[]>(sitemapPostsQuery)
   const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${SITE_URL}/${post.slug}`,
+    url: `${SITE_URL}/projects/${post.slug}`,
     lastModified: new Date(post._updatedAt),
     changeFrequency: 'weekly',
     priority: 0.8,
@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic: brands
   const brands = await client.fetch<{ slug: string; _updatedAt: string }[]>(sitemapBrandsQuery)
   const brandPages: MetadataRoute.Sitemap = brands.map((brand) => ({
-    url: `${SITE_URL}/brand/${brand.slug}`,
+    url: `${SITE_URL}/studio/${brand.slug}`,
     lastModified: new Date(brand._updatedAt),
     changeFrequency: 'weekly',
     priority: 0.7,

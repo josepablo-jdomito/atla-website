@@ -40,6 +40,25 @@ export function Footer() {
           </div>
         </div>
 
+        <section className="mt-12 p-6 md:p-8 rounded-card border border-border bg-wld-white">
+          <div className="max-w-2xl">
+            <h3 className="font-display text-[24px] leading-tight text-wld-ink">
+              Subscribe to the Weekly Brand Breakdown
+            </h3>
+            <p className="mt-2 text-[14px] text-muted">
+              Weekly curation of standout projects, brand analysis, and editorial picks.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/newsletter"
+                className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
+              >
+                Subscribe now
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <div className="mt-16 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <Link href="/" aria-label="WeLoveDaily home">
             <Logo className="h-4 w-auto text-wld-ink" />

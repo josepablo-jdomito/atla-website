@@ -82,7 +82,7 @@ export function PostFeed({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {feedItems.map((item, i) => {
             if (item.type === 'post') {
-              return <PostCard key={item.key} post={item.data} priority={i < 8} />
+              return <PostCard key={item.key} post={item.data} priority={i < 2} />
             }
             return <CtaCard key={item.key} variant={item.variant} />
           })}

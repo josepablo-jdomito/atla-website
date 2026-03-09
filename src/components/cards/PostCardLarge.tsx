@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/client'
+import { SaveButton } from '@/components/actions/SaveButton'
 import type { PostCard as PostCardType } from '@/types'
 
 interface PostCardLargeProps {
@@ -15,9 +16,17 @@ export function PostCardLarge({ post }: PostCardLargeProps) {
     .quality(90)
     .url()
 
+  const sponsorText = post.isSponsored
+    ? post.sponsorshipType === 'partnerContent'
+      ? 'Partner Content'
+      : post.sponsorName
+        ? `Sponsored by ${post.sponsorName}`
+        : post.sponsorLabel || 'Sponsored'
+    : null
+
   return (
     <Link
-      href={`/${post.slug}`}
+      href={`/projects/${post.slug}`}
       className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[rgba(29,29,29,0.24)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
@@ -31,11 +40,12 @@ export function PostCardLarge({ post }: PostCardLargeProps) {
           placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
           blurDataURL={post.coverImage.asset?.metadata?.lqip}
         />
-        {post.isSponsored && (
+        {sponsorText && (
           <span className="absolute top-4 left-4 px-2.5 py-1 text-[11px] font-medium tracking-wide uppercase bg-wld-white text-muted rounded-full">
-            {post.sponsorLabel || 'Sponsored'}
+            {sponsorText}
           </span>
         )}
+        <SaveButton projectId={post._id} className="absolute top-4 right-4" />
       </div>
       <div className="p-5 space-y-3">
         <span className="text-[12px] font-medium uppercase tracking-wider text-wld-blue">

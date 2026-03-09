@@ -4,7 +4,7 @@ import { allCategoriesQuery } from '@/lib/sanity/queries'
 import { buildMetadata } from '@/lib/utils/metadata'
 import type { Category } from '@/types'
 
-export const revalidate = 60
+export const revalidate = 300
 
 export const metadata = buildMetadata({
   title: 'Categories',

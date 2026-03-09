@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { BottomTabBar } from '@/components/layout/BottomTabBar'
 import { Footer } from '@/components/layout/Footer'
 import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
+import { NewsletterPopup } from '@/components/layout/NewsletterPopup'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-wld-paper">
         <GoogleAnalytics />
+        <NewsletterPopup />
 
         <div className="flex">
           {/* Desktop: fixed sidebar */}

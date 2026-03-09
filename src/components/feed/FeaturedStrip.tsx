@@ -1,5 +1,6 @@
 import { PostCardLarge } from '@/components/cards/PostCardLarge'
 import Link from 'next/link'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/client'
 import type { PostCard as PostCardType } from '@/types'
 
@@ -53,15 +54,19 @@ function PickCard({ post, index }: { post: PostCardType; index: number }) {
 
   return (
     <Link
-      href={`/${post.slug}`}
+      href={`/projects/${post.slug}`}
       className="group flex gap-4 bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[rgba(29,29,29,0.24)]"
     >
       <div className="relative w-24 md:w-28 shrink-0 aspect-[4/5]">
-        <img
+        <Image
           src={imageUrl}
           alt={post.coverImage.alt || post.title}
-          className="w-full h-full object-cover"
-          loading={index === 0 ? 'eager' : 'lazy'}
+          fill
+          sizes="112px"
+          className="object-cover"
+          priority={index === 0}
+          placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
+          blurDataURL={post.coverImage.asset?.metadata?.lqip}
         />
       </div>
       <div className="flex flex-col justify-center py-3 pr-4 space-y-1.5 min-w-0">

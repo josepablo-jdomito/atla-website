@@ -25,9 +25,9 @@ export const deskStructure = (S: StructureBuilder) =>
                   S.list()
                     .title('Posts by Status')
                     .items([
-                      statusFilter(S, 'Drafts', 'draft'),
-                      statusFilter(S, 'In Review', 'inReview'),
-                      statusFilter(S, 'Scheduled', 'scheduled'),
+                      statusFilter(S, 'Submitted', 'submitted'),
+                      statusFilter(S, 'Review', 'review'),
+                      statusFilter(S, 'Approved', 'approved'),
                       statusFilter(S, 'Published', 'published'),
                     ])
                 ),
@@ -39,7 +39,7 @@ export const deskStructure = (S: StructureBuilder) =>
                     .child((categoryId) =>
                       S.documentList()
                         .title('Posts')
-                        .filter('_type == "post" && category._ref == $categoryId')
+                        .filter('_type == "post" && (category._ref == $categoryId || $categoryId in categories[]._ref)')
                         .params({ categoryId })
                         .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }])
                     )

@@ -11,27 +11,27 @@ export const metadata = buildMetadata({
 
 const FORMATS = [
   {
-    name: 'Sponsored Feature',
+    name: 'Sponsored Articles',
     description:
-      'A dedicated editorial piece showcasing your brand, product, or project. Written by our team, matching our editorial voice.',
+      'A dedicated article showcasing your brand, product, or campaign with transparent sponsor labeling and editorial-quality production.',
     tag: 'Most popular',
   },
   {
-    name: 'Newsletter Spotlight',
+    name: 'Newsletter Sponsorship',
     description:
-      'Featured placement in our weekly newsletter with a custom write-up and direct link to your site.',
+      'Own premium placement inside the Weekly Brand Breakdown with custom copy, CTA links, and campaign timing aligned to launches.',
     tag: null,
   },
   {
-    name: 'Feed Placement',
+    name: 'Brand Partnerships',
     description:
-      'A branded card in our homepage feed, shown alongside editorial content with a clear sponsor label.',
+      'Multi-format collaborations across site features, social distribution, and co-branded storytelling built for long-term brand affinity.',
     tag: null,
   },
   {
-    name: 'Custom Partnership',
+    name: 'Event Sponsorship',
     description:
-      'Multi-format campaigns, co-branded content, event partnerships, and long-term collaborations.',
+      'Sponsor curated talks, launches, and design events through branded integrations, host mentions, and post-event editorial coverage.',
     tag: null,
   },
 ]
@@ -41,6 +41,13 @@ const AUDIENCE_STATS = [
   { label: 'Brand & design leads', value: '31%' },
   { label: 'Agency & studio teams', value: '18%' },
   { label: 'Other (writers, devs, students)', value: '9%' },
+]
+
+const REACH_STATS = [
+  { label: 'Monthly readers', value: '120K+' },
+  { label: 'Weekly newsletter subscribers', value: '38K+' },
+  { label: 'Average newsletter open rate', value: '44%' },
+  { label: 'Avg. sponsored article time on page', value: '4m 20s' },
 ]
 
 export default function AdvertisePage() {
@@ -62,7 +69,7 @@ export default function AdvertisePage() {
       {/* Why partner */}
       <section className="max-w-article mx-auto mb-12">
         <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-6">
-          Who reads welove
+          Audience
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {AUDIENCE_STATS.map((stat) => (
@@ -74,10 +81,25 @@ export default function AdvertisePage() {
         </div>
       </section>
 
+      {/* Reach */}
+      <section className="max-w-article mx-auto mb-12">
+        <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-6">
+          Reach
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {REACH_STATS.map((stat) => (
+            <div key={stat.label} className="p-4 rounded-card border border-border bg-white text-center">
+              <span className="block text-[24px] font-semibold text-wld-ink mb-1">{stat.value}</span>
+              <span className="text-[12px] text-muted leading-tight">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Formats */}
       <section className="max-w-article mx-auto mb-12">
         <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-6">
-          Partnership formats
+          Sponsorship options
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {FORMATS.map((format) => (

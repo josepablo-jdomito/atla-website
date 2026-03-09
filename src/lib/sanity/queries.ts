@@ -1,17 +1,25 @@
 import { groq } from 'next-sanity'
 
-// ── Shared Projections ─────────────────────
-
 const postCardProjection = groq`{
   _id,
   title,
   "slug": slug.current,
   excerpt,
+  brandName,
+  studio,
+  designerCredits,
+  topic,
+  series,
   coverImage {
     asset->,
     alt
   },
   "category": category->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  "categories": categories[]->{
     _id,
     name,
     "slug": slug.current
@@ -27,7 +35,13 @@ const postCardProjection = groq`{
   tags,
   publishedAt,
   isSponsored,
-  sponsorLabel
+  sponsorshipType,
+  sponsorName,
+  sponsorLabel,
+  saveCount,
+  viewCount,
+  isFeaturedProject,
+  isEditorsPick
 }`
 
 const publishedFilter = groq`
@@ -36,7 +50,7 @@ const publishedFilter = groq`
   && publishedAt <= now()
 `
 
-// ── Homepage ───────────────────────────────
+const trendingScore = groq`(coalesce(saveCount, 0) * 4 + coalesce(viewCount, 0))`
 
 export const homepageQuery = groq`{
   "config": *[_type == "homepageConfig"][0] {
@@ -51,7 +65,10 @@ export const homepageQuery = groq`{
     "slug": slug.current,
     description
   },
-  "latestPosts": *[${publishedFilter}] | order(publishedAt desc) [0...40] ${postCardProjection}
+  "featuredProjects": *[${publishedFilter} && isFeaturedProject == true] | order(publishedAt desc) [0...6] ${postCardProjection},
+  "latestProjects": *[${publishedFilter}] | order(publishedAt desc) [0...40] ${postCardProjection},
+  "trendingProjects": *[${publishedFilter}] | order(${trendingScore} desc, publishedAt desc) [0...20] ${postCardProjection},
+  "mostSavedProjects": *[${publishedFilter}] | order(coalesce(saveCount, 0) desc, publishedAt desc) [0...20] ${postCardProjection}
 }`
 
 export const loadMorePostsQuery = groq`
@@ -61,19 +78,31 @@ export const loadMorePostsQuery = groq`
   ] | order(publishedAt desc) [0...20] ${postCardProjection}
 `
 
-// ── Article ────────────────────────────────
-
 export const articleBySlugQuery = groq`
   *[_type == "post" && slug.current == $slug && status == "published"][0] {
     _id,
     title,
     "slug": slug.current,
     excerpt,
+    studio,
+    designerCredits,
+    topic,
+    series,
     coverImage {
       asset->,
       alt
     },
+    galleryImages[] {
+      asset->,
+      alt,
+      caption
+    },
     "category": category->{
+      _id,
+      name,
+      "slug": slug.current
+    },
+    "categories": categories[]->{
       _id,
       name,
       "slug": slug.current
@@ -92,6 +121,7 @@ export const articleBySlugQuery = groq`
       industry,
       socials
     },
+    brandName,
     body[] {
       ...,
       _type == "image" => {
@@ -105,10 +135,15 @@ export const articleBySlugQuery = groq`
       role,
       url
     },
+    "relatedProjects": relatedProjects[]->${postCardProjection},
     publishedAt,
     _updatedAt,
     isSponsored,
+    sponsorshipType,
+    sponsorName,
     sponsorLabel,
+    saveCount,
+    viewCount,
     seo {
       metaTitle,
       metaDescription,
@@ -121,12 +156,23 @@ export const articleBySlugQuery = groq`
 
 export const relatedPostsQuery = groq`
   *[${publishedFilter}
-    && category._ref == $categoryId
+    && !(_id in $excludeIds)
+    && (
+      category._ref == $categoryId
+      || $categoryId in categories[]._ref
+      || (defined($topic) && $topic != "" && topic == $topic)
+      || (defined($series) && $series != "" && series == $series)
+      || count((tags[])[@ in $tags]) > 0
+    )
     && _id != $currentPostId
-  ] | order(publishedAt desc) [0...4] ${postCardProjection}
+  ] | order(
+    (category._ref == $categoryId || $categoryId in categories[]._ref) desc,
+    (defined($topic) && $topic != "" && topic == $topic) desc,
+    (defined($series) && $series != "" && series == $series) desc,
+    count((tags[])[@ in $tags]) desc,
+    publishedAt desc
+  ) [0...6] ${postCardProjection}
 `
-
-// ── Categories ─────────────────────────────
 
 export const allCategoriesQuery = groq`
   *[_type == "category"] | order(order asc) {
@@ -134,7 +180,7 @@ export const allCategoriesQuery = groq`
     name,
     "slug": slug.current,
     description,
-    "postCount": count(*[_type == "post" && category._ref == ^._id && status == "published" && publishedAt <= now()])
+    "postCount": count(*[_type == "post" && status == "published" && publishedAt <= now() && (category._ref == ^._id || ^._id in categories[]._ref)])
   }
 `
 
@@ -146,31 +192,52 @@ export const categoryPageQuery = groq`{
     description
   },
   "posts": *[${publishedFilter}
-    && category->slug.current == $slug
+    && (
+      category->slug.current == $slug
+      || $slug in categories[]->slug.current
+    )
   ] | order(publishedAt desc) [0...40] ${postCardProjection}
 }`
 
 export const categoryLoadMoreQuery = groq`
   *[${publishedFilter}
-    && category->slug.current == $slug
+    && (
+      category->slug.current == $categorySlug
+      || $categorySlug in categories[]->slug.current
+    )
     && (publishedAt < $lastPublishedAt
       || (publishedAt == $lastPublishedAt && _id > $lastId))
   ] | order(publishedAt desc) [0...20] ${postCardProjection}
 `
 
-// ── Search ─────────────────────────────────
-
-export const searchQuery = groq`
-  *[${publishedFilter}
+export const searchQuery = groq`{
+  "projects": *[${publishedFilter}
     && (
-      title match $searchTerm + "*"
-      || excerpt match $searchTerm + "*"
-      || $searchTerm in tags
+      title match $searchTerm
+      || excerpt match $searchTerm
+      || studio match $searchTerm
+      || brandName match $searchTerm
+      || $rawTerm in tags
+      || category->name match $searchTerm
+      || $rawTerm in categories[]->name
+      || count(designerCredits[@ match $searchTerm]) > 0
+      || count(credits[name match $searchTerm]) > 0
+      || brand->name match $searchTerm
     )
-  ] | order(publishedAt desc) [0...30] ${postCardProjection}
-`
-
-// ── Sitemap ────────────────────────────────
+  ] | order(publishedAt desc) [0...30] ${postCardProjection},
+  "studios": *[_type == "brand" && (name match $searchTerm || tagline match $searchTerm || industry match $searchTerm)] | order(name asc) [0...12] {
+    _id,
+    name,
+    "slug": slug.current,
+    tagline
+  },
+  "categories": *[_type == "category" && (name match $searchTerm || description match $searchTerm)] | order(name asc) [0...12] {
+    _id,
+    name,
+    "slug": slug.current,
+    description
+  }
+}`
 
 export const sitemapPostsQuery = groq`
   *[${publishedFilter}] | order(publishedAt desc) {
@@ -187,8 +254,6 @@ export const sitemapCategoriesQuery = groq`
   }
 `
 
-// ── RSS ────────────────────────────────────
-
 export const rssPostsQuery = groq`
   *[${publishedFilter}] | order(publishedAt desc) [0...50] {
     title,
@@ -201,8 +266,6 @@ export const rssPostsQuery = groq`
     }
   }
 `
-
-// ── Brand ─────────────────────────────────
 
 export const brandBySlugQuery = groq`
   *[_type == "brand" && slug.current == $slug][0] {
@@ -259,8 +322,6 @@ export const sitemapBrandsQuery = groq`
     _updatedAt
   }
 `
-
-// ── Revalidation ───────────────────────────
 
 export const postSlugByIdQuery = groq`
   *[_type == "post" && _id == $id][0] {

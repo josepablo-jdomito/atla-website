@@ -9,7 +9,8 @@ import { collectionPageJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/util
 import type { CategoryPageData, Category } from '@/types'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
+export const revalidate = 300
+export const dynamicParams = true
 
 interface PageProps {
   params: { slug: string }
@@ -28,6 +29,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: data.category.description || `Browse ${data.category.name} on WeLoveDaily.`,
     path: `/category/${data.category.slug}`,
   })
+}
+
+export async function generateStaticParams() {
+  try {
+    const categories = await client.fetch<Category[]>(allCategoriesQuery)
+    return categories.map((category) => ({ slug: category.slug }))
+  } catch {
+    return []
+  }
 }
 
 export default async function CategoryPage({ params }: PageProps) {

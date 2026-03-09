@@ -16,12 +16,22 @@ export interface PostCard {
   title: string
   slug: string
   excerpt: string
+  brandName?: string
+  studio?: string
+  designerCredits?: string[]
+  topic?: string
+  series?: string
   coverImage: SanityImage
   category: {
     _id: string
     name: string
     slug: string
   }
+  categories?: {
+    _id: string
+    name: string
+    slug: string
+  }[]
   brand?: {
     name: string
     slug: string
@@ -30,13 +40,21 @@ export interface PostCard {
   tags?: string[]
   publishedAt: string
   isSponsored: boolean
+  sponsorshipType?: 'sponsoredBy' | 'partnerContent'
+  sponsorName?: string
   sponsorLabel?: string
+  saveCount?: number
+  viewCount?: number
+  isFeaturedProject?: boolean
+  isEditorsPick?: boolean
 }
 
 export interface Post extends PostCard {
   _updatedAt?: string
   body: (PortableTextBlock | SanityImageBlock)[]
+  galleryImages?: SanityImageBlock[]
   credits: Credit[]
+  relatedProjects?: PostCard[]
   seo?: SeoFields
 }
 
@@ -93,7 +111,26 @@ export interface HomepageConfig {
 export interface HomepageData {
   config: HomepageConfig
   categories: Category[]
-  latestPosts: PostCard[]
+  featuredProjects: PostCard[]
+  latestProjects: PostCard[]
+  trendingProjects: PostCard[]
+  mostSavedProjects: PostCard[]
+}
+
+export interface SearchData {
+  projects: PostCard[]
+  studios: {
+    _id: string
+    name: string
+    slug: string
+    tagline?: string
+  }[]
+  categories: {
+    _id: string
+    name: string
+    slug: string
+    description?: string
+  }[]
 }
 
 // ── Category Page ──────────────────────────
