@@ -214,6 +214,22 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'contentType',
+      title: 'Content Type',
+      type: 'string',
+      description:
+        'Whether this is a visual project showcase or an editorial article.',
+      options: {
+        list: [
+          { title: 'Project', value: 'project' },
+          { title: 'Article', value: 'article' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'article',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
