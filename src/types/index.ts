@@ -18,6 +18,7 @@ export interface PostCard {
   excerpt: string
   coverImage: SanityImage
   category: {
+    _id: string
     name: string
     slug: string
   }

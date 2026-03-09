@@ -4,7 +4,7 @@ import { urlFor } from '@/lib/sanity/client'
 import type { PortableTextBlock } from '@portabletext/types'
 
 interface PortableTextBodyProps {
-  value: PortableTextBlock[]
+  value: any[]
 }
 
 const components = {

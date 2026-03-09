@@ -23,7 +23,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: brand.seo?.metaTitle || brand.name,
     description: brand.seo?.metaDescription || brand.tagline || `${brand.name} on WeLoveDaily.`,
     path: `/brand/${brand.slug}`,
-    ogImage: brand.seo?.ogImage || brand.coverImage,
+    ogImage: brand.seo?.ogImage
+      ? urlFor(brand.seo.ogImage).width(1200).height(630).url()
+      : brand.coverImage
+        ? urlFor(brand.coverImage).width(1200).height(630).url()
+        : undefined,
   })
 }
 
