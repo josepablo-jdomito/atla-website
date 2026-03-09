@@ -95,3 +95,12 @@ body {
 html[data-theme='dark'] .bg-white {
   background-color: rgb(var(--wld-white-rgb) / 1) !important;
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -1,4 +1,5 @@
 import { client } from '@/lib/sanity/client'
+import { urlFor } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries'
 import { FeaturedStrip } from '@/components/feed/FeaturedStrip'
 import { DiscoveryStrip } from '@/components/feed/DiscoveryStrip'
@@ -7,6 +8,7 @@ import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
 import { Logo } from '@/components/layout/Logo'
 import { PostCard } from '@/components/cards/PostCard'
+import { PromoBannerRail, ShowcaseRail, UtilityRail } from '@/components/home/EditorialLayouts'
 import type { HomepageData, PostCard as PostCardType } from '@/types'
 
 export const revalidate = 60
@@ -19,6 +21,28 @@ export default async function HomePage() {
   const latestProjects = data?.latestProjects ?? []
   const trendingProjects = data?.trendingProjects ?? []
   const mostSavedProjects = data?.mostSavedProjects ?? []
+  const showcaseCards = featuredProjects.slice(0, 4).map((project) => ({
+    id: project._id,
+    eyebrow: project.category.name,
+    title: project.title,
+    imageUrl: urlFor(project.coverImage).width(900).height(1200).quality(85).url(),
+    href: `/projects/${project.slug}`,
+  }))
+  const utilityCards = mostSavedProjects.slice(0, 4).map((project) => ({
+    id: project._id,
+    eyebrow: project.category.name,
+    title: project.title,
+    imageUrl: urlFor(project.coverImage).width(900).height(900).quality(80).url(),
+    href: `/projects/${project.slug}`,
+  }))
+  const promoCards = latestProjects.slice(0, 6).map((project) => ({
+    id: project._id,
+    label: project.brand?.name || project.brandName || project.category.name,
+    title: project.title,
+    cta: 'Explore',
+    imageUrl: urlFor(project.coverImage).width(1400).height(600).quality(82).url(),
+    href: `/projects/${project.slug}`,
+  }))
 
   return (
     <div className="px-5 lg:px-8 py-6 lg:py-8 space-y-8">
@@ -46,6 +70,20 @@ export default async function HomePage() {
           editorsPicks={config?.editorsPicks ?? []}
         />
       )}
+
+      {showcaseCards.length > 0 && (
+        <ShowcaseRail title="Get to know what we publish." cards={showcaseCards} />
+      )}
+
+      {utilityCards.length > 0 && (
+        <UtilityRail
+          title="Why readers stay with WeLoveDaily."
+          shopHref="/projects"
+          cards={utilityCards}
+        />
+      )}
+
+      {promoCards.length > 0 && <PromoBannerRail cards={promoCards} />}
 
       <ProjectSection title="Featured Projects" projects={featuredProjects} />
       <ProjectSection title="Trending Projects" projects={trendingProjects} />
