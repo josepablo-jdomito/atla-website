@@ -106,6 +106,7 @@ export const articleBySlugQuery = groq`
       url
     },
     publishedAt,
+    _updatedAt,
     isSponsored,
     sponsorLabel,
     seo {

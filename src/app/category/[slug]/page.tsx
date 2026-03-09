@@ -5,6 +5,7 @@ import { CategoryChips } from '@/components/feed/CategoryChips'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { collectionPageJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { CategoryPageData, Category } from '@/types'
 import type { Metadata } from 'next'
 
@@ -42,6 +43,31 @@ export default async function CategoryPage({ params }: PageProps) {
 
   return (
     <div className="max-w-container mx-auto px-5 py-10">
+      {/* Structured data: CollectionPage + BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionPageJsonLd({
+              name: data.category.name,
+              description: data.category.description,
+              slug: data.category.slug,
+            })
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: data.category.name, path: `/category/${data.category.slug}` },
+            ])
+          ),
+        }}
+      />
+
       {/* Category header */}
       <header className="mb-8">
         <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-2">

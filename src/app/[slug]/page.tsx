@@ -9,6 +9,7 @@ import { PostCard } from '@/components/cards/PostCard'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
 import { ArticleTracker } from './ArticleTracker'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { articleJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { Post, PostCard as PostCardType } from '@/types'
 import type { Metadata } from 'next'
 
@@ -48,6 +49,38 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <article className="max-w-container mx-auto px-5 py-10">
       <ArticleTracker slug={post.slug} category={post.category.name} />
+
+      {/* Structured data: Article + BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            articleJsonLd({
+              title: post.title,
+              description: post.excerpt,
+              slug: post.slug,
+              coverImageUrl: heroUrl,
+              publishedAt: post.publishedAt,
+              updatedAt: post._updatedAt,
+              categoryName: post.category.name,
+              categorySlug: post.category.slug,
+              isSponsored: post.isSponsored,
+            })
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: post.category.name, path: `/category/${post.category.slug}` },
+              { name: post.title, path: `/${post.slug}` },
+            ])
+          ),
+        }}
+      />
 
       {/* Header */}
       <header className="max-w-article mx-auto mb-8 space-y-4">

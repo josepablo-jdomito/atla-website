@@ -6,6 +6,7 @@ import { brandBySlugQuery, brandPostsQuery } from '@/lib/sanity/queries'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { brandProfileJsonLd, breadcrumbJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { Brand, PostCard } from '@/types'
 import type { Metadata } from 'next'
 
@@ -68,6 +69,43 @@ export default async function BrandPage({ params }: PageProps) {
 
   return (
     <div>
+      {/* Structured data: Brand profile + BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            brandProfileJsonLd({
+              name: brand.name,
+              slug: brand.slug,
+              description: brand.description,
+              website: brand.website,
+              logoUrl: brand.logo
+                ? urlFor(brand.logo).width(400).height(400).format('webp').url()
+                : undefined,
+              coverImageUrl: brand.coverImage
+                ? urlFor(brand.coverImage).width(1200).height(630).format('webp').url()
+                : undefined,
+              industry: brand.industry,
+              headquarters: brand.headquarters,
+              founded: brand.founded,
+              socials: brand.socials,
+            })
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: 'Brands', path: '/brands' },
+              { name: brand.name, path: `/brand/${brand.slug}` },
+            ])
+          ),
+        }}
+      />
+
       {/* Hero cover image */}
       {brand.coverImage && (
         <div className="relative w-full h-[280px] md:h-[400px] bg-card overflow-hidden">

@@ -5,7 +5,11 @@ const RESERVED_SLUGS = [
   'search', 'about', 'contact', 'privacy', 'terms', 'brand',
   'robots.txt', 'sitemap.xml', 'rss.xml', 'studio', 'api',
   'popular', 'editors-picks', 'submission-guidelines', 'media-kit',
+  'brands', 'designer', 'directory', 'jobs', 'awards', 'login',
+  'signup', 'admin', 'dashboard', 'settings', 'profile', 'rss',
 ]
+
+const SLUG_FORMAT_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 export default defineType({
   name: 'post',
@@ -31,6 +35,12 @@ export default defineType({
           }
           if (slug.current.includes('/')) {
             return 'Slug cannot contain slashes.'
+          }
+          if (!SLUG_FORMAT_REGEX.test(slug.current)) {
+            return 'Slug must be lowercase with hyphens only (e.g. "brand-identity-redesign"). No uppercase, spaces, or special characters.'
+          }
+          if (slug.current.length < 3) {
+            return 'Slug must be at least 3 characters.'
           }
           return true
         }),

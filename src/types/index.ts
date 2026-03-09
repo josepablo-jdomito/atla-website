@@ -34,6 +34,7 @@ export interface PostCard {
 }
 
 export interface Post extends PostCard {
+  _updatedAt?: string
   body: (PortableTextBlock | SanityImageBlock)[]
   credits: Credit[]
   seo?: SeoFields
