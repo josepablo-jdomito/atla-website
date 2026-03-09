@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity/client'
-import { allProjectsQuery, allCategoriesQuery, loadMorePostsQuery } from '@/lib/sanity/queries'
+import { allProjectOnlyQuery, allCategoriesQuery, loadMoreProjectOnlyQuery } from '@/lib/sanity/queries'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { CategoryChips } from '@/components/feed/CategoryChips'
 import { buildMetadata } from '@/lib/utils/metadata'
@@ -28,7 +28,7 @@ const FILTER_LABELS = [
 
 export default async function ProjectsPage() {
   const [projects, categories] = await Promise.all([
-    client.fetch<PostCard[]>(allProjectsQuery),
+    client.fetch<PostCard[]>(allProjectOnlyQuery),
     client.fetch<Category[]>(allCategoriesQuery),
   ])
 
@@ -82,7 +82,7 @@ export default async function ProjectsPage() {
       </div>
 
       {projects.length > 0 ? (
-        <PostFeed initialPosts={projects} loadMoreQuery={loadMorePostsQuery} ctaFrequency={12} />
+        <PostFeed initialPosts={projects} loadMoreQuery={loadMoreProjectOnlyQuery} ctaFrequency={12} />
       ) : (
         <div className="py-16 text-center">
           <p className="text-[15px] text-wld-ink">Nothing here yet.</p>

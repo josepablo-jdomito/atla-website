@@ -16,6 +16,7 @@ export function Footer() {
             <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-4">Navigation</h4>
             <div className="space-y-2.5">
               <Link href="/projects" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Projects</Link>
+              <Link href="/articles" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Articles</Link>
               <Link href="/categories" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Categories</Link>
               <Link href="/submit" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Submit</Link>
               <Link href="/newsletter" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Newsletter</Link>

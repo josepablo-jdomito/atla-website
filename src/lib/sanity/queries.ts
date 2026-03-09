@@ -50,6 +50,17 @@ const publishedFilter = groq`
   && publishedAt <= now()
 `
 
+const articleCategoryFilter = groq`
+  category->slug.current in [
+    "brand-breakdown",
+    "cult-brand-index",
+    "the-definition",
+    "industry-signal"
+  ]
+`
+
+const projectCategoryFilter = groq`!(${articleCategoryFilter})`
+
 const trendingScore = groq`(coalesce(saveCount, 0) * 4 + coalesce(viewCount, 0))`
 
 export const homepageQuery = groq`{
@@ -80,6 +91,30 @@ export const loadMorePostsQuery = groq`
 
 export const allProjectsQuery = groq`
   *[${publishedFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+`
+
+export const allProjectOnlyQuery = groq`
+  *[${publishedFilter} && ${projectCategoryFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+`
+
+export const loadMoreProjectOnlyQuery = groq`
+  *[${publishedFilter}
+    && ${projectCategoryFilter}
+    && (publishedAt < $lastPublishedAt
+      || (publishedAt == $lastPublishedAt && _id > $lastId))
+  ] | order(publishedAt desc) [0...20] ${postCardProjection}
+`
+
+export const allArticlesQuery = groq`
+  *[${publishedFilter} && ${articleCategoryFilter}] | order(publishedAt desc) [0...120] ${postCardProjection}
+`
+
+export const loadMoreArticlesQuery = groq`
+  *[${publishedFilter}
+    && ${articleCategoryFilter}
+    && (publishedAt < $lastPublishedAt
+      || (publishedAt == $lastPublishedAt && _id > $lastId))
+  ] | order(publishedAt desc) [0...20] ${postCardProjection}
 `
 
 export const articleBySlugQuery = groq`
