@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import Script from 'next/script'
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 
 interface CategoryOption {
   _id: string
@@ -11,16 +12,43 @@ interface ProjectSubmissionFormProps {
   categories: CategoryOption[]
 }
 
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        element: HTMLElement,
+        options: {
+          sitekey: string
+          callback: (token: string) => void
+          'expired-callback'?: () => void
+        }
+      ) => string
+      reset: (widgetId?: string) => void
+      remove: (widgetId?: string) => void
+    }
+  }
+}
+
 export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps) {
   const [isPending, startTransition] = useTransition()
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReady, setTurnstileReady] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [messageType, setMessageType] = useState<'success' | 'error' | null>(null)
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null)
+  const turnstileWidgetIdRef = useRef<string | null>(null)
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''
+  const hasTurnstile = Boolean(turnstileSiteKey)
 
   const canSubmit = useMemo(
-    () => selectedCategoryIds.length > 0 && imageFiles.length > 0 && !isPending,
-    [selectedCategoryIds.length, imageFiles.length, isPending]
+    () =>
+      selectedCategoryIds.length > 0 &&
+      imageFiles.length > 0 &&
+      !isPending &&
+      (!hasTurnstile || Boolean(turnstileToken)),
+    [selectedCategoryIds.length, imageFiles.length, isPending, hasTurnstile, turnstileToken]
   )
 
   const toggleCategory = (id: string) => {
@@ -57,13 +85,43 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
       formElement.reset()
       setSelectedCategoryIds([])
       setImageFiles([])
+      setTurnstileToken('')
+      if (hasTurnstile && turnstileWidgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(turnstileWidgetIdRef.current)
+      }
       setMessage('Submitted successfully. Your project is now in editorial review.')
       setMessageType('success')
     })
   }
 
+  useEffect(() => {
+    if (!hasTurnstile || !turnstileReady || !turnstileContainerRef.current || !window.turnstile) return
+    if (turnstileWidgetIdRef.current) return
+
+    turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+      sitekey: turnstileSiteKey,
+      callback: (token: string) => setTurnstileToken(token),
+      'expired-callback': () => setTurnstileToken(''),
+    })
+
+    return () => {
+      if (turnstileWidgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(turnstileWidgetIdRef.current)
+        turnstileWidgetIdRef.current = null
+      }
+    }
+  }, [hasTurnstile, turnstileReady, turnstileSiteKey])
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {hasTurnstile && (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          strategy="afterInteractive"
+          onLoad={() => setTurnstileReady(true)}
+        />
+      )}
+
       <input
         name="website"
         tabIndex={-1}
@@ -71,7 +129,7 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         className="hidden"
         aria-hidden="true"
       />
-      <input type="hidden" name="turnstileToken" value="" />
+      <input type="hidden" name="turnstileToken" value={turnstileToken} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <label className="space-y-2 block">
@@ -105,6 +163,15 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
           className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
         />
       </label>
+
+      {hasTurnstile && (
+        <div className="space-y-2">
+          <span className="text-[13px] font-medium uppercase tracking-wider text-muted block">
+            Human verification
+          </span>
+          <div ref={turnstileContainerRef} />
+        </div>
+      )}
 
       <label className="space-y-2 block">
         <span className="text-[13px] font-medium uppercase tracking-wider text-muted">Description</span>
