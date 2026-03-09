@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --wld-paper-rgb: 255 249 239;
+  --wld-white-rgb: 255 255 255;
+  --wld-ink-rgb: 29 29 29;
+  --wld-blue-rgb: 22 15 207;
+  --wld-card-rgb: 243 239 232;
+  --wld-border-rgb: 29 29 29;
+  --wld-muted-rgb: 29 29 29;
+}
+
+html[data-theme='dark'] {
+  --wld-paper-rgb: 14 16 20;
+  --wld-white-rgb: 22 25 30;
+  --wld-ink-rgb: 235 239 244;
+  --wld-blue-rgb: 120 139 255;
+  --wld-card-rgb: 28 32 38;
+  --wld-border-rgb: 235 239 244;
+  --wld-muted-rgb: 235 239 244;
+  color-scheme: dark;
+}
+
 /* ── Parabolica Display ────────────────────── */
 @font-face {
   font-family: 'Parabolica';
@@ -64,9 +85,13 @@
 
 /* ── Base ───────────────────────────────────── */
 body {
-  background-color: #FFF9EF;
-  color: #1D1D1D;
+  background-color: rgb(var(--wld-paper-rgb) / 1);
+  color: rgb(var(--wld-ink-rgb) / 1);
   font-family: 'Parabolica Text', 'Parabolica', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-theme='dark'] .bg-white {
+  background-color: rgb(var(--wld-white-rgb) / 1) !important;
 }

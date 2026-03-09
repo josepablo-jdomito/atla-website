@@ -5,6 +5,7 @@ import { BottomTabBar } from '@/components/layout/BottomTabBar'
 import { Footer } from '@/components/layout/Footer'
 import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
 import { NewsletterPopup } from '@/components/layout/NewsletterPopup'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 
 export const metadata: Metadata = {
@@ -15,8 +16,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var saved=localStorage.getItem('wld-theme');var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var theme=(saved==='light'||saved==='dark')?saved:(prefersDark?'dark':'light');document.documentElement.dataset.theme=theme;}catch(e){}})();`,
+          }}
+        />
         {/* Preconnect to Sanity CDN for faster image loads */}
         <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
@@ -55,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-wld-paper">
         <GoogleAnalytics />
         <NewsletterPopup />
+        <ThemeToggle className="fixed right-4 bottom-20 lg:bottom-6 z-50" />
 
         <div className="flex">
           {/* Desktop: fixed sidebar */}

@@ -6,14 +6,14 @@ const config: Config = {
     extend: {
       colors: {
         wld: {
-          paper: '#FFF9EF',
-          white: '#FFFFFF',
-          ink: '#1D1D1D',
-          blue: '#160FCF',
+          paper: 'rgb(var(--wld-paper-rgb) / 1)',
+          white: 'rgb(var(--wld-white-rgb) / 1)',
+          ink: 'rgb(var(--wld-ink-rgb) / 1)',
+          blue: 'rgb(var(--wld-blue-rgb) / 1)',
         },
-        card: '#F3EFE8',
-        border: 'rgba(29, 29, 29, 0.12)',
-        muted: 'rgba(29, 29, 29, 0.68)',
+        card: 'rgb(var(--wld-card-rgb) / 1)',
+        border: 'rgb(var(--wld-border-rgb) / 0.12)',
+        muted: 'rgb(var(--wld-muted-rgb) / 0.68)',
       },
       fontFamily: {
         primary: [

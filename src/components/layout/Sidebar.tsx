@@ -153,7 +153,7 @@ export function Sidebar() {
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             className={`
               flex items-center justify-center w-7 h-7 rounded-md
-              text-muted hover:text-wld-ink hover:bg-[rgba(29,29,29,0.04)]
+              text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.08)]
               transition-colors duration-150
               ${collapsed ? 'mt-3' : ''}
             `}
@@ -180,8 +180,8 @@ export function Sidebar() {
               transition-colors duration-150
               ${collapsed ? 'justify-center px-0' : 'px-3'}
               ${isActive(item.href)
-                ? 'text-wld-ink font-semibold bg-[rgba(29,29,29,0.04)]'
-                : 'text-muted hover:text-wld-ink hover:bg-[rgba(29,29,29,0.02)]'
+                ? 'text-wld-ink font-semibold bg-[rgb(var(--wld-ink-rgb)/0.08)]'
+                : 'text-muted hover:text-wld-ink hover:bg-[rgb(var(--wld-ink-rgb)/0.04)]'
               }
             `}
           >
