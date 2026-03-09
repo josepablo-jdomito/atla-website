@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries'
 import { FeaturedStrip } from '@/components/feed/FeaturedStrip'
+import { DiscoveryStrip } from '@/components/feed/DiscoveryStrip'
 import { CategoryChips } from '@/components/feed/CategoryChips'
 import { PostFeed } from '@/components/feed/PostFeed'
 import { NewsletterModule } from '@/components/modules/NewsletterModule'
@@ -32,6 +33,8 @@ export default async function HomePage() {
           Discover brands, share your honest reviews.
         </h1>
       </div>
+
+      <DiscoveryStrip categories={categories} />
 
       {/* Category chips */}
       {categories.length > 0 && <CategoryChips categories={categories} />}
