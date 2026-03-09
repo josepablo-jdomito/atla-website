@@ -54,8 +54,8 @@ export default async function ProjectPage({ params }: PageProps) {
     ? post.sponsorshipType === 'partnerContent'
       ? 'Partner Content'
       : post.sponsorName
-        ? `Sponsored by ${post.sponsorName}`
-        : post.sponsorLabel || 'Sponsored'
+        ? `Supported by ${post.sponsorName}`
+        : post.sponsorLabel || 'Supported'
     : null
 
   const heroUrl = urlFor(post.coverImage).width(1400).height(900).format('webp').quality(90).url()
@@ -96,6 +96,11 @@ export default async function ProjectPage({ params }: PageProps) {
       />
 
       <header className="max-w-article mx-auto mb-8 space-y-4">
+        {sponsorText && (
+          <span className="inline-block text-[12px] font-medium text-muted uppercase tracking-wider">
+            {sponsorText}
+          </span>
+        )}
         <Link
           href={`/category/${post.category.slug}`}
           className="text-[12px] font-medium uppercase tracking-wider text-wld-blue hover:underline"
@@ -116,11 +121,6 @@ export default async function ProjectPage({ params }: PageProps) {
             <span>{post.designerCredits.join(', ')}</span>
           ) : null}
         </div>
-        {sponsorText && (
-          <span className="inline-block text-[12px] font-medium text-muted uppercase tracking-wider">
-            {sponsorText}
-          </span>
-        )}
       </header>
 
       <div className="mb-10">
@@ -164,7 +164,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-[18px] font-semibold text-wld-ink mb-6">Related projects</h2>
+          <h2 className="text-[18px] font-semibold text-wld-ink mb-6">Continue reading</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((relatedPost) => (
               <PostCard key={relatedPost._id} post={relatedPost} />

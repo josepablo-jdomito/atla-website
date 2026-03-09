@@ -10,7 +10,8 @@ import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jso
 
 export const metadata: Metadata = {
   title: 'WeLoveDaily',
-  description: 'A curated space for the creative work that matters.',
+  description:
+    'The global platform for consumer brand design. Curated identities, packaging, rebrands, and brand strategy - for founders, CMOs, and creative directors.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://welovedaily.com'),
 }
 
@@ -69,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           {/* Main content */}
           <div className="flex-1 flex flex-col min-h-screen">
-            <main className="flex-1 pb-[72px] lg:pb-0">{children}</main>
+            <main className="flex-1 pb-[132px] lg:pb-0">{children}</main>
             <Footer />
           </div>
         </div>

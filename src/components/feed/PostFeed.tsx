@@ -108,7 +108,7 @@ export function PostFeed({
             disabled={isPending}
             className="px-6 py-3 text-[14px] font-medium text-wld-ink border border-border rounded-full transition-all duration-200 hover:border-wld-ink disabled:opacity-50"
           >
-            {isPending ? 'Loading...' : 'Load more'}
+            {isPending ? 'Loading projects...' : 'Load more ->'}
           </button>
         </div>
       )}

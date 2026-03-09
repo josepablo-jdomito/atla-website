@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://welovedaily.com'
 const SITE_NAME = 'WeLoveDaily'
-const DEFAULT_DESCRIPTION = 'A curated space for the creative work that matters.'
+const DEFAULT_DESCRIPTION =
+  'The global platform for consumer brand design. Curated identities, packaging, rebrands, and brand strategy - for founders, CMOs, and creative directors.'
 
 interface MetadataParams {
   title?: string
@@ -19,7 +20,7 @@ export function buildMetadata({
   ogImage,
   noIndex = false,
 }: MetadataParams = {}): Metadata {
-  const pageTitle = title ? `${title} — ${SITE_NAME}` : SITE_NAME
+  const pageTitle = title || SITE_NAME
   const url = `${SITE_URL}${path}`
   const image = ogImage || `${SITE_URL}/og-default.jpg`
 

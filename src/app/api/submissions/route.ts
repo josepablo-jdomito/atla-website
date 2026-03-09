@@ -38,6 +38,22 @@ function parseCsv(value: FormDataEntryValue | null): string[] {
     .filter(Boolean)
 }
 
+function parseCredits(value: FormDataEntryValue | null): { name: string; role: string; url?: string }[] {
+  if (!value || typeof value !== 'string') return []
+  return value
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [namePart, rolePart, urlPart] = line.split('-').map((part) => part.trim())
+      return {
+        name: namePart || line,
+        role: rolePart || 'Designer',
+        ...(urlPart ? { url: urlPart } : {}),
+      }
+    })
+}
+
 function toPortableText(description: string) {
   return [
     {
@@ -124,25 +140,34 @@ export async function POST(req: NextRequest) {
     const description = form.get('description')
     const studio = form.get('studio')
     const brandName = form.get('brandName')
+    const projectUrl = form.get('projectUrl')
+    const contactEmail = form.get('contactEmail')
     const categoryIds = form.getAll('categoryIds').filter((v): v is string => typeof v === 'string' && Boolean(v))
     const tags = parseCsv(form.get('tags'))
-    const designerCredits = parseCsv(form.get('designerCredits'))
+    const creditRows = parseCredits(form.get('designerCredits'))
+    const designerCredits = creditRows.map((item) => item.name)
     const imageFiles = form.getAll('images').filter((entry): entry is File => entry instanceof File && entry.size > 0)
 
     if (!title || typeof title !== 'string') {
-      return NextResponse.json({ error: 'Project title is required' }, { status: 400 })
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
     }
     if (!description || typeof description !== 'string') {
-      return NextResponse.json({ error: 'Description is required' }, { status: 400 })
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
     }
     if (!studio || typeof studio !== 'string') {
-      return NextResponse.json({ error: 'Studio is required' }, { status: 400 })
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
+    }
+    if (!contactEmail || typeof contactEmail !== 'string') {
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+      return NextResponse.json({ error: 'Enter a valid email address.' }, { status: 400 })
     }
     if (categoryIds.length === 0) {
-      return NextResponse.json({ error: 'At least one category is required' }, { status: 400 })
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
     }
     if (imageFiles.length === 0) {
-      return NextResponse.json({ error: 'At least one image is required' }, { status: 400 })
+      return NextResponse.json({ error: 'This field is required.' }, { status: 400 })
     }
     if (imageFiles.length > 20) {
       return NextResponse.json({ error: 'Maximum 20 images allowed' }, { status: 400 })
@@ -158,7 +183,7 @@ export async function POST(req: NextRequest) {
       }
       if (file.size > MAX_IMAGE_BYTES) {
         return NextResponse.json(
-          { error: 'Each image must be 10MB or smaller' },
+          { error: 'File exceeds 10MB. Compress and try again.' },
           { status: 400 }
         )
       }
@@ -209,12 +234,15 @@ export async function POST(req: NextRequest) {
       body: toPortableText(description),
       studio,
       ...(brandName && typeof brandName === 'string' ? { brandName } : {}),
+      ...(projectUrl && typeof projectUrl === 'string' ? { projectUrl } : {}),
+      contactEmail,
       designerCredits,
-      credits: designerCredits.map((name, index) => ({
+      credits: creditRows.map((row, index) => ({
         _type: 'object',
         _key: `designer-${index}`,
-        name,
-        role: 'Designer',
+        name: row.name,
+        role: row.role,
+        ...(row.url ? { url: row.url } : {}),
       })),
       tags,
       status: 'submitted',
@@ -238,6 +266,9 @@ export async function POST(req: NextRequest) {
       message: 'Project submitted for editorial review.',
     })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Submission failed' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Something went wrong. Try again or email us at studio@welovedaily.com.' },
+      { status: 500 }
+    )
   }
 }

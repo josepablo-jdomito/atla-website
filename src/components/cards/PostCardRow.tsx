@@ -22,8 +22,8 @@ export function PostCardRow({ post }: PostCardRowProps) {
     ? post.sponsorshipType === 'partnerContent'
       ? 'Partner Content'
       : post.sponsorName
-        ? `Sponsored by ${post.sponsorName}`
-        : post.sponsorLabel || 'Sponsored'
+        ? `Supported by ${post.sponsorName}`
+        : post.sponsorLabel || 'Supported'
     : null
 
   return (
@@ -69,11 +69,9 @@ export function PostCardRow({ post }: PostCardRowProps) {
           {post.excerpt}
         </p>
 
-        {post.brand && (
-          <span className="mt-1 text-[12px] text-muted block">
-            {post.brand.name}
-          </span>
-        )}
+        {post.studio && <span className="mt-1 text-[12px] text-muted block">By {post.studio}</span>}
+        {!post.studio && post.brand && <span className="mt-1 text-[12px] text-muted block">By {post.brand.name}</span>}
+        <span className="mt-1 text-[12px] text-wld-blue block">View project -&gt;</span>
       </div>
       <div className="self-start">
         <SaveButton projectId={post._id} />

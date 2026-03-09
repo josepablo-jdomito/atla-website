@@ -21,8 +21,8 @@ export function PostCard({ post, priority = false }: PostCardProps) {
     ? post.sponsorshipType === 'partnerContent'
       ? 'Partner Content'
       : post.sponsorName
-        ? `Sponsored by ${post.sponsorName}`
-        : post.sponsorLabel || 'Sponsored'
+        ? `Supported by ${post.sponsorName}`
+        : post.sponsorLabel || 'Supported'
     : null
 
   return (
@@ -55,19 +55,14 @@ export function PostCard({ post, priority = false }: PostCardProps) {
         <h3 className="font-primary text-[16px] leading-snug font-semibold text-wld-ink line-clamp-2">
           {post.title}
         </h3>
-        {post.studio && (
-          <p className="text-[12px] uppercase tracking-wider text-muted">
-            {post.studio}
-          </p>
-        )}
+        {post.studio && <p className="text-[12px] uppercase tracking-wider text-muted">By {post.studio}</p>}
         {!post.studio && post.brandName && (
-          <p className="text-[12px] uppercase tracking-wider text-muted">
-            {post.brandName}
-          </p>
+          <p className="text-[12px] uppercase tracking-wider text-muted">By {post.brandName}</p>
         )}
         <p className="text-[14px] leading-relaxed text-muted line-clamp-2">
           {post.excerpt}
         </p>
+        <p className="text-[13px] font-medium text-wld-blue">View project -&gt;</p>
       </div>
     </Link>
   )

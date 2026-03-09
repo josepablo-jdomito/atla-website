@@ -13,26 +13,6 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: 'Home',
-    href: '/',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
-        <path d="M9 21V12h6v9" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Search',
-    href: '/search',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8" />
-        <path d="M21 21l-4.35-4.35" />
-      </svg>
-    ),
-  },
-  {
     label: 'Projects',
     href: '/projects',
     icon: (
@@ -42,22 +22,11 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: 'Brands',
-    href: '/brands',
+    label: 'Categories',
+    href: '/categories',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
-        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Newsletter',
-    href: '/newsletter',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="M22 7l-10 7L2 7" />
+        <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z" />
       </svg>
     ),
   },
@@ -71,27 +40,13 @@ const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
-]
-
-const BOTTOM_ITEMS: NavItem[] = [
   {
-    label: 'Advertise',
-    href: '/advertise',
+    label: 'Newsletter',
+    href: '/newsletter',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-        <path d="M2 12l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    label: 'About',
-    href: '/about',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 16v-4M12 8h.01" />
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="M22 7l-10 7L2 7" />
       </svg>
     ),
   },
@@ -132,10 +87,7 @@ export function Sidebar() {
     localStorage.setItem('wld-sidebar', next ? 'collapsed' : 'expanded')
   }
 
-  const isActive = (href: string) => {
-    if (href === '/') return pathname === '/'
-    return pathname.startsWith(href)
-  }
+  const isActive = (href: string) => pathname.startsWith(href)
 
   return (
     <aside
@@ -147,7 +99,6 @@ export function Sidebar() {
         py-6
       `}
     >
-      {/* Logo + toggle */}
       <div className={`flex items-center mb-8 ${collapsed ? 'justify-center' : 'justify-between px-3'}`}>
         <Link href="/" aria-label="WeLoveDaily home">
           {collapsed ? (
@@ -172,12 +123,6 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* When collapsed, show toggle below logo */}
-      {collapsed && mounted && (
-        <div className="flex justify-center mb-4" />
-      )}
-
-      {/* Main nav */}
       <nav className="flex-1 space-y-1">
         {NAV_ITEMS.map((item) => (
           <Link
@@ -200,28 +145,16 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Bottom nav */}
-      <div className="space-y-1 pt-4 border-t border-border">
-        {BOTTOM_ITEMS.map((item) => (
+      {!collapsed && (
+        <div className="pt-4 border-t border-border">
           <Link
-            key={item.href}
-            href={item.href}
-            title={collapsed ? item.label : undefined}
-            className={`
-              flex items-center gap-3 py-2.5 rounded-lg text-[14px]
-              transition-colors duration-150
-              ${collapsed ? 'justify-center px-0' : 'px-3'}
-              ${isActive(item.href)
-                ? 'text-wld-ink font-semibold'
-                : 'text-muted hover:text-wld-ink'
-              }
-            `}
+            href="/newsletter"
+            className="w-full inline-flex items-center justify-center px-4 py-2.5 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
           >
-            <span className="w-6 h-6 shrink-0">{item.icon}</span>
-            {!collapsed && <span>{item.label}</span>}
+            Subscribe -&gt;
           </Link>
-        ))}
-      </div>
+        </div>
+      )}
     </aside>
   )
 }

@@ -20,8 +20,8 @@ export function PostCardLarge({ post }: PostCardLargeProps) {
     ? post.sponsorshipType === 'partnerContent'
       ? 'Partner Content'
       : post.sponsorName
-        ? `Sponsored by ${post.sponsorName}`
-        : post.sponsorLabel || 'Sponsored'
+        ? `Supported by ${post.sponsorName}`
+        : post.sponsorLabel || 'Supported'
     : null
 
   return (

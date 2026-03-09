@@ -67,7 +67,7 @@ export function SearchContent() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search projects, studios, designers, categories..."
+            placeholder="Search studios, brands, or topics"
             className="
               flex-1 px-4 py-3
               text-[15px] text-wld-ink bg-white
@@ -103,10 +103,8 @@ export function SearchContent() {
 
       {!isPending && hasSearched && !hasResults && (
         <div className="text-center py-16">
-          <p className="text-[16px] text-muted mb-2">
-            No results found for &ldquo;{initialQuery || query}&rdquo;
-          </p>
-          <p className="text-[14px] text-muted">Try a different search term or browse categories.</p>
+          <p className="text-[16px] text-muted mb-2">No results for &ldquo;{query}&rdquo;.</p>
+          <p className="text-[14px] text-muted">Try a studio name, brand, or design category.</p>
         </div>
       )}
 

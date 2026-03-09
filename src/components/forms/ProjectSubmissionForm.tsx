@@ -77,7 +77,7 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
       const payload = await response.json()
 
       if (!response.ok) {
-        setMessage(payload.error || 'Could not submit your project. Please try again.')
+        setMessage(payload.error || 'Something went wrong. Try again or email us at studio@welovedaily.com.')
         setMessageType('error')
         return
       }
@@ -89,8 +89,9 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
       if (hasTurnstile && turnstileWidgetIdRef.current && window.turnstile) {
         window.turnstile.reset(turnstileWidgetIdRef.current)
       }
-      setMessage('Submitted successfully. Your project is now in editorial review.')
+      setMessage('Received. We review every submission.')
       setMessageType('success')
+      window.location.href = '/submit/thanks'
     })
   }
 
@@ -122,20 +123,12 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         />
       )}
 
-      <input
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        className="hidden"
-        aria-hidden="true"
-      />
+      <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       <input type="hidden" name="turnstileToken" value={turnstileToken} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <label className="space-y-2 block">
-          <span className="text-[13px] font-medium uppercase tracking-wider text-muted">
-            Project title
-          </span>
+          <span className="text-[13px] font-medium text-wld-ink">Project name</span>
           <input
             name="title"
             required
@@ -145,7 +138,7 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         </label>
 
         <label className="space-y-2 block">
-          <span className="text-[13px] font-medium uppercase tracking-wider text-muted">Studio</span>
+          <span className="text-[13px] font-medium text-wld-ink">Studio or designer name</span>
           <input
             name="studio"
             required
@@ -155,59 +148,8 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         </label>
       </div>
 
-      <label className="space-y-2 block">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted">Brand name</span>
-        <input
-          name="brandName"
-          maxLength={120}
-          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
-        />
-      </label>
-
-      {hasTurnstile && (
-        <div className="space-y-2">
-          <span className="text-[13px] font-medium uppercase tracking-wider text-muted block">
-            Human verification
-          </span>
-          <div ref={turnstileContainerRef} />
-        </div>
-      )}
-
-      <label className="space-y-2 block">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted">Description</span>
-        <textarea
-          name="description"
-          required
-          rows={5}
-          maxLength={2000}
-          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
-        />
-      </label>
-
-      <label className="space-y-2 block">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted">
-          Designer credits
-        </span>
-        <input
-          name="designerCredits"
-          placeholder="Jane Doe, John Smith"
-          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
-        />
-      </label>
-
-      <label className="space-y-2 block">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted">Tags</span>
-        <input
-          name="tags"
-          placeholder="packaging, food, identity"
-          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
-        />
-      </label>
-
       <div className="space-y-3">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted block">
-          Categories
-        </span>
+        <span className="text-[13px] font-medium text-wld-ink block">Select a category</span>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => {
             const active = selectedCategoryIds.includes(category._id)
@@ -230,13 +172,53 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
       </div>
 
       <label className="space-y-2 block">
-        <span className="text-[13px] font-medium uppercase tracking-wider text-muted">
-          Images (hero + gallery)
+        <span className="text-[13px] font-medium text-wld-ink">Project description</span>
+        <textarea
+          name="description"
+          required
+          rows={5}
+          maxLength={2000}
+          placeholder="Describe the strategic context in 2-3 sentences. What problem did this solve? What makes it distinctive?"
+          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
+        />
+      </label>
+
+      <label className="space-y-2 block">
+        <span className="text-[13px] font-medium text-wld-ink">Link to case study or portfolio (optional)</span>
+        <input
+          name="projectUrl"
+          type="url"
+          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
+        />
+      </label>
+
+      <label className="space-y-2 block">
+        <span className="text-[13px] font-medium text-wld-ink">List all contributors: name, role, and URL where available.</span>
+        <textarea
+          name="designerCredits"
+          rows={3}
+          placeholder="Jane Doe - Design Director - https://example.com"
+          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
+        />
+      </label>
+
+      <label className="space-y-2 block">
+        <span className="text-[13px] font-medium text-wld-ink">Tags</span>
+        <input
+          name="tags"
+          placeholder="packaging, food, identity"
+          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
+        />
+      </label>
+
+      <label className="space-y-2 block">
+        <span className="text-[13px] font-medium text-wld-ink">
+          Upload project images (minimum 5, maximum 20). Minimum 2000px wide. JPG or PNG.
         </span>
         <input
           name="images"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           required
           onChange={(e) => setImageFiles(Array.from(e.target.files || []))}
@@ -244,10 +226,31 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         />
       </label>
 
+      <label className="space-y-2 block">
+        <span className="text-[13px] font-medium text-wld-ink">Email address for correspondence</span>
+        <input
+          name="contactEmail"
+          type="email"
+          required
+          className="w-full px-4 py-3 text-[15px] border border-border rounded-card bg-white focus:outline-none focus:border-wld-ink"
+        />
+      </label>
+
+      {hasTurnstile && (
+        <div className="space-y-2">
+          <span className="text-[13px] font-medium text-wld-ink block">Human verification</span>
+          <div ref={turnstileContainerRef} />
+        </div>
+      )}
+
       {message && (
         <p
           className={`text-[14px] ${
-            messageType === 'success' ? 'text-green-700' : messageType === 'error' ? 'text-red-700' : 'text-muted'
+            messageType === 'success'
+              ? 'text-green-700'
+              : messageType === 'error'
+                ? 'text-red-700'
+                : 'text-muted'
           }`}
         >
           {message}
@@ -259,7 +262,7 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         disabled={!canSubmit}
         className="px-6 py-3 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors disabled:opacity-50"
       >
-        {isPending ? 'Submitting...' : 'Submit project'}
+        {isPending ? 'Submitting...' : 'Submit for Review'}
       </button>
     </form>
   )

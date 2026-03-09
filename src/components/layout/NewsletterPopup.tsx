@@ -51,10 +51,10 @@ export function NewsletterPopup() {
           ×
         </button>
         <h3 className="font-display text-[24px] leading-tight text-wld-ink pr-8">
-          Subscribe to the Weekly Brand Breakdown
+          The Edit
         </h3>
         <p className="mt-2 text-[14px] text-muted">
-          Weekly curation of standout projects, strategic takes, and brand signals.
+          Curated work and sharp thinking, delivered weekly.
         </p>
         <div className="mt-4 flex items-center gap-2">
           <Link

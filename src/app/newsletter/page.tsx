@@ -1,9 +1,10 @@
+import Link from 'next/link'
 import { buildMetadata } from '@/lib/utils/metadata'
 
 export const metadata = buildMetadata({
-  title: 'Newsletter',
+  title: 'The Edit - Weekly Brand Design Newsletter',
   description:
-    'A weekly curation of the most compelling work in branding, design, and creative direction. Free, every Thursday.',
+    'A weekly letter for brand-literate operators. Curated work, sharp analysis, and one thing worth thinking about. Free. Published every week without fail.',
   path: '/newsletter',
 })
 
@@ -11,82 +12,85 @@ export default function NewsletterPage() {
   const substackUrl = process.env.NEXT_PUBLIC_SUBSTACK_URL || 'https://welovedaily.substack.com'
 
   return (
-    <div className="max-w-container mx-auto px-5 py-10">
-      {/* Header */}
-      <header className="max-w-article mx-auto text-center mb-12">
-        <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-4">
-          The welove newsletter
-        </h1>
-        <p className="text-[16px] leading-relaxed text-muted max-w-[480px] mx-auto">
-          A weekly curation of the most compelling work in branding, design, and creative direction.
-          No filler. No spam. Just the work worth your attention.
+    <div className="max-w-container mx-auto px-5 py-10 space-y-12">
+      <header className="max-w-article space-y-4">
+        <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink">The Edit</h1>
+        <p className="text-[16px] leading-relaxed text-muted">
+          A weekly letter for people building brands that matter. Curated work, sharp analysis,
+          and one thing worth thinking about before the week ends.
         </p>
+        <Link
+          href={substackUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center px-5 py-2.5 text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
+        >
+          Subscribe - it&apos;s free
+        </Link>
       </header>
 
-      {/* What you get */}
-      <section className="max-w-article mx-auto mb-12">
-        <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-6">
-          What to expect
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Curated picks',
-              description: '5–8 hand-selected projects, brands, and spaces from the week.',
-            },
-            {
-              title: 'Editorial takes',
-              description: 'What makes a brand work, what doesn\'t, and why it matters.',
-            },
-            {
-              title: 'Industry signals',
-              description: 'Trends, launches, and repositionings worth knowing about.',
-            },
-          ].map((item) => (
-            <div key={item.title} className="space-y-2">
-              <h3 className="text-[16px] font-semibold text-wld-ink">{item.title}</h3>
-              <p className="text-[14px] leading-relaxed text-muted">{item.description}</p>
-            </div>
-          ))}
+      <section className="max-w-container">
+        <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-5">What&apos;s Inside</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-5 rounded-card border border-border bg-white">
+            <h3 className="text-[18px] font-semibold text-wld-ink">The Feature</h3>
+            <p className="mt-2 text-[14px] text-muted leading-relaxed">
+              One brand, one studio, or one piece of work - analyzed with the context that most
+              coverage skips.
+            </p>
+          </div>
+          <div className="p-5 rounded-card border border-border bg-white">
+            <h3 className="text-[18px] font-semibold text-wld-ink">The Edit</h3>
+            <p className="mt-2 text-[14px] text-muted leading-relaxed">
+              Five works curated around a single theme. Selection is the editorial opinion.
+            </p>
+          </div>
+          <div className="p-5 rounded-card border border-border bg-white">
+            <h3 className="text-[18px] font-semibold text-wld-ink">One to Watch</h3>
+            <p className="mt-2 text-[14px] text-muted leading-relaxed">
+              A studio or designer building something worth knowing before everyone else does.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Substack embed */}
-      <section className="max-w-article mx-auto mb-12">
-        <div className="bg-wld-ink rounded-card p-8 md:p-12 text-center">
-          <h2 className="font-display text-[24px] md:text-[28px] leading-[1.15] text-white mb-3">
-            Join the curation
-          </h2>
-          <p className="text-[14px] text-[rgba(255,255,255,0.65)] mb-6 max-w-[360px] mx-auto">
-            Free. Every Thursday. Unsubscribe anytime.
-          </p>
-          <a
+      <section className="p-6 md:p-8 rounded-card border border-border bg-white">
+        <p className="text-[16px] text-wld-ink">
+          Read by founders, CMOs, and creative directors in 40+ countries.
+        </p>
+        <p className="mt-1 text-[15px] text-muted">25,000+ subscribers. Published every week without fail.</p>
+      </section>
+
+      <section className="max-w-[560px]">
+        <h2 className="text-[16px] font-semibold text-wld-ink mb-3">Join The Edit</h2>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="email"
+            placeholder="Your email address"
+            className="h-11 flex-1 px-4 text-[14px] border border-border rounded-full bg-white focus:outline-none focus:border-wld-ink"
+            aria-label="Your email address"
+          />
+          <Link
             href={substackUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="
-              inline-block px-6 py-3
-              text-[14px] font-medium
-              bg-white text-wld-ink rounded-full
-              hover:bg-wld-blue hover:text-white
-              transition-colors
-            "
+            className="h-11 px-6 inline-flex items-center justify-center text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
           >
-            Subscribe on Substack
-          </a>
+            Subscribe
+          </Link>
         </div>
+        <p className="mt-3 text-[12px] text-muted">Free. Weekly. Unsubscribe anytime.</p>
       </section>
 
-      {/* Past issues teaser */}
-      <section className="max-w-article mx-auto text-center">
-        <p className="text-[14px] text-muted mb-3">Want to see what you&rsquo;re signing up for?</p>
+      <section>
+        <h2 className="text-[13px] font-medium uppercase tracking-wider text-muted">Browse past issues</h2>
         <a
           href={substackUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[14px] font-medium text-wld-blue hover:underline"
+          className="mt-2 inline-block text-[14px] font-medium text-wld-blue hover:underline"
         >
-          Browse past issues &rarr;
+          View the archive -&gt;
         </a>
       </section>
     </div>
