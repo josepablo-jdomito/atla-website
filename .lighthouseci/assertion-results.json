@@ -1,0 +1,60 @@
+[
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0.85,
+    "values": [
+      0.85
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditProperty": "performance",
+    "auditId": "categories",
+    "level": "error",
+    "url": "http://127.0.0.1:3000/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.95,
+    "actual": 0.93,
+    "values": [
+      0.93
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditProperty": "best-practices",
+    "auditId": "categories",
+    "level": "error",
+    "url": "http://127.0.0.1:3000/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0.87,
+    "values": [
+      0.66,
+      0.87
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditProperty": "performance",
+    "auditId": "categories",
+    "level": "error",
+    "url": "http://127.0.0.1:3000/projects"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.95,
+    "actual": 0.93,
+    "values": [
+      0.93,
+      0.93
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditProperty": "best-practices",
+    "auditId": "categories",
+    "level": "error",
+    "url": "http://127.0.0.1:3000/projects"
+  }
+]
