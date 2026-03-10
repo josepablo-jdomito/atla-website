@@ -53,6 +53,16 @@ Database tables (PostgreSQL):
 - `users` — id (uuid), email (unique), password (hashed), name, created_at
 - `accounts`, `sessions`, `verification_tokens` — Auth.js adapter tables
 
+## Filtering Architecture
+All content pages (Homepage, Projects, Articles, Categories) now share the same filter UX:
+
+- **`FilterDrawer`** (`src/components/feed/FilterDrawer.tsx`) — slide-in panel with sort, content type, category, and tag filters. Accepts `hideTypeFilter` prop to hide the content type section on scoped pages.
+- **`FilteredFeed`** (`src/components/feed/FilteredFeed.tsx`) — reusable client component used by Projects, Articles, and Categories pages. Accepts `allPosts`, `categories`, `allTags`, `hideTypeFilter`, `defaultType`. Derives trending/most-saved sort orders client-side. Shows masonry grid or list view with paginated "Show more".
+- **`HomepageFeed`** (`src/components/feed/HomepageFeed.tsx`) — homepage-specific feed with featured tiles and separate trending/most-saved post arrays pre-fetched from Sanity.
+- **Projects page**: uses `projectsPageQuery` (scoped to `contentType==project`), `hideTypeFilter`, `defaultType="projects"`.
+- **Articles page**: uses `articlesPageQuery` (scoped to `contentType==article`), `hideTypeFilter`, `defaultType="articles"`.
+- **Categories page**: keeps the category cards grid at top + adds `FilteredFeed` below for all posts, using `categoriesPageQuery`.
+
 ## SEO & Accessibility
 A SquirrelScan audit was run and the following fixes were applied:
 - **Structured Data**: `articleJsonLd` now includes `author` (Organization) and uses a plain string URL for `image` (was ImageObject) — Structured Data score: 78 → 100

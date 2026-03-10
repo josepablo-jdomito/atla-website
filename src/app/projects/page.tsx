@@ -1,7 +1,6 @@
 import { client } from '@/lib/sanity/client'
-import { allProjectOnlyQuery, allCategoriesQuery } from '@/lib/sanity/queries'
-import { PostFeed } from '@/components/feed/PostFeed'
-import { CategoryChips } from '@/components/feed/CategoryChips'
+import { projectsPageQuery } from '@/lib/sanity/queries'
+import { FilteredFeed } from '@/components/feed/FilteredFeed'
 import { buildMetadata } from '@/lib/utils/metadata'
 import { collectionItemListJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import type { PostCard, Category } from '@/types'
@@ -16,21 +15,17 @@ export const metadata: Metadata = buildMetadata({
   path: '/projects',
 })
 
-const FILTER_LABELS = [
-  'All',
-  'Brand Identity',
-  'Packaging',
-  'Rebrand',
-  'Retail & Environmental',
-  'Brand Strategy',
-  'Concept Work',
-]
+interface ProjectsPageData {
+  posts: PostCard[]
+  categories: Category[]
+  allTags: string[]
+}
 
 export default async function ProjectsPage() {
-  const [projects, categories] = await Promise.all([
-    client.fetch<PostCard[]>(allProjectOnlyQuery),
-    client.fetch<Category[]>(allCategoriesQuery),
-  ])
+  const data = await client.fetch<ProjectsPageData>(projectsPageQuery)
+  const posts = data?.posts ?? []
+  const categories = data?.categories ?? []
+  const allTags = (data?.allTags ?? []).filter(Boolean).sort()
 
   return (
     <div className="max-w-container mx-auto px-5 py-10 space-y-8">
@@ -43,65 +38,38 @@ export default async function ProjectsPage() {
               description:
                 'Browse hundreds of curated brand identities, packaging systems, and rebrands.',
               path: '/projects',
-              itemPaths: projects.slice(0, 24).map((project) => `/projects/${project.slug}`),
-            })
+              itemPaths: posts.slice(0, 24).map((project) => `/projects/${project.slug}`),
+            }),
           ),
         }}
       />
 
       <header>
-        <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-2">Projects</h1>
+        <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-2">
+          Projects
+        </h1>
         <p className="text-[15px] text-muted max-w-[760px]">
-          Brand identities, packaging systems, and creative direction - curated from studios and
+          Brand identities, packaging systems, and creative direction — curated from studios and
           designers worldwide.
         </p>
       </header>
 
-      <section aria-labelledby="projects-filters-heading" className="space-y-5">
-        <h2 id="projects-filters-heading" className="text-[20px] font-semibold text-wld-ink">
-          Explore by focus
-        </h2>
-
-        <div className="flex flex-wrap items-center gap-2 py-1">
-          {FILTER_LABELS.map((label, i) => (
-            <span
-              key={label}
-              className={`px-4 py-2 text-[13px] font-medium rounded-full border ${
-                i === 0
-                  ? 'bg-wld-ink text-white border-wld-ink'
-                  : 'bg-white text-wld-ink border-border'
-              }`}
-            >
-              {label}
-            </span>
-          ))}
+      {posts.length > 0 ? (
+        <FilteredFeed
+          allPosts={posts}
+          categories={categories}
+          allTags={allTags}
+          hideTypeFilter
+          defaultType="projects"
+        />
+      ) : (
+        <div className="py-16 text-center">
+          <p className="text-[15px] text-wld-ink">Nothing here yet.</p>
+          <a href="/submit" className="text-[14px] text-wld-blue hover:underline">
+            Be the first to submit work. -&gt;
+          </a>
         </div>
-
-        {categories.length > 0 && <CategoryChips categories={categories} allHref="/projects" />}
-
-        <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
-          <span className="font-medium text-wld-ink">Sort by:</span>
-          <span>Recent</span>
-          <span>Most Viewed</span>
-          <span>Curated</span>
-        </div>
-      </section>
-
-      <section aria-labelledby="projects-results-heading">
-        <h2 id="projects-results-heading" className="text-[20px] font-semibold text-wld-ink mb-5">
-          All projects
-        </h2>
-        {projects.length > 0 ? (
-          <PostFeed initialPosts={projects} loadMoreMode="projectOnly" ctaFrequency={12} />
-        ) : (
-          <div className="py-16 text-center">
-            <p className="text-[15px] text-wld-ink">Nothing here yet.</p>
-            <a href="/submit" className="text-[14px] text-wld-blue hover:underline">
-              Be the first to submit work in this category. -&gt;
-            </a>
-          </div>
-        )}
-      </section>
+      )}
     </div>
   )
 }

@@ -61,6 +61,32 @@ export const allTagsQuery = groq`
   array::unique(*[_type == "post" && status == "published" && publishedAt <= now()].tags[])
 `
 
+const categoryProjection = groq`{
+  _id,
+  name,
+  "slug": slug.current,
+  description,
+  postCount
+}`
+
+export const projectsPageQuery = groq`{
+  "posts": *[${publishedFilter} && ${projectContentFilter}] | order(publishedAt desc) [0...120] ${postCardProjection},
+  "categories": *[_type == "category"] | order(order asc) ${categoryProjection},
+  "allTags": array::unique(*[${publishedFilter} && ${projectContentFilter}].tags[])
+}`
+
+export const articlesPageQuery = groq`{
+  "posts": *[${publishedFilter} && ${articleContentFilter}] | order(publishedAt desc) [0...120] ${postCardProjection},
+  "categories": *[_type == "category"] | order(order asc) ${categoryProjection},
+  "allTags": array::unique(*[${publishedFilter} && ${articleContentFilter}].tags[])
+}`
+
+export const categoriesPageQuery = groq`{
+  "categories": *[_type == "category"] | order(order asc) ${categoryProjection},
+  "posts": *[${publishedFilter}] | order(publishedAt desc) [0...120] ${postCardProjection},
+  "allTags": array::unique(*[${publishedFilter}].tags[])
+}`
+
 export const homepageQuery = groq`{
   "allTags": array::unique(*[_type == "post" && status == "published" && publishedAt <= now()].tags[]),
   "config": *[_type == "homepageConfig"][0] {

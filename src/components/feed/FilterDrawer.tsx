@@ -21,6 +21,7 @@ interface FilterDrawerProps {
   allTags: string[]
   current: FilterState
   resultCount: number
+  hideTypeFilter?: boolean
 }
 
 function CloseIcon() {
@@ -47,6 +48,7 @@ export function FilterDrawer({
   allTags,
   current,
   resultCount,
+  hideTypeFilter = false,
 }: FilterDrawerProps) {
   const [local, setLocal] = useState<FilterState>(current)
   const [tagSearch, setTagSearch] = useState('')
@@ -151,30 +153,32 @@ export function FilterDrawer({
               </div>
             </section>
 
-            <section>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-3">
-                Content type
-              </h3>
-              <div className="flex gap-2">
-                {([
-                  ['all', 'All'],
-                  ['projects', 'Projects'],
-                  ['articles', 'Articles'],
-                ] as const).map(([value, label]) => (
-                  <button
-                    key={value}
-                    onClick={() => setLocal(l => ({ ...l, type: value }))}
-                    className={`h-9 px-4 rounded-full border text-[13px] font-medium transition-colors ${
-                      local.type === value
-                        ? 'bg-wld-ink text-white border-wld-ink'
-                        : 'border-border text-wld-ink hover:border-wld-ink'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </section>
+            {!hideTypeFilter && (
+              <section>
+                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-3">
+                  Content type
+                </h3>
+                <div className="flex gap-2">
+                  {([
+                    ['all', 'All'],
+                    ['projects', 'Projects'],
+                    ['articles', 'Articles'],
+                  ] as const).map(([value, label]) => (
+                    <button
+                      key={value}
+                      onClick={() => setLocal(l => ({ ...l, type: value }))}
+                      className={`h-9 px-4 rounded-full border text-[13px] font-medium transition-colors ${
+                        local.type === value
+                          ? 'bg-wld-ink text-white border-wld-ink'
+                          : 'border-border text-wld-ink hover:border-wld-ink'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {categories.length > 0 && (
               <section>
