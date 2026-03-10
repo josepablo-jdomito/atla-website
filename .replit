@@ -32,3 +32,12 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+NEXT_PUBLIC_SANITY_PROJECT_ID = "5g3gom5x"
+NEXT_PUBLIC_SANITY_DATASET = "production"
+NEXT_PUBLIC_SITE_URL = "https://welovedaily.com"
+NEXT_PUBLIC_SITE_URL_PRODUCTION = "https://welovedaily.com"
+NEXT_PUBLIC_SUBSTACK_URL = "https://welovedaily.substack.com"
