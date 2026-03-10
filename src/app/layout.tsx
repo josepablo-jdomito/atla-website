@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
+import Script from 'next/script'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { BottomTabBar } from '@/components/layout/BottomTabBar'
 import { Footer } from '@/components/layout/Footer'
@@ -33,12 +34,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var saved=localStorage.getItem('wld-theme');var theme=(saved==='light'||saved==='dark')?saved:'light';document.documentElement.dataset.theme=theme;}catch(e){}})();`,
-          }}
-        />
         {/* Preconnect to Sanity CDN for faster image loads */}
         <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
@@ -50,19 +45,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        {/* Organization + WebSite structured data */}
+      </head>
+      <body className="min-h-screen bg-wld-paper">
+        {/*
+          Theme init: runs before React hydration to avoid flash of wrong theme.
+          Uses next/script beforeInteractive to bypass React's hydration reconciliation.
+        */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('wld-theme');var t=(s==='light'||s==='dark')?s:'light';document.documentElement.dataset.theme=t;}catch(e){}})();`,
+          }}
+        />
+
+        {/* Structured data — placed in body, which is valid per spec */}
         <script
-          suppressHydrationWarning
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
         />
         <script
-          suppressHydrationWarning
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(webSiteJsonLd()) }}
         />
-      </head>
-      <body className="min-h-screen bg-wld-paper">
+
         <GoogleAnalytics />
         <NewsletterPopup />
         <ThemeToggle className="fixed right-4 bottom-20 lg:bottom-6 z-50" />

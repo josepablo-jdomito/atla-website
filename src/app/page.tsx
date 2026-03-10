@@ -1,11 +1,10 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { client, urlFor } from '@/lib/sanity/client'
+import { client } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries'
 import { Logo } from '@/components/layout/Logo'
+import { HomepageFeed } from '@/components/feed/HomepageFeed'
 import { buildMetadata } from '@/lib/utils/metadata'
-import { splitPostsByContentType } from '@/lib/utils/contentType'
-import type { HomepageData, PostCard as PostCardType } from '@/types'
+import type { HomepageData } from '@/types'
 
 export const revalidate = 60
 export const metadata = buildMetadata({
@@ -19,7 +18,7 @@ const TRENDING_CHIPS = [
   'Trending',
   'New launches',
   'Ice cream social',
-  "Let\'s go to the beach",
+  "Let's go to the beach",
   'Sunglass season',
   'Be among the first to review',
 ]
@@ -49,12 +48,9 @@ function getCategoryLabel(name: string | undefined, slug: string): string {
 export default async function HomePage() {
   const data = await client.fetch<HomepageData>(homepageQuery)
   const latestPosts = data?.latestProjects ?? []
+  const trendingPosts = data?.trendingProjects ?? []
+  const mostSavedPosts = data?.mostSavedProjects ?? []
   const categories = data?.categories ?? []
-
-  const { articles, projects } = splitPostsByContentType(latestPosts)
-  const featuredArticle = articles[0] || null
-  const featuredProject = projects[0] || null
-  const feedPosts = latestPosts.filter((post) => post._id !== featuredArticle?._id && post._id !== featuredProject?._id)
 
   return (
     <div className="px-4 lg:px-8 py-4 lg:py-6 space-y-4 max-w-full">
@@ -68,32 +64,28 @@ export default async function HomePage() {
         </h1>
       </header>
 
+      {/* Trending chips + category links */}
       <section className="border-b border-border pb-3 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="relative overflow-x-auto no-scrollbar pr-6">
-            <div className="flex items-center gap-2 min-w-max">
-              {TRENDING_CHIPS.map((chip, index) => (
-                <Link
-                  key={chip}
-                  href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(chip)}`}
-                  className={`px-4 h-8 rounded-full border text-[12px] inline-flex items-center whitespace-nowrap ${
-                    index === 0
-                      ? 'bg-wld-ink text-white border-wld-ink'
-                      : 'bg-white text-wld-ink border-border hover:border-wld-ink'
-                  }`}
-                >
-                  {chip}
-                </Link>
-              ))}
-            </div>
-            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent" />
+        <div className="relative overflow-x-auto no-scrollbar pr-6">
+          <div className="flex items-center gap-2 min-w-max">
+            {TRENDING_CHIPS.map((chip, index) => (
+              <Link
+                key={chip}
+                href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(chip)}`}
+                className={`px-4 h-8 rounded-full border text-[12px] inline-flex items-center whitespace-nowrap ${
+                  index === 0
+                    ? 'bg-wld-ink text-white border-wld-ink'
+                    : 'bg-white text-wld-ink border-border hover:border-wld-ink'
+                }`}
+              >
+                {chip}
+              </Link>
+            ))}
           </div>
-
-          <div className="hidden md:flex items-center gap-2 shrink-0">
-            <button className="h-8 px-3 rounded-full border border-border text-[12px] bg-white">Filter</button>
-            <button className="h-8 px-3 rounded-full border border-border text-[12px] bg-white">Sort by Relevance</button>
-            <button className="h-8 px-3 rounded-full border border-border text-[12px] bg-white">View</button>
-          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent"
+          />
         </div>
 
         {categories.length > 0 && (
@@ -113,82 +105,22 @@ export default async function HomePage() {
                 )
               })}
             </div>
-            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent" />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent"
+            />
           </div>
         )}
         <p className="text-[11px] text-muted">Swipe for more tags</p>
       </section>
 
-      {(featuredArticle || featuredProject) && (
-        <section className={featuredArticle && featuredProject ? 'grid grid-cols-1 lg:grid-cols-2 gap-3' : 'grid grid-cols-1 gap-3'}>
-          {featuredArticle && <FeatureTile post={featuredArticle} label="Featured Article" priority />}
-          {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" />}
-        </section>
-      )}
-
-      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[170px]">
-        {feedPosts.slice(0, 24).map((post, index) => (
-          <MasonryTile key={post._id} post={post} large={index % 7 === 0 || index % 7 === 4} />
-        ))}
-      </section>
-
-      <div className="flex justify-center py-6">
-        <Link
-          href="/projects"
-          className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center"
-        >
-          Explore all projects and articles -&gt;
-        </Link>
-      </div>
+      {/* Feed with filter/sort/view controls */}
+      <HomepageFeed
+        latestPosts={latestPosts}
+        trendingPosts={trendingPosts}
+        mostSavedPosts={mostSavedPosts}
+        categories={categories}
+      />
     </div>
-  )
-}
-
-function FeatureTile({ post, label, priority = false }: { post: PostCardType; label: string; priority?: boolean }) {
-  const imageUrl = urlFor(post.coverImage).width(1200).height(720).format('webp').quality(78).url()
-
-  return (
-    <Link href={`/projects/${post.slug}`} className="group block relative rounded-[18px] overflow-hidden border border-border bg-card min-h-[280px]">
-      <Image
-        src={imageUrl}
-        alt={post.coverImage.alt || post.title}
-        fill
-        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-        sizes="(max-width: 1024px) 100vw, 50vw"
-        priority={priority}
-        loading={priority ? 'eager' : undefined}
-        placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
-        blurDataURL={post.coverImage.asset?.metadata?.lqip}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/55" />
-      <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
-        <p className="text-[11px] uppercase tracking-wider opacity-90">{label}</p>
-        <h2 className="text-[22px] md:text-[28px] leading-tight font-semibold mt-1 max-w-[90%]">{post.title}</h2>
-      </div>
-    </Link>
-  )
-}
-
-function MasonryTile({ post, large }: { post: PostCardType; large: boolean }) {
-  const imageUrl = urlFor(post.coverImage).width(900).height(700).format('webp').quality(82).url()
-
-  return (
-    <Link
-      href={`/projects/${post.slug}`}
-      className={`group relative rounded-[12px] overflow-hidden border border-border bg-card ${large ? 'row-span-2' : 'row-span-1'}`}
-    >
-      <Image
-        src={imageUrl}
-        alt={post.coverImage.alt && post.coverImage.alt !== 'Cover image placeholder.' ? post.coverImage.alt : post.title}
-        fill
-        className="object-cover"
-        sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-80 group-hover:opacity-100 transition-opacity" />
-      <div className="absolute left-3 right-3 bottom-3 text-white opacity-100 transition-opacity">
-        <p className="text-[11px] uppercase tracking-wider">{post.category.name}</p>
-        <p className="text-[14px] leading-snug font-medium mt-1 line-clamp-2">{post.title}</p>
-      </div>
-    </Link>
   )
 }
