@@ -50,6 +50,7 @@ export default async function HomePage() {
   const trendingPosts = data?.trendingProjects ?? []
   const mostSavedPosts = data?.mostSavedProjects ?? []
   const categories = data?.categories ?? []
+  const allTags = (data?.allTags ?? []).filter(Boolean).sort()
 
   return (
     <div className="px-4 lg:px-8 py-4 lg:py-6 space-y-4 max-w-full">
@@ -114,6 +115,7 @@ export default async function HomePage() {
         trendingPosts={trendingPosts}
         mostSavedPosts={mostSavedPosts}
         categories={categories}
+        allTags={allTags}
       />
     </div>
   )

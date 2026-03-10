@@ -109,6 +109,7 @@ export interface HomepageConfig {
 }
 
 export interface HomepageData {
+  allTags: string[]
   config: HomepageConfig
   categories: Category[]
   featuredProjects: PostCard[]

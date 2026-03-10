@@ -57,7 +57,12 @@ const projectContentFilter = groq`contentType == "project"`
 
 const trendingScore = groq`(coalesce(saveCount, 0) * 4 + coalesce(viewCount, 0))`
 
+export const allTagsQuery = groq`
+  array::unique(*[_type == "post" && status == "published" && publishedAt <= now()].tags[])
+`
+
 export const homepageQuery = groq`{
+  "allTags": array::unique(*[_type == "post" && status == "published" && publishedAt <= now()].tags[]),
   "config": *[_type == "homepageConfig"][0] {
     "featuredPost": featuredPost->${postCardProjection},
     "editorsPicks": editorsPicks[]->${postCardProjection},

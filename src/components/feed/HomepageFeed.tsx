@@ -1,29 +1,39 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/client'
 import { PostCardRow } from '@/components/cards/PostCardRow'
 import { isArticlePost, splitPostsByContentType } from '@/lib/utils/contentType'
 import { ArrowRight } from '@/components/ui/ArrowRight'
+import { FilterDrawer, type SortMode, type TypeFilter, type FilterState } from './FilterDrawer'
 import type { PostCard as PostCardType, Category } from '@/types'
 
-type SortMode = 'latest' | 'trending' | 'most-saved'
 type ViewMode = 'masonry' | 'list'
-type TypeFilter = 'all' | 'projects' | 'articles'
-
-const SORT_LABELS: Record<SortMode, string> = {
-  latest: 'Latest',
-  trending: 'Trending',
-  'most-saved': 'Most Saved',
-}
 
 interface HomepageFeedProps {
   latestPosts: PostCardType[]
   trendingPosts: PostCardType[]
   mostSavedPosts: PostCardType[]
   categories: Category[]
+  allTags: string[]
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
+  )
 }
 
 export function HomepageFeed({
@@ -31,292 +41,249 @@ export function HomepageFeed({
   trendingPosts,
   mostSavedPosts,
   categories,
+  allTags,
 }: HomepageFeedProps) {
-  const [sort, setSort] = useState<SortMode>('latest')
+  const [filters, setFilters] = useState<FilterState>({
+    sort: 'latest',
+    type: 'all',
+    category: null,
+    tags: [],
+  })
   const [viewMode, setViewMode] = useState<ViewMode>('masonry')
-  const [filterCategory, setFilterCategory] = useState<string | null>(null)
-  const [filterType, setFilterType] = useState<TypeFilter>('all')
-  const [showSortMenu, setShowSortMenu] = useState(false)
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
-
-  const sortRef = useRef<HTMLDivElement>(null)
-  const filterRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false)
-      }
-      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
-        setShowFilterMenu(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const basePosts =
-    sort === 'trending' ? trendingPosts : sort === 'most-saved' ? mostSavedPosts : latestPosts
+    filters.sort === 'trending'
+      ? trendingPosts
+      : filters.sort === 'most-saved'
+      ? mostSavedPosts
+      : latestPosts
 
   const { articles: latestArticles, projects: latestProjects } = splitPostsByContentType(latestPosts)
   const featuredArticle = latestArticles[0] ?? null
   const featuredProject = latestProjects[0] ?? null
 
-  let feedPosts = basePosts.filter(
-    (p) => p._id !== featuredArticle?._id && p._id !== featuredProject?._id
-  )
-
-  if (filterCategory) {
-    feedPosts = feedPosts.filter(
-      (p) =>
-        p.category.slug === filterCategory ||
-        p.categories?.some((c) => c.slug === filterCategory)
+  const feedPosts = useMemo(() => {
+    let posts = basePosts.filter(
+      p => p._id !== featuredArticle?._id && p._id !== featuredProject?._id
     )
+    if (filters.category) {
+      posts = posts.filter(
+        p =>
+          p.category.slug === filters.category ||
+          p.categories?.some(c => c.slug === filters.category)
+      )
+    }
+    if (filters.type === 'articles') {
+      posts = posts.filter(p => isArticlePost(p))
+    } else if (filters.type === 'projects') {
+      posts = posts.filter(p => !isArticlePost(p))
+    }
+    if (filters.tags.length > 0) {
+      posts = posts.filter(p =>
+        filters.tags.some(tag => p.tags?.includes(tag))
+      )
+    }
+    return posts
+  }, [basePosts, filters, featuredArticle, featuredProject])
+
+  const activeFilterCount =
+    (filters.category ? 1 : 0) +
+    (filters.type !== 'all' ? 1 : 0) +
+    filters.tags.length +
+    (filters.sort !== 'latest' ? 1 : 0)
+
+  const removeFilter = (key: keyof FilterState, value?: string) => {
+    setFilters(f => {
+      if (key === 'category') return { ...f, category: null }
+      if (key === 'type') return { ...f, type: 'all' }
+      if (key === 'sort') return { ...f, sort: 'latest' }
+      if (key === 'tags' && value) return { ...f, tags: f.tags.filter(t => t !== value) }
+      return f
+    })
   }
 
-  if (filterType === 'articles') {
-    feedPosts = feedPosts.filter((p) => isArticlePost(p))
-  } else if (filterType === 'projects') {
-    feedPosts = feedPosts.filter((p) => !isArticlePost(p))
-  }
+  const clearAll = () =>
+    setFilters({ sort: 'latest', type: 'all', category: null, tags: [] })
 
-  const activeFilterCount = (filterCategory ? 1 : 0) + (filterType !== 'all' ? 1 : 0)
-
-  const clearFilters = () => {
-    setFilterCategory(null)
-    setFilterType('all')
-  }
+  const categoryLabel = filters.category
+    ? categories.find(c => c.slug === filters.category)?.name ?? filters.category
+    : null
 
   return (
     <>
-      {/* Controls row */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2">
-          {activeFilterCount > 0 && (
-            <button
-              onClick={clearFilters}
-              className="h-8 px-3 rounded-full border border-wld-blue text-[12px] bg-blue-50 text-wld-blue inline-flex items-center gap-1.5"
-            >
-              Clear {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''}
-              <span aria-hidden>×</span>
-            </button>
-          )}
-        </div>
+      <FilterDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onApply={setFilters}
+        categories={categories}
+        allTags={allTags}
+        current={filters}
+        resultCount={feedPosts.length}
+      />
 
-        <div className="hidden md:flex items-center gap-2 shrink-0">
-          {/* Filter dropdown */}
-          <div ref={filterRef} className="relative">
+      <div className="space-y-4">
+        {/* Controls row */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            {/* Active filter chips */}
+            {filters.sort !== 'latest' && (
+              <Chip label={filters.sort === 'trending' ? 'Trending' : 'Most Saved'} onRemove={() => removeFilter('sort')} />
+            )}
+            {filters.type !== 'all' && (
+              <Chip label={filters.type === 'projects' ? 'Projects' : 'Articles'} onRemove={() => removeFilter('type')} />
+            )}
+            {categoryLabel && (
+              <Chip label={categoryLabel} onRemove={() => removeFilter('category')} />
+            )}
+            {filters.tags.map(tag => (
+              <Chip key={tag} label={tag} onRemove={() => removeFilter('tags', tag)} blue />
+            ))}
+            {activeFilterCount > 1 && (
+              <button
+                onClick={clearAll}
+                className="text-[12px] text-muted hover:text-wld-ink transition-colors whitespace-nowrap"
+              >
+                Clear all
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => {
-                setShowFilterMenu((v) => !v)
-                setShowSortMenu(false)
-              }}
-              className={`h-8 px-3 rounded-full border text-[12px] bg-white inline-flex items-center gap-1.5 transition-colors ${
+              onClick={() => setDrawerOpen(true)}
+              className={`h-8 px-3 rounded-full border text-[12px] inline-flex items-center gap-2 transition-colors ${
                 activeFilterCount > 0
-                  ? 'border-wld-blue text-wld-blue'
-                  : 'border-border text-wld-ink hover:border-wld-ink'
+                  ? 'border-wld-blue text-wld-blue bg-blue-50'
+                  : 'border-border text-wld-ink bg-white hover:border-wld-ink'
               }`}
             >
-              Filter
+              <FilterIcon />
+              Filters
               {activeFilterCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-wld-blue text-white text-[10px] flex items-center justify-center leading-none">
+                <span className="w-4 h-4 rounded-full bg-wld-blue text-white text-[10px] flex items-center justify-center leading-none font-medium">
                   {activeFilterCount}
                 </span>
               )}
             </button>
 
-            {showFilterMenu && (
-              <div className="absolute right-0 top-10 w-72 bg-white border border-border rounded-xl shadow-lg z-50 p-4 space-y-4">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">
-                    Type
-                  </p>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {(['all', 'projects', 'articles'] as TypeFilter[]).map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setFilterType(t)}
-                        className={`h-7 px-3 rounded-full text-[12px] border transition-colors ${
-                          filterType === t
-                            ? 'bg-wld-ink text-white border-wld-ink'
-                            : 'border-border text-wld-ink hover:border-wld-ink'
-                        }`}
-                      >
-                        {t === 'all' ? 'All' : t === 'projects' ? 'Projects' : 'Articles'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">
-                    Category
-                  </p>
-                  <div className="flex gap-1.5 flex-wrap">
-                    <button
-                      onClick={() => setFilterCategory(null)}
-                      className={`h-7 px-3 rounded-full text-[12px] border transition-colors ${
-                        !filterCategory
-                          ? 'bg-wld-ink text-white border-wld-ink'
-                          : 'border-border text-wld-ink hover:border-wld-ink'
-                      }`}
-                    >
-                      All
-                    </button>
-                    {categories.map((cat) => (
-                      <button
-                        key={cat._id}
-                        onClick={() =>
-                          setFilterCategory(cat.slug === filterCategory ? null : cat.slug)
-                        }
-                        className={`h-7 px-3 rounded-full text-[12px] border transition-colors ${
-                          filterCategory === cat.slug
-                            ? 'bg-wld-ink text-white border-wld-ink'
-                            : 'border-border text-wld-ink hover:border-wld-ink'
-                        }`}
-                      >
-                        {cat.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Sort dropdown */}
-          <div ref={sortRef} className="relative">
-            <button
-              onClick={() => {
-                setShowSortMenu((v) => !v)
-                setShowFilterMenu(false)
-              }}
-              className={`h-8 px-3 rounded-full border text-[12px] bg-white inline-flex items-center gap-1.5 transition-colors ${
-                sort !== 'latest'
-                  ? 'border-wld-blue text-wld-blue'
-                  : 'border-border text-wld-ink hover:border-wld-ink'
-              }`}
-            >
-              Sort: {SORT_LABELS[sort]}
-              <svg
-                className={`w-3 h-3 transition-transform ${showSortMenu ? 'rotate-180' : ''}`}
-                viewBox="0 0 12 12"
-                fill="currentColor"
+            <div className="flex items-center gap-1 h-8 px-2 rounded-full border border-border bg-white">
+              <button
+                onClick={() => setViewMode('masonry')}
+                aria-label="Masonry grid view"
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  viewMode === 'masonry' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
+                }`}
               >
-                <path d="M6 8L2 4h8L6 8z" />
-              </svg>
-            </button>
-
-            {showSortMenu && (
-              <div className="absolute right-0 top-10 w-44 bg-white border border-border rounded-xl shadow-lg z-50 overflow-hidden">
-                {(['latest', 'trending', 'most-saved'] as SortMode[]).map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => {
-                      setSort(s)
-                      setShowSortMenu(false)
-                    }}
-                    className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-wld-paper transition-colors ${
-                      sort === s ? 'text-wld-blue font-medium' : 'text-wld-ink'
-                    }`}
-                  >
-                    {SORT_LABELS[s]}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* View toggle */}
-          <div className="flex items-center gap-1 h-8 px-2 rounded-full border border-border bg-white">
-            <button
-              onClick={() => setViewMode('masonry')}
-              aria-label="Masonry grid view"
-              className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                viewMode === 'masonry' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
-              }`}
-            >
-              <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
-                <rect x="0" y="0" width="4.5" height="4.5" rx="0.75" />
-                <rect x="6.5" y="0" width="4.5" height="4.5" rx="0.75" />
-                <rect x="0" y="6.5" width="4.5" height="4.5" rx="0.75" />
-                <rect x="6.5" y="6.5" width="4.5" height="4.5" rx="0.75" />
-              </svg>
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              aria-label="List view"
-              className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                viewMode === 'list' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
-              }`}
-            >
-              <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
-                <rect x="0" y="0" width="11" height="2.25" rx="0.75" />
-                <rect x="0" y="4.375" width="11" height="2.25" rx="0.75" />
-                <rect x="0" y="8.75" width="11" height="2.25" rx="0.75" />
-              </svg>
-            </button>
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
+                  <rect x="0" y="0" width="4.5" height="4.5" rx="0.75" />
+                  <rect x="6.5" y="0" width="4.5" height="4.5" rx="0.75" />
+                  <rect x="0" y="6.5" width="4.5" height="4.5" rx="0.75" />
+                  <rect x="6.5" y="6.5" width="4.5" height="4.5" rx="0.75" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                aria-label="List view"
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  viewMode === 'list' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
+                }`}
+              >
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
+                  <rect x="0" y="0" width="11" height="2.25" rx="0.75" />
+                  <rect x="0" y="4.375" width="11" height="2.25" rx="0.75" />
+                  <rect x="0" y="8.75" width="11" height="2.25" rx="0.75" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Featured tiles — always from latestPosts */}
+        {(featuredArticle || featuredProject) && (
+          <section
+            className={
+              featuredArticle && featuredProject
+                ? 'grid grid-cols-1 lg:grid-cols-2 gap-3'
+                : 'grid grid-cols-1 gap-3'
+            }
+          >
+            {featuredArticle && <FeatureTile post={featuredArticle} label="Featured Article" priority />}
+            {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" />}
+          </section>
+        )}
+
+        {/* Feed */}
+        {feedPosts.length === 0 ? (
+          <div className="py-16 text-center space-y-3">
+            <p className="text-[15px] text-muted">No results match these filters.</p>
+            <button
+              onClick={clearAll}
+              className="text-[13px] text-wld-blue underline underline-offset-2"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : viewMode === 'list' ? (
+          <div className="space-y-1 divide-y divide-border">
+            {feedPosts.slice(0, 40).map(post => (
+              <PostCardRow key={post._id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[170px]">
+            {feedPosts.slice(0, 40).map((post, index) => (
+              <MasonryTile
+                key={post._id}
+                post={post}
+                large={index % 7 === 0 || index % 7 === 4}
+              />
+            ))}
+          </section>
+        )}
+
+        {feedPosts.length > 0 && (
+          <div className="flex justify-center py-6">
+            <Link
+              href="/projects"
+              className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center gap-2 transition-colors"
+            >
+              Explore all projects and articles
+              <ArrowRight />
+            </Link>
+          </div>
+        )}
       </div>
-
-      {/* Featured tiles — always from latestPosts */}
-      {(featuredArticle || featuredProject) && (
-        <section
-          className={
-            featuredArticle && featuredProject
-              ? 'grid grid-cols-1 lg:grid-cols-2 gap-3'
-              : 'grid grid-cols-1 gap-3'
-          }
-        >
-          {featuredArticle && (
-            <FeatureTile post={featuredArticle} label="Featured Article" priority />
-          )}
-          {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" />}
-        </section>
-      )}
-
-      {/* Feed */}
-      {feedPosts.length === 0 ? (
-        <div className="py-16 text-center space-y-3">
-          <p className="text-[15px] text-muted">No results match these filters.</p>
-          <button
-            onClick={clearFilters}
-            className="text-[13px] text-wld-blue underline underline-offset-2"
-          >
-            Clear filters
-          </button>
-        </div>
-      ) : viewMode === 'list' ? (
-        <div className="space-y-1 divide-y divide-border">
-          {feedPosts.slice(0, 40).map((post) => (
-            <PostCardRow key={post._id} post={post} />
-          ))}
-        </div>
-      ) : (
-        <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[170px]">
-          {feedPosts.slice(0, 40).map((post, index) => (
-            <MasonryTile
-              key={post._id}
-              post={post}
-              large={index % 7 === 0 || index % 7 === 4}
-            />
-          ))}
-        </section>
-      )}
-
-      {feedPosts.length > 0 && (
-        <div className="flex justify-center py-6">
-          <Link
-            href="/projects"
-            className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center gap-2 transition-colors"
-          >
-            Explore all projects and articles
-            <ArrowRight />
-          </Link>
-        </div>
-      )}
     </>
+  )
+}
+
+function Chip({
+  label,
+  onRemove,
+  blue = false,
+}: {
+  label: string
+  onRemove: () => void
+  blue?: boolean
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 h-7 pl-3 pr-2 rounded-full border text-[12px] font-medium ${
+        blue
+          ? 'bg-wld-blue/10 border-wld-blue text-wld-blue'
+          : 'bg-wld-paper border-border text-wld-ink'
+      }`}
+    >
+      {label}
+      <button
+        onClick={onRemove}
+        aria-label={`Remove ${label} filter`}
+        className="hover:opacity-70 transition-opacity"
+      >
+        <XIcon />
+      </button>
+    </span>
   )
 }
 

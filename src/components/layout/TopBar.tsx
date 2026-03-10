@@ -1,87 +1,22 @@
 'use client'
 
-import { Suspense, useState, useRef, useEffect } from 'react'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { Suspense, useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Logo } from './Logo'
+import { SearchModal } from '@/components/search/SearchModal'
 
 function SearchIcon() {
   return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="M21 21l-4.35-4.35" />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
     </svg>
-  )
-}
-
-function TopBarSearch() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [query, setQuery] = useState('')
-
-  useEffect(() => {
-    if (pathname === '/search') {
-      setQuery(searchParams.get('q') || '')
-    }
-  }, [pathname, searchParams])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const q = query.trim()
-    if (!q) {
-      router.push('/search')
-      inputRef.current?.focus()
-      return
-    }
-    router.push(`/search?q=${encodeURIComponent(q)}`)
-    inputRef.current?.blur()
-  }
-
-  return (
-    <form onSubmit={handleSubmit} role="search">
-      <label htmlFor="topbar-search" className="sr-only">
-        Search
-      </label>
-      <div className="flex items-center h-9 bg-white border border-border rounded-full overflow-hidden focus-within:border-wld-ink transition-colors group">
-        <button
-          type="submit"
-          aria-label="Submit search"
-          className="pl-3 pr-2 text-muted group-focus-within:text-wld-ink transition-colors shrink-0"
-        >
-          <SearchIcon />
-        </button>
-        <input
-          ref={inputRef}
-          id="topbar-search"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search studios, brands…"
-          className="h-9 w-36 md:w-48 pr-4 text-[13px] bg-transparent text-wld-ink placeholder:text-muted focus:outline-none"
-        />
-      </div>
-    </form>
   )
 }
 
 function TopBarLeft() {
   const pathname = usePathname()
-  const isHome = pathname === '/'
-
-  if (isHome) return <span className="lg:hidden" />
-
+  if (pathname === '/') return <span className="lg:hidden" />
   return (
     <div className="lg:hidden">
       <Link href="/" aria-label="WeLoveDaily home">
@@ -91,23 +26,50 @@ function TopBarLeft() {
   )
 }
 
-export function TopBar() {
-  return (
-    <header className="sticky top-0 z-30 bg-wld-paper/90 backdrop-blur-sm border-b border-border">
-      <div className="h-12 px-4 lg:px-8 flex items-center justify-between gap-4">
-        <Suspense fallback={<span className="lg:hidden" />}>
-          <TopBarLeft />
-        </Suspense>
-        <div className="hidden lg:block" />
+function SearchTrigger({ onClick }: { onClick: () => void }) {
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.key === '/' || (e.metaKey && e.key === 'k') || (e.ctrlKey && e.key === 'k')) {
+        e.preventDefault()
+        onClick()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClick])
 
-        <Suspense
-          fallback={
-            <div className="flex items-center h-9 w-[188px] bg-white border border-border rounded-full" />
-          }
-        >
-          <TopBarSearch />
-        </Suspense>
-      </div>
-    </header>
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Open search"
+      className="flex items-center gap-2.5 h-9 pl-3 pr-4 bg-white border border-border rounded-full text-muted hover:border-wld-ink hover:text-wld-ink transition-colors group"
+    >
+      <SearchIcon />
+      <span className="text-[13px] w-28 md:w-40 text-left">Search…</span>
+      <kbd className="hidden md:inline-flex items-center text-[10px] text-muted border border-border rounded px-1 py-0.5 font-mono group-hover:border-wld-ink transition-colors">/</kbd>
+    </button>
+  )
+}
+
+export function TopBar() {
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  return (
+    <>
+      <header className="sticky top-0 z-30 bg-wld-paper/90 backdrop-blur-sm border-b border-border">
+        <div className="h-12 px-4 lg:px-8 flex items-center justify-between gap-4">
+          <Suspense fallback={<span className="lg:hidden" />}>
+            <TopBarLeft />
+          </Suspense>
+          <div className="hidden lg:block" />
+          <SearchTrigger onClick={() => setSearchOpen(true)} />
+        </div>
+      </header>
+
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   )
 }
