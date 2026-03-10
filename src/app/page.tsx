@@ -111,7 +111,6 @@ export default async function HomePage() {
             />
           </div>
         )}
-        <p className="text-[11px] text-muted">Swipe for more tags</p>
       </section>
 
       {/* Feed with filter/sort/view controls */}

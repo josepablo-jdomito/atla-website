@@ -36,19 +36,17 @@ export function PostCardRow({ post }: PostCardRowProps) {
         transition-all duration-200
       "
     >
-      {/* Thumbnail */}
       <div className="w-[120px] h-[80px] sm:w-[160px] sm:h-[107px] rounded-lg overflow-hidden shrink-0 bg-card">
         <Image
           src={imageUrl}
           alt={post.coverImage.alt}
           width={160}
           height={107}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           {...(blurUrl ? { placeholder: 'blur', blurDataURL: blurUrl } : {})}
         />
       </div>
 
-      {/* Content */}
       <div className="flex-1 min-w-0 py-0.5">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue">
@@ -69,9 +67,8 @@ export function PostCardRow({ post }: PostCardRowProps) {
           {post.excerpt}
         </p>
 
-        {post.studio && <span className="mt-1 text-[12px] text-muted block">By {post.studio}</span>}
-        {!post.studio && post.brand && <span className="mt-1 text-[12px] text-muted block">By {post.brand.name}</span>}
-        <span className="mt-1 text-[12px] text-wld-blue block">View project -&gt;</span>
+        {post.studio && <span className="mt-1 text-[11px] uppercase tracking-wider text-muted block">By {post.studio}</span>}
+        {!post.studio && post.brand && <span className="mt-1 text-[11px] uppercase tracking-wider text-muted block">By {post.brand.name}</span>}
       </div>
       <div className="self-start">
         <SaveButton projectId={post._id} />

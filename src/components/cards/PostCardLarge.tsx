@@ -27,7 +27,7 @@ export function PostCardLarge({ post }: PostCardLargeProps) {
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[rgba(29,29,29,0.24)]"
+      className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:border-[rgba(29,29,29,0.18)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <Image
@@ -35,7 +35,7 @@ export function PostCardLarge({ post }: PostCardLargeProps) {
           alt={post.coverImage.alt || post.title}
           fill
           sizes="(max-width: 640px) 100vw, 50vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           priority
           placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
           blurDataURL={post.coverImage.asset?.metadata?.lqip}

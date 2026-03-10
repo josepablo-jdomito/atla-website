@@ -28,7 +28,7 @@ export function PostCard({ post, priority = false }: PostCardProps) {
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[rgba(29,29,29,0.24)]"
+      className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:border-[rgba(29,29,29,0.18)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <Image
@@ -36,7 +36,7 @@ export function PostCard({ post, priority = false }: PostCardProps) {
           alt={post.coverImage.alt || post.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           priority={priority}
           placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
           blurDataURL={post.coverImage.asset?.metadata?.lqip}
@@ -48,21 +48,20 @@ export function PostCard({ post, priority = false }: PostCardProps) {
         )}
         <SaveButton projectId={post._id} className="absolute top-3 right-3" />
       </div>
-      <div className="p-4 space-y-2">
-        <span className="text-[12px] font-medium uppercase tracking-wider text-wld-blue">
+      <div className="p-4 space-y-1.5">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue">
           {post.category.name}
         </span>
-        <p className="font-primary text-[16px] leading-snug font-semibold text-wld-ink line-clamp-2">
+        <p className="font-primary text-[15px] leading-snug font-semibold text-wld-ink line-clamp-2">
           {post.title}
         </p>
-        {post.studio && <p className="text-[12px] uppercase tracking-wider text-muted">By {post.studio}</p>}
+        {post.studio && <p className="text-[11px] uppercase tracking-wider text-muted">By {post.studio}</p>}
         {!post.studio && post.brandName && (
-          <p className="text-[12px] uppercase tracking-wider text-muted">By {post.brandName}</p>
+          <p className="text-[11px] uppercase tracking-wider text-muted">By {post.brandName}</p>
         )}
-        <p className="text-[14px] leading-relaxed text-muted line-clamp-2">
+        <p className="text-[13px] leading-relaxed text-muted line-clamp-2">
           {post.excerpt}
         </p>
-        <p className="text-[13px] font-medium text-wld-blue">View project -&gt;</p>
       </div>
     </Link>
   )

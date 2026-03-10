@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/client'
 import { PostCardRow } from '@/components/cards/PostCardRow'
 import { isArticlePost, splitPostsByContentType } from '@/lib/utils/contentType'
+import { ArrowRight } from '@/components/ui/ArrowRight'
 import type { PostCard as PostCardType, Category } from '@/types'
 
 type SortMode = 'latest' | 'trending' | 'most-saved'
@@ -308,9 +309,10 @@ export function HomepageFeed({
         <div className="flex justify-center py-6">
           <Link
             href="/projects"
-            className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center"
+            className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center gap-2 transition-colors"
           >
-            Explore all projects and articles &rarr;
+            Explore all projects and articles
+            <ArrowRight />
           </Link>
         </div>
       )}
@@ -332,23 +334,23 @@ function FeatureTile({
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="group block relative rounded-[18px] overflow-hidden border border-border bg-card min-h-[280px]"
+      className="group block relative rounded-[18px] overflow-hidden border border-border bg-card min-h-[400px]"
     >
       <Image
         src={imageUrl}
         alt={post.coverImage.alt || post.title}
         fill
-        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         sizes="(max-width: 1024px) 100vw, 50vw"
         priority={priority}
         loading={priority ? 'eager' : undefined}
         placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
         blurDataURL={post.coverImage.asset?.metadata?.lqip}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/55" />
-      <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
-        <p className="text-[11px] uppercase tracking-wider opacity-90">{label}</p>
-        <h2 className="text-[22px] md:text-[28px] leading-tight font-semibold mt-1 max-w-[90%]">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/70" />
+      <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+        <p className="text-[10px] uppercase tracking-widest font-medium opacity-80 mb-2">{label}</p>
+        <h2 className="text-[24px] md:text-[32px] leading-tight font-semibold max-w-[85%]">
           {post.title}
         </h2>
       </div>
