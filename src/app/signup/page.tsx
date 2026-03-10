@@ -43,26 +43,32 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-wld-paper px-4">
-      <div className="w-full max-w-sm">
-        <div className="flex justify-center mb-8">
+    <div className="min-h-[calc(100vh-44px)] flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-[360px]">
+
+        {/* Logo */}
+        <div className="flex justify-center mb-10">
           <Link href="/" aria-label="WeLoveDaily home">
-            <Logo className="h-6 w-auto text-wld-ink" />
+            <Logo className="h-5 w-auto text-wld-ink" />
           </Link>
         </div>
 
-        <h1 className="text-2xl font-semibold text-wld-ink text-center mb-2">Create account</h1>
-        <p className="text-sm text-muted text-center mb-8">Join WeLoveDaily for free</p>
+        {/* Heading */}
+        <div className="text-center mb-8">
+          <h1 className="font-display text-[28px] leading-tight text-wld-ink">Create account</h1>
+          <p className="mt-2 text-[13px] text-muted">Join WeLoveDaily — it&apos;s free</p>
+        </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-wld-ink mb-1.5">
+            <label htmlFor="name" className="block text-[12px] font-medium text-wld-ink mb-2">
               Name <span className="text-muted font-normal">(optional)</span>
             </label>
             <input
@@ -71,14 +77,14 @@ export default function SignupPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-wld-ink placeholder-muted focus:outline-none focus:ring-2 focus:ring-wld-blue/30 focus:border-wld-blue transition-colors"
+              className="w-full rounded-xl border border-border bg-wld-white px-4 py-3 text-[14px] text-wld-ink placeholder-muted focus:outline-none focus:border-[rgb(var(--wld-ink-rgb)/0.4)] transition-colors"
               placeholder="Your name"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-wld-ink mb-1.5">
-              Email
+            <label htmlFor="email" className="block text-[12px] font-medium text-wld-ink mb-2">
+              Email address
             </label>
             <input
               id="email"
@@ -87,13 +93,13 @@ export default function SignupPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-wld-ink placeholder-muted focus:outline-none focus:ring-2 focus:ring-wld-blue/30 focus:border-wld-blue transition-colors"
+              className="w-full rounded-xl border border-border bg-wld-white px-4 py-3 text-[14px] text-wld-ink placeholder-muted focus:outline-none focus:border-[rgb(var(--wld-ink-rgb)/0.4)] transition-colors"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-wld-ink mb-1.5">
+            <label htmlFor="password" className="block text-[12px] font-medium text-wld-ink mb-2">
               Password
             </label>
             <input
@@ -103,7 +109,7 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="new-password"
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-wld-ink placeholder-muted focus:outline-none focus:ring-2 focus:ring-wld-blue/30 focus:border-wld-blue transition-colors"
+              className="w-full rounded-xl border border-border bg-wld-white px-4 py-3 text-[14px] text-wld-ink placeholder-muted focus:outline-none focus:border-[rgb(var(--wld-ink-rgb)/0.4)] transition-colors"
               placeholder="At least 8 characters"
             />
           </div>
@@ -111,18 +117,21 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-wld-ink text-white text-sm font-medium py-2.5 px-4 hover:bg-wld-blue transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-full bg-wld-ink text-wld-paper text-[13px] font-medium py-3 px-4 hover:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed mt-2"
           >
-            {loading ? 'Creating account...' : 'Create account'}
+            {loading ? 'Creating account…' : 'Create account'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-muted">
-          Already have an account?{' '}
-          <Link href="/login" className="text-wld-ink font-medium hover:text-wld-blue transition-colors">
-            Sign in
-          </Link>
-        </p>
+        {/* Footer */}
+        <div className="mt-8 pt-6 border-t border-border text-center">
+          <p className="text-[13px] text-muted">
+            Already have an account?{' '}
+            <Link href="/login" className="text-wld-ink font-medium hover:text-wld-blue transition-colors underline underline-offset-2">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

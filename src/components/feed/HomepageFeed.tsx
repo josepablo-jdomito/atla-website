@@ -22,7 +22,7 @@ interface HomepageFeedProps {
 
 function FilterIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
     </svg>
   )
@@ -30,7 +30,7 @@ function FilterIcon() {
 
 function XIcon() {
   return (
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M18 6L6 18M6 6l12 12" />
     </svg>
   )
@@ -122,27 +122,26 @@ export function HomepageFeed({
         resultCount={feedPosts.length}
       />
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Controls row */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 pt-1">
           <div className="flex items-center gap-2 flex-wrap min-w-0">
-            {/* Active filter chips */}
             {filters.sort !== 'latest' && (
-              <Chip label={filters.sort === 'trending' ? 'Trending' : 'Most Saved'} onRemove={() => removeFilter('sort')} />
+              <FilterChip label={filters.sort === 'trending' ? 'Trending' : 'Most Saved'} onRemove={() => removeFilter('sort')} />
             )}
             {filters.type !== 'all' && (
-              <Chip label={filters.type === 'projects' ? 'Projects' : 'Articles'} onRemove={() => removeFilter('type')} />
+              <FilterChip label={filters.type === 'projects' ? 'Projects' : 'Articles'} onRemove={() => removeFilter('type')} />
             )}
             {categoryLabel && (
-              <Chip label={categoryLabel} onRemove={() => removeFilter('category')} />
+              <FilterChip label={categoryLabel} onRemove={() => removeFilter('category')} />
             )}
             {filters.tags.map(tag => (
-              <Chip key={tag} label={tag} onRemove={() => removeFilter('tags', tag)} blue />
+              <FilterChip key={tag} label={tag} onRemove={() => removeFilter('tags', tag)} blue />
             ))}
             {activeFilterCount > 1 && (
               <button
                 onClick={clearAll}
-                className="text-[12px] text-muted hover:text-wld-ink transition-colors whitespace-nowrap"
+                className="text-[11px] text-muted hover:text-wld-ink transition-colors"
               >
                 Clear all
               </button>
@@ -152,54 +151,55 @@ export function HomepageFeed({
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setDrawerOpen(true)}
-              className={`h-8 px-3 rounded-full border text-[12px] inline-flex items-center gap-2 transition-colors ${
+              className={`h-7 px-3 rounded-full border text-[11px] inline-flex items-center gap-1.5 transition-all ${
                 activeFilterCount > 0
-                  ? 'border-wld-blue text-wld-blue bg-blue-50'
-                  : 'border-border text-wld-ink bg-white hover:border-wld-ink'
+                  ? 'border-wld-blue text-wld-blue bg-wld-blue/5'
+                  : 'border-border text-muted hover:text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.25)]'
               }`}
             >
               <FilterIcon />
               Filters
               {activeFilterCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-wld-blue text-white text-[10px] flex items-center justify-center leading-none font-medium">
+                <span className="w-4 h-4 rounded-full bg-wld-blue text-white text-[9px] flex items-center justify-center font-medium">
                   {activeFilterCount}
                 </span>
               )}
             </button>
 
-            <div className="flex items-center gap-1 h-8 px-2 rounded-full border border-border bg-white">
+            {/* View toggle */}
+            <div className="flex items-center h-7 rounded-full border border-border overflow-hidden">
               <button
                 onClick={() => setViewMode('masonry')}
-                aria-label="Masonry grid view"
-                className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                  viewMode === 'masonry' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
+                aria-label="Grid view"
+                className={`w-8 h-full flex items-center justify-center transition-colors ${
+                  viewMode === 'masonry' ? 'bg-wld-ink text-wld-paper' : 'text-muted hover:text-wld-ink'
                 }`}
               >
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
-                  <rect x="0" y="0" width="4.5" height="4.5" rx="0.75" />
-                  <rect x="6.5" y="0" width="4.5" height="4.5" rx="0.75" />
-                  <rect x="0" y="6.5" width="4.5" height="4.5" rx="0.75" />
-                  <rect x="6.5" y="6.5" width="4.5" height="4.5" rx="0.75" />
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+                  <rect x="0" y="0" width="4" height="4" rx="0.5" />
+                  <rect x="6" y="0" width="4" height="4" rx="0.5" />
+                  <rect x="0" y="6" width="4" height="4" rx="0.5" />
+                  <rect x="6" y="6" width="4" height="4" rx="0.5" />
                 </svg>
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 aria-label="List view"
-                className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                  viewMode === 'list' ? 'bg-wld-ink text-white' : 'text-muted hover:text-wld-ink'
+                className={`w-8 h-full flex items-center justify-center transition-colors border-l border-border ${
+                  viewMode === 'list' ? 'bg-wld-ink text-wld-paper' : 'text-muted hover:text-wld-ink'
                 }`}
               >
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
-                  <rect x="0" y="0" width="11" height="2.25" rx="0.75" />
-                  <rect x="0" y="4.375" width="11" height="2.25" rx="0.75" />
-                  <rect x="0" y="8.75" width="11" height="2.25" rx="0.75" />
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="currentColor">
+                  <rect x="0" y="0" width="10" height="1.5" rx="0.5" />
+                  <rect x="0" y="3.25" width="10" height="1.5" rx="0.5" />
+                  <rect x="0" y="6.5" width="10" height="1.5" rx="0.5" />
                 </svg>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Featured tiles — always from latestPosts */}
+        {/* Featured tiles */}
         {(featuredArticle || featuredProject) && (
           <section
             className={
@@ -215,38 +215,39 @@ export function HomepageFeed({
 
         {/* Feed */}
         {feedPosts.length === 0 ? (
-          <div className="py-16 text-center space-y-3">
-            <p className="text-[15px] text-muted">No results match these filters.</p>
+          <div className="py-20 text-center space-y-4">
+            <p className="text-[14px] text-muted">No results match these filters.</p>
             <button
               onClick={clearAll}
-              className="text-[13px] text-wld-blue underline underline-offset-2"
+              className="text-[13px] text-wld-ink underline underline-offset-4"
             >
               Clear all filters
             </button>
           </div>
         ) : viewMode === 'list' ? (
-          <div className="space-y-1 divide-y divide-border">
+          <div className="divide-y divide-border">
             {feedPosts.slice(0, 40).map(post => (
               <PostCardRow key={post._id} post={post} />
             ))}
           </div>
         ) : (
-          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[170px]">
+          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-[150px] md:auto-rows-[175px]">
             {feedPosts.slice(0, 40).map((post, index) => (
               <MasonryTile
                 key={post._id}
                 post={post}
                 large={index % 7 === 0 || index % 7 === 4}
+                index={index}
               />
             ))}
           </section>
         )}
 
         {feedPosts.length > 0 && (
-          <div className="flex justify-center py-6">
+          <div className="flex justify-center py-4">
             <Link
               href="/projects"
-              className="h-10 px-5 rounded-full border border-border text-[14px] text-wld-ink hover:border-wld-ink inline-flex items-center gap-2 transition-colors"
+              className="h-10 px-6 rounded-full border border-border text-[13px] text-wld-ink hover:border-wld-ink hover:bg-wld-white inline-flex items-center gap-2 transition-all"
             >
               Explore all projects and articles
               <ArrowRight />
@@ -258,7 +259,7 @@ export function HomepageFeed({
   )
 }
 
-function Chip({
+function FilterChip({
   label,
   onRemove,
   blue = false,
@@ -269,17 +270,17 @@ function Chip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 h-7 pl-3 pr-2 rounded-full border text-[12px] font-medium ${
+      className={`inline-flex items-center gap-1.5 h-6 pl-2.5 pr-1.5 rounded-full border text-[11px] font-medium ${
         blue
-          ? 'bg-wld-blue/10 border-wld-blue text-wld-blue'
-          : 'bg-wld-paper border-border text-wld-ink'
+          ? 'bg-wld-blue/8 border-wld-blue/30 text-wld-blue'
+          : 'bg-wld-white border-border text-wld-ink'
       }`}
     >
       {label}
       <button
         onClick={onRemove}
         aria-label={`Remove ${label} filter`}
-        className="hover:opacity-70 transition-opacity"
+        className="opacity-50 hover:opacity-100 transition-opacity"
       >
         <XIcon />
       </button>
@@ -296,28 +297,41 @@ function FeatureTile({
   label: string
   priority?: boolean
 }) {
-  const imageUrl = urlFor(post.coverImage).width(1200).height(720).format('webp').quality(78).url()
+  const imageUrl = urlFor(post.coverImage).width(1200).height(800).format('webp').quality(82).url()
 
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="group block relative rounded-[18px] overflow-hidden border border-border bg-card min-h-[400px]"
+      className="group block relative rounded-card-lg overflow-hidden bg-card"
+      style={{ minHeight: 420 }}
     >
       <Image
         src={imageUrl}
         alt={post.coverImage.alt || post.title}
         fill
-        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        className="object-cover card-image-zoom"
         sizes="(max-width: 1024px) 100vw, 50vw"
         priority={priority}
         loading={priority ? 'eager' : undefined}
         placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
         blurDataURL={post.coverImage.asset?.metadata?.lqip}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/70" />
-      <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-        <p className="text-[10px] uppercase tracking-widest font-medium opacity-80 mb-2">{label}</p>
-        <h2 className="text-[24px] md:text-[32px] leading-tight font-semibold max-w-[85%]">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/75" />
+
+      {/* Top label */}
+      <div className="absolute top-4 left-4">
+        <span className="inline-flex items-center h-6 px-3 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-[10px] font-medium uppercase tracking-widest text-white/90">
+          {label}
+        </span>
+      </div>
+
+      {/* Bottom content */}
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <p className="text-[11px] font-medium uppercase tracking-widest text-white/70 mb-2">
+          {post.category.name}
+        </p>
+        <h2 className="font-display text-[22px] md:text-[28px] leading-tight text-white max-w-[85%] group-hover:opacity-90 transition-opacity">
           {post.title}
         </h2>
       </div>
@@ -325,13 +339,13 @@ function FeatureTile({
   )
 }
 
-function MasonryTile({ post, large }: { post: PostCardType; large: boolean }) {
+function MasonryTile({ post, large, index }: { post: PostCardType; large: boolean; index: number }) {
   const imageUrl = urlFor(post.coverImage).width(900).height(700).format('webp').quality(82).url()
 
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className={`group relative rounded-[12px] overflow-hidden border border-border bg-card ${
+      className={`group relative rounded-card overflow-hidden bg-card ${
         large ? 'row-span-2' : 'row-span-1'
       }`}
     >
@@ -343,13 +357,20 @@ function MasonryTile({ post, large }: { post: PostCardType; large: boolean }) {
             : post.title
         }
         fill
-        className="object-cover"
+        className="object-cover card-image-zoom"
         sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-80 group-hover:opacity-100 transition-opacity" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/65 opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Text */}
       <div className="absolute left-3 right-3 bottom-3 text-white">
-        <p className="text-[11px] uppercase tracking-wider">{post.category.name}</p>
-        <p className="text-[14px] leading-snug font-medium mt-1 line-clamp-2">{post.title}</p>
+        <p className="text-[9px] font-medium uppercase tracking-widest text-white/70 mb-0.5">
+          {post.category.name}
+        </p>
+        <p className={`leading-snug font-medium ${large ? 'text-[14px]' : 'text-[12px]'} line-clamp-2`}>
+          {post.title}
+        </p>
       </div>
     </Link>
   )

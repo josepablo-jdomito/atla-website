@@ -13,7 +13,7 @@ export function PostCard({ post, priority = false }: PostCardProps) {
   const imageUrl = buildSanityImageUrl(post.coverImage, {
     width: 600,
     height: 750,
-    quality: 85,
+    quality: 88,
     format: 'webp',
   })
 
@@ -25,43 +25,57 @@ export function PostCard({ post, priority = false }: PostCardProps) {
         : post.sponsorLabel || 'Supported'
     : null
 
+  const byline = post.studio || post.brandName
+
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="group block bg-wld-white border border-border rounded-card overflow-hidden transition-all duration-200 ease-out hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:border-[rgba(29,29,29,0.18)]"
+      className="group block bg-wld-white border border-border rounded-card overflow-hidden hover:shadow-card-hover hover:border-[rgb(var(--wld-ink-rgb)/0.15)] transition-all duration-300 ease-spring"
     >
-      <div className="relative aspect-[4/5] overflow-hidden">
+      {/* Image */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-card">
         <Image
           src={imageUrl}
           alt={post.coverImage.alt || post.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="object-cover card-image-zoom"
           priority={priority}
           placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
           blurDataURL={post.coverImage.asset?.metadata?.lqip}
         />
         {sponsorText && (
-          <span className="absolute top-3 left-3 px-2 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-wld-white text-muted rounded-full">
+          <span className="absolute top-3 left-3 px-2.5 py-1 text-[9px] font-medium tracking-widest uppercase bg-wld-white/90 text-muted rounded-full backdrop-blur-sm">
             {sponsorText}
           </span>
         )}
-        <SaveButton projectId={post._id} className="absolute top-3 right-3" />
+        <div className="absolute top-3 right-3">
+          <SaveButton projectId={post._id} />
+        </div>
       </div>
-      <div className="p-4 space-y-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue">
-          {post.category.name}
-        </span>
-        <p className="font-primary text-[15px] leading-snug font-semibold text-wld-ink line-clamp-2">
+
+      {/* Content */}
+      <div className="p-4 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[10px] font-medium uppercase tracking-widest text-wld-blue">
+            {post.category.name}
+          </span>
+          {byline && (
+            <span className="text-[10px] uppercase tracking-wider text-muted truncate">
+              {byline}
+            </span>
+          )}
+        </div>
+
+        <p className="font-display text-[15px] leading-snug text-wld-ink line-clamp-2 group-hover:text-wld-blue transition-colors">
           {post.title}
         </p>
-        {post.studio && <p className="text-[11px] uppercase tracking-wider text-muted">By {post.studio}</p>}
-        {!post.studio && post.brandName && (
-          <p className="text-[11px] uppercase tracking-wider text-muted">By {post.brandName}</p>
+
+        {post.excerpt && (
+          <p className="text-[12px] leading-relaxed text-muted line-clamp-2">
+            {post.excerpt}
+          </p>
         )}
-        <p className="text-[13px] leading-relaxed text-muted line-clamp-2">
-          {post.excerpt}
-        </p>
       </div>
     </Link>
   )

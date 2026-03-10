@@ -3,61 +3,89 @@ import Link from 'next/link'
 export function Footer() {
   return (
     <footer className="border-t border-border bg-wld-paper">
-      <div className="max-w-container mx-auto px-5 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div>
-            <h3 className="font-display text-[24px] leading-tight text-wld-ink">WeLoveDaily</h3>
-            <p className="mt-3 text-[14px] text-muted max-w-[280px]">
-              The global platform for consumer brand design.
+      <div className="max-w-container mx-auto px-5 lg:px-8 py-16 lg:py-20">
+
+        {/* Top row */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+
+          {/* Brand */}
+          <div className="md:col-span-4">
+            <p className="font-display text-[28px] leading-none text-wld-ink mb-4">WeLoveDaily</p>
+            <p className="text-[13px] text-muted leading-relaxed max-w-[260px]">
+              The global platform for consumer brand design. Curated identities, packaging, and brand strategy.
             </p>
           </div>
 
-          <div>
-            <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-4">Navigation</h4>
-            <div className="space-y-2.5">
-              <Link href="/projects" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Projects</Link>
-              <Link href="/articles" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Articles</Link>
-              <Link href="/categories" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Categories</Link>
-              <Link href="/submit" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Submit</Link>
-              <Link href="/newsletter" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Newsletter</Link>
-              <Link href="/faqs" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">FAQs</Link>
-              <Link href="/about" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">About</Link>
-              <Link href="/careers" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Careers</Link>
+          {/* Nav */}
+          <div className="md:col-span-2">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-muted mb-5">Explore</p>
+            <div className="space-y-3">
+              {[
+                ['Projects', '/projects'],
+                ['Articles', '/articles'],
+                ['Categories', '/categories'],
+                ['Submit', '/submit'],
+              ].map(([label, href]) => (
+                <Link key={href} href={href} className="block text-[13px] text-wld-ink hover:text-wld-blue transition-colors">
+                  {label}
+                </Link>
+              ))}
             </div>
           </div>
 
-          <div>
-            <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-4">The Edit</h4>
-            <p className="text-[14px] text-muted">The Edit arrives every week.</p>
-            <p className="mt-1 text-[14px] text-muted">Curated work. Sharp thinking. No noise.</p>
-            <form action="/newsletter" method="GET" className="mt-4 flex flex-col sm:flex-row gap-2 w-full min-w-0">
+          <div className="md:col-span-2">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-muted mb-5">Company</p>
+            <div className="space-y-3">
+              {[
+                ['About', '/about'],
+                ['Newsletter', '/newsletter'],
+                ['FAQs', '/faqs'],
+                ['Careers', '/careers'],
+                ['Advertise', '/advertise'],
+              ].map(([label, href]) => (
+                <Link key={href} href={href} className="block text-[13px] text-wld-ink hover:text-wld-blue transition-colors">
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div className="md:col-span-4">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-muted mb-5">The Edit — Weekly</p>
+            <p className="text-[13px] text-muted leading-relaxed mb-5">
+              Curated brand work. Sharp thinking. No noise.
+              Arrives every week.
+            </p>
+            <form action="/newsletter" method="GET" className="space-y-2">
               <input
                 type="email"
                 name="email"
-                placeholder="Your email address"
-                className="h-10 px-4 text-[14px] border border-border rounded-full bg-white focus:outline-none focus:border-wld-ink min-w-0 w-full"
+                placeholder="your@email.com"
+                className="w-full h-10 px-4 text-[13px] border border-border rounded-full bg-wld-white text-wld-ink placeholder-muted focus:outline-none focus:border-[rgb(var(--wld-ink-rgb)/0.4)] transition-colors"
                 aria-label="Your email address"
                 required
               />
               <button
                 type="submit"
-                className="h-10 px-5 shrink-0 inline-flex items-center justify-center text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
+                className="w-full h-10 inline-flex items-center justify-center text-[13px] font-medium rounded-full bg-wld-ink text-wld-paper hover:opacity-80 transition-opacity"
               >
-                Subscribe
+                Subscribe to The Edit
               </button>
             </form>
           </div>
         </div>
 
-        <div className="mt-14 pt-6 border-t border-border flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <p className="text-[13px] text-muted">© 2026 WeLoveDaily. An Atla* Group publication.</p>
-          <p className="text-[13px] text-muted">
-            <Link href="/privacy" className="hover:text-wld-ink transition-colors">Privacy Policy</Link>
-            {' '}·{' '}
-            <Link href="/cookies" className="hover:text-wld-ink transition-colors">Cookie Policy</Link>
-            {' '}·{' '}
-            <Link href="/terms" className="hover:text-wld-ink transition-colors">Terms of Use</Link>
-          </p>
+        {/* Bottom bar */}
+        <div className="mt-16 pt-6 border-t border-border flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <p className="text-[11px] text-muted">© 2026 WeLoveDaily. An Atla* Group publication.</p>
+          <div className="flex items-center gap-4">
+            {[['Privacy', '/privacy'], ['Cookies', '/cookies'], ['Terms', '/terms']].map(([label, href]) => (
+              <Link key={href} href={href} className="text-[11px] text-muted hover:text-wld-ink transition-colors">
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

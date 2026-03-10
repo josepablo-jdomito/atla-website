@@ -29,48 +29,47 @@ export function PostCardRow({ post }: PostCardRowProps) {
   return (
     <Link
       href={`/projects/${post.slug}`}
-      className="
-        group flex gap-4 p-3 rounded-card
-        border border-transparent
-        hover:border-border hover:bg-white
-        transition-all duration-200
-      "
+      className="group flex gap-5 py-4 hover:bg-wld-white rounded-xl px-3 -mx-3 transition-all duration-200"
     >
-      <div className="w-[120px] h-[80px] sm:w-[160px] sm:h-[107px] rounded-lg overflow-hidden shrink-0 bg-card">
+      {/* Thumbnail */}
+      <div className="w-[100px] h-[70px] sm:w-[130px] sm:h-[90px] rounded-lg overflow-hidden shrink-0 bg-card">
         <Image
           src={imageUrl}
           alt={post.coverImage.alt}
           width={160}
           height={107}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="w-full h-full object-cover card-image-zoom"
           {...(blurUrl ? { placeholder: 'blur', blurDataURL: blurUrl } : {})}
         />
       </div>
 
-      <div className="flex-1 min-w-0 py-0.5">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue">
+      {/* Text */}
+      <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-[10px] font-medium uppercase tracking-widest text-wld-blue">
             {post.category.name}
           </span>
           {sponsorText && (
-            <span className="text-[10px] font-medium uppercase tracking-wider text-muted">
-              {sponsorText}
-            </span>
+            <span className="text-[10px] text-muted">· {sponsorText}</span>
           )}
         </div>
 
-        <p className="text-[15px] font-semibold text-wld-ink leading-snug line-clamp-1 group-hover:text-wld-blue transition-colors">
+        <p className="font-display text-[15px] leading-snug text-wld-ink line-clamp-1 group-hover:text-wld-blue transition-colors">
           {post.title}
         </p>
 
-        <p className="mt-1 text-[13px] text-muted leading-relaxed line-clamp-2 hidden sm:block">
+        <p className="mt-1.5 text-[12px] text-muted leading-relaxed line-clamp-2 hidden sm:block">
           {post.excerpt}
         </p>
 
-        {post.studio && <span className="mt-1 text-[11px] uppercase tracking-wider text-muted block">By {post.studio}</span>}
-        {!post.studio && post.brand && <span className="mt-1 text-[11px] uppercase tracking-wider text-muted block">By {post.brand.name}</span>}
+        {(post.studio || (post as any).brand?.name) && (
+          <span className="mt-1.5 text-[10px] uppercase tracking-wider text-muted">
+            By {post.studio || (post as any).brand?.name}
+          </span>
+        )}
       </div>
-      <div className="self-start">
+
+      <div className="self-center shrink-0">
         <SaveButton projectId={post._id} />
       </div>
     </Link>

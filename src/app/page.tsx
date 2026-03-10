@@ -14,12 +14,12 @@ export const metadata = buildMetadata({
 })
 
 const TRENDING_CHIPS = [
-  'Trending',
-  'New launches',
-  'Ice cream social',
-  "Let's go to the beach",
-  'Sunglass season',
-  'Be among the first to review',
+  { label: 'Trending', href: '/search?q=trending', active: true },
+  { label: 'New launches', href: '/search?q=new+launches' },
+  { label: 'Ice cream social', href: '/search?q=ice+cream+social' },
+  { label: "Let's go to the beach", href: '/search?q=beach' },
+  { label: 'Sunglass season', href: '/search?q=sunglass+season' },
+  { label: 'Be among the first to review', href: '/search?q=first+to+review' },
 ]
 
 const CATEGORY_NAME_BY_SLUG: Record<string, string> = {
@@ -53,40 +53,45 @@ export default async function HomePage() {
   const allTags = (data?.allTags ?? []).filter(Boolean).sort()
 
   return (
-    <div className="px-4 lg:px-8 py-4 lg:py-6 space-y-4 max-w-full">
-      <header className="border-b border-border pb-5">
-        <h1 className="font-display text-[42px] md:text-[56px] lg:text-[64px] leading-[0.95] text-wld-ink max-w-[760px]">
-          Discover brands, share your honest reviews.
+    <div className="px-4 lg:px-8 max-w-full">
+
+      {/* Hero */}
+      <header className="pt-8 pb-7 border-b border-border">
+        <p className="text-[10px] font-medium uppercase tracking-widest text-muted mb-4">
+          The global platform for consumer brand design
+        </p>
+        <h1 className="font-display text-[40px] md:text-[56px] lg:text-[68px] leading-[0.92] text-wld-ink max-w-[820px] mb-0">
+          Discover brands,<br className="hidden md:block" /> share your{' '}
+          <em className="not-italic text-wld-blue">honest reviews.</em>
         </h1>
       </header>
 
-      {/* Trending chips + category links */}
-      <section className="border-b border-border pb-3 space-y-3">
-        <div className="relative overflow-x-auto no-scrollbar pr-6">
-          <div className="flex items-center gap-2 min-w-max">
-            {TRENDING_CHIPS.map((chip, index) => (
+      {/* Chips row */}
+      <section className="py-4 border-b border-border space-y-2.5">
+        {/* Trending chips */}
+        <div className="relative overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 min-w-max pr-8">
+            {TRENDING_CHIPS.map((chip) => (
               <Link
-                key={chip}
-                href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(chip)}`}
-                className={`px-4 h-8 rounded-full border text-[12px] inline-flex items-center whitespace-nowrap ${
-                  index === 0
-                    ? 'bg-wld-ink text-white border-wld-ink'
-                    : 'bg-white text-wld-ink border-border hover:border-wld-ink'
+                key={chip.label}
+                href={chip.href}
+                className={`px-3.5 h-7 rounded-full text-[11px] font-medium inline-flex items-center whitespace-nowrap transition-all ${
+                  chip.active
+                    ? 'bg-wld-ink text-wld-paper'
+                    : 'border border-border text-muted hover:text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.25)] bg-transparent'
                 }`}
               >
-                {chip}
+                {chip.label}
               </Link>
             ))}
           </div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent"
-          />
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-wld-paper to-transparent" />
         </div>
 
+        {/* Category chips */}
         {categories.length > 0 && (
-          <div className="relative overflow-x-auto no-scrollbar pr-6">
-            <div className="flex items-center gap-2 min-w-max">
+          <div className="relative overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 min-w-max pr-8">
               {categories.slice(0, 8).map((cat) => {
                 const categoryLabel = getCategoryLabel(cat.name, cat.slug)
                 return (
@@ -94,29 +99,28 @@ export default async function HomePage() {
                     key={cat._id}
                     href={`/category/${cat.slug}`}
                     aria-label={`View ${categoryLabel} projects`}
-                    className="h-8 px-3 rounded-full border border-border text-[12px] bg-white text-wld-ink hover:border-wld-ink inline-flex items-center"
+                    className="h-7 px-3.5 rounded-full border border-border text-[11px] text-muted hover:text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.25)] inline-flex items-center whitespace-nowrap transition-all"
                   >
                     {categoryLabel}
                   </Link>
                 )
               })}
             </div>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent"
-            />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-wld-paper to-transparent" />
           </div>
         )}
       </section>
 
-      {/* Feed with filter/sort/view controls */}
-      <HomepageFeed
-        latestPosts={latestPosts}
-        trendingPosts={trendingPosts}
-        mostSavedPosts={mostSavedPosts}
-        categories={categories}
-        allTags={allTags}
-      />
+      {/* Feed */}
+      <div className="py-6">
+        <HomepageFeed
+          latestPosts={latestPosts}
+          trendingPosts={trendingPosts}
+          mostSavedPosts={mostSavedPosts}
+          categories={categories}
+          allTags={allTags}
+        />
+      </div>
     </div>
   )
 }
