@@ -87,6 +87,13 @@ export const categoriesPageQuery = groq`{
   "allTags": array::unique(*[${publishedFilter}].tags[])
 }`
 
+export const savedPostsByUserQuery = groq`
+  *[_type == "savedProject" && user_id == $userId] | order(created_at desc) {
+    saved_at: created_at,
+    "post": *[_id == ^.project_id && _type == "post"][0] ${postCardProjection}
+  }[post != null]
+`
+
 export const homepageQuery = groq`{
   "allTags": array::unique(*[_type == "post" && status == "published" && publishedAt <= now()].tags[]),
   "config": *[_type == "homepageConfig"][0] {

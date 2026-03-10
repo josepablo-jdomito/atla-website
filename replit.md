@@ -53,6 +53,29 @@ Database tables (PostgreSQL):
 - `users` — id (uuid), email (unique), password (hashed), name, created_at
 - `accounts`, `sessions`, `verification_tokens` — Auth.js adapter tables
 
+## User Profiles
+Each authenticated user has a profile page at `/profile`:
+- **Avatar**: Upload via Sanity asset API (`POST /api/profile/avatar`). Stored in `users.image`. Session token updated live via `useSession().update()`.
+- **Display name & bio**: Editable via `PATCH /api/profile`. Bio stored in `users.bio` (added via `ALTER TABLE`).
+- **Saved posts**: Fetched from Sanity via `savedPostsByUserQuery` (joins savedProject documents with their post data). Shown in grid/list toggle.
+- **Profile button in TopBar**: Shows user avatar (or initials) and links to `/profile`. Shows "Sign in" link when logged out.
+- **Auth sidebar**: Updated `AuthNav` shows avatar + name + profile link for logged-in users.
+
+### Google Sign-in
+Google OAuth is configured in `src/auth.ts`. The provider is only registered when both env vars are present:
+- `GOOGLE_CLIENT_ID` — from Google Cloud Console
+- `GOOGLE_CLIENT_SECRET` — from Google Cloud Console
+The Google "Continue with Google" button appears on both login and signup pages.
+
+**Setup steps for Google OAuth:**
+1. Go to https://console.cloud.google.com
+2. Create a project → APIs & Services → OAuth 2.0 Credentials → Web application
+3. Add authorized redirect URIs: `https://[your-domain]/api/auth/callback/google`
+4. Add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` as Replit secrets
+
+### Apple Sign-in
+Apple Sign-In requires an Apple Developer Program membership. Not yet implemented. Contact for setup guidance.
+
 ## Filtering Architecture
 All content pages (Homepage, Projects, Articles, Categories) now share the same filter UX:
 

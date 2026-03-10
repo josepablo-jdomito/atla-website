@@ -3,6 +3,8 @@
 import { Suspense, useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import { Logo } from './Logo'
 import { SearchModal } from '@/components/search/SearchModal'
 
@@ -54,6 +56,55 @@ function SearchTrigger({ onClick }: { onClick: () => void }) {
   )
 }
 
+function ProfileButton() {
+  const { data: session, status } = useSession()
+
+  if (status === 'loading') {
+    return <div className="w-8 h-8 rounded-full bg-[rgb(var(--wld-ink-rgb)/0.07)] animate-pulse shrink-0" />
+  }
+
+  if (session?.user) {
+    const name = session.user.name || session.user.email || ''
+    const initials = name
+      .split(' ')
+      .map((w: string) => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase() || '?'
+
+    return (
+      <Link
+        href="/profile"
+        aria-label="My profile"
+        className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-border hover:border-wld-ink transition-colors"
+      >
+        {session.user.image ? (
+          <Image
+            src={session.user.image}
+            alt={name}
+            width={32}
+            height={32}
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <div className="w-full h-full bg-wld-ink text-wld-paper flex items-center justify-center text-[11px] font-semibold">
+            {initials}
+          </div>
+        )}
+      </Link>
+    )
+  }
+
+  return (
+    <Link
+      href="/login"
+      className="h-8 px-3.5 rounded-full border border-border text-[12px] text-muted hover:text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.25)] inline-flex items-center transition-all shrink-0"
+    >
+      Sign in
+    </Link>
+  )
+}
+
 export function TopBar() {
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -65,7 +116,10 @@ export function TopBar() {
             <TopBarLeft />
           </Suspense>
           <div className="hidden lg:block" />
-          <SearchTrigger onClick={() => setSearchOpen(true)} />
+          <div className="flex items-center gap-2.5">
+            <SearchTrigger onClick={() => setSearchOpen(true)} />
+            <ProfileButton />
+          </div>
         </div>
       </header>
 
