@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from './Logo'
 
 export function Footer() {
   const substackUrl = process.env.NEXT_PUBLIC_SUBSTACK_URL || 'https://welovedaily.substack.com'
@@ -12,7 +13,9 @@ export function Footer() {
 
           {/* Brand */}
           <div className="md:col-span-4">
-            <p className="font-display text-[28px] leading-none text-wld-ink mb-4">WeLoveDaily</p>
+            <Link href="/" aria-label="WeLoveDaily home" className="inline-block mb-5">
+              <Logo className="h-[22px] w-auto text-wld-ink" />
+            </Link>
             <p className="text-[13px] text-muted leading-relaxed max-w-[260px]">
               The global platform for consumer brand design. Curated identities, packaging, and brand strategy.
             </p>

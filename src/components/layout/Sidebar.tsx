@@ -47,7 +47,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="mb-9 px-1">
         <Link href="/" aria-label="WeLoveDaily home">
-          <Logo className="h-[18px] w-auto text-wld-ink" />
+          <Logo className="h-[26px] w-auto text-wld-ink" />
         </Link>
       </div>
 
