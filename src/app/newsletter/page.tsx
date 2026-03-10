@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { PageHero } from '@/components/layout/PageHero'
 
 export const metadata = buildMetadata({
   title: 'The Edit - Weekly Brand Design Newsletter',
@@ -13,6 +14,7 @@ export default function NewsletterPage() {
 
   return (
     <div className="max-w-container mx-auto px-5 py-10 space-y-12">
+      <PageHero alt="The Edit — WeLoveDaily Newsletter" />
       <header className="max-w-article space-y-4">
         <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink">The Edit</h1>
         <p className="text-[16px] leading-relaxed text-muted">

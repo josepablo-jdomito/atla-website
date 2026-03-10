@@ -1,5 +1,6 @@
 import { buildMetadata } from '@/lib/utils/metadata'
 import { ContactForm } from './ContactForm'
+import { PageHero } from '@/components/layout/PageHero'
 
 export const metadata = buildMetadata({
   title: 'Contact - WeLoveDaily',
@@ -10,7 +11,8 @@ export const metadata = buildMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="max-w-container mx-auto px-5 py-12">
+    <div className="max-w-container mx-auto px-5 py-12 space-y-10">
+      <PageHero alt="Contact WeLoveDaily" />
       <div className="max-w-[740px] mx-auto">
 
         <header className="space-y-3 mb-12">

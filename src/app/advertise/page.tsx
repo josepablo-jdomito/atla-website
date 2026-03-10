@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { TypeformEmbed } from '@/components/modules/TypeformEmbed'
 import { buildMetadata } from '@/lib/utils/metadata'
 import { AdvertiseForm } from './AdvertiseForm'
+import { PageHero } from '@/components/layout/PageHero'
 
 export const metadata = buildMetadata({
   title: 'Advertise',
@@ -55,7 +56,8 @@ export default function AdvertisePage() {
   const formId = process.env.NEXT_PUBLIC_TYPEFORM_ADVERTISE_ID || ''
 
   return (
-    <div className="max-w-container mx-auto px-5 py-10">
+    <div className="max-w-container mx-auto px-5 py-10 space-y-10">
+      <PageHero alt="Advertise with WeLoveDaily" />
       {/* Header */}
       <header className="max-w-article mx-auto text-center mb-12">
         <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink mb-4">

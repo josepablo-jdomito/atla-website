@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/utils/metadata'
+import { PageHero } from '@/components/layout/PageHero'
 
 export const metadata = buildMetadata({
   title: 'Careers - WeLoveDaily',
@@ -9,7 +10,8 @@ export const metadata = buildMetadata({
 
 export default function CareersPage() {
   return (
-    <div className="max-w-container mx-auto px-5 py-10">
+    <div className="max-w-container mx-auto px-5 py-10 space-y-10">
+      <PageHero alt="Careers at WeLoveDaily" />
       <article className="max-w-article mx-auto space-y-8">
         <header className="space-y-3">
           <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink">Careers</h1>
