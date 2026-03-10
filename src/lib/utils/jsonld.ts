@@ -71,6 +71,7 @@ export function articleJsonLd({
   categoryName,
   categorySlug,
   isSponsored,
+  studio,
 }: {
   title: string
   description: string
@@ -81,6 +82,7 @@ export function articleJsonLd({
   categoryName: string
   categorySlug: string
   isSponsored?: boolean
+  studio?: string
 }) {
   return {
     '@context': 'https://schema.org',
@@ -88,14 +90,14 @@ export function articleJsonLd({
     headline: title,
     description,
     url: `${SITE_URL}/projects/${slug}`,
-    image: {
-      '@type': 'ImageObject',
-      url: coverImageUrl,
-      width: 1400,
-      height: 900,
-    },
+    image: coverImageUrl,
     datePublished: publishedAt,
     ...(updatedAt && { dateModified: updatedAt }),
+    author: {
+      '@type': 'Organization',
+      name: studio || SITE_NAME,
+      url: SITE_URL,
+    },
     publisher: {
       '@type': 'Organization',
       name: SITE_NAME,

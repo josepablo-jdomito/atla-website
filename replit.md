@@ -53,6 +53,17 @@ Database tables (PostgreSQL):
 - `users` — id (uuid), email (unique), password (hashed), name, created_at
 - `accounts`, `sessions`, `verification_tokens` — Auth.js adapter tables
 
+## SEO & Accessibility
+A SquirrelScan audit was run and the following fixes were applied:
+- **Structured Data**: `articleJsonLd` now includes `author` (Organization) and uses a plain string URL for `image` (was ImageObject) — Structured Data score: 78 → 100
+- **Accessibility**: Search button aria-label fixed to match visible text; honeypot form field moved inside `aria-hidden` wrapper div; footer email input given an explicit `<label>`
+- **Core SEO**: Login/signup pages now have unique page titles via layout files (`src/app/login/layout.tsx`, `src/app/signup/layout.tsx`); category page handles null category names gracefully
+- **E-E-A-T**: Article pages now show `<time>` element with publish date in the byline row; Contact page exists at `/contact`; Contact linked from sidebar and footer — E-E-A-T score: 77 → 85
+- **Performance**: Both featured tiles on homepage now use `priority` prop for LCP optimisation
+- **Newsletter form**: Footer subscribe button changed to a Link → Substack (was a form POST, now correctly routes to the external subscription flow)
+- **Contact page**: `/contact` now exists and is linked in sidebar and footer
+- Squirrel audit tool installed at `~/.local/bin/squirrel`; config at `squirrel.toml`
+
 ## Project Structure
 ```
 src/

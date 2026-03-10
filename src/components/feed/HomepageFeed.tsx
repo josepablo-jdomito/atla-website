@@ -209,7 +209,7 @@ export function HomepageFeed({
             }
           >
             {featuredArticle && <FeatureTile post={featuredArticle} label="Featured Article" priority />}
-            {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" />}
+            {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" priority />}
           </section>
         )}
 

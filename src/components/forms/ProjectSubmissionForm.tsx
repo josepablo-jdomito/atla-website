@@ -123,7 +123,9 @@ export function ProjectSubmissionForm({ categories }: ProjectSubmissionFormProps
         />
       )}
 
-      <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+      <div aria-hidden="true" style={{ display: 'none' }}>
+        <input name="website" tabIndex={-1} autoComplete="off" />
+      </div>
       <input type="hidden" name="turnstileToken" value={turnstileToken} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

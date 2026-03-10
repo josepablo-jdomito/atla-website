@@ -23,6 +23,7 @@ const SECONDARY_NAV: NavItem[] = [
   { label: 'Newsletter', href: '/newsletter' },
   { label: 'FAQs', href: '/faqs' },
   { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export function Sidebar() {

@@ -1,6 +1,8 @@
 import Link from 'next/link'
 
 export function Footer() {
+  const substackUrl = process.env.NEXT_PUBLIC_SUBSTACK_URL || 'https://welovedaily.substack.com'
+
   return (
     <footer className="border-t border-border bg-wld-paper">
       <div className="max-w-container mx-auto px-5 lg:px-8 py-16 lg:py-20">
@@ -38,6 +40,7 @@ export function Footer() {
             <div className="space-y-3">
               {[
                 ['About', '/about'],
+                ['Contact', '/contact'],
                 ['Newsletter', '/newsletter'],
                 ['FAQs', '/faqs'],
                 ['Careers', '/careers'],
@@ -57,22 +60,26 @@ export function Footer() {
               Curated brand work. Sharp thinking. No noise.
               Arrives every week.
             </p>
-            <form action="/newsletter" method="GET" className="space-y-2">
+            <div className="space-y-2">
+              <label htmlFor="footer-newsletter-email" className="sr-only">Your email address</label>
               <input
+                id="footer-newsletter-email"
                 type="email"
                 name="email"
                 placeholder="your@email.com"
                 className="w-full h-10 px-4 text-[13px] border border-border rounded-full bg-wld-white text-wld-ink placeholder-muted focus:outline-none focus:border-[rgb(var(--wld-ink-rgb)/0.4)] transition-colors"
                 aria-label="Your email address"
-                required
               />
-              <button
-                type="submit"
+              <Link
+                href={substackUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Subscribe to The Edit newsletter"
                 className="w-full h-10 inline-flex items-center justify-center text-[13px] font-medium rounded-full bg-wld-ink text-wld-paper hover:opacity-80 transition-opacity"
               >
                 Subscribe to The Edit
-              </button>
-            </form>
+              </Link>
+            </div>
           </div>
         </div>
 

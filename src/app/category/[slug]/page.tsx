@@ -25,11 +25,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!data?.category) return buildMetadata({ title: 'Not Found', noIndex: true })
 
+  const categoryName = data.category.name || 'Design'
   return buildMetadata({
-    title: `${data.category.name} - Projects, Case Studies, and Examples`,
+    title: `${categoryName} - Projects, Case Studies, and Examples`,
     description:
       data.category.description ||
-      `Browse curated ${data.category.name} projects, case studies, and examples on WeLoveDaily.`,
+      `Browse curated ${categoryName} projects, case studies, and examples on WeLoveDaily.`,
     path: `/category/${data.category.slug}`,
   })
 }

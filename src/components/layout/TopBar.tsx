@@ -44,12 +44,12 @@ function SearchTrigger({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      aria-label="Open search"
+      aria-label="Search"
       className="flex items-center gap-2.5 h-8 pl-3 pr-3.5 bg-wld-white border border-border rounded-full text-muted hover:border-[rgb(var(--wld-ink-rgb)/0.25)] hover:text-wld-ink transition-all"
     >
       <SearchIcon />
-      <span className="text-[12px] w-24 md:w-36 text-left">Search…</span>
-      <kbd className="hidden md:inline-flex items-center text-[10px] text-muted border border-border rounded px-1.5 py-0.5 font-mono">/</kbd>
+      <span className="text-[12px] w-24 md:w-36 text-left" aria-hidden="true">Search…</span>
+      <kbd className="hidden md:inline-flex items-center text-[10px] text-muted border border-border rounded px-1.5 py-0.5 font-mono" aria-hidden="true">/</kbd>
     </button>
   )
 }

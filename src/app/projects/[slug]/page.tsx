@@ -79,6 +79,7 @@ export default async function ProjectPage({ params }: PageProps) {
               categoryName: post.category.name,
               categorySlug: post.category.slug,
               isSponsored: post.isSponsored,
+              studio: post.studio,
             })
           ),
         }}
@@ -117,6 +118,15 @@ export default async function ProjectPage({ params }: PageProps) {
         </div>
         <p className="text-[16px] leading-relaxed text-muted">{post.excerpt}</p>
         <div className="flex flex-wrap items-center gap-3 text-[12px] uppercase tracking-wider text-muted">
+          {post.publishedAt && (
+            <time dateTime={post.publishedAt}>
+              {new Date(post.publishedAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </time>
+          )}
           {post.brand?.name || post.brandName ? <span>{post.brand?.name || post.brandName}</span> : null}
           {post.studio ? <span>{post.studio}</span> : null}
           {post.designerCredits && post.designerCredits.length > 0 ? (
