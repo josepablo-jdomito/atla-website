@@ -202,7 +202,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <CloseIcon />
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex shrink-0 items-center text-[11px] text-muted border border-border rounded-md px-1.5 py-0.5 font-mono">Esc</kbd>
+            <kbd className="hidden sm:inline-flex shrink-0 items-center text-[11px] text-muted border border-border rounded-md px-1.5 py-0.5 font-primary">Esc</kbd>
           )}
         </form>
 

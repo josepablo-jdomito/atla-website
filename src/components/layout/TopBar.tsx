@@ -51,7 +51,7 @@ function SearchTrigger({ onClick }: { onClick: () => void }) {
     >
       <SearchIcon />
       <span className="text-[12px] w-24 md:w-36 text-left" aria-hidden="true">Search…</span>
-      <kbd className="hidden md:inline-flex items-center text-[10px] text-muted border border-border rounded px-1.5 py-0.5 font-mono" aria-hidden="true">/</kbd>
+      <kbd className="hidden md:inline-flex items-center text-[10px] text-muted border border-border rounded px-1.5 py-0.5 font-primary" aria-hidden="true">/</kbd>
     </button>
   )
 }
