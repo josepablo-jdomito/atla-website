@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --wld-paper-rgb: 238 234 216;
+  --wld-paper-rgb: 255 255 255;
   --wld-white-rgb: 255 255 255;
   --wld-ink-rgb: 18 17 16;
   --wld-blue-rgb: 91 22 212;
-  --wld-card-rgb: 228 224 204;
+  --wld-card-rgb: 245 245 245;
   --wld-border-rgb: 18 17 16;
   --wld-muted-rgb: 18 17 16;
   --wld-accent-rgb: 91 22 212;
