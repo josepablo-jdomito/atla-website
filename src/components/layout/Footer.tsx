@@ -28,20 +28,22 @@ export function Footer() {
             <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-4">The Edit</h4>
             <p className="text-[14px] text-muted">The Edit arrives every week.</p>
             <p className="mt-1 text-[14px] text-muted">Curated work. Sharp thinking. No noise.</p>
-            <div className="mt-4 flex flex-col sm:flex-row gap-2">
+            <form action="/newsletter" method="GET" className="mt-4 flex flex-col sm:flex-row gap-2 w-full min-w-0">
               <input
                 type="email"
+                name="email"
                 placeholder="Your email address"
-                className="h-10 px-4 text-[14px] border border-border rounded-full bg-white focus:outline-none focus:border-wld-ink"
+                className="h-10 px-4 text-[14px] border border-border rounded-full bg-white focus:outline-none focus:border-wld-ink min-w-0 w-full"
                 aria-label="Your email address"
+                required
               />
-              <Link
-                href="/newsletter"
-                className="h-10 px-5 inline-flex items-center justify-center text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
+              <button
+                type="submit"
+                className="h-10 px-5 shrink-0 inline-flex items-center justify-center text-[14px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
               >
                 Subscribe
-              </Link>
-            </div>
+              </button>
+            </form>
           </div>
         </div>
 

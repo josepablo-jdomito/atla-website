@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { urlFor } from '@/lib/sanity/client'
 import { SaveButton } from '@/components/actions/SaveButton'
+import { buildSanityImageUrl } from '@/lib/utils/image'
 import type { PostCard } from '@/types'
 
 interface PostCardRowProps {
@@ -9,12 +9,12 @@ interface PostCardRowProps {
 }
 
 export function PostCardRow({ post }: PostCardRowProps) {
-  const imageUrl = urlFor(post.coverImage)
-    .width(240)
-    .height(160)
-    .format('webp')
-    .quality(85)
-    .url()
+  const imageUrl = buildSanityImageUrl(post.coverImage, {
+    width: 240,
+    height: 160,
+    quality: 85,
+    format: 'webp',
+  })
 
   const blurUrl = post.coverImage.asset.metadata?.lqip
 

@@ -1,13 +1,21 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { BottomTabBar } from '@/components/layout/BottomTabBar'
 import { Footer } from '@/components/layout/Footer'
 import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
-import { NewsletterPopup } from '@/components/layout/NewsletterPopup'
-import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import { SITE_URL } from '@/lib/config/site'
+
+const NewsletterPopup = dynamic(
+  () => import('@/components/layout/NewsletterPopup').then((module) => module.NewsletterPopup),
+  { ssr: false }
+)
+const ThemeToggle = dynamic(
+  () => import('@/components/layout/ThemeToggle').then((module) => module.ThemeToggle),
+  { ssr: false }
+)
 
 export const metadata: Metadata = {
   title: 'WeLoveDaily',
@@ -27,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var saved=localStorage.getItem('wld-theme');var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var theme=(saved==='light'||saved==='dark')?saved:(prefersDark?'dark':'light');document.documentElement.dataset.theme=theme;}catch(e){}})();`,
+            __html: `(function(){try{var saved=localStorage.getItem('wld-theme');var theme=(saved==='light'||saved==='dark')?saved:'light';document.documentElement.dataset.theme=theme;}catch(e){}})();`,
           }}
         />
         {/* Preconnect to Sanity CDN for faster image loads */}
@@ -39,13 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="/fonts/parabolica-text-regular.woff2"
           as="font"
           type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/jha-times-semibold.otf"
-          as="font"
-          type="font/otf"
           crossOrigin="anonymous"
         />
         {/* Organization + WebSite structured data */}

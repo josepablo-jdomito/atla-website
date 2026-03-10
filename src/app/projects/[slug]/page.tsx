@@ -59,6 +59,7 @@ export default async function ProjectPage({ params }: PageProps) {
     : null
 
   const heroUrl = urlFor(post.coverImage).width(1400).height(900).format('webp').quality(90).url()
+  const categoryName = post.category.name || 'Category'
 
   return (
     <article className="max-w-container mx-auto px-5 py-10">
@@ -103,9 +104,10 @@ export default async function ProjectPage({ params }: PageProps) {
         )}
         <Link
           href={`/category/${post.category.slug}`}
+          aria-label={`View ${categoryName}`}
           className="text-[12px] font-medium uppercase tracking-wider text-wld-blue hover:underline"
         >
-          {post.category.name}
+          {categoryName}
         </Link>
         <h1 className="font-display text-[32px] md:text-[42px] leading-[1.1] text-wld-ink">
           {post.title}
@@ -141,23 +143,26 @@ export default async function ProjectPage({ params }: PageProps) {
         <div className="max-w-article mx-auto mt-12 pt-8 border-t border-border">
           <h3 className="text-[13px] font-medium uppercase tracking-wider text-muted mb-4">Credits</h3>
           <div className="space-y-2">
-            {post.credits.map((credit, i) => (
-              <div key={i} className="flex justify-between text-[14px]">
-                <span className="text-muted">{credit.role}</span>
-                {credit.url ? (
-                  <a
-                    href={credit.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-wld-ink hover:text-wld-blue transition-colors"
-                  >
-                    {credit.name}
-                  </a>
-                ) : (
-                  <span className="text-wld-ink">{credit.name}</span>
-                )}
-              </div>
-            ))}
+            {post.credits.map((credit, i) => {
+              const creditName = credit.name?.trim() || 'Visit source'
+              return (
+                <div key={i} className="flex justify-between text-[14px]">
+                  <span className="text-muted">{credit.role}</span>
+                  {credit.url ? (
+                    <a
+                      href={credit.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-wld-ink hover:text-wld-blue transition-colors"
+                    >
+                      {creditName}
+                    </a>
+                  ) : (
+                    <span className="text-wld-ink">{creditName}</span>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}

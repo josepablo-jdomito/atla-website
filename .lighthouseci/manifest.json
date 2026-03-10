@@ -1,37 +1,37 @@
 [
   {
-    "url": "http://127.0.0.1:3000/projects",
-    "isRepresentativeRun": false,
-    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_09_23_46_08-report.html",
-    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_09_23_46_08-report.json",
-    "summary": {
-      "performance": 0.66,
-      "accessibility": 1,
-      "best-practices": 0.93,
-      "seo": 1
-    }
-  },
-  {
     "url": "http://127.0.0.1:3000/",
     "isRepresentativeRun": true,
-    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/-2026_03_09_23_45_56-report.html",
-    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/-2026_03_09_23_45_56-report.json",
+    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/-2026_03_10_02_14_45-report.html",
+    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/-2026_03_10_02_14_45-report.json",
     "summary": {
-      "performance": 0.85,
+      "performance": 0.92,
       "accessibility": 1,
-      "best-practices": 0.93,
+      "best-practices": 1,
       "seo": 1
     }
   },
   {
     "url": "http://127.0.0.1:3000/projects",
     "isRepresentativeRun": true,
-    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_09_23_46_20-report.html",
-    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_09_23_46_20-report.json",
+    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_10_02_14_56-report.html",
+    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects-2026_03_10_02_14_56-report.json",
     "summary": {
-      "performance": 0.87,
+      "performance": 0.94,
       "accessibility": 1,
-      "best-practices": 0.93,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3000/projects/heritage-brands-hotel-expansion-strategy",
+    "isRepresentativeRun": true,
+    "htmlPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects_heritage_brands_hotel_expansion_strategy-2026_03_10_02_15_06-report.html",
+    "jsonPath": "/Users/josepablo/Documents/New project/.lighthouseci/projects_heritage_brands_hotel_expansion_strategy-2026_03_10_02_15_06-report.json",
+    "summary": {
+      "performance": 0.92,
+      "accessibility": 1,
+      "best-practices": 1,
       "seo": 1
     }
   }

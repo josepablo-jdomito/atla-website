@@ -1,5 +1,6 @@
 const BASE_URL = (process.env.BASE_URL || 'http://127.0.0.1:3000').replace(/\/+$/, '')
-const ROUTES = ['/', '/projects', '/articles', '/brands', '/contact']
+const PROJECT_DETAIL_URL = process.env.PROJECT_DETAIL_URL || `${BASE_URL}/projects`
+const CORE_ROUTES = ['/', '/projects', '/articles', '/brands', '/contact']
 
 function getHeader(response, key) {
   return response.headers.get(key.toLowerCase()) || response.headers.get(key) || ''
@@ -77,9 +78,20 @@ function checkRouteHeaders(route, headers) {
   return failures
 }
 
-const allFailures = []
+function toRoute(input) {
+  if (input.startsWith('/')) return input
+  try {
+    const parsed = new URL(input)
+    return `${parsed.pathname}${parsed.search}`
+  } catch {
+    return '/projects'
+  }
+}
 
-for (const route of ROUTES) {
+const allFailures = []
+const routes = [...new Set([...CORE_ROUTES, toRoute(PROJECT_DETAIL_URL)])]
+
+for (const route of routes) {
   const url = `${BASE_URL}${route}`
   let response
 
@@ -87,6 +99,11 @@ for (const route of ROUTES) {
     response = await fetch(url)
   } catch (error) {
     allFailures.push({ route, header: 'REQUEST', reason: `network error: ${String(error)}` })
+    continue
+  }
+
+  if (response.status >= 400) {
+    allFailures.push({ route, header: 'REQUEST', reason: `status ${response.status}` })
     continue
   }
 

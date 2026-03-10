@@ -19,6 +19,13 @@ module.exports = {
         'categories:accessibility': ['error', { minScore: 0.98 }],
         'categories:seo': ['error', { minScore: 1 }],
         'categories:best-practices': ['error', { minScore: 0.95 }],
+        'label-content-name-mismatch': 'error',
+        'link-name': 'error',
+        'lcp-lazy-loaded': 'error',
+        'render-blocking-resources': ['error', { maxNumericValue: 100 }],
+        'unused-javascript': ['warn', { maxNumericValue: 25000 }],
+        'legacy-javascript': ['warn', { maxNumericValue: 12000 }],
+        'bf-cache': 'warn',
       },
     },
     upload: {

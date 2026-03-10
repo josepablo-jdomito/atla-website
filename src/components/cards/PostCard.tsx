@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { urlFor } from '@/lib/sanity/client'
 import { SaveButton } from '@/components/actions/SaveButton'
+import { buildSanityImageUrl } from '@/lib/utils/image'
 import type { PostCard as PostCardType } from '@/types'
 
 interface PostCardProps {
@@ -10,12 +10,12 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, priority = false }: PostCardProps) {
-  const imageUrl = urlFor(post.coverImage)
-    .width(600)
-    .height(750)
-    .format('webp')
-    .quality(85)
-    .url()
+  const imageUrl = buildSanityImageUrl(post.coverImage, {
+    width: 600,
+    height: 750,
+    quality: 85,
+    format: 'webp',
+  })
 
   const sponsorText = post.isSponsored
     ? post.sponsorshipType === 'partnerContent'

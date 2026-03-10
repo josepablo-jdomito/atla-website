@@ -24,6 +24,28 @@ const TRENDING_CHIPS = [
   'Be among the first to review',
 ]
 
+const CATEGORY_NAME_BY_SLUG: Record<string, string> = {
+  'brand-breakdown': 'Brand Breakdown',
+  'cult-brand-index': 'Cult Brand Index',
+  'industry-signal': 'Industry Signal',
+  'new-work': 'New Work',
+  'the-definition': 'The Definition',
+}
+
+function getCategoryLabel(name: string | undefined, slug: string): string {
+  const normalized = name?.trim()
+  if (normalized) return normalized
+  const fromSlug = CATEGORY_NAME_BY_SLUG[slug]
+  if (fromSlug) return fromSlug
+  return (
+    slug
+      .split('-')
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ') || 'Uncategorized'
+  )
+}
+
 export default async function HomePage() {
   const data = await client.fetch<HomepageData>(homepageQuery)
   const latestPosts = data?.latestProjects ?? []
@@ -48,13 +70,12 @@ export default async function HomePage() {
 
       <section className="border-b border-border pb-3 space-y-3">
         <div className="flex items-center justify-between gap-3">
-          <div className="overflow-x-auto no-scrollbar">
+          <div className="relative overflow-x-auto no-scrollbar pr-6">
             <div className="flex items-center gap-2 min-w-max">
               {TRENDING_CHIPS.map((chip, index) => (
                 <Link
                   key={chip}
                   href={index === 0 ? '/search?q=trending' : `/search?q=${encodeURIComponent(chip)}`}
-                  aria-label={`Search for ${chip}`}
                   className={`px-4 h-8 rounded-full border text-[12px] inline-flex items-center whitespace-nowrap ${
                     index === 0
                       ? 'bg-wld-ink text-white border-wld-ink'
@@ -65,6 +86,7 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent" />
           </div>
 
           <div className="hidden md:flex items-center gap-2 shrink-0">
@@ -75,31 +97,32 @@ export default async function HomePage() {
         </div>
 
         {categories.length > 0 && (
-          <div className="overflow-x-auto no-scrollbar">
+          <div className="relative overflow-x-auto no-scrollbar pr-6">
             <div className="flex items-center gap-2 min-w-max">
-              {categories.slice(0, 8).map((cat) => (
-                <Link
-                  key={cat._id}
-                  href={`/category/${cat.slug}`}
-                  aria-label={`View ${cat.name || 'category'} projects`}
-                  className="h-8 px-3 rounded-full border border-border text-[12px] bg-white text-wld-ink hover:border-wld-ink inline-flex items-center"
-                >
-                  {cat.name || 'Uncategorized'}
-                </Link>
-              ))}
+              {categories.slice(0, 8).map((cat) => {
+                const categoryLabel = getCategoryLabel(cat.name, cat.slug)
+                return (
+                  <Link
+                    key={cat._id}
+                    href={`/category/${cat.slug}`}
+                    aria-label={`View ${categoryLabel} projects`}
+                    className="h-8 px-3 rounded-full border border-border text-[12px] bg-white text-wld-ink hover:border-wld-ink inline-flex items-center"
+                  >
+                    {categoryLabel}
+                  </Link>
+                )
+              })}
             </div>
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-wld-paper to-transparent" />
           </div>
         )}
+        <p className="text-[11px] text-muted">Swipe for more tags</p>
       </section>
 
       {(featuredArticle || featuredProject) && (
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {featuredArticle ? (
-            <FeatureTile post={featuredArticle} label="Featured Article" />
-          ) : (
-            <div />
-          )}
-          {featuredProject ? <FeatureTile post={featuredProject} label="Featured Project" /> : <div />}
+        <section className={featuredArticle && featuredProject ? 'grid grid-cols-1 lg:grid-cols-2 gap-3' : 'grid grid-cols-1 gap-3'}>
+          {featuredArticle && <FeatureTile post={featuredArticle} label="Featured Article" priority />}
+          {featuredProject && <FeatureTile post={featuredProject} label="Featured Project" />}
         </section>
       )}
 
@@ -121,8 +144,8 @@ export default async function HomePage() {
   )
 }
 
-function FeatureTile({ post, label }: { post: PostCardType; label: string }) {
-  const imageUrl = urlFor(post.coverImage).width(1400).height(900).format('webp').quality(85).url()
+function FeatureTile({ post, label, priority = false }: { post: PostCardType; label: string; priority?: boolean }) {
+  const imageUrl = urlFor(post.coverImage).width(1200).height(720).format('webp').quality(78).url()
 
   return (
     <Link href={`/projects/${post.slug}`} className="group block relative rounded-[18px] overflow-hidden border border-border bg-card min-h-[280px]">
@@ -132,6 +155,10 @@ function FeatureTile({ post, label }: { post: PostCardType; label: string }) {
         fill
         className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         sizes="(max-width: 1024px) 100vw, 50vw"
+        priority={priority}
+        loading={priority ? 'eager' : undefined}
+        placeholder={post.coverImage.asset?.metadata?.lqip ? 'blur' : 'empty'}
+        blurDataURL={post.coverImage.asset?.metadata?.lqip}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/55" />
       <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
@@ -152,13 +179,13 @@ function MasonryTile({ post, large }: { post: PostCardType; large: boolean }) {
     >
       <Image
         src={imageUrl}
-        alt={post.coverImage.alt || post.title}
+        alt={post.coverImage.alt && post.coverImage.alt !== 'Cover image placeholder.' ? post.coverImage.alt : post.title}
         fill
         className="object-cover"
         sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/45 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <div className="absolute left-3 right-3 bottom-3 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-80 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute left-3 right-3 bottom-3 text-white opacity-100 transition-opacity">
         <p className="text-[11px] uppercase tracking-wider">{post.category.name}</p>
         <p className="text-[14px] leading-snug font-medium mt-1 line-clamp-2">{post.title}</p>
       </div>

@@ -14,9 +14,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
 
   useEffect(() => {
     const saved = localStorage.getItem('wld-theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const resolved: ThemeMode =
-      saved === 'dark' || saved === 'light' ? saved : prefersDark ? 'dark' : 'light'
+    const resolved: ThemeMode = saved === 'dark' || saved === 'light' ? saved : 'light'
     setTheme(resolved)
     applyTheme(resolved)
     setMounted(true)

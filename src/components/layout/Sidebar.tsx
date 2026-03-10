@@ -84,7 +84,7 @@ export function Sidebar() {
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-1">
+      <nav aria-label="Main navigation" className="flex-1 space-y-1">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}

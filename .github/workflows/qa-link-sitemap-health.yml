@@ -41,7 +41,17 @@ jobs:
       - name: Wait for app
         run: node scripts/wait-for-url.mjs http://127.0.0.1:3000
 
-      - name: Check sitemap URLs and internal links
+      - name: Check robots and sitemap consistency
+        env:
+          BASE_URL: http://127.0.0.1:3000
+        run: node scripts/check-robots-sitemap-consistency.mjs
+
+      - name: Crawl nav and sitemap URLs for broken links
+        env:
+          BASE_URL: http://127.0.0.1:3000
+        run: node scripts/check-broken-links.mjs
+
+      - name: Validate canonical and og:url host consistency
         env:
           BASE_URL: http://127.0.0.1:3000
           EXPECTED_CANONICAL_HOST: welovedaily.com

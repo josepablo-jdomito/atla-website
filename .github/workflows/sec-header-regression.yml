@@ -41,9 +41,20 @@ jobs:
       - name: Wait for app
         run: node scripts/wait-for-url.mjs http://127.0.0.1:3000
 
+      - name: Resolve project detail path
+        run: |
+          PROJECT_DETAIL_URL=$(node --input-type=module -e "
+            const xml = await (await fetch('http://127.0.0.1:3000/sitemap.xml')).text()
+            const matches = [...xml.matchAll(/<loc>(.*?)<\\/loc>/g)].map((m) => m[1])
+            const project = matches.find((u) => /\\/projects\\//.test(u) && !u.endsWith('/projects'))
+            console.log(project || 'http://127.0.0.1:3000/projects')
+          ")
+          echo \"PROJECT_DETAIL_URL=${PROJECT_DETAIL_URL}\" >> \"$GITHUB_ENV\"
+
       - name: Assert required headers on core routes
         env:
           BASE_URL: http://127.0.0.1:3000
+          PROJECT_DETAIL_URL: ${{ env.PROJECT_DETAIL_URL }}
         run: node scripts/check-security-headers.mjs
 
       - name: Stop app

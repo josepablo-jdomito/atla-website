@@ -1,60 +1,47 @@
 [
   {
-    "name": "minScore",
-    "expected": 0.9,
-    "actual": 0.85,
+    "name": "maxNumericValue",
+    "expected": 100,
+    "actual": 1007,
     "values": [
-      0.85
+      1007
     ],
-    "operator": ">=",
+    "operator": "<=",
     "passed": false,
-    "auditProperty": "performance",
-    "auditId": "categories",
+    "auditId": "render-blocking-resources",
     "level": "error",
-    "url": "http://127.0.0.1:3000/"
+    "url": "http://127.0.0.1:3000/",
+    "auditTitle": "Eliminate render-blocking resources",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources/"
   },
   {
-    "name": "minScore",
-    "expected": 0.95,
-    "actual": 0.93,
+    "name": "maxNumericValue",
+    "expected": 100,
+    "actual": 1026,
     "values": [
-      0.93
+      1026
     ],
-    "operator": ">=",
+    "operator": "<=",
     "passed": false,
-    "auditProperty": "best-practices",
-    "auditId": "categories",
+    "auditId": "render-blocking-resources",
     "level": "error",
-    "url": "http://127.0.0.1:3000/"
+    "url": "http://127.0.0.1:3000/projects",
+    "auditTitle": "Eliminate render-blocking resources",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources/"
   },
   {
-    "name": "minScore",
-    "expected": 0.9,
-    "actual": 0.87,
+    "name": "maxNumericValue",
+    "expected": 100,
+    "actual": 1021,
     "values": [
-      0.66,
-      0.87
+      1021
     ],
-    "operator": ">=",
+    "operator": "<=",
     "passed": false,
-    "auditProperty": "performance",
-    "auditId": "categories",
+    "auditId": "render-blocking-resources",
     "level": "error",
-    "url": "http://127.0.0.1:3000/projects"
-  },
-  {
-    "name": "minScore",
-    "expected": 0.95,
-    "actual": 0.93,
-    "values": [
-      0.93,
-      0.93
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "best-practices",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:3000/projects"
+    "url": "http://127.0.0.1:3000/projects/heritage-brands-hotel-expansion-strategy",
+    "auditTitle": "Eliminate render-blocking resources",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources/"
   }
 ]
