@@ -63,7 +63,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={`
-                relative flex items-center py-2 px-1 text-[14px] leading-none
+                relative flex items-center py-2 px-1 text-[11px] uppercase tracking-wider leading-none
                 transition-colors duration-150
                 ${active
                   ? 'text-wld-ink font-medium'
@@ -91,7 +91,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={`
-                relative flex items-center py-2 px-1 text-[13px] leading-none
+                relative flex items-center py-2 px-1 text-[10px] uppercase tracking-wider leading-none
                 transition-colors duration-150
                 ${active
                   ? 'text-wld-ink font-medium'
