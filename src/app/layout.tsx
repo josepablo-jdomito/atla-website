@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { BottomTabBar } from '@/components/layout/BottomTabBar'
+import { TopBar } from '@/components/layout/TopBar'
 import { Footer } from '@/components/layout/Footer'
 import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           {/* Main content */}
           <div className="flex-1 min-w-0 flex flex-col min-h-screen">
+            <TopBar />
             <main className="flex-1 min-w-0 pb-[132px] lg:pb-0">{children}</main>
             <Footer />
           </div>

@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries'
-import { Logo } from '@/components/layout/Logo'
 import { HomepageFeed } from '@/components/feed/HomepageFeed'
 import { buildMetadata } from '@/lib/utils/metadata'
 import type { HomepageData } from '@/types'
@@ -54,10 +53,6 @@ export default async function HomePage() {
 
   return (
     <div className="px-4 lg:px-8 py-4 lg:py-6 space-y-4 max-w-full">
-      <div className="lg:hidden flex items-center justify-between py-1">
-        <Logo className="h-5 w-auto text-wld-ink" />
-      </div>
-
       <header className="border-b border-border pb-5">
         <h1 className="font-display text-[42px] md:text-[56px] lg:text-[64px] leading-[0.95] text-wld-ink max-w-[760px]">
           Discover brands, share your honest reviews.
