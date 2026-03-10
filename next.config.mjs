@@ -5,7 +5,8 @@ const cspDirectives = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
-  "frame-ancestors 'none'",
+  // In dev, allow Replit's preview iframe; in production lock it down
+  isDev ? "frame-ancestors *" : "frame-ancestors 'none'",
   "img-src 'self' data: blob: https://cdn.sanity.io",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
@@ -15,7 +16,8 @@ const cspDirectives = [
   "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://challenges.cloudflare.com https://cdn.sanity.io https://*.sanity.io https://api.typeform.com https://form.typeform.com",
   "frame-src 'self' https://challenges.cloudflare.com https://embed.typeform.com https://form.typeform.com",
   "form-action 'self' https://form.typeform.com",
-  "upgrade-insecure-requests",
+  // Only upgrade insecure requests in production (dev server is HTTP)
+  ...(!isDev ? ["upgrade-insecure-requests"] : []),
 ].join('; ')
 
 const securityHeaders = [
@@ -26,7 +28,8 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()',
   },
-  { key: 'X-Frame-Options', value: 'DENY' },
+  // Only set X-Frame-Options in production; in dev it blocks Replit's preview iframe
+  ...(!isDev ? [{ key: 'X-Frame-Options', value: 'DENY' }] : []),
   { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
 ]
 

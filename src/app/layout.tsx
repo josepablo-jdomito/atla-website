@@ -34,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var saved=localStorage.getItem('wld-theme');var theme=(saved==='light'||saved==='dark')?saved:'light';document.documentElement.dataset.theme=theme;}catch(e){}})();`,
           }}
@@ -51,10 +52,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {/* Organization + WebSite structured data */}
         <script
+          suppressHydrationWarning
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
         />
         <script
+          suppressHydrationWarning
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(webSiteJsonLd()) }}
         />
