@@ -37,12 +37,35 @@ Optional secrets (not yet configured):
 1. `package.json`: dev/start scripts updated to bind `0.0.0.0:5000`
 2. `next.config.mjs`: CSP adds `unsafe-eval` in development mode only (needed for Next.js HMR)
 
+## Authentication
+Auth is powered by **Auth.js v5** (next-auth@beta) with a Credentials provider (email + password).
+
+- **Config**: `src/auth.ts` — JWT strategy, bcryptjs for password hashing, `@auth/pg-adapter`
+- **API routes**: `src/app/api/auth/[...nextauth]/route.ts` and `src/app/api/auth/signup/route.ts`
+- **Pages**: `src/app/login/page.tsx` and `src/app/signup/page.tsx`
+- **Navigation**: Sidebar shows "Sign in" / user name + "Sign out". Bottom tab bar has a profile tab.
+- **Saved projects**: Authenticated users have saves linked via `auth:<userId>` prefix; anonymous users continue to use cookie-based IDs.
+
+Environment variables set:
+- `AUTH_SECRET` — randomly generated, stored in shared env
+
+Database tables (PostgreSQL):
+- `users` — id (uuid), email (unique), password (hashed), name, created_at
+- `accounts`, `sessions`, `verification_tokens` — Auth.js adapter tables
+
 ## Project Structure
 ```
 src/
   app/          Next.js App Router pages
+    login/      Login page
+    signup/     Signup page
+    api/auth/   NextAuth handlers + signup endpoint
   components/   Shared UI components
+    layout/     AuthNav.tsx, SessionProviderWrapper.tsx added
   lib/          Sanity client, utilities
+    db/         postgres.ts (pg Pool), savedProjects.ts
+  auth.ts       Auth.js configuration
+  middleware.ts Lightweight Edge middleware
   types/        TypeScript types
 sanity/         Sanity schema definitions
 public/         Static assets

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 
 interface TabItem {
   label: string
@@ -60,20 +61,30 @@ const TABS: TabItem[] = [
   },
 ]
 
+const PersonIcon = (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+  </svg>
+)
+
 export function BottomTabBar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   function isActive(href: string) {
     if (href === '/') return pathname === '/'
     return pathname === href || pathname.startsWith(href + '/')
   }
 
+  const isLoginActive = pathname === '/login' || pathname === '/signup'
+
   return (
     <nav
       aria-label="Mobile navigation"
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border pb-[env(safe-area-inset-bottom)]"
     >
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         {TABS.map((tab) => {
           const active = isActive(tab.href)
           return (
@@ -91,6 +102,26 @@ export function BottomTabBar() {
             </Link>
           )
         })}
+
+        {session?.user ? (
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex flex-col items-center justify-center gap-1 py-3 text-[10px] font-medium transition-colors text-muted hover:text-wld-ink"
+          >
+            <span>{PersonIcon}</span>
+            <span>Sign out</span>
+          </button>
+        ) : (
+          <Link
+            href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
+            className={`flex flex-col items-center justify-center gap-1 py-3 text-[10px] font-medium transition-colors ${
+              isLoginActive ? 'text-wld-blue' : 'text-muted hover:text-wld-ink'
+            }`}
+          >
+            <span className={isLoginActive ? 'text-wld-blue' : ''}>{PersonIcon}</span>
+            <span>Sign in</span>
+          </Link>
+        )}
       </div>
     </nav>
   )

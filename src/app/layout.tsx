@@ -9,6 +9,7 @@ import { Footer } from '@/components/layout/Footer'
 import { GoogleAnalytics } from '@/components/layout/GoogleAnalytics'
 import { organizationJsonLd, webSiteJsonLd, jsonLdScript } from '@/lib/utils/jsonld'
 import { SITE_URL } from '@/lib/config/site'
+import { SessionProviderWrapper } from '@/components/layout/SessionProviderWrapper'
 
 const NewsletterPopup = dynamic(
   () => import('@/components/layout/NewsletterPopup').then((module) => module.NewsletterPopup),
@@ -71,23 +72,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
 
         <GoogleAnalytics />
-        <NewsletterPopup />
-        <ThemeToggle className="fixed right-4 bottom-20 lg:bottom-6 z-50" />
 
-        <div className="flex max-w-full overflow-x-hidden lg:pl-[220px]">
-          {/* Desktop: fixed sidebar */}
-          <Sidebar />
+        <SessionProviderWrapper>
+          <NewsletterPopup />
+          <ThemeToggle className="fixed right-4 bottom-20 lg:bottom-6 z-50" />
 
-          {/* Main content */}
-          <div className="flex-1 min-w-0 flex flex-col min-h-screen">
-            <TopBar />
-            <main className="flex-1 min-w-0 pb-[132px] lg:pb-0">{children}</main>
-            <Footer />
+          <div className="flex max-w-full overflow-x-hidden lg:pl-[220px]">
+            {/* Desktop: fixed sidebar */}
+            <Sidebar />
+
+            {/* Main content */}
+            <div className="flex-1 min-w-0 flex flex-col min-h-screen">
+              <TopBar />
+              <main className="flex-1 min-w-0 pb-[132px] lg:pb-0">{children}</main>
+              <Footer />
+            </div>
           </div>
-        </div>
 
-        {/* Mobile: bottom tab bar */}
-        <BottomTabBar />
+          {/* Mobile: bottom tab bar */}
+          <BottomTabBar />
+        </SessionProviderWrapper>
       </body>
     </html>
   )

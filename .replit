@@ -1,4 +1,4 @@
-modules = ["web", "nodejs-20"]
+modules = ["web", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -41,3 +41,4 @@ NEXT_PUBLIC_SANITY_DATASET = "production"
 NEXT_PUBLIC_SITE_URL = "https://welovedaily.com"
 NEXT_PUBLIC_SITE_URL_PRODUCTION = "https://welovedaily.com"
 NEXT_PUBLIC_SUBSTACK_URL = "https://welovedaily.substack.com"
+AUTH_SECRET = "RJHeVL5XyJ72ATkUNCTVOlTf3AaZn6GTjYlVBjZ6oLQ"

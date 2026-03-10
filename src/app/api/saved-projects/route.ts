@@ -6,17 +6,22 @@ import {
   getSavedProjectsByUser,
   removeSavedProject,
 } from '@/lib/db/savedProjects'
+import { auth } from '@/auth'
 
 const COOKIE_NAME = 'wld_user_id'
 
-function getOrCreateUserId(req: NextRequest) {
+async function resolveUserId(req: NextRequest): Promise<{ userId: string; isNew: boolean; isAuthenticated: boolean }> {
+  const session = await auth()
+  if (session?.user?.id) {
+    return { userId: `auth:${session.user.id}`, isNew: false, isAuthenticated: true }
+  }
   const existing = req.cookies.get(COOKIE_NAME)?.value
-  if (existing) return { userId: existing, isNew: false }
-  return { userId: randomUUID(), isNew: true }
+  if (existing) return { userId: existing, isNew: false, isAuthenticated: false }
+  return { userId: randomUUID(), isNew: true, isAuthenticated: false }
 }
 
-function withUserCookie(response: NextResponse, userId: string, isNew: boolean) {
-  if (!isNew) return response
+function withUserCookie(response: NextResponse, userId: string, isNew: boolean, isAuthenticated: boolean) {
+  if (!isNew || isAuthenticated) return response
   response.cookies.set(COOKIE_NAME, userId, {
     httpOnly: true,
     sameSite: 'lax',
@@ -41,17 +46,17 @@ async function adjustSaveCount(projectId: string, delta: 1 | -1) {
 }
 
 export async function GET(req: NextRequest) {
-  const { userId, isNew } = getOrCreateUserId(req)
+  const { userId, isNew, isAuthenticated } = await resolveUserId(req)
   const rows = await getSavedProjectsByUser(userId)
   const response = NextResponse.json({
     userId,
     savedProjectIds: rows.map((row) => row.project_id),
   })
-  return withUserCookie(response, userId, isNew)
+  return withUserCookie(response, userId, isNew, isAuthenticated)
 }
 
 export async function POST(req: NextRequest) {
-  const { userId, isNew } = getOrCreateUserId(req)
+  const { userId, isNew, isAuthenticated } = await resolveUserId(req)
   const body = await req.json().catch(() => ({}))
   const projectId = typeof body?.projectId === 'string' ? body.projectId : ''
 
@@ -68,11 +73,11 @@ export async function POST(req: NextRequest) {
     userId,
     savedProjectIds: rows.map((row) => row.project_id),
   })
-  return withUserCookie(response, userId, isNew)
+  return withUserCookie(response, userId, isNew, isAuthenticated)
 }
 
 export async function DELETE(req: NextRequest) {
-  const { userId, isNew } = getOrCreateUserId(req)
+  const { userId, isNew, isAuthenticated } = await resolveUserId(req)
   const projectId = req.nextUrl.searchParams.get('projectId') || ''
 
   if (!projectId) {
@@ -88,5 +93,5 @@ export async function DELETE(req: NextRequest) {
     userId,
     savedProjectIds: rows.map((row) => row.project_id),
   })
-  return withUserCookie(response, userId, isNew)
+  return withUserCookie(response, userId, isNew, isAuthenticated)
 }

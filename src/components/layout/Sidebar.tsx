@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from './Logo'
 import { ArrowRight } from '@/components/ui/ArrowRight'
+import { AuthNav } from './AuthNav'
 
 interface NavItem {
   label: string
@@ -142,7 +143,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="pt-4 border-t border-border">
+      <div className="pt-4 border-t border-border space-y-2">
         <Link
           href="/newsletter"
           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-[13px] font-medium rounded-full bg-wld-ink text-white hover:bg-wld-blue transition-colors"
@@ -150,6 +151,7 @@ export function Sidebar() {
           Subscribe
           <ArrowRight />
         </Link>
+        <AuthNav />
       </div>
     </aside>
   )
