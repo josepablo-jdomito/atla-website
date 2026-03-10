@@ -9,7 +9,7 @@ const TABS: TabItem[] = [
   { label: 'Homepage', href: '/' },
   { label: 'Projects', href: '/projects' },
   { label: 'Articles', href: '/articles' },
-  { label: 'Submit', href: '/submit' },
+  { label: 'FAQs', href: '/faqs' },
   { label: 'Categories', href: '/categories' },
   { label: 'Newsletter', href: '/newsletter' },
 ]

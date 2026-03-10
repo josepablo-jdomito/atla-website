@@ -20,7 +20,9 @@ export function Footer() {
               <Link href="/categories" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Categories</Link>
               <Link href="/submit" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Submit</Link>
               <Link href="/newsletter" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Newsletter</Link>
+              <Link href="/faqs" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">FAQs</Link>
               <Link href="/about" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">About</Link>
+              <Link href="/careers" className="block text-[14px] text-wld-ink hover:text-wld-blue transition-colors">Careers</Link>
             </div>
           </div>
 
@@ -51,6 +53,8 @@ export function Footer() {
           <p className="text-[13px] text-muted">© 2026 WeLoveDaily. An Atla* Group publication.</p>
           <p className="text-[13px] text-muted">
             <Link href="/privacy" className="hover:text-wld-ink transition-colors">Privacy Policy</Link>
+            {' '}·{' '}
+            <Link href="/cookies" className="hover:text-wld-ink transition-colors">Cookie Policy</Link>
             {' '}·{' '}
             <Link href="/terms" className="hover:text-wld-ink transition-colors">Terms of Use</Link>
           </p>
