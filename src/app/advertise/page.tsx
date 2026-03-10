@@ -113,7 +113,7 @@ export default function AdvertisePage() {
               <div className="flex items-center gap-2">
                 <h3 className="text-[16px] font-semibold text-wld-ink">{format.name}</h3>
                 {format.tag && (
-                  <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue bg-[rgba(22,15,207,0.06)] px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-wld-blue bg-[rgb(var(--wld-blue-rgb)/0.08)] px-2 py-0.5 rounded-full">
                     {format.tag}
                   </span>
                 )}

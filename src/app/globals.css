@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --wld-paper-rgb: 252 249 243;
+  --wld-paper-rgb: 238 234 216;
   --wld-white-rgb: 255 255 255;
   --wld-ink-rgb: 18 17 16;
-  --wld-blue-rgb: 22 15 207;
-  --wld-card-rgb: 242 238 230;
+  --wld-blue-rgb: 91 22 212;
+  --wld-card-rgb: 228 224 204;
   --wld-border-rgb: 18 17 16;
   --wld-muted-rgb: 18 17 16;
-  --wld-accent-rgb: 196 80 40;
+  --wld-accent-rgb: 91 22 212;
 }
 
 html,
@@ -24,11 +24,11 @@ html[data-theme='dark'] {
   --wld-paper-rgb: 12 12 11;
   --wld-white-rgb: 20 20 18;
   --wld-ink-rgb: 238 236 230;
-  --wld-blue-rgb: 110 130 255;
+  --wld-blue-rgb: 140 100 255;
   --wld-card-rgb: 26 26 24;
   --wld-border-rgb: 238 236 230;
   --wld-muted-rgb: 238 236 230;
-  --wld-accent-rgb: 220 110 70;
+  --wld-accent-rgb: 140 100 255;
   color-scheme: dark;
 }
 
