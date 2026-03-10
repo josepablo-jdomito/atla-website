@@ -3,5 +3,6 @@ import category from './category'
 import post from './post'
 import homepageConfig from './homepageConfig'
 import savedProject from './savedProject'
+import partner from './partner'
 
-export const schemaTypes = [brand, category, post, homepageConfig, savedProject]
+export const schemaTypes = [brand, category, post, homepageConfig, savedProject, partner]

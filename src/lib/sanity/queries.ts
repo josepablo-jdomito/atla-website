@@ -400,3 +400,25 @@ export const postSlugByIdQuery = groq`
     "categorySlug": category->slug.current
   }
 `
+
+export const partnersPageQuery = groq`
+  *[_type == "partner"] | order(featured desc, order asc, name asc) {
+    _id,
+    name,
+    "slug": slug.current,
+    partnerType,
+    tagline,
+    description,
+    website,
+    location,
+    tags,
+    featured,
+    logo {
+      asset->{
+        _id,
+        url,
+        metadata { dimensions }
+      }
+    }
+  }
+`

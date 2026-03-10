@@ -76,6 +76,21 @@ The Google "Continue with Google" button appears on both login and signup pages.
 ### Apple Sign-in
 Apple Sign-In requires an Apple Developer Program membership. Not yet implemented. Contact for setup guidance.
 
+## Partners Directory
+A curated directory page at `/partners` listing world-class agencies, software, suppliers, etc.
+
+**Sanity schema** (`sanity/schemas/partner.ts`):
+- `name`, `slug`, `logo` (image), `partnerType` (agency/software/supplier/printer/photographer/consultant/studio/other)
+- `tagline` (one-liner for cards), `description` (longer copy), `website` (URL), `location`, `tags[]`, `featured` (bool), `order` (int)
+
+**Behaviour**:
+- `featured: true` partners appear as large cards at the top
+- All other partners appear in a compact directory list below
+- Type filter chips (All, Agency, Software, …) filter both sections client-side
+- Empty state shown if no partners exist yet ("Coming soon")
+
+**How to add partners**: Open Sanity Studio → Partners → New Partner. Fill in the fields. Mark `featured: true` for partners you want highlighted.
+
 ## Filtering Architecture
 All content pages (Homepage, Projects, Articles, Categories) now share the same filter UX:
 

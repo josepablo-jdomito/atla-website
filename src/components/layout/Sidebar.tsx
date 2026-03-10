@@ -16,6 +16,7 @@ const PRIMARY_NAV: NavItem[] = [
   { label: 'Projects', href: '/projects' },
   { label: 'Articles', href: '/articles' },
   { label: 'Categories', href: '/categories' },
+  { label: 'Partners', href: '/partners' },
 ]
 
 const SECONDARY_NAV: NavItem[] = [
