@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { TypeformEmbed } from '@/components/modules/TypeformEmbed'
 import { buildMetadata } from '@/lib/utils/metadata'
+import { AdvertiseForm } from './AdvertiseForm'
 
 export const metadata = buildMetadata({
   title: 'Advertise',
@@ -150,18 +151,7 @@ export default function AdvertisePage() {
         {formId ? (
           <TypeformEmbed formId={formId} height={500} />
         ) : (
-          <div className="p-8 rounded-card border border-border bg-card text-center">
-            <p className="text-[14px] text-muted">
-              Partnership form loading. You can also{' '}
-              <a
-                href="mailto:partnerships@welovedaily.com"
-                className="text-wld-blue hover:underline"
-              >
-                email us directly
-              </a>
-              .
-            </p>
-          </div>
+          <AdvertiseForm />
         )}
       </section>
 
