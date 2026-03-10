@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         }
         // Always revalidate homepage and category pages when a post changes
         revalidatePath('/')
+        revalidatePath('/articles')
         revalidatePath('/category/[slug]', 'page')
         break
       }
