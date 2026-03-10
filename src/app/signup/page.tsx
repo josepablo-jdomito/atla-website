@@ -17,6 +17,14 @@ function GoogleIcon() {
   )
 }
 
+function AppleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.39.07 2.35.77 3.17.8 1.21-.24 2.37-.96 3.67-.84 1.57.13 2.75.75 3.52 1.92-3.23 1.95-2.7 6.23.79 7.45-.55 1.56-1.28 3.1-3.15 3.53zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+    </svg>
+  )
+}
+
 export default function SignupPage() {
   const router = useRouter()
 
@@ -76,20 +84,32 @@ export default function SignupPage() {
           <p className="mt-2 text-[13px] text-muted">Join WeLoveDaily — it&apos;s free</p>
         </div>
 
-        {/* Google sign-up */}
-        <button
-          type="button"
-          onClick={handleGoogle}
-          disabled={googleLoading}
-          className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-border bg-wld-white text-[13px] font-medium text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.3)] hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-wait mb-5"
-        >
-          {googleLoading ? (
-            <div className="w-4 h-4 border-2 border-border border-t-wld-ink rounded-full animate-spin" />
-          ) : (
-            <GoogleIcon />
-          )}
-          Continue with Google
-        </button>
+        {/* OAuth buttons */}
+        <div className="grid grid-cols-2 gap-2.5 mb-5">
+          <button
+            type="button"
+            onClick={handleGoogle}
+            disabled={googleLoading}
+            className="flex items-center justify-center gap-2.5 h-11 rounded-xl border border-border bg-wld-white text-[13px] font-medium text-wld-ink hover:border-[rgb(var(--wld-ink-rgb)/0.3)] hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-wait"
+          >
+            {googleLoading ? (
+              <div className="w-4 h-4 border-2 border-border border-t-wld-ink rounded-full animate-spin" />
+            ) : (
+              <GoogleIcon />
+            )}
+            Google
+          </button>
+
+          <button
+            type="button"
+            disabled
+            title="Apple sign-in coming soon"
+            className="flex items-center justify-center gap-2.5 h-11 rounded-xl border border-border bg-wld-white text-[13px] font-medium text-wld-ink opacity-40 cursor-not-allowed"
+          >
+            <AppleIcon />
+            Apple
+          </button>
+        </div>
 
         <div className="flex items-center gap-3 mb-5">
           <div className="flex-1 h-px bg-border" />
