@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,600");
-
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -62,6 +61,15 @@
 @keyframes spin {
   to {
     transform: rotate(1turn);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 

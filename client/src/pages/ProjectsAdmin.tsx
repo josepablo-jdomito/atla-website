@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -320,6 +320,14 @@ export default function ProjectsAdmin() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editProject, setEditProject] = useState<Project | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => { document.head.removeChild(meta); };
+  }, []);
 
   const { data: projectList = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],

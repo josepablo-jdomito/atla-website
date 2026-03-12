@@ -19,9 +19,14 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
   - `POST /api/projects` — create project
   - `PATCH /api/projects/:id` — update project
   - `DELETE /api/projects/:id` — delete project
-- **Figma assets**: served from `client/public/figmaAssets/`
+- **Figma assets**: served from `client/public/figmaAssets/` (logo `p-framer-text.png`, toggle icons, media, photos, hero, symbol)
 - **Mockup sandbox**: live component previews at `/__mockup/preview/atla/*`
 - **Shared layout modules**: `client/src/components/atla/AtlaNav.tsx` (navbar + mobile menu overlay) and `client/src/components/atla/AtlaFooter.tsx` — import and drop into any page
+- **Pages**:
+  - `/` → `client/src/pages/ElementDefault.tsx` — Home (1200×750px gallery + bottom strip)
+  - `/about` → `client/src/pages/AtlaAbout.tsx` — About (hero + About/Team/Services/Clients/Honors sections)
+  - `/admin/projects` → `client/src/pages/ProjectsAdmin.tsx` — CMS admin
+- **Fonts**: Libre Franklin + Roboto Mono (Google Fonts via `<link>` in index.html), ABC Synt Variable Unlicensed Trial + PP Playground (local fallback via `@font-face`)
 
 ## Vercel Deployment
 

@@ -1,81 +1,57 @@
-const LIBRE_FRANKLIN = "'Libre Franklin', Helvetica, sans-serif";
+import { useState, useEffect } from "react";
+
+const LIBRE = "'Libre Franklin', Helvetica, sans-serif";
 const ABC_SYNT = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
+const ROBOTO = "'Roboto Mono', monospace";
 
-const NAV_FONT = {
-  fontFamily: LIBRE_FRANKLIN,
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "110%",
-} as const;
-
-const LIST_FONT = {
-  fontFamily: LIBRE_FRANKLIN,
-  fontSize: 14,
-  fontWeight: 400,
-  lineHeight: "21px",
-  textTransform: "uppercase" as const,
-  letterSpacing: 0.28,
-};
-
-const SECTION_TITLE = {
-  fontFamily: ABC_SYNT,
-  fontSize: 140,
-  fontWeight: 400,
-  lineHeight: "110%",
-  fontStyle: "italic" as const,
-  color: "#222",
-  margin: 0,
-};
-
-const team = [
-  {
-    name: "Luis Pablo Rodriguez",
-    role: "Creative Direction",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Pablo Cruz",
-    role: "Art Direction",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Lia Medina",
-    role: "Visual Design",
-    photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Mariana Avila",
-    role: "Brand Strategy",
-    photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Tali Sarant",
-    role: "Motion Design",
-    photo: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Adriana Becerra",
-    role: "Account Lead",
-    photo: "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=400&q=80&fit=crop",
-  },
-  {
-    name: "Abel Bueno Guaranayo",
-    role: "Creative Development",
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80&fit=crop",
-  },
+const LEFT_NAV = [
+  { label: "Work", href: "#work" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "#services" },
 ];
-
-const services = [
-  { name: "Brand Identity", desc: "Wordmarks, logotypes, visual language systems" },
-  { name: "Art Direction", desc: "Campaign, photography, editorial direction" },
-  { name: "Motion Design", desc: "Film, animation, kinetic identity" },
-  { name: "Web Design", desc: "Interaction design, frontend, CMS" },
-  { name: "Packaging", desc: "Structural design, print production" },
-  { name: "3D Visualization", desc: "Renders, product visualizations, environments" },
+const RIGHT_NAV = [
+  { label: "Journal", href: "#journal" },
+  { label: "Contact", href: "#contact" },
 ];
+const NAV_LINKS = [
+  { label: "Work", href: "#work" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "#services" },
+  { label: "Careers", href: "#careers" },
+  { label: "Journal", href: "#journal" },
+  { label: "Contact", href: "#contact" },
+];
+const SOCIALS = [{ label: "Instagram" }, { label: "Behance" }, { label: "Linkedin" }, { label: "Facebook" }];
+const OFFICES = [
+  { city: "Austin, US", tz: "America/Chicago" },
+  { city: "CDMX, MX", tz: "America/Mexico_City" },
+  { city: "Caracas, VZ", tz: "America/Caracas" },
+  { city: "Lima, PE", tz: "America/Lima" },
+  { city: "Tijuana, MX", tz: "America/Tijuana" },
+];
+const FORMATTERS = Object.fromEntries(OFFICES.map(({ city, tz }) => [city, new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: tz })]));
+function computeTimes() { const now = new Date(); return Object.fromEntries(OFFICES.map(({ city }) => [city, FORMATTERS[city].format(now)])); }
 
-const clients = [
+const LF_LINK: React.CSSProperties = { fontFamily: LIBRE, fontSize: 14, fontWeight: 500, letterSpacing: 0.28, lineHeight: "1.1", color: "#222", textDecoration: "none", whiteSpace: "nowrap" };
+const LFB = (s: React.CSSProperties = {}): React.CSSProperties => ({ fontFamily: LIBRE, fontSize: 14, fontWeight: 700, lineHeight: "1.1", color: "#222", margin: 0, ...s });
+const LFM = (s: React.CSSProperties = {}): React.CSSProperties => ({ fontFamily: LIBRE, fontSize: 14, fontWeight: 500, letterSpacing: 0.28, lineHeight: "1.1", color: "#222", textDecoration: "none", margin: 0, ...s });
+const SM: React.CSSProperties = { fontFamily: LIBRE, fontSize: 12, fontWeight: 600, letterSpacing: 0.48, lineHeight: "1.2", color: "#222", textTransform: "uppercase", margin: 0 };
+const LF_REG18: React.CSSProperties = { fontFamily: LIBRE, fontSize: 18, fontWeight: 400, lineHeight: "1.1", color: "#222", margin: 0 };
+const LF_SB12: React.CSSProperties = { fontFamily: LIBRE, fontSize: 12, fontWeight: 600, letterSpacing: 0.48, lineHeight: "1.2", color: "#8e8e8e", textTransform: "uppercase", margin: 0 };
+const RM14: React.CSSProperties = { fontFamily: ROBOTO, fontSize: 14, fontWeight: 400, lineHeight: "21px", color: "#222", textTransform: "uppercase", margin: 0 };
+const RM14G: React.CSSProperties = { ...RM14, color: "#8e8e8e" };
+
+const TEAM = [
+  { name: "Jose Pablo Dominguez", role: "( Founder & Creative Director )", src: "/figmaAssets/photo-1.jpg" },
+  { name: "Paola Diaz", role: "( COO )", src: "/figmaAssets/photo-2.jpg" },
+  { name: "Levi Ramirez", role: "( Head of Growth )", src: "/figmaAssets/photo-3.jpg" },
+  { name: "Mariela Alata", role: "( Project Manager )", src: "/figmaAssets/photo-4.jpg" },
+  { name: "Tais Kahatt", role: "( Art Director )", src: "/figmaAssets/photo-4.jpg" },
+  { name: "Adriana Mendez", role: "( Brand designer )", src: "/figmaAssets/photo-4.jpg" },
+  { name: "José Aceves Covarrubias", role: "( Brand designer )", src: "/figmaAssets/photo-3.jpg" },
+];
+const SERVICES = ["Creative direction", "Brand strategy", "Identity", "Digital design", "Motion", "Print and packaging", "Art direction", "Copywriting", "Tone of voice"];
+const CLIENTS = [
   { name: "Aurel Studios", sphere: "Fashion" },
   { name: "Lior Atelier", sphere: "Film & Production" },
   { name: "Onera Creative", sphere: "Industrial" },
@@ -85,104 +61,31 @@ const clients = [
   { name: "Aerith Agency", sphere: "Creative Consulting" },
   { name: "Orza Objects", sphere: "3D Visualization" },
 ];
-
-const honors = [
-  { org: "Awwwards", category: "Website of the Day", count: "x2" },
-  { org: "Creative Web Awards", category: "Best Visual Identity", count: "x5" },
-  { org: "Excellence in Motion", category: "Direction", count: "x1" },
-  { org: "CSS Design Awards", category: "Innovation & UX", count: "x3" },
-  { org: "FWA Awards", category: "Cutting Edge Design", count: "x1" },
-  { org: "Motion Design Awards", category: "Best Experimental Film", count: "x2" },
+const HONORS = [
+  { award: "Awwwards", title: "Website of the Day", count: "x4" },
+  { award: "Awwwards", title: "Website of the Month", count: "x2" },
+  { award: "ADC Awards", title: "Excellence in Motion Direction", count: "x1" },
 ];
 
-const press = [
-  { project: "Solari House", outlet: "Designboom" },
-  { project: "Flux Division", outlet: "Motionographer" },
-  { project: "Alté Agency", outlet: "Its Nice That" },
-  { project: "Onera Visual", outlet: "The Dieline" },
-  { project: "Lumae Interiors", outlet: "ArchDaily" },
-  { project: "Klyra Launch", outlet: "Brand New" },
-];
-
-import { useState, useEffect } from "react";
-
-const footerNav = ["Work", "About", "Services", "Careers", "Journal", "Contact"];
-const footerSocials = ["Instagram", "Behance", "Linkedin", "Facebook"];
-const OFFICE_TZS = [
-  { city: "Austin, US", tz: "America/Chicago" },
-  { city: "CDMX, MX", tz: "America/Mexico_City" },
-  { city: "Caracas, VZ", tz: "America/Caracas" },
-  { city: "Lima, PE", tz: "America/Lima" },
-  { city: "Tijuana, MX", tz: "America/Tijuana" },
-];
-function useOfficeTimes() {
-  const compute = () => {
-    const now = new Date();
-    const r: Record<string, string> = {};
-    OFFICE_TZS.forEach(({ city, tz }) => {
-      r[city] = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: tz }).format(now);
-    });
-    return r;
-  };
-  const [times, setTimes] = useState<Record<string, string>>(compute);
-  useEffect(() => {
-    const id = setInterval(() => setTimes(compute()), 10000);
-    return () => clearInterval(id);
-  }, []);
-  return times;
-}
-
-function useContactTimes() {
-  const compute = () => {
-    const now = new Date();
-    const r: Record<string, string> = {};
-    OFFICE_TZS.forEach(({ city, tz }) => {
-      r[city] = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true, timeZone: tz,
-      }).format(now);
-    });
-    return r;
-  };
-  const [times, setTimes] = useState<Record<string, string>>(compute);
-  useEffect(() => {
-    const id = setInterval(() => setTimes(compute()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  return times;
-}
-
-function Nav() {
+function NavBar() {
   return (
-    <nav className="flex w-full items-end justify-between px-5" style={{ height: 50 }}>
-      <div className="flex items-center gap-3.5 flex-1">
-        {["Work", "About", "Services"].map((link) => (
-          <a key={link} href="#" className="text-[#222] no-underline" style={NAV_FONT}>
-            {link}
-          </a>
-        ))}
+    <nav style={{ display: "flex", width: "100%", height: 50, alignItems: "flex-end", justifyContent: "space-between", padding: "0 20px", boxSizing: "border-box", flexShrink: 0 }}>
+      <div style={{ flex: "1 0 0", display: "flex", alignItems: "center", gap: 14 }}>
+        {LEFT_NAV.map((l) => <a key={l.label} href={l.href} style={LF_LINK}>{l.label}</a>)}
       </div>
-      <div className="flex flex-1 justify-center">
-        <img
-          alt="Atla Logo"
-          src="/__mockup/figmaAssets/p-framer-text.svg"
-          style={{ height: 28, objectFit: "contain" }}
-        />
+      <div style={{ flex: "1 0 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ position: "relative", width: 68.195, height: 28, flexShrink: 0 }}>
+          <img alt="Atla" src="/figmaAssets/p-framer-text.png" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+        </div>
       </div>
-      <div className="flex items-end justify-end gap-3.5 flex-1">
-        {["Journal", "Contact"].map((link) => (
-          <a key={link} href="#" className="text-[#222] no-underline" style={NAV_FONT}>
-            {link}
-          </a>
-        ))}
-        {/* Light/dark toggle icons */}
-        <div style={{ display: "flex", alignItems: "center", height: 20, flexShrink: 0 }}>
+      <div style={{ flex: "1 0 0", display: "flex", alignItems: "flex-end", justifyContent: "flex-end", gap: 14 }}>
+        {RIGHT_NAV.map((l) => <a key={l.label} href={l.href} style={LF_LINK}>{l.label}</a>)}
+        <div style={{ display: "flex", alignItems: "center", height: 20 }}>
           <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
-            <img alt="Light mode" src="/__mockup/figmaAssets/toggle-sun.png"
-              style={{ position: "absolute", width: "100%", height: "100%", objectFit: "contain" }} />
+            <img alt="Light mode" src="/figmaAssets/toggle-sun.png" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
           </div>
           <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
-            <img alt="Dark mode" src="/__mockup/figmaAssets/toggle-moon.png"
-              style={{ position: "absolute", width: "100%", height: "100%", objectFit: "contain" }} />
+            <img alt="Dark mode" src="/figmaAssets/toggle-moon.png" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
           </div>
         </div>
       </div>
@@ -190,421 +93,171 @@ function Nav() {
   );
 }
 
-function HeroSection() {
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative w-full" style={{ height: 750, backgroundColor: "#fafafa" }}>
-      <div
-        className="absolute flex flex-col items-start"
-        style={{ right: 20, top: 120, width: 548 }}
-      >
-        <p
-          style={{
-            fontFamily: ABC_SYNT,
-            fontSize: 64,
-            fontWeight: 400,
-            lineHeight: "110%",
-            color: "#222",
-            fontStyle: "italic",
-            margin: 0,
-          }}
-        >
-          {`We design brands that go beyond just looking good—it's central to the brand itself.`}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AboutSection() {
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={SECTION_TITLE}>About</p>
-      </div>
-      <div className="flex flex-col gap-8" style={{ width: 615 }}>
-        <p
-          style={{
-            ...NAV_FONT,
-            lineHeight: "110%",
-            color: "#222",
-          }}
-        >
-          At Atla, we believe design is more than aesthetics — it&apos;s the bridge between a
-          brand&apos;s core values and its audience. Founded in 2019, we&apos;ve worked with
-          companies across industries to build visual identities that communicate with clarity
-          and purpose. Every project starts with a deep understanding of the brand and ends
-          with a design system built to scale.
-        </p>
-        <p
-          style={{
-            ...NAV_FONT,
-            lineHeight: "110%",
-            color: "#222",
-          }}
-        >
-          We operate across the US and LATAM, partnering with founders, creative directors,
-          and brand teams who understand that design is a strategic asset. Our studio is small
-          by design — focused, deliberate, and deeply committed to craft.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function TeamSection() {
-  const rows = [
-    team.slice(0, 2),
-    team.slice(2, 4),
-    team.slice(4, 7),
-  ];
-
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={SECTION_TITLE}>Team</p>
-      </div>
-      <div className="flex flex-col gap-10" style={{ width: 615 }}>
-        {rows.map((row, ri) => (
-          <div key={ri} className="flex gap-5">
-            {row.map((member) => (
-              <div key={member.name} className="flex flex-col gap-3 flex-1">
-                <div
-                  style={{
-                    aspectRatio: "290/370",
-                    overflow: "hidden",
-                    width: "100%",
-                  }}
-                >
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
-                  />
-                </div>
-                <div>
-                  <p
-                    style={{
-                      fontFamily: LIBRE_FRANKLIN,
-                      fontSize: 14,
-                      fontWeight: 500,
-                      lineHeight: "110%",
-                      letterSpacing: 0.28,
-                      color: "#222",
-                      margin: 0,
-                    }}
-                  >
-                    {member.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: LIBRE_FRANKLIN,
-                      fontSize: 12,
-                      fontWeight: 400,
-                      lineHeight: "120%",
-                      letterSpacing: 0.48,
-                      color: "#8e8e8e",
-                      textTransform: "uppercase",
-                      margin: 0,
-                      marginTop: 4,
-                    }}
-                  >
-                    {member.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ServicesSection() {
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={SECTION_TITLE}>Services</p>
-      </div>
-      <div className="flex flex-col" style={{ width: 615, gap: 0 }}>
-        {services.map((s) => (
-          <div
-            key={s.name}
-            style={{
-              borderTop: "1px solid #e0e0e0",
-              paddingTop: 12,
-              paddingBottom: 12,
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 20,
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{s.name}</p>
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ ...LIST_FONT, color: "#8e8e8e", margin: 0 }}>{s.desc}</p>
-            </div>
-          </div>
-        ))}
-        <div style={{ borderTop: "1px solid #e0e0e0" }} />
-      </div>
-    </div>
-  );
-}
-
-function ClientsSection() {
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={SECTION_TITLE}>Clients</p>
-      </div>
-      <div className="flex flex-col" style={{ width: 615, gap: 4 }}>
-        {clients.map((c) => (
-          <div key={c.name} className="flex items-start w-full">
-            <div className="flex-1">
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{c.name}</p>
-            </div>
-            <div className="flex-1">
-              <p style={{ ...LIST_FONT, color: "#8e8e8e", margin: 0 }}>{c.sphere}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HonorsSection() {
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={{ ...SECTION_TITLE, whiteSpace: "nowrap" }}>Honors</p>
-      </div>
-      <div className="flex flex-col" style={{ width: 615, gap: 4 }}>
-        {honors.map((h) => (
-          <div key={h.org + h.category} className="flex items-start w-full">
-            <div style={{ width: 285 }}>
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{h.org}</p>
-            </div>
-            <div style={{ width: 190 }}>
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{h.category}</p>
-            </div>
-            <div style={{ width: 95, textAlign: "right" }}>
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{h.count}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function PressSection() {
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={{ ...SECTION_TITLE, whiteSpace: "nowrap" }}>Press</p>
-      </div>
-      <div className="flex flex-col" style={{ width: 615, gap: 6 }}>
-        {press.map((p) => (
-          <div key={p.project} className="flex gap-5 items-start w-full">
-            <div className="flex-1">
-              <p style={{ ...LIST_FONT, color: "#222", margin: 0 }}>{p.project}</p>
-            </div>
-            <div className="flex-1">
-              <p style={{ ...LIST_FONT, color: "#222", opacity: 0.6, margin: 0 }}>{p.outlet}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ContactSection() {
-  const times = useContactTimes();
-  return (
-    <div className="flex items-start justify-between w-full">
-      <div className="flex-1">
-        <p style={{ ...SECTION_TITLE, whiteSpace: "nowrap" }}>Contact</p>
-      </div>
-      {/* Figma: Addresses — city name 32px Libre Franklin Regular + live full clock */}
-      <div
-        style={{
-          width: 615,
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          alignItems: "flex-start",
-          justifyContent: "center",
-        }}
-      >
-        {OFFICE_TZS.map(({ city }) => (
-          <div
-            key={city}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-              gap: 10,
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <p
-                style={{
-                  fontFamily: LIBRE_FRANKLIN,
-                  fontSize: 32,
-                  fontWeight: 400,
-                  lineHeight: "110%",
-                  color: "#222",
-                  margin: 0,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {city}
-              </p>
-            </div>
-            <div
-              style={{
-                fontFamily: LIBRE_FRANKLIN,
-                fontSize: 14,
-                fontWeight: 500,
-                letterSpacing: 0.28,
-                lineHeight: "110%",
-                color: "#222",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {times[city] ?? "--:--:-- --"}
-            </div>
-          </div>
-        ))}
-      </div>
+    <div style={{ flex: "1 0 0", minWidth: 0 }}>
+      <p style={{ fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif", fontSize: 140, fontWeight: 500, lineHeight: "1.1", color: "#222", margin: 0, whiteSpace: "nowrap" }}>
+        {children}
+      </p>
     </div>
   );
 }
 
 function Footer() {
-  const times = useOfficeTimes();
+  const [times, setTimes] = useState<Record<string, string>>(computeTimes);
+  useEffect(() => { const id = setInterval(() => setTimes(computeTimes()), 10000); return () => clearInterval(id); }, []);
+
   return (
-    <div
-      className="w-full flex flex-col items-start justify-end"
-      style={{ backgroundColor: "#ffc629", minHeight: 750, width: 1200 }}
-    >
-      <div className="flex flex-col gap-12 items-start p-5 w-full">
-        <div className="flex items-start justify-between w-full">
-          <div className="flex-1 flex flex-col" style={{ gap: 240 }}>
-            <div
-              className="flex items-start w-full"
-              style={{
-                ...NAV_FONT,
-                color: "#222",
-                gap: 72,
-              }}
-            >
-              <div className="flex flex-col gap-6">
-                <p style={{ fontWeight: 700, fontSize: 14, lineHeight: "110%", margin: 0 }}>Atla</p>
-                <div className="flex flex-col gap-3">
-                  {footerNav.map((item) => (
-                    <p key={item} style={{ fontSize: 14, lineHeight: "110%", fontWeight: 500, margin: 0 }}>
-                      {item}
-                    </p>
-                  ))}
+    <footer style={{ backgroundColor: "#ffc629", width: "100%", minHeight: 750, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", boxSizing: "border-box" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 48, alignItems: "flex-start", padding: 20, width: "100%", boxSizing: "border-box" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 240, alignItems: "flex-start", minWidth: 0 }}>
+            <div style={{ display: "flex", gap: 72, alignItems: "flex-start" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                <p style={LFB()}>Atla</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {NAV_LINKS.map((l) => <a key={l.label} href={l.href} style={LFM()}>{l.label}</a>)}
                 </div>
               </div>
-              <div className="flex flex-col gap-6">
-                <p style={{ fontWeight: 700, fontSize: 14, lineHeight: "110%", margin: 0 }}>Socials</p>
-                <div className="flex flex-col gap-3">
-                  {footerSocials.map((item) => (
-                    <p key={item} style={{ fontSize: 14, lineHeight: "110%", fontWeight: 500, margin: 0 }}>
-                      {item}
-                    </p>
-                  ))}
+              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                <p style={LFB()}>Socials</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {SOCIALS.map((s) => <a key={s.label} href="#" style={LFM()}>{s.label}</a>)}
                 </div>
               </div>
-              <div className="flex flex-col gap-6" style={{ width: 140 }}>
-                <p style={{ fontWeight: 700, fontSize: 14, lineHeight: "110%", margin: 0 }}>Offices</p>
-                <div className="flex flex-col gap-3 w-full">
-                  {OFFICE_TZS.map(({ city }) => (
-                    <div key={city} className="flex items-start justify-between w-full">
-                      <p style={{ fontWeight: 700, fontSize: 14, lineHeight: "110%", margin: 0 }}>
-                        {city}
-                      </p>
-                      <p style={{ fontSize: 14, lineHeight: "110%", fontWeight: 500, margin: 0 }}>
-                        {times[city] ?? "--:--"}
-                      </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 140 }}>
+                <p style={LFB()}>Offices</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
+                  {OFFICES.map(({ city }) => (
+                    <div key={city} style={{ display: "flex", justifyContent: "space-between" }}>
+                      <p style={LFB()}>{city}</p>
+                      <p style={LFM()}>{times[city]}</p>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
             <div style={{ width: 320 }}>
-              <p style={{ ...NAV_FONT, color: "#222", lineHeight: "110%", margin: 0 }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-                libero et velit interdum, ac aliquet odio mattis. Class aptent taciti
-                sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-              </p>
+              <p style={LFM()}>Atla is a design studio for brands across the US and Latin America. We build identities that communicate with clarity and purpose.</p>
             </div>
           </div>
-          <div className="flex items-start justify-end self-stretch">
-            <img
-              alt="Atla Symbol"
-              src="/__mockup/figmaAssets/atla-symbol.png"
-              style={{ height: "100%", width: "auto", objectFit: "contain" }}
-            />
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", alignSelf: "stretch", flexShrink: 0 }}>
+            <img alt="Atla" src="/figmaAssets/atla-symbol.png" style={{ height: "100%", width: "auto", objectFit: "contain", display: "block" }} />
           </div>
         </div>
-        <div className="flex flex-col gap-3 items-end justify-end w-full">
-          <div className="w-full relative" style={{ height: 0 }}>
-            <img alt="" src="/__mockup/figmaAssets/line-divider.png" className="block w-full" style={{ position: "absolute", top: -1, left: 0, width: "100%", height: "auto" }} />
-          </div>
-          <div
-            className="flex items-center justify-between w-full"
-            style={{
-              fontFamily: LIBRE_FRANKLIN,
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: 0.48,
-              lineHeight: "120%",
-              color: "#222",
-              textTransform: "uppercase",
-            }}
-          >
-            <p style={{ margin: 0 }}>Back to top ↑</p>
-            <p style={{ margin: 0 }}>2026 Atla® All Rights Reserved.</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-end", width: "100%" }}>
+          <div style={{ width: "100%", height: 1, backgroundColor: "#222" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+            <p style={SM}>Back to top ↑</p>
+            <p style={SM}>2026 Atla® All Rights Reserved.</p>
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }
 
 export function AtlaAbout() {
   return (
-    <div
-      style={{ fontFamily: LIBRE_FRANKLIN }}
-      className="flex flex-col items-start w-full bg-[#fafafa]"
-    >
-      <div className="flex flex-col items-center" style={{ width: 1200 }}>
-        <div className="flex flex-col items-end overflow-hidden w-full">
-          <Nav />
-          <HeroSection />
-          <div
-            className="flex flex-col items-start justify-center w-full"
-            style={{ paddingTop: 120, paddingBottom: 240, paddingLeft: 20, paddingRight: 20, gap: 240 }}
-          >
-            <AboutSection />
-            <TeamSection />
-            <ServicesSection />
-            <ClientsSection />
-            <HonorsSection />
-            <PressSection />
-            <ContactSection />
-          </div>
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fafafa" }}>
+
+      {/* Hero */}
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: 1200, minHeight: 750, position: "relative", backgroundColor: "#fafafa", overflow: "clip", flexShrink: 0 }}>
+        <NavBar />
+        <div style={{ position: "absolute", inset: 0, top: 0, left: 0, width: "100%", height: 750 }}>
+          <img src="/figmaAssets/about-hero.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }} />
+        </div>
+        <div style={{ position: "absolute", left: 565, top: 200, width: 635 }}>
+          <p style={{ fontFamily: ABC_SYNT, fontSize: 64, fontWeight: 400, fontStyle: "normal", lineHeight: "1.1", color: "#222", width: 548.72, margin: 0 }}>
+            We design brands that go beyond just looking good—it's central to the brand itself.
+          </p>
         </div>
       </div>
-      <Footer />
+
+      {/* Content sections */}
+      <div style={{ width: "100%", maxWidth: 1200, display: "flex", flexDirection: "column", gap: 240, alignItems: "flex-start", padding: "120px 20px 240px", boxSizing: "border-box" }}>
+
+        {/* About */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <SectionTitle>About</SectionTitle>
+          <div style={{ width: 615, flexShrink: 0 }}>
+            <div style={{ width: 456 }}>
+              <p style={LF_REG18}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur tempus urna at turpis condimentum lobortis. Ut commodo efficitur neque. Ut diam quam, semper iaculis condimentum ac, vestibulum eu nisl.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Team */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <SectionTitle>Team</SectionTitle>
+          <div style={{ width: 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 36 }}>
+            {Array.from({ length: Math.ceil(TEAM.length / 2) }, (_, rowIdx) => (
+              <div key={rowIdx} style={{ display: "flex", gap: 24, alignItems: "center" }}>
+                {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).map((member, idx) => (
+                  <div key={idx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, overflow: "hidden" }}>
+                    <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", overflow: "clip" }}>
+                      <img src={member.src} alt={member.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
+                      <p style={{ ...LF_REG18, textAlign: "center", whiteSpace: "nowrap" }}>{member.name}</p>
+                      <p style={LF_SB12}>{member.role}</p>
+                    </div>
+                  </div>
+                ))}
+                {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).length < 2 && (
+                  <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", backgroundColor: "#fafafa", overflow: "clip", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <img src="/figmaAssets/atla-symbol-small.png" alt="Atla" style={{ width: 35.691, height: 64, objectFit: "contain", display: "block" }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Services */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <SectionTitle>Services</SectionTitle>
+          <div style={{ width: 615, flexShrink: 0 }}>
+            {SERVICES.map((s, i) => <p key={i} style={RM14}>{s}</p>)}
+          </div>
+        </div>
+
+        {/* Clients */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <SectionTitle>Clients</SectionTitle>
+          <div style={{ width: 615, flexShrink: 0 }}>
+            {CLIENTS.map((c, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start" }}>
+                <div style={{ flex: "1 0 0" }}><p style={RM14}>{c.name}</p></div>
+                <div style={{ flex: "1 0 0" }}><p style={RM14G}>{c.sphere}</p></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Honors */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <SectionTitle>Honors</SectionTitle>
+          <div style={{ width: 615, flexShrink: 0 }}>
+            {HONORS.map((h, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start" }}>
+                <div style={{ width: 285, flexShrink: 0 }}><p style={RM14}>{h.award}</p></div>
+                <div style={{ width: 190, flexShrink: 0 }}><p style={RM14}>{h.title}</p></div>
+                <div style={{ width: 95, flexShrink: 0, textAlign: "right" }}><p style={{ ...RM14, textAlign: "right" }}>{h.count}</p></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 1200 }}>
+        <Footer />
+      </div>
     </div>
   );
 }
+
+export default AtlaAbout;

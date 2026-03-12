@@ -6,11 +6,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { ElementDefault } from "@/pages/ElementDefault";
 import ProjectsAdmin from "@/pages/ProjectsAdmin";
+import AtlaAbout from "@/pages/AtlaAbout";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={ElementDefault} />
+      <Route path="/about" component={AtlaAbout} />
       <Route path="/admin/projects" component={ProjectsAdmin} />
       <Route component={NotFound} />
     </Switch>
