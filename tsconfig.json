@@ -1,6 +1,6 @@
 {
-  "include": ["client/src/**/*", "client/index.html", "vite.config.ts"],
-  "exclude": ["node_modules", "build", "dist", "**/*.test.ts", "studio"],
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",

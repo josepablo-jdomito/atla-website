@@ -4,19 +4,15 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import { HomePage } from "@/pages/HomePage";
-import { ProjectPage } from "@/pages/ProjectPage";
-import { WorkPage } from "@/pages/WorkPage";
+import { ElementDefault } from "@/pages/ElementDefault";
 import ProjectsAdmin from "@/pages/ProjectsAdmin";
+import AtlaAbout from "@/pages/AtlaAbout";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
-      <Route path="/work" component={WorkPage} />
-      <Route path="/work/:slug">
-        {(params) => <ProjectPage slug={params.slug} />}
-      </Route>
+      <Route path="/" component={ElementDefault} />
+      <Route path="/about" component={AtlaAbout} />
       <Route path="/admin/projects" component={ProjectsAdmin} />
       <Route component={NotFound} />
     </Switch>
