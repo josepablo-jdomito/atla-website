@@ -34,7 +34,7 @@ export type SanityProject = {
   tags: string[];
 };
 
-const fallbackSiteSettings: SiteSettings = {
+export const fallbackSiteSettings: SiteSettings = {
   title: "Atla",
   tagline: "Design with intention",
   intro:

@@ -43,7 +43,59 @@ npm run dev
 3. Start the Studio in `studio/` and publish:
    - one `Site Settings` document
    - one or more `Project` documents with `status = published`
+   - blog `Category` and `Author` documents
+   - one or more blog `Post` documents with `status = published`
 4. Mark featured projects with `featured = true` to surface them on the homepage.
+
+## Sanity content model
+
+### Portfolio projects
+
+Each project supports:
+
+- title
+- slug
+- client
+- year
+- category
+- description
+- body
+- cover image
+- gallery
+- tags
+- featured
+- status
+
+### Blog content
+
+The Studio now also includes:
+
+- `Author`
+- `Category`
+- `Post`
+
+Each post supports:
+
+- title
+- slug
+- excerpt
+- published date
+- author
+- category
+- tags
+- cover image
+- body
+- seo title
+- seo description
+- featured
+- status
+
+Recommended media guidance:
+
+- cover images: at least 2000px wide
+- OG/share images: 1200x630
+- gallery/editorial images: 1600px to 2400px on the long side
+- always add alt text
 
 ## Vercel
 
