@@ -3,6 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import { fetchJournalArticleBySlugFromSanity, fetchJournalArticlesFromSanity } from "./sanity/journalService.ts";
+import {
+  fetchProjectBySlugOrIdFromSanity,
+  fetchProjectsFromSanity,
+  isProjectSanityConfigured,
+} from "./sanity/projectService.ts";
 
 const ADMIN_COOKIE_NAME = "atla_admin_session";
 
@@ -64,6 +69,12 @@ export async function registerRoutes(
 
   app.get("/api/projects", async (req, res) => {
     try {
+      if (isProjectSanityConfigured()) {
+        const { featured } = req.query;
+        const data = await fetchProjectsFromSanity({ featured: featured === "true" });
+        return res.json(data);
+      }
+
       const { featured } = req.query;
       const data = featured === "true"
         ? await storage.getFeaturedProjects()
@@ -78,6 +89,12 @@ export async function registerRoutes(
   app.get("/api/projects/:slugOrId", async (req, res) => {
     try {
       const { slugOrId } = req.params;
+      if (isProjectSanityConfigured()) {
+        const project = await fetchProjectBySlugOrIdFromSanity(slugOrId);
+        if (!project) return res.status(404).json({ error: "Project not found" });
+        return res.json(project);
+      }
+
       const project =
         await storage.getProjectBySlug(slugOrId) ??
         await storage.getProjectById(slugOrId);
@@ -89,6 +106,9 @@ export async function registerRoutes(
   });
 
   app.post("/api/projects", async (req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+    }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -108,6 +128,9 @@ export async function registerRoutes(
   });
 
   app.patch("/api/projects/:id", async (req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+    }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -128,6 +151,9 @@ export async function registerRoutes(
   });
 
   app.delete("/api/projects/:id", async (req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+    }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
     }
