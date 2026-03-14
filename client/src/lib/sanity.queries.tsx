@@ -162,11 +162,44 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   }
 
   const data = await sanityClient.fetch<Partial<SiteSettings> | null>(siteSettingsQuery);
+  const servicesValue = data?.services as unknown;
+  const officesValue = data?.offices as unknown;
+
+  const normalizedServices = Array.isArray(servicesValue)
+    ? servicesValue.filter((service): service is string => typeof service === "string" && service.trim().length > 0)
+    : [];
+  const normalizedOffices = Array.isArray(officesValue)
+    ? officesValue
+        .map((office) => {
+          if (typeof office === "string") {
+            return { city: office, label: office.slice(0, 2).toUpperCase() };
+          }
+
+          if (
+            office &&
+            typeof office === "object" &&
+            "city" in office &&
+            typeof office.city === "string" &&
+            office.city.trim().length > 0
+          ) {
+            const label =
+              "label" in office && typeof office.label === "string" && office.label.trim().length > 0
+                ? office.label
+                : office.city.slice(0, 2).toUpperCase();
+
+            return { city: office.city, label };
+          }
+
+          return null;
+        })
+        .filter((office): office is { city: string; label: string } => Boolean(office))
+    : [];
+
   return {
     ...fallbackSiteSettings,
     ...data,
-    services: data?.services?.length ? data.services : fallbackSiteSettings.services,
-    offices: data?.offices?.length ? data.offices : fallbackSiteSettings.offices,
+    services: normalizedServices.length ? normalizedServices : fallbackSiteSettings.services,
+    offices: normalizedOffices.length ? normalizedOffices : fallbackSiteSettings.offices,
   };
 }
 
