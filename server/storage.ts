@@ -1,24 +1,48 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { eq, desc, asc } from "drizzle-orm";
-import {
-  type User,
-  type InsertUser,
-  type Project,
-  type InsertProject,
-  type UpdateProject,
-  users,
-  projects,
+import { sanityClient } from "./sanityClient";
+import type {
+  Project,
+  InsertProject,
+  UpdateProject,
 } from "@shared/schema";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
+// GROQ projection that maps Sanity document shape to site Project shape
+const PROJECT_PROJECTION = `{
+  "id": _id,
+  "slug": slug.current,
+  title,
+  client,
+  "year": select(defined(year) => year, string::split(_createdAt, "-")[0]),
+  category,
+  tags,
+  description,
+  "body": coalesce(body, ""),
+  "coverImage": coverImage.asset->url,
+  "images": gallery[].asset->url,
+  featured,
+  status,
+  "createdAt": _createdAt
+}`;
+
+function normalizeProject(raw: any): Project {
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    title: raw.title,
+    client: raw.client || "",
+    year: typeof raw.year === "string" ? parseInt(raw.year, 10) || new Date().getFullYear() : raw.year,
+    category: raw.category || "",
+    tags: raw.tags || [],
+    description: raw.description || "",
+    body: raw.body || "",
+    coverImage: raw.coverImage || "",
+    images: (raw.images || []).filter(Boolean),
+    featured: raw.featured ?? false,
+    status: raw.status || "published",
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+  };
+}
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-
   getAllProjects(): Promise<Project[]>;
   getFeaturedProjects(): Promise<Project[]>;
   getProjectBySlug(slug: string): Promise<Project | undefined>;
@@ -28,62 +52,82 @@ export interface IStorage {
   deleteProject(id: string): Promise<boolean>;
 }
 
-export class DatabaseStorage implements IStorage {
-  async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
-  }
-
+export class SanityStorage implements IStorage {
   async getAllProjects(): Promise<Project[]> {
-    return db.select().from(projects).orderBy(desc(projects.year), asc(projects.title));
+    const results = await sanityClient.fetch(
+      `*[_type == "project"] ${PROJECT_PROJECTION} | order(year desc, title asc)`
+    );
+    return results.map(normalizeProject);
   }
 
   async getFeaturedProjects(): Promise<Project[]> {
-    return db
-      .select()
-      .from(projects)
-      .where(eq(projects.featured, true))
-      .orderBy(desc(projects.year));
+    const results = await sanityClient.fetch(
+      `*[_type == "project" && featured == true] ${PROJECT_PROJECTION} | order(year desc)`
+    );
+    return results.map(normalizeProject);
   }
 
   async getProjectBySlug(slug: string): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.slug, slug));
-    return project;
+    const result = await sanityClient.fetch(
+      `*[_type == "project" && slug.current == $slug][0] ${PROJECT_PROJECTION}`,
+      { slug }
+    );
+    return result ? normalizeProject(result) : undefined;
   }
 
   async getProjectById(id: string): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.id, id));
-    return project;
+    const result = await sanityClient.fetch(
+      `*[_type == "project" && _id == $id][0] ${PROJECT_PROJECTION}`,
+      { id }
+    );
+    return result ? normalizeProject(result) : undefined;
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
-    const [project] = await db.insert(projects).values(insertProject).returning();
-    return project;
+  async createProject(project: InsertProject): Promise<Project> {
+    const doc = {
+      _type: "project" as const,
+      title: project.title,
+      slug: { _type: "slug" as const, current: project.slug },
+      client: project.client,
+      year: String(project.year),
+      category: project.category,
+      tags: project.tags || [],
+      description: project.description,
+      body: project.body || "",
+      featured: project.featured ?? false,
+      status: project.status || "draft",
+    };
+    const created = await sanityClient.create(doc);
+    const full = await this.getProjectById(created._id);
+    return full!;
   }
 
   async updateProject(id: string, updateData: UpdateProject): Promise<Project | undefined> {
-    const [project] = await db
-      .update(projects)
-      .set(updateData)
-      .where(eq(projects.id, id))
-      .returning();
-    return project;
+    const existing = await this.getProjectById(id);
+    if (!existing) return undefined;
+
+    const patch: Record<string, any> = {};
+    if (updateData.title !== undefined) patch.title = updateData.title;
+    if (updateData.slug !== undefined) patch.slug = { _type: "slug", current: updateData.slug };
+    if (updateData.client !== undefined) patch.client = updateData.client;
+    if (updateData.year !== undefined) patch.year = String(updateData.year);
+    if (updateData.category !== undefined) patch.category = updateData.category;
+    if (updateData.tags !== undefined) patch.tags = updateData.tags;
+    if (updateData.description !== undefined) patch.description = updateData.description;
+    if (updateData.body !== undefined) patch.body = updateData.body;
+    if (updateData.featured !== undefined) patch.featured = updateData.featured;
+    if (updateData.status !== undefined) patch.status = updateData.status;
+
+    await sanityClient.patch(id).set(patch).commit();
+    return this.getProjectById(id);
   }
 
   async deleteProject(id: string): Promise<boolean> {
-    const result = await db.delete(projects).where(eq(projects.id, id)).returning();
-    return result.length > 0;
+    const existing = await this.getProjectById(id);
+    if (!existing) return false;
+    await sanityClient.delete(id);
+    return true;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new SanityStorage();
