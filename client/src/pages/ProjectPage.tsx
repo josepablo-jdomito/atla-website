@@ -80,7 +80,7 @@ export function ProjectPage({ slug }: Props) {
         <section className="mt-8 grid gap-8 md:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-6">
             <p className="text-[11px] uppercase tracking-[0.35em] text-[#7f7465]">
-              {project.category} / {project.year}
+              {project.category}{project.year ? ` / ${project.year}` : ""}
             </p>
             <h1 className="font-web-desktop-h3 text-5xl leading-none md:text-7xl">
               {project.title}

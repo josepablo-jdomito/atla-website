@@ -32,7 +32,7 @@ function FeaturedProjectCard({ project, featured = false }: { project: SanityPro
         )}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#111111] via-[#11111199] to-transparent p-5 text-[#faf7f0]">
           <p className="text-[11px] uppercase tracking-[0.35em]">
-            {project.category} / {project.year}
+            {project.category}{project.year ? ` / ${project.year}` : ""}
           </p>
           <h3 className="mt-2 font-web-desktop-h3 text-3xl leading-none md:text-5xl">
             {project.title}

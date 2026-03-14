@@ -60,7 +60,7 @@ export function WorkPage() {
                 </div>
                 <div className="space-y-3 p-6">
                   <p className="text-[11px] uppercase tracking-[0.35em] text-[#7f7465]">
-                    {project.category} / {project.year}
+                    {project.category}{project.year ? ` / ${project.year}` : ""}
                   </p>
                   <h2 className="font-web-desktop-h3 text-4xl leading-none">{project.title}</h2>
                   <p className="text-sm leading-6 text-[#4a4339]">{project.description}</p>

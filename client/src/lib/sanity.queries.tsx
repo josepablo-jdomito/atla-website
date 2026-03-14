@@ -17,7 +17,7 @@ export type SanityProject = {
   title: string;
   slug: string;
   client: string;
-  year: number;
+  year: number | string | null;
   category: string;
   description: string;
   body: unknown[];
@@ -117,24 +117,24 @@ const siteSettingsQuery = `*[_type == "siteSettings"][0]{
 
 const projectFields = `{
   _id,
-  title,
+  "title": coalesce(title, name, "Untitled project"),
   "slug": slug.current,
-  client,
-  year,
-  category,
-  description,
-  body,
-  featured,
-  coverImage{
+  "client": coalesce(client, clientName, brand, ""),
+  "year": coalesce(year, dateTime(publishedAt), dateTime(_createdAt)),
+  "category": coalesce(category->title, category, projectType, discipline, "Uncategorized"),
+  "description": coalesce(description, excerpt, summary, ""),
+  "body": coalesce(body, content, []),
+  "featured": coalesce(featured, featuredOnHomepage, false),
+  "coverImage": coalesce(coverImage, mainImage, heroImage, thumbnail){
     asset,
     alt
   },
-  "gallery": gallery[]{
+  "gallery": coalesce(gallery, images, galleryImages, [])[]{
     _key,
     asset,
     alt
   },
-  "tags": coalesce(tags, [])
+  "tags": coalesce(tags, keywords, [])
 }`;
 
 const publishedFilter = `defined(slug.current) && (!defined(status) || status == "published")`;
@@ -144,9 +144,11 @@ async function fetchPublishedProjects(): Promise<SanityProject[]> {
     return fallbackProjects;
   }
 
-  return sanityClient.fetch<SanityProject[]>(
+  const projects = await sanityClient.fetch<SanityProject[]>(
     `*[_type == "project" && ${publishedFilter}] | order(featured desc, year desc, _createdAt desc) ${projectFields}`,
   );
+
+  return projects.map(normalizeProject);
 }
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
@@ -177,7 +179,7 @@ export async function fetchFeaturedProjects(): Promise<SanityProject[]> {
   );
 
   if (featuredProjects.length > 0) {
-    return featuredProjects;
+    return featuredProjects.map(normalizeProject);
   }
 
   const publishedProjects = await fetchPublishedProjects();
@@ -189,10 +191,32 @@ export async function fetchProjectBySlug(slug: string): Promise<SanityProject | 
     return fallbackProjects.find((project) => project.slug === slug) || null;
   }
 
-  return sanityClient.fetch<SanityProject | null>(
+  const project = await sanityClient.fetch<SanityProject | null>(
     `*[_type == "project" && slug.current == $slug && ${publishedFilter}][0] ${projectFields}`,
     { slug },
   );
+
+  return project ? normalizeProject(project) : null;
+}
+
+function normalizeProject(project: SanityProject): SanityProject {
+  const normalizedYear =
+    typeof project.year === "number"
+      ? project.year
+      : typeof project.year === "string"
+        ? new Date(project.year).getFullYear()
+        : null;
+
+  return {
+    ...project,
+    client: project.client || "Confidential",
+    year: Number.isFinite(normalizedYear) ? normalizedYear : null,
+    category: project.category || "Uncategorized",
+    description: project.description || "Project details coming soon.",
+    body: Array.isArray(project.body) ? project.body : [],
+    gallery: Array.isArray(project.gallery) ? project.gallery : [],
+    tags: Array.isArray(project.tags) ? project.tags : [],
+  };
 }
 
 export function resolveImageUrl(source: unknown, width = 1600) {
