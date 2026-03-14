@@ -58,6 +58,8 @@ export function HomePage() {
   const projects = featuredProjectsQuery.data || [];
   const heroProject = projects[0];
   const secondaryProjects = projects.slice(1, 3);
+  const isLoadingProjects = featuredProjectsQuery.isLoading;
+  const hasProjects = projects.length > 0;
 
   return (
     <div className="min-h-screen bg-[#faf7f0] text-[#111111]">
@@ -103,11 +105,13 @@ export function HomePage() {
 
           {heroProject ? (
             <FeaturedProjectCard featured project={heroProject} />
+          ) : isLoadingProjects ? (
+            <div className="aspect-[4/5] animate-pulse rounded-[28px] border border-[#dfd6c5] bg-[#efe8dc]" />
           ) : (
             <div className="rounded-[28px] border border-dashed border-[#c8bea9] bg-[#f2ebde] p-8">
               <p className="text-[11px] uppercase tracking-[0.35em] text-[#7f7465]">Featured Work</p>
               <p className="mt-4 text-base leading-7 text-[#4a4339]">
-                Publish at least one featured project in Sanity to populate the homepage hero.
+                No published portfolio projects were found in Sanity yet. Add projects in Studio, or mark one as featured to control the homepage hero.
               </p>
             </div>
           )}
@@ -125,11 +129,17 @@ export function HomePage() {
               View archive
             </Link>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            {secondaryProjects.map((project) => (
-              <FeaturedProjectCard key={project._id} project={project} />
-            ))}
-          </div>
+          {secondaryProjects.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {secondaryProjects.map((project) => (
+                <FeaturedProjectCard key={project._id} project={project} />
+              ))}
+            </div>
+          ) : !isLoadingProjects && hasProjects ? (
+            <div className="rounded-[28px] border border-dashed border-[#c8bea9] bg-[#f2ebde] p-8 text-base leading-7 text-[#4a4339]">
+              Add more published projects in Sanity to fill out the featured section.
+            </div>
+          ) : null}
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-6 px-5 pb-16 md:grid-cols-[0.9fr_1.1fr] md:px-8" id="about">

@@ -29,8 +29,18 @@ export function WorkPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {projectsQuery.data?.map((project) => {
+        {projectsQuery.isLoading ? (
+          <div className="grid gap-6 md:grid-cols-2">
+            {Array.from({ length: 4 }, (_, index) => (
+              <div
+                className="aspect-[4/3] animate-pulse rounded-[28px] border border-[#dfd6c5] bg-[#f3ede2]"
+                key={index}
+              />
+            ))}
+          </div>
+        ) : projectsQuery.data?.length ? (
+          <div className="grid gap-6 md:grid-cols-2">
+            {projectsQuery.data.map((project) => {
             const imageUrl = resolveImageUrl(project.coverImage?.asset, 1200);
 
             return (
@@ -57,8 +67,13 @@ export function WorkPage() {
                 </div>
               </Link>
             );
-          })}
-        </div>
+            })}
+          </div>
+        ) : (
+          <div className="rounded-[28px] border border-dashed border-[#c8bea9] bg-[#f2ebde] p-8 text-base leading-7 text-[#4a4339]">
+            No published portfolio projects are available in Sanity yet.
+          </div>
+        )}
       </main>
 
       {settingsQuery.data ? <AtlaFooter settings={settingsQuery.data} /> : null}

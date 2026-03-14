@@ -25,6 +25,26 @@ export function ProjectPage({ slug }: Props) {
 
   const project = projectQuery.data;
 
+  if (projectQuery.isLoading) {
+    return (
+      <div className="min-h-screen bg-[#faf7f0] text-[#111111]">
+        <AtlaNav />
+        <main className="mx-auto max-w-6xl px-5 py-16 md:px-8">
+          <div className="h-6 w-32 animate-pulse rounded bg-[#ece4d7]" />
+          <div className="mt-8 grid gap-8 md:grid-cols-[0.8fr_1.2fr]">
+            <div className="space-y-4">
+              <div className="h-4 w-48 animate-pulse rounded bg-[#ece4d7]" />
+              <div className="h-24 w-full animate-pulse rounded bg-[#ece4d7]" />
+              <div className="h-20 w-full animate-pulse rounded bg-[#ece4d7]" />
+            </div>
+            <div className="aspect-[4/3] animate-pulse rounded-[32px] bg-[#ece4d7]" />
+          </div>
+        </main>
+        {settingsQuery.data ? <AtlaFooter settings={settingsQuery.data} /> : null}
+      </div>
+    );
+  }
+
   if (!project) {
     return (
       <div className="min-h-screen bg-[#faf7f0] text-[#111111]">

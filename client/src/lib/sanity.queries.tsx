@@ -137,7 +137,17 @@ const projectFields = `{
   "tags": coalesce(tags, [])
 }`;
 
-const publishedFilter = `defined(slug.current) && status == "published"`;
+const publishedFilter = `defined(slug.current) && (!defined(status) || status == "published")`;
+
+async function fetchPublishedProjects(): Promise<SanityProject[]> {
+  if (!sanityClient) {
+    return fallbackProjects;
+  }
+
+  return sanityClient.fetch<SanityProject[]>(
+    `*[_type == "project" && ${publishedFilter}] | order(featured desc, year desc, _createdAt desc) ${projectFields}`,
+  );
+}
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
   if (!sanityClient) {
@@ -154,13 +164,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function fetchProjects(): Promise<SanityProject[]> {
-  if (!sanityClient) {
-    return fallbackProjects;
-  }
-
-  return sanityClient.fetch<SanityProject[]>(
-    `*[_type == "project" && ${publishedFilter}] | order(featured desc, year desc, _createdAt desc) ${projectFields}`,
-  );
+  return fetchPublishedProjects();
 }
 
 export async function fetchFeaturedProjects(): Promise<SanityProject[]> {
@@ -168,11 +172,16 @@ export async function fetchFeaturedProjects(): Promise<SanityProject[]> {
     return fallbackProjects.filter((project) => project.featured);
   }
 
-  const data = await sanityClient.fetch<SanityProject[]>(
+  const featuredProjects = await sanityClient.fetch<SanityProject[]>(
     `*[_type == "project" && ${publishedFilter} && featured == true] | order(year desc, _createdAt desc) ${projectFields}`,
   );
 
-  return data.length > 0 ? data : fallbackProjects.filter((project) => project.featured);
+  if (featuredProjects.length > 0) {
+    return featuredProjects;
+  }
+
+  const publishedProjects = await fetchPublishedProjects();
+  return publishedProjects.slice(0, 3);
 }
 
 export async function fetchProjectBySlug(slug: string): Promise<SanityProject | null> {
