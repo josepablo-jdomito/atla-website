@@ -1,4 +1,4 @@
-import { app, httpServer, ready } from "./app";
+import { app, httpServer, ready } from "./app.ts";
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -14,10 +14,10 @@ export function log(message: string, source = "express") {
   await ready;
 
   if (process.env.NODE_ENV === "production") {
-    const { serveStatic } = await import("./static");
+    const { serveStatic } = await import("./static.ts");
     serveStatic(app);
   } else {
-    const { setupVite } = await import("./vite");
+    const { setupVite } = await import("./vite.ts");
     await setupVite(httpServer, app);
   }
 

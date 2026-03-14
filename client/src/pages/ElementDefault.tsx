@@ -1,16 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Project } from "@shared/schema";
-
-const SLOT_SIZES = [
-  { w: 225, h: 337.5 },
-  { w: 225, h: 337.5 },
-  { w: 300, h: 450 },
-  { w: 225, h: 337.5 },
-  { w: 225, h: 337.5 },
-];
 
 const FALLBACK_IMAGES = [
   "/figmaAssets/media.png",
@@ -20,44 +12,78 @@ const FALLBACK_IMAGES = [
   "/figmaAssets/media-4.png",
 ];
 
-const ADVANCE_MS = 4000;
+const ADVANCE_MS = 3600;
+
+type SlotFrame = {
+  left: string;
+  top: string;
+  width: number;
+  height: number;
+  rotate: number;
+  opacity: number;
+  zIndex: number;
+  scale: number;
+};
+
+const DESKTOP_SLOTS: SlotFrame[] = [
+  { left: "8%", top: "54%", width: 212, height: 318, rotate: -7, opacity: 0.78, zIndex: 1, scale: 0.94 },
+  { left: "25%", top: "45%", width: 236, height: 354, rotate: -2.5, opacity: 0.92, zIndex: 2, scale: 0.98 },
+  { left: "50%", top: "52%", width: 340, height: 510, rotate: 0, opacity: 1, zIndex: 4, scale: 1 },
+  { left: "75%", top: "45%", width: 236, height: 354, rotate: 2.5, opacity: 0.92, zIndex: 2, scale: 0.98 },
+  { left: "92%", top: "54%", width: 212, height: 318, rotate: 7, opacity: 0.78, zIndex: 1, scale: 0.94 },
+];
+
+const MOBILE_SLOTS: SlotFrame[] = [
+  { left: "4%", top: "56%", width: 78, height: 118, rotate: -7, opacity: 0.56, zIndex: 1, scale: 0.9 },
+  { left: "22%", top: "44%", width: 112, height: 168, rotate: -3, opacity: 0.82, zIndex: 2, scale: 0.97 },
+  { left: "50%", top: "52%", width: 274, height: 410, rotate: 0, opacity: 1, zIndex: 4, scale: 1 },
+  { left: "78%", top: "44%", width: 112, height: 168, rotate: 3, opacity: 0.82, zIndex: 2, scale: 0.97 },
+  { left: "96%", top: "56%", width: 78, height: 118, rotate: 7, opacity: 0.56, zIndex: 1, scale: 0.9 },
+];
 
 function useSlideshow(count: number) {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     if (count < 2) return;
-    const id = setInterval(() => {
+    const id = window.setInterval(() => {
       setOffset((prev) => (prev + 1) % count);
     }, ADVANCE_MS);
-    return () => clearInterval(id);
+
+    return () => window.clearInterval(id);
   }, [count]);
 
-  const getIndex = useCallback(
-    (slot: number) => (count > 0 ? (offset + slot) % count : slot),
-    [offset, count],
-  );
+  return offset;
+}
 
-  return { getIndex };
+function getVisibleProjects(projects: Project[] | undefined, offset: number, slots: number) {
+  if (!projects?.length) return [];
+  return Array.from({ length: slots }, (_, slot) => projects[(offset + slot) % projects.length]);
 }
 
 export const ElementDefault = (): JSX.Element => {
+  const isMobile = useIsMobile();
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
   });
 
-  const hasProjects = !!projects && projects.length > 0;
-  const { getIndex } = useSlideshow(hasProjects ? projects.length : 0);
+  const slotFrames = isMobile ? MOBILE_SLOTS : DESKTOP_SLOTS;
+  const offset = useSlideshow(projects?.length ?? 0);
+  const visibleProjects = useMemo(
+    () => getVisibleProjects(projects, offset, slotFrames.length),
+    [offset, projects, slotFrames.length],
+  );
+  const centerProject = visibleProjects[2] ?? null;
+  const stageHeight = isMobile ? "calc(100svh - 132px)" : "calc(100svh - 158px)";
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fafafa" }}>
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           width: "100%",
-          maxWidth: 1200,
-          height: 750,
+          minHeight: "100svh",
           alignItems: "center",
           justifyContent: "space-between",
           position: "relative",
@@ -69,129 +95,153 @@ export const ElementDefault = (): JSX.Element => {
 
         <section
           data-testid="gallery-section"
+          className="atla-enter"
           style={{
-            display: "flex",
-            gap: 100,
-            alignItems: "center",
-            justifyContent: "center",
             width: "100%",
             position: "relative",
+            flex: "1 1 auto",
             flexShrink: 0,
+            padding: isMobile ? "8px 0 0" : "18px 0 0",
+            boxSizing: "border-box",
+            overflow: "hidden",
           }}
         >
-          {isLoading
-            ? SLOT_SIZES.map((slot, i) => (
-                <div
-                  key={i}
-                  data-testid={`skeleton-gallery-${i}`}
-                  style={{
-                    width: slot.w,
-                    height: slot.h,
-                    flexShrink: 0,
-                    backgroundColor: "#e5e5e5",
-                    animation: "pulse 2s ease-in-out infinite",
-                  }}
-                />
-              ))
-            : SLOT_SIZES.map((slot, i) => {
-            const isCenter = i === 2;
-            const project = hasProjects ? projects[getIndex(i)] : null;
-            const src = project?.coverImage || FALLBACK_IMAGES[i];
-            const alt = project?.title || "Atla project";
-            const slug = project?.slug;
-
-            const card = (
-              <div
-                key={i}
+          <div
+            className="atla-home-stage"
+            style={{
+              width: "100%",
+              height: stageHeight,
+              minHeight: isMobile ? 520 : 620,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+                zIndex: 5,
+                padding: isMobile ? "0 20px" : "0 32px",
+              }}
+            >
+              <span
+                key={centerProject?.slug ?? "fallback-title"}
+                className="atla-home-title"
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                  flexShrink: 0,
+                  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                  fontSize: isMobile ? 42 : 68,
+                  fontWeight: 400,
+                  lineHeight: "1.02",
+                  letterSpacing: 0,
+                  color: "#fafafa",
+                  mixBlendMode: "difference",
+                  textAlign: "center",
+                  maxWidth: isMobile ? 280 : 420,
+                  textWrap: "balance",
+                  marginTop: isMobile ? 32 : 10,
                 }}
-                data-testid={`card-gallery-${i}`}
               >
-                <div style={{ position: "relative", width: slot.w, height: slot.h, flexShrink: 0 }}>
-                  <img
-                    src={src}
-                    alt={alt}
-                    width={slot.w}
-                    height={slot.h}
-                    loading={isCenter ? "eager" : "lazy"}
-                    fetchPriority={isCenter ? "high" : undefined}
+                {centerProject?.title || "Project Name"}
+              </span>
+            </div>
+
+            {isLoading
+              ? slotFrames.map((slot, index) => (
+                  <div
+                    key={`skeleton-${index}`}
+                    data-testid={`skeleton-gallery-${index}`}
                     style={{
                       position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                      pointerEvents: "none",
+                      left: slot.left,
+                      top: slot.top,
+                      width: slot.width,
+                      height: slot.height,
+                      borderRadius: 0,
+                      backgroundColor: "#e5e5e5",
+                      opacity: slot.opacity,
+                      transform: `translate(-50%, -50%) rotate(${slot.rotate}deg) scale(${slot.scale})`,
+                      animation: "pulse 2s ease-in-out infinite",
                     }}
-                    data-testid={`img-gallery-${i}`}
                   />
-                  {isCenter && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: 375,
-                        height: 140,
-                        mixBlendMode: "difference",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-                          fontSize: 64,
-                          fontWeight: 400,
-                          lineHeight: "1.1",
-                          letterSpacing: 0,
-                          color: "#fafafa",
-                          textAlign: "center",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {project?.title || "Project Name"}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
+                ))
+              : slotFrames.map((slot, index) => {
+                  const project = visibleProjects[index];
+                  const src = project?.coverImage || FALLBACK_IMAGES[index];
+                  const alt = project?.title || "Atla project";
+                  const slug = project?.slug;
+                  const isCenter = index === 2;
+                  const shellStyle = {
+                    position: "absolute" as const,
+                    left: slot.left,
+                    top: slot.top,
+                    width: slot.width,
+                    height: slot.height,
+                    opacity: slot.opacity,
+                    zIndex: slot.zIndex,
+                    transform: `translate(-50%, -50%) rotate(${slot.rotate}deg) scale(${slot.scale})`,
+                  };
 
-            if (slug) {
-              return (
-                <a
-                  key={i}
-                  href={`/projects/${slug}`}
-                  style={{ textDecoration: "none", flexShrink: 0 }}
-                  data-testid={`link-gallery-${i}`}
-                >
-                  {card}
-                </a>
-              );
-            }
-            return card;
-          })}
+                  const card = (
+                    <div
+                      className="atla-home-card"
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                      data-testid={`card-gallery-${index}`}
+                    >
+                      <img
+                        src={src}
+                        alt={alt}
+                        width={slot.width}
+                        height={slot.height}
+                        className="atla-home-card-image"
+                        loading={isCenter ? "eager" : "lazy"}
+                        fetchPriority={isCenter ? "high" : undefined}
+                        data-testid={`img-gallery-${index}`}
+                      />
+                    </div>
+                  );
+
+                  if (!slug) {
+                    return (
+                      <div
+                        key={`fallback-${index}`}
+                        className={`atla-home-card-shell ${isCenter ? "atla-home-card-shell-center" : ""}`}
+                        style={shellStyle}
+                      >
+                        {card}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <a
+                      key={slug}
+                      href={`/projects/${slug}`}
+                      className={`atla-home-card-link atla-home-card-shell ${isCenter ? "atla-home-card-shell-center" : ""}`}
+                      style={shellStyle}
+                      data-testid={`link-gallery-${index}`}
+                    >
+                      {card}
+                    </a>
+                  );
+                })}
+          </div>
         </section>
 
         <div
           data-testid="home-footer-strip"
           style={{
             display: "flex",
-            height: 50,
+            height: isMobile ? 40 : 50,
             alignItems: "flex-start",
             justifyContent: "center",
             gap: 10,
-            padding: "0 20px",
+            padding: isMobile ? "0 10px" : "0 20px",
             width: "100%",
             boxSizing: "border-box",
             flexShrink: 0,
@@ -201,9 +251,9 @@ export const ElementDefault = (): JSX.Element => {
             <p
               style={{
                 fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: 12,
+                fontSize: isMobile ? 10 : 12,
                 fontWeight: 600,
-                letterSpacing: 0.48,
+                letterSpacing: isMobile ? 0.4 : 0.48,
                 lineHeight: "1.2",
                 color: "#222",
                 textTransform: "uppercase",
@@ -218,9 +268,9 @@ export const ElementDefault = (): JSX.Element => {
             <p
               style={{
                 fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: 12,
+                fontSize: isMobile ? 10 : 12,
                 fontWeight: 600,
-                letterSpacing: 0.48,
+                letterSpacing: isMobile ? 0.4 : 0.48,
                 lineHeight: "1.2",
                 color: "#222",
                 textTransform: "uppercase",
@@ -233,10 +283,6 @@ export const ElementDefault = (): JSX.Element => {
             </p>
           </div>
         </div>
-      </div>
-
-      <div style={{ width: "100%", maxWidth: 1200 }}>
-        <AtlaFooter />
       </div>
     </div>
   );

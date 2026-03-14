@@ -320,6 +320,7 @@ export default function ProjectsAdmin() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editProject, setEditProject] = useState<Project | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const meta = document.createElement("meta");
@@ -331,6 +332,35 @@ export default function ProjectsAdmin() {
 
   const { data: projectList = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
+  });
+  const {
+    data: adminSession,
+    isLoading: isCheckingSession,
+    refetch: refetchAdminSession,
+  } = useQuery<{ authenticated: boolean }>({
+    queryKey: ["/api/admin/session"],
+    retry: false,
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/admin/login", { password }),
+    onSuccess: async () => {
+      setPassword("");
+      await refetchAdminSession();
+      toast({ title: "Admin session active" });
+    },
+    onError: (err: any) => {
+      toast({ title: "Access denied", description: err.message, variant: "destructive" });
+    },
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/admin/logout"),
+    onSuccess: async () => {
+      queryClient.removeQueries({ queryKey: ["/api/admin/session"] });
+      await refetchAdminSession();
+      toast({ title: "Signed out" });
+    },
   });
 
   const createMutation = useMutation({
@@ -381,6 +411,52 @@ export default function ProjectsAdmin() {
     });
   };
 
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] font-['Libre_Franklin',Helvetica,sans-serif] flex items-center justify-center text-[#8e8e8e]">
+        Checking admin access…
+      </div>
+    );
+  }
+
+  if (!adminSession?.authenticated) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] font-['Libre_Franklin',Helvetica,sans-serif] flex items-center justify-center px-4">
+        <div className="w-full max-w-md border border-[#e8e8e8] rounded-xl bg-white p-6 flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl font-semibold text-[#222]">Admin access</h1>
+            <p className="text-sm text-[#8e8e8e]">
+              This CMS is protected. Enter the admin password to continue.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="admin-password" className="text-sm font-medium text-[#222]">Password</label>
+            <Input
+              id="admin-password"
+              data-testid="input-admin-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  loginMutation.mutate();
+                }
+              }}
+            />
+          </div>
+          <Button
+            data-testid="button-admin-login"
+            onClick={() => loginMutation.mutate()}
+            disabled={loginMutation.isPending || !password.trim()}
+            className="bg-[#222] text-white hover:bg-[#444]"
+          >
+            {loginMutation.isPending ? "Unlocking…" : "Unlock CMS"}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fafafa] font-['Libre_Franklin',Helvetica,sans-serif]">
       <header className="border-b border-[#e8e8e8] bg-white px-8 py-4 flex items-center justify-between">
@@ -388,13 +464,23 @@ export default function ProjectsAdmin() {
           <span className="text-xl font-bold text-[#222] tracking-tight">Atla</span>
           <span className="text-sm text-[#8e8e8e]">/ Projects CMS</span>
         </div>
-        <Button
-          data-testid="button-new-project"
-          onClick={() => setIsCreateOpen(true)}
-          className="bg-[#222] text-white hover:bg-[#444] text-sm"
-        >
-          + New Project
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            data-testid="button-new-project"
+            onClick={() => setIsCreateOpen(true)}
+            className="bg-[#222] text-white hover:bg-[#444] text-sm"
+          >
+            + New Project
+          </Button>
+          <Button
+            data-testid="button-admin-logout"
+            onClick={() => logoutMutation.mutate()}
+            variant="outline"
+            className="text-sm"
+          >
+            Sign out
+          </Button>
+        </div>
       </header>
 
       <main className="px-8 py-8 max-w-6xl mx-auto">

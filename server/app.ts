@@ -1,6 +1,6 @@
-import express, { type Request, Response, NextFunction } from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import { createServer } from "http";
-import { registerRoutes } from "./routes";
+import { registerRoutes } from "./routes.ts";
 
 const app = express();
 const httpServer = createServer(app);

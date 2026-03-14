@@ -1,5 +1,7 @@
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { AtlaSymbol } from "@/components/atla/AtlaMarks";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const LF_REG18: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -30,18 +32,18 @@ const RM14: React.CSSProperties = {
 };
 const RM14_GRAY: React.CSSProperties = { ...RM14, color: "#8e8e8e" };
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionTitle({ children, mobile = false }: { children: React.ReactNode; mobile?: boolean }) {
   return (
     <div style={{ flex: "1 0 0", minWidth: 0 }}>
       <p
         style={{
           fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif",
-          fontSize: 140,
+          fontSize: mobile ? 40 : 140,
           fontWeight: 500,
           lineHeight: "1.1",
           color: "#222",
           margin: 0,
-          whiteSpace: "nowrap",
+          whiteSpace: mobile ? "normal" : "nowrap",
         }}
       >
         {children}
@@ -83,24 +85,19 @@ const CLIENTS = [
   { name: "Orza Objects", sphere: "3D Visualization" },
 ];
 
-const HONORS = [
-  { award: "Awwwards", title: "Website of the Day", count: "x4" },
-  { award: "Awwwards", title: "Website of the Month", count: "x2" },
-  { award: "ADC Awards", title: "Excellence in Motion Direction", count: "x1" },
-];
-
 export default function AtlaAbout() {
-  return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fafafa" }}>
+  const isMobile = useIsMobile();
 
-      {/* ── Hero section (750px) ── */}
+  return (
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+
       <div
+        className="atla-enter"
         style={{
           display: "flex",
           flexDirection: "column",
           width: "100%",
-          maxWidth: 1200,
-          minHeight: 750,
+          minHeight: isMobile ? "auto" : 750,
           position: "relative",
           backgroundColor: "#fafafa",
           overflow: "clip",
@@ -109,8 +106,7 @@ export default function AtlaAbout() {
       >
         <AtlaNav />
 
-        {/* Hero background image (Atlas-0010) */}
-        <div style={{ position: "absolute", inset: 0, top: 0, left: 0, width: "100%", height: 750 }}>
+        <div style={{ position: isMobile ? "relative" : "absolute", inset: isMobile ? "auto" : 0, top: 0, left: 0, width: "100%", height: isMobile ? 300 : 750 }}>
           <img
             src="/figmaAssets/about-hero.jpg"
             alt=""
@@ -118,24 +114,25 @@ export default function AtlaAbout() {
           />
         </div>
 
-        {/* Hero text — absolute at left-[565px] top-[200px] */}
         <div
           style={{
-            position: "absolute",
-            left: 565,
-            top: 200,
-            width: 635,
+            position: isMobile ? "relative" : "absolute",
+            left: isMobile ? "auto" : 565,
+            top: isMobile ? "auto" : 200,
+            width: isMobile ? "100%" : 635,
+            padding: isMobile ? "20px 10px 0" : 0,
+            boxSizing: "border-box",
           }}
         >
           <p
             style={{
               fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-              fontSize: 64,
+              fontSize: isMobile ? 40 : 64,
               fontWeight: 400,
               fontStyle: "normal",
               lineHeight: "1.1",
               color: "#222",
-              width: 548.72,
+              width: isMobile ? "100%" : 548.72,
               margin: 0,
             }}
           >
@@ -144,26 +141,23 @@ export default function AtlaAbout() {
         </div>
       </div>
 
-      {/* ── Content sections ── */}
       <div
         style={{
           width: "100%",
-          maxWidth: 1200,
           display: "flex",
           flexDirection: "column",
-          gap: 240,
+          gap: isMobile ? 80 : 240,
           alignItems: "flex-start",
           justifyContent: "center",
-          padding: "120px 20px 240px",
+          padding: isMobile ? "80px 10px 100px" : "120px 20px 240px",
           boxSizing: "border-box",
         }}
       >
 
-        {/* About */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          <SectionTitle>About</SectionTitle>
-          <div style={{ width: 615, flexShrink: 0 }}>
-            <div style={{ width: 456 }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
+          <SectionTitle mobile={isMobile}>About</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
+            <div style={{ width: isMobile ? "100%" : 456 }}>
               <p style={LF_REG18}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum,
                 ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
@@ -174,12 +168,24 @@ export default function AtlaAbout() {
           </div>
         </div>
 
-        {/* Team */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          <SectionTitle>Team</SectionTitle>
-          <div style={{ width: 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 36 }}>
-            {/* Rows of 2 */}
-            {Array.from({ length: Math.ceil(TEAM.length / 2) }, (_, rowIdx) => (
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
+          <SectionTitle mobile={isMobile}>Team</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 36 }}>
+            {isMobile ? TEAM.map((member, idx) => (
+              <div key={member.name} style={{ width: "100%", maxWidth: 300, marginLeft: idx % 2 === 0 ? 0 : "auto", display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ height: 400, position: "relative", width: "100%", overflow: "clip" }}>
+                  <img
+                    src={member.src}
+                    alt={member.name}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+                  />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: idx % 2 === 0 ? "flex-start" : "flex-end" }}>
+                  <p style={{ ...LF_REG18, textAlign: idx % 2 === 0 ? "left" : "right", whiteSpace: "normal" }}>{member.name}</p>
+                  <p style={LF_SB12}>{member.role}</p>
+                </div>
+              </div>
+            )) : Array.from({ length: Math.ceil(TEAM.length / 2) }, (_, rowIdx) => (
               <div key={rowIdx} style={{ display: "flex", gap: 24, alignItems: "center" }}>
                 {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).map((member, idx) => (
                   <div key={idx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, overflow: "hidden" }}>
@@ -196,15 +202,12 @@ export default function AtlaAbout() {
                     </div>
                   </div>
                 ))}
-                {/* If odd row, fill remaining slot with Atla symbol placeholder */}
                 {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).length < 2 && (
                   <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16 }}>
                     <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", backgroundColor: "#fafafa", overflow: "clip", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <img
-                        src="/figmaAssets/atla-symbol-small.png"
-                        alt="Atla"
-                        style={{ width: 35.691, height: 64, objectFit: "contain", display: "block" }}
-                      />
+                      <div style={{ color: "#222", width: 36, height: 64 }}>
+                        <AtlaSymbol />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -213,10 +216,9 @@ export default function AtlaAbout() {
           </div>
         </div>
 
-        {/* Services */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          <SectionTitle>Services</SectionTitle>
-          <div style={{ width: 615, flexShrink: 0 }}>
+        <div id="services" style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
+          <SectionTitle mobile={isMobile}>Services</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
             <div>
               {SERVICES.map((s, i) => (
                 <p key={i} style={{ ...RM14, marginBottom: i < SERVICES.length - 1 ? 0 : 0 }}>{s}</p>
@@ -225,10 +227,9 @@ export default function AtlaAbout() {
           </div>
         </div>
 
-        {/* Clients */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          <SectionTitle>Clients</SectionTitle>
-          <div style={{ width: 615, flexShrink: 0 }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
+          <SectionTitle mobile={isMobile}>Clients</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
             {CLIENTS.map((c, i) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
                 <div style={{ flex: "1 0 0" }}>
@@ -242,32 +243,78 @@ export default function AtlaAbout() {
           </div>
         </div>
 
-        {/* Honors */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          <SectionTitle>Honors</SectionTitle>
-          <div style={{ width: 615, flexShrink: 0 }}>
-            {HONORS.map((h, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
-                <div style={{ width: 285, flexShrink: 0 }}>
-                  <p style={RM14}>{h.award}</p>
-                </div>
-                <div style={{ width: 190, flexShrink: 0 }}>
-                  <p style={RM14}>{h.title}</p>
-                </div>
-                <div style={{ width: 95, flexShrink: 0, textAlign: "right" }}>
-                  <p style={{ ...RM14, textAlign: "right" }}>{h.count}</p>
-                </div>
+        <div id="contact" style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
+          <SectionTitle mobile={isMobile}>Contact</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
+            <div
+              style={{
+                width: "100%",
+                height: isMobile ? 320 : 410,
+                borderRadius: 4,
+                overflow: "hidden",
+                position: "relative",
+                backgroundColor: "#222",
+              }}
+            >
+              <img
+                src="https://www.figma.com/api/mcp/asset/1f8f5121-d0f3-4e6d-9359-88b75c689c5b"
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: 0.6,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 36,
+                  textAlign: "center",
+                  padding: 24,
+                }}
+              >
+                <p style={{ fontFamily: "'Libre Franklin', Helvetica, sans-serif", fontSize: 48, fontWeight: 400, lineHeight: "1.1", color: "#fafafa", margin: 0 }}>
+                  Book a Call
+                </p>
+                <p style={{ fontFamily: "'Libre Franklin', Helvetica, sans-serif", fontSize: 20, fontWeight: 500, lineHeight: "1.1", color: "#fafafa", margin: 0, maxWidth: 320 }}>
+                  Let&apos;s create something visual. We collaborate with brands, artists, and studios worldwide.
+                </p>
+                <a
+                  href="mailto:hello@atla.studio"
+                  className="atla-footer-cta"
+                  style={{
+                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    letterSpacing: 0.56,
+                    lineHeight: "1.2",
+                    color: "#222",
+                    textTransform: "uppercase",
+                    textDecoration: "none",
+                    padding: 12,
+                    backgroundColor: "#ffc629",
+                    borderRadius: 4,
+                  }}
+                >
+                  Get in Touch
+                </a>
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
       </div>
 
       {/* Footer */}
-      <div style={{ width: "100%", maxWidth: 1200 }}>
-        <AtlaFooter />
-      </div>
+      <AtlaFooter />
     </div>
   );
 }
