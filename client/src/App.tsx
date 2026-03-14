@@ -8,6 +8,7 @@ import { HomePage } from "@/pages/HomePage";
 import { ProjectPage } from "@/pages/ProjectPage";
 import { WorkPage } from "@/pages/WorkPage";
 import ProjectsAdmin from "@/pages/ProjectsAdmin";
+import { SanityPortfolioDebug } from "@/pages/SanityPortfolioDebug";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
         {(params) => <ProjectPage slug={params.slug} />}
       </Route>
       <Route path="/admin/projects" component={ProjectsAdmin} />
+      <Route path="/admin/sanity-debug" component={SanityPortfolioDebug} />
       <Route component={NotFound} />
     </Switch>
   );

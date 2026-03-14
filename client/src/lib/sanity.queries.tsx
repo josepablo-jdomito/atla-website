@@ -34,6 +34,11 @@ export type SanityProject = {
   tags: string[];
 };
 
+export type RawSanityProject = Record<string, unknown> & {
+  _id: string;
+  _type: string;
+};
+
 export const fallbackSiteSettings: SiteSettings = {
   title: "Atla",
   tagline: "Design with intention",
@@ -197,6 +202,20 @@ export async function fetchProjectBySlug(slug: string): Promise<SanityProject | 
   );
 
   return project ? normalizeProject(project) : null;
+}
+
+export async function fetchRawProjectDocuments(): Promise<RawSanityProject[]> {
+  if (!sanityClient) {
+    return [];
+  }
+
+  return sanityClient.fetch<RawSanityProject[]>(
+    `*[_type == "project"] | order(_updatedAt desc){
+      ...,
+      "slugValue": slug.current,
+      "categoryTitle": category->title
+    }`,
+  );
 }
 
 function normalizeProject(project: SanityProject): SanityProject {

@@ -13,14 +13,22 @@ export default function ProjectsAdmin() {
         </p>
 
         <div className="mt-8 space-y-4 rounded-[24px] bg-[#faf7f0] p-6">
-          <a
-            className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-xs uppercase tracking-[0.3em] text-[#faf7f0]"
-            href={studioUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            Open Studio
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a
+              className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-xs uppercase tracking-[0.3em] text-[#faf7f0]"
+              href={studioUrl}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Open Studio
+            </a>
+            <a
+              className="inline-flex rounded-full border border-[#111111] px-5 py-3 text-xs uppercase tracking-[0.3em] text-[#111111]"
+              href="/admin/sanity-debug"
+            >
+              Inspect Portfolio Data
+            </a>
+          </div>
           {!hasSanityConfig ? (
             <p className="text-sm leading-6 text-[#5f5547]">
               `VITE_SANITY_PROJECT_ID` and `VITE_SANITY_DATASET` are not configured yet, so the public site is still using placeholder content.
