@@ -10,3 +10,4 @@ vite.config.ts.*
 .local/
 skills-lock.json
 attached_assets/
+.env*.local
