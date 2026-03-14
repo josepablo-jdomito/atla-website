@@ -1,198 +1,89 @@
-import { useEffect, useState } from "react";
+import { fallbackSiteSettings, type SiteSettings } from "@/lib/sanity.queries";
+import { studioUrl } from "@/lib/sanity";
 
-const LIBRE = "'Libre Franklin', Helvetica, sans-serif";
-
-const NAV_LINKS = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "#services" },
-  { label: "Careers", href: "#careers" },
-  { label: "Journal", href: "#journal" },
-  { label: "Contact", href: "#contact" },
-];
-const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "Behance", href: "https://behance.net" },
-  { label: "Linkedin", href: "https://linkedin.com" },
-  { label: "Facebook", href: "https://facebook.com" },
-];
-const OFFICES = [
-  { city: "Austin, US", tz: "America/Chicago" },
-  { city: "CDMX, MX", tz: "America/Mexico_City" },
-  { city: "Caracas, VZ", tz: "America/Caracas" },
-  { city: "Lima, PE", tz: "America/Lima" },
-  { city: "Tijuana, MX", tz: "America/Tijuana" },
-];
-
-const FORMATTERS = Object.fromEntries(
-  OFFICES.map(({ city, tz }) => [
-    city,
-    new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: tz,
-    }),
-  ])
-);
-
-function computeTimes() {
-  const now = new Date();
-  const result: Record<string, string> = {};
-  OFFICES.forEach(({ city }) => { result[city] = FORMATTERS[city].format(now); });
-  return result;
-}
-
-function useOfficeTimes() {
-  const [times, setTimes] = useState<Record<string, string>>(computeTimes);
-  useEffect(() => {
-    const id = setInterval(() => setTimes(computeTimes()), 10000);
-    return () => clearInterval(id);
-  }, []);
-  return times;
-}
-
-const BOLD14: React.CSSProperties = {
-  fontFamily: LIBRE,
-  fontSize: 14,
-  fontWeight: 700,
-  lineHeight: "1.1",
-  margin: 0,
-  color: "#222",
-};
-const MED14: React.CSSProperties = {
-  fontFamily: LIBRE,
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.1",
-  margin: 0,
-  color: "#222",
-  textDecoration: "none",
-};
-const SMALL: React.CSSProperties = {
-  fontFamily: LIBRE,
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  color: "#222",
-  textTransform: "uppercase",
-  margin: 0,
+type Props = {
+  settings?: SiteSettings;
 };
 
-export function AtlaFooter() {
-  const times = useOfficeTimes();
+export function AtlaFooter({ settings }: Props) {
+  const resolvedSettings = settings ?? fallbackSiteSettings;
+  const serviceHighlights = resolvedSettings.services.slice(0, 4);
 
   return (
-    <footer
-      data-testid="atla-footer"
-      style={{
-        backgroundColor: "#ffc629",
-        width: "100%",
-        minHeight: 750,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        justifyContent: "flex-end",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 48,
-          alignItems: "flex-start",
-          padding: 20,
-          width: "100%",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* Top row */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
-          {/* Left: columns + description */}
-          <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 240, alignItems: "flex-start", minWidth: 0 }}>
-            {/* Link columns */}
-            <div style={{ display: "flex", gap: 72, alignItems: "flex-start", width: "100%", fontFamily: LIBRE, fontWeight: 500, fontSize: 14, color: "#222", letterSpacing: 0.28 }}>
-              {/* Atla column */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, whiteSpace: "nowrap" }}>
-                <p style={BOLD14}>Atla</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {NAV_LINKS.map((item) => (
-                    <a key={item.label} href={item.href} data-testid={`link-footer-${item.label.toLowerCase()}`} style={MED14}>
-                      {item.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Socials column */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, whiteSpace: "nowrap" }}>
-                <p style={BOLD14}>Socials</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {SOCIALS.map((item) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-testid={`link-footer-${item.label.toLowerCase()}`}
-                      style={MED14}
-                    >
-                      {item.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Offices column */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 140 }}>
-                <p style={BOLD14}>Offices</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
-                  {OFFICES.map(({ city }) => (
-                    <div key={city} style={{ display: "flex", justifyContent: "space-between", width: "100%", whiteSpace: "nowrap" }}>
-                      <p style={BOLD14}>{city}</p>
-                      <p style={MED14}>{times[city]}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div style={{ width: 320 }}>
-              <p style={{ ...MED14, lineHeight: "1.1" }}>
-                Atla is a design studio for brands across the US and Latin America.
-                We build identities that communicate with clarity and purpose —
-                from wordmarks to motion, packaging to web.
+    <footer className="border-t border-[#221c14] bg-[#ffc629] text-[#1f1a14]">
+      <div className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
+        <div className="grid gap-8 rounded-[36px] border border-[#221c14] bg-[#fff3ce] p-7 shadow-[0_24px_60px_rgba(82,61,19,0.12)] md:grid-cols-[1.1fr_0.9fr] md:p-10">
+          <div className="space-y-7">
+            <div className="space-y-4">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[#6f5a27]">Atla</p>
+              <h2 className="max-w-xl font-web-desktop-h3 text-5xl leading-[0.93] text-[#17130e] md:text-7xl">
+                {resolvedSettings.tagline}
+              </h2>
+              <p className="max-w-xl text-base leading-8 text-[#433720] md:text-lg">
+                {resolvedSettings.intro}
               </p>
             </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {serviceHighlights.map((service, index) => (
+                <div className="rounded-[22px] border border-[#d8b75e] bg-[#ffefbc] p-4" key={service}>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-[#7e6630]">
+                    {(index + 1).toString().padStart(2, "0")}
+                  </p>
+                  <p className="mt-5 text-base leading-7 text-[#1f1a14]">{service}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Right: Atla symbol */}
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", alignSelf: "stretch", flexShrink: 0 }}>
-            <img
-              alt="Atla"
-              src="/figmaAssets/atla-symbol.png"
-              style={{ height: "100%", width: "auto", objectFit: "contain", display: "block" }}
-            />
-          </div>
-        </div>
+          <div className="grid gap-6 md:grid-rows-[auto_auto_1fr]">
+            <div className="rounded-[24px] border border-[#d8b75e] bg-[#ffefbc] p-5">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[#6f5a27]">Contact</p>
+              <a
+                className="mt-5 block font-web-desktop-h3 text-3xl leading-none text-[#17130e] underline decoration-[#c7a446] underline-offset-[10px]"
+                href={`mailto:${resolvedSettings.contactEmail}`}
+              >
+                {resolvedSettings.contactEmail}
+              </a>
+            </div>
 
-        {/* Bottom: divider + copyright */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-end", width: "100%" }}>
-          <div style={{ width: "100%", height: 1, backgroundColor: "#222" }} />
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-            <a
-              href="#top"
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              data-testid="link-back-to-top"
-              style={{ ...SMALL, textDecoration: "none" }}
-            >
-              Back to top ↑
-            </a>
-            <p style={SMALL}>2026 Atla® All Rights Reserved.</p>
+            <div className="rounded-[24px] border border-[#d8b75e] bg-[#ffefbc] p-5">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[#6f5a27]">Studio</p>
+              <a
+                className="mt-5 inline-flex rounded-full border border-[#17130e] bg-[#17130e] px-5 py-3 text-[11px] uppercase tracking-[0.28em] text-[#faf7f0] transition-colors hover:bg-transparent hover:text-[#17130e]"
+                href={studioUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {resolvedSettings.studioLabel}
+              </a>
+            </div>
+
+            <div className="rounded-[24px] border border-[#d8b75e] bg-[#17130e] p-5 text-[#faf7f0]">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-[#aa9a80]">Offices</p>
+                  <p className="mt-3 text-sm leading-6 text-[#dccfb8]">
+                    A cross-border studio working across the Americas.
+                  </p>
+                </div>
+                <span className="font-web-desktop-h3 text-4xl leading-none text-[#ffc629]">
+                  {resolvedSettings.offices.length}
+                </span>
+              </div>
+
+              <div className="mt-6 space-y-3">
+                {resolvedSettings.offices.map((office) => (
+                  <div
+                    className="flex items-center justify-between gap-4 rounded-[18px] border border-[#2f261b] bg-[#211b14] px-4 py-3"
+                    key={office.city}
+                  >
+                    <span className="text-base leading-6 text-[#faf7f0]">{office.city}</span>
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#aa9a80]">{office.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

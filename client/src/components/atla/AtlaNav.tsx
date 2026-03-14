@@ -1,232 +1,172 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { fallbackSiteSettings } from "@/lib/sanity.queries";
+import { studioUrl } from "@/lib/sanity";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const LF_MEDIUM: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.1",
-  color: "#222",
-  textDecoration: "none",
-  whiteSpace: "nowrap",
-  cursor: "pointer",
+type NavLinkItem = {
+  label: string;
+  href: string;
+  external?: boolean;
 };
 
-const LEFT_NAV = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "#services" },
-];
-const RIGHT_NAV = [
-  { label: "Journal", href: "#journal" },
-  { label: "Contact", href: "#contact" },
-];
-const ALL_NAV = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "#services" },
-  { label: "Careers", href: "#careers" },
-  { label: "Journal", href: "#journal" },
-  { label: "Contact", href: "#contact" },
-];
-const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "Behance", href: "https://behance.net" },
-  { label: "Linkedin", href: "https://linkedin.com" },
-  { label: "Facebook", href: "https://facebook.com" },
+const navItems: NavLinkItem[] = [
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/work" },
+  { label: "About", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "CMS", href: "/admin/projects" },
+  { label: "Contact", href: `mailto:${fallbackSiteSettings.contactEmail}`, external: true },
 ];
 
-function ToggleModeIcons({ inverted = false }: { inverted?: boolean }) {
-  const f = inverted ? "invert(1) brightness(2)" : "none";
+function BrandMark() {
   return (
-    <div style={{ display: "flex", alignItems: "center", height: 20 }}>
-      <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
-        <img
-          alt="Light mode"
-          src="/figmaAssets/toggle-sun.png"
-          style={{ position: "absolute", width: "100%", height: "100%", objectFit: "contain", display: "block", filter: f }}
-        />
+    <Link className="flex items-center gap-4" href="/">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d9cebc] bg-[#fcf8f1] shadow-[0_10px_24px_rgba(60,44,24,0.08)]">
+        <img alt="Atla" className="h-6 w-auto" src="/figmaAssets/logo.svg" />
+      </span>
+      <div className="space-y-1">
+        <p className="font-web-desktop-h3 text-2xl leading-none text-[#17130e]">Atla</p>
+        <p className="text-[10px] uppercase tracking-[0.34em] text-[#8c7b68]">Design practice</p>
       </div>
-      <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
-        <img
-          alt="Dark mode"
-          src="/figmaAssets/toggle-moon.png"
-          style={{ position: "absolute", width: "100%", height: "100%", objectFit: "contain", display: "block", filter: f }}
-        />
-      </div>
-    </div>
+    </Link>
   );
 }
 
-function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [isOpen, onClose]);
+function NavItem({
+  item,
+  currentPath,
+  onClick,
+  mobile = false,
+}: {
+  item: NavLinkItem;
+  currentPath: string;
+  onClick?: () => void;
+  mobile?: boolean;
+}) {
+  const isActive =
+    item.href === "/"
+      ? currentPath === "/"
+      : item.href.startsWith("/work")
+        ? currentPath.startsWith("/work")
+        : false;
 
-  if (!isOpen) return null;
+  const className = mobile
+    ? `block border-b border-[#2e261c] pb-4 font-web-desktop-h3 text-4xl leading-none ${
+        isActive ? "text-[#ffc629]" : "text-[#faf7f0]"
+      }`
+    : `text-[12px] uppercase tracking-[0.28em] transition-colors ${
+        isActive ? "text-[#17130e]" : "text-[#6d6256] hover:text-[#17130e]"
+      }`;
+
+  if (item.external || item.href.includes("#")) {
+    return (
+      <a
+        className={className}
+        href={item.href}
+        onClick={onClick}
+        rel={item.external ? "noreferrer" : undefined}
+        target={item.external ? "_blank" : undefined}
+      >
+        {item.label}
+      </a>
+    );
+  }
 
   return (
-    <div
-      data-testid="mobile-menu-overlay"
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ backgroundColor: "#222", fontFamily: "'Libre Franklin', Helvetica, sans-serif" }}
-    >
-      <div className="flex items-center justify-between px-5 shrink-0" style={{ height: 50 }}>
-        <img
-          alt="Atla"
-          src="/figmaAssets/p-framer-text.png"
-          style={{ height: 28, width: "auto", objectFit: "contain", filter: "invert(1) brightness(2)" }}
-        />
-        <button
-          data-testid="button-close-menu"
-          onClick={onClose}
-          style={{ ...LF_MEDIUM, background: "none", border: "none", color: "#fafafa", padding: 0 }}
-        >
-          Close
-        </button>
-      </div>
-
-      <div className="flex-1 flex flex-col items-center justify-center gap-6 px-5">
-        {ALL_NAV.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            onClick={onClose}
-            data-testid={`link-mobile-${link.label.toLowerCase()}`}
-            style={{
-              fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-              fontSize: 48,
-              fontWeight: 400,
-              lineHeight: "1.1",
-              color: "#fafafa",
-              fontStyle: "italic",
-              textAlign: "center",
-              textDecoration: "none",
-            }}
-          >
-            {link.label}
-          </a>
-        ))}
-      </div>
-
-      <div className="flex items-end justify-between px-5 pb-5 shrink-0">
-        <div className="flex flex-col gap-2">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-testid={`link-social-${s.label.toLowerCase()}`}
-              style={{ ...LF_MEDIUM, color: "#fafafa" }}
-            >
-              {s.label}
-            </a>
-          ))}
-        </div>
-        <div className="flex flex-col items-end gap-4">
-          <ToggleModeIcons inverted />
-          <img
-            alt="Atla"
-            src="/figmaAssets/p-framer-text.png"
-            style={{ height: 28, width: "auto", objectFit: "contain", filter: "invert(1) brightness(2)" }}
-          />
-        </div>
-      </div>
-    </div>
+    <Link className={className} href={item.href} onClick={onClick}>
+      {item.label}
+    </Link>
   );
 }
 
-export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export function AtlaNav() {
+  const [location] = useLocation();
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    if (!isMobile && menuOpen) setMenuOpen(false);
-  }, [isMobile, menuOpen]);
-
-  const linkStyle: React.CSSProperties = {
-    ...LF_MEDIUM,
-    color: inverted ? "#fafafa" : "#222",
-  };
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <nav
-        data-testid="atla-nav"
-        style={{
-          display: "flex",
-          width: "100%",
-          height: 50,
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          padding: "0 20px",
-          flexShrink: 0,
-          boxSizing: "border-box",
-        }}
-      >
-        {/* Desktop — left links */}
-        <div className="hidden md:flex" style={{ flex: "1 0 0", display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
-          {LEFT_NAV.map((link) => (
-            <a key={link.label} href={link.href} data-testid={`link-nav-${link.label.toLowerCase()}`} style={linkStyle}>
-              {link.label}
-            </a>
-          ))}
-        </div>
+      <nav className="sticky top-0 z-40 border-b border-[#e4dacb] bg-[rgba(247,241,230,0.84)] backdrop-blur-xl">
+        <div className="mx-auto flex h-[84px] max-w-6xl items-center justify-between px-5 md:px-8">
+          <BrandMark />
 
-        {/* Mobile — hamburger */}
-        <div className="flex md:hidden" style={{ flex: "1 0 0", alignItems: "center" }}>
+          <div className="hidden items-center gap-7 md:flex">
+            {navItems.map((item) => (
+              <NavItem currentPath={location} item={item} key={item.label} />
+            ))}
+          </div>
+
+          <div className="hidden md:flex">
+            <a
+              className="rounded-full border border-[#17130e] bg-[#17130e] px-5 py-3 text-[11px] uppercase tracking-[0.28em] text-[#faf7f0] transition-colors hover:bg-transparent hover:text-[#17130e]"
+              href={studioUrl}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Open Studio
+            </a>
+          </div>
+
           <button
-            data-testid="button-open-menu"
-            onClick={() => setMenuOpen(true)}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 6 }}
+            className="flex items-center gap-3 rounded-full border border-[#d9cebc] bg-[#fcf8f1] px-4 py-2.5 md:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
           >
-            <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
-              <line x1="0" y1="1" x2="20" y2="1" stroke={inverted ? "#fafafa" : "#222"} strokeWidth="1.5" />
-              <line x1="0" y1="7" x2="20" y2="7" stroke={inverted ? "#fafafa" : "#222"} strokeWidth="1.5" />
-              <line x1="0" y1="13" x2="20" y2="13" stroke={inverted ? "#fafafa" : "#222"} strokeWidth="1.5" />
-            </svg>
-            <span style={{ ...LF_MEDIUM, color: inverted ? "#fafafa" : "#222" }}>Menu</span>
+            <span className="text-[11px] uppercase tracking-[0.3em] text-[#17130e]">
+              {menuOpen ? "Close" : "Menu"}
+            </span>
+            <span className="space-y-1">
+              <span className="block h-[1.5px] w-5 bg-[#17130e]" />
+              <span className="block h-[1.5px] w-5 bg-[#17130e]" />
+            </span>
           </button>
         </div>
-
-        {/* Center — logo */}
-        <div style={{ flex: "1 0 0", display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0 }}>
-          <div style={{ position: "relative", width: 68.195, height: 28, flexShrink: 0 }}>
-            <img
-              alt="Atla"
-              src="/figmaAssets/p-framer-text.png"
-              style={{
-                position: "absolute",
-                display: "block",
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                filter: inverted ? "invert(1) brightness(2)" : "none",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Desktop — right links + toggle */}
-        <div className="hidden md:flex" style={{ flex: "1 0 0", alignItems: "flex-end", justifyContent: "flex-end", gap: 14, minWidth: 0 }}>
-          {RIGHT_NAV.map((link) => (
-            <a key={link.label} href={link.href} data-testid={`link-nav-${link.label.toLowerCase()}`} style={linkStyle}>
-              {link.label}
-            </a>
-          ))}
-          <ToggleModeIcons inverted={inverted} />
-        </div>
-
-        {/* Mobile — right spacer */}
-        <div className="flex md:hidden" style={{ flex: "1 0 0" }} />
       </nav>
 
-      <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      {isMobile && menuOpen ? (
+        <div className="fixed inset-0 z-50 flex flex-col bg-[#17130e] px-6 py-8 text-[#faf7f0]">
+          <div className="flex items-center justify-between">
+            <BrandMark />
+            <button
+              className="rounded-full border border-[#3a3126] px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-[#faf7f0]"
+              onClick={() => setMenuOpen(false)}
+              type="button"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-14 flex flex-1 flex-col justify-between">
+            <div className="space-y-6">
+              {navItems.map((item) => (
+                <NavItem
+                  currentPath={location}
+                  item={item}
+                  key={item.label}
+                  mobile
+                  onClick={() => setMenuOpen(false)}
+                />
+              ))}
+            </div>
+
+            <div className="space-y-5 rounded-[28px] border border-[#2f261b] bg-[#211b14] p-6">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[#b5a387]">Studio access</p>
+              <p className="text-sm leading-6 text-[#dccfb8]">
+                Open the CMS to manage projects, settings, and the portfolio content model.
+              </p>
+              <a
+                className="inline-flex rounded-full border border-[#ffc629] px-5 py-3 text-[11px] uppercase tracking-[0.28em] text-[#ffc629]"
+                href={studioUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Open Studio
+              </a>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
