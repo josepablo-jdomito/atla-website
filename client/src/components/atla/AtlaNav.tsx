@@ -18,7 +18,7 @@ const LF_MEDIUM: React.CSSProperties = {
 const LEFT_NAV = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/about#services" },
+  { label: "Services", href: "/services" },
 ];
 const RIGHT_NAV = [
   { label: "Journal", href: "/journal" },
@@ -27,7 +27,7 @@ const RIGHT_NAV = [
 const ALL_NAV = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/about#services" },
+  { label: "Services", href: "/services" },
   { label: "Careers", href: "/about" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/about#contact" },

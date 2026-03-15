@@ -1,4 +1,4 @@
-import type { JournalArticle } from "@shared/journal";
+import type { JournalArticle, JournalCategory } from "@shared/journal";
 
 async function parseJson<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -16,4 +16,9 @@ export async function fetchJournalArticle(slug: string) {
   const res = await fetch(`/api/journal/${slug}`, { credentials: "include" });
   if (res.status === 404) return null;
   return parseJson<JournalArticle>(res);
+}
+
+export async function fetchJournalCategories() {
+  const res = await fetch("/api/journal/categories", { credentials: "include" });
+  return parseJson<JournalCategory[]>(res);
 }

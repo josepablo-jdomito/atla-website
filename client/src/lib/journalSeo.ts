@@ -1,4 +1,4 @@
-import type { JournalArticle, JournalBodySection } from "@shared/journal";
+import type { JournalArticle, JournalBodySection, JournalPortableTextBlock } from "@shared/journal";
 
 const MONTHS: Record<string, string> = {
   Jan: "01",
@@ -16,7 +16,7 @@ const MONTHS: Record<string, string> = {
 };
 
 export function articleDescription(article: JournalArticle) {
-  return article.seoDescription || article.excerpt || article.introParagraphs[0] || `Read ${article.title} from Atla Journal.`;
+  return article.seoDescription || article.excerpt || portableTextToPlainText(article.body).slice(0, 220) || article.introParagraphs[0] || `Read ${article.title} from Atla Journal.`;
 }
 
 export function articlePublishedIso(dateLabel: string) {
@@ -27,10 +27,32 @@ export function articlePublishedIso(dateLabel: string) {
 }
 
 export function articleBodyText(article: JournalArticle) {
+  const portableText = portableTextToPlainText(article.body).trim();
+  if (portableText.length > 0) {
+    return portableText;
+  }
+
   return [
     ...article.introParagraphs,
     ...article.bodySections.flatMap((section: JournalBodySection) => section.paragraphs),
   ]
     .join(" ")
     .trim();
+}
+
+function portableTextToPlainText(body: JournalPortableTextBlock[]) {
+  if (!Array.isArray(body)) return "";
+
+  return body
+    .map((block) => {
+      if (!block || block._type !== "block" || !Array.isArray(block.children)) {
+        return "";
+      }
+
+      return block.children
+        .map((child) => (typeof child.text === "string" ? child.text : ""))
+        .join("");
+    })
+    .filter(Boolean)
+    .join("\n\n");
 }

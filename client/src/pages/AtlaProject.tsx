@@ -1,11 +1,12 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import type { Project } from "@shared/schema";
+import { trackEvent } from "@/hooks/use-analytics";
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
-import { portfolioFallbackProjects, projectShowcases } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
+import NotFound from "@/pages/not-found";
 
 const LABEL: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -37,35 +38,88 @@ function fetchProject(slug: string) {
   };
 }
 
+type ProjectPageView = {
+  slug: string;
+  title: string;
+  client: string;
+  services: string[];
+  location: string;
+  dateLabel: string;
+  intro: string;
+  brandTitle: string;
+  brandBody: string[];
+  heroImage: string;
+  storyImage?: string;
+  gallery: string[];
+  credits: Array<{ role: string; names: string[] }>;
+  related: Array<{ slug: string; title: string; date: string }>;
+};
+
+function buildProjectPageView(project: Project, allProjects: Project[]): ProjectPageView {
+  const brandBody = project.body.split("\n\n").filter(Boolean);
+  const services = project.tags.length > 0 ? project.tags : [project.category];
+  const heroImage = project.coverImage || project.images[0] || "/figmaAssets/media.png";
+  const gallery = project.images.length > 0 ? project.images : [heroImage];
+  const related = allProjects
+    .filter((item) => item.slug !== project.slug)
+    .slice(0, 7)
+    .map((item) => ({
+      slug: item.slug,
+      title: item.title,
+      date: String(item.year),
+    }));
+
+  return {
+    slug: project.slug,
+    title: project.title,
+    client: project.client,
+    services,
+    location: project.category,
+    dateLabel: String(project.year),
+    intro: project.description,
+    brandTitle: "The brand",
+    brandBody: brandBody.length > 0 ? brandBody : [project.description],
+    heroImage,
+    storyImage: project.images[1] || heroImage,
+    gallery,
+    credits: [
+      { role: "Client", names: [project.client] },
+      { role: "Category", names: [project.category] },
+    ],
+    related,
+  };
+}
+
 export default function AtlaProject() {
   const [, params] = useRoute("/projects/:slug");
-  const slug = params?.slug ?? "reggie";
+  const slug = params?.slug ?? "";
   const isMobile = useIsMobile();
 
-  const { data } = useQuery<Project | null>({
+  const { data: projectData, isPending: isProjectPending } = useQuery<Project | null>({
     queryKey: ["project", slug],
     queryFn: fetchProject(slug),
   });
+  const { data: allProjects } = useQuery<Project[]>({
+    queryKey: ["/api/projects"],
+  });
 
-  const fallback = projectShowcases[slug] ?? projectShowcases.reggie;
+  const project = useMemo(
+    () => (projectData ? buildProjectPageView(projectData, allProjects ?? []) : null),
+    [allProjects, projectData],
+  );
 
-  const project = useMemo(() => {
-    if (!data) return fallback;
+  useEffect(() => {
+    if (!project) return;
 
-    return {
-      ...fallback,
-      slug: data.slug,
-      title: data.title,
-      client: data.client,
-      dateLabel: String(data.year),
-      intro: data.description,
-      brandBody: data.body ? data.body.split("\n\n").filter(Boolean) : fallback.brandBody,
-      heroImage: data.coverImage || fallback.heroImage,
-      gallery: data.images.length > 0 ? data.images : fallback.gallery,
-    };
-  }, [data, fallback]);
+    trackEvent("portfolio_project_view", {
+      page: `/projects/${project.slug}`,
+      project_name: project.title,
+    });
+  }, [project]);
 
   const galleryRows = useMemo(() => {
+    if (!project) return [];
+
     const rows: Array<{ kind: "single" | "pair"; images: string[] }> = [];
     for (let index = 0; index < project.gallery.length; index += 1) {
       const shouldPair = index % 3 === 0 && index + 1 < project.gallery.length;
@@ -77,7 +131,15 @@ export default function AtlaProject() {
       }
     }
     return rows;
-  }, [project.gallery]);
+  }, [project]);
+
+  if (!slug || (!project && isProjectPending)) {
+    return null;
+  }
+
+  if (!project) {
+    return <NotFound />;
+  }
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
@@ -228,7 +290,7 @@ export default function AtlaProject() {
               {project.related.map((item) => (
                 <a
                   key={item.title}
-                  href={`/projects/${portfolioFallbackProjects.find((projectItem) => projectItem.title === item.title)?.slug || "reggie"}`}
+                  href={`/projects/${item.slug}`}
                   className="atla-link"
                   style={{ ...BODY, color: "#8e8e8e", textDecoration: "none", display: "flex", justifyContent: "space-between" }}
                 >

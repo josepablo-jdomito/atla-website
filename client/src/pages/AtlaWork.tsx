@@ -48,7 +48,7 @@ const FILTERS = {
 } as const;
 
 function normalizeProjects(projects?: Project[]): WorkProject[] {
-  if (!projects || projects.length === 0) return portfolioFallbackProjects;
+  if (!projects || projects.length === 0) return [];
 
   return projects.map((project, index) => ({
     slug: project.slug,

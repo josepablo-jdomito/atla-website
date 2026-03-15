@@ -1,10 +1,17 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import {
+  ORGANIZATION_LOGO_URL,
+  ORGANIZATION_NAME,
+  SITE_ORIGIN,
+} from "@shared/siteSeo";
 import { useRoute } from "wouter";
+import { trackEvent, useScrollDepthTracking } from "@/hooks/use-analytics";
+import { JournalPortableText } from "@/components/journal/JournalPortableText";
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { journalArticles } from "@/data/atlaContent";
+import NotFound from "@/pages/not-found";
 import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
 import { articleBodyText, articleDescription, articlePublishedIso } from "@/lib/journalSeo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -27,48 +34,68 @@ const LABEL: React.CSSProperties = {
 export default function AtlaArticle() {
   const [, params] = useRoute("/journal/:slug");
   const isMobile = useIsMobile();
-  const slug = params?.slug ?? journalArticles[0].slug;
-  const { data: articleData } = useQuery({
+  const slug = params?.slug ?? "";
+  const { data: articleData, isPending: isArticlePending } = useQuery({
     queryKey: ["/api/journal", slug],
     queryFn: () => fetchJournalArticle(slug),
   });
-  const { data: articlesData } = useQuery({
+  const { data: articlesData, isPending: areArticlesPending } = useQuery({
     queryKey: ["/api/journal"],
     queryFn: fetchJournalArticles,
   });
-  const articles = useMemo(
-    () => (articlesData && articlesData.length > 0 ? articlesData : journalArticles),
-    [articlesData],
-  );
+  const articles = useMemo(() => articlesData ?? [], [articlesData]);
   const article = useMemo(
-    () => articleData ?? articles.find((item) => item.slug === slug) ?? articles[0],
+    () => articleData ?? articles.find((item) => item.slug === slug) ?? null,
     [articleData, articles, slug],
   );
+  useScrollDepthTracking(article?.slug ?? "", article?.category, "journal_article");
+
+  if (!slug || (!article && (isArticlePending || areArticlesPending))) {
+    return null;
+  }
+
+  if (!article) {
+    return <NotFound />;
+  }
 
   const otherNews = articles.filter((item) => item.slug !== article.slug).slice(0, 2);
   const articleText = articleBodyText(article);
   const description = articleDescription(article);
   const canonicalPath = `/journal/${article.slug}`;
   const robots = articleText.length >= 280 ? "index,follow" : "noindex,follow";
-  const articleSchema = {
+  const articleImage = article.coverImage || article.heroImage || "";
+  const hasPortableTextBody = article.body.length > 0;
+  const hasLegacyBody = article.introParagraphs.length > 0 || article.bodySections.some(
+    (section) => section.paragraphs.length > 0 || Boolean(section.image) || Boolean(section.wideImage),
+  );
+
+  const articleSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: article.title,
     description,
-    image: [article.coverImage],
     articleSection: article.category,
-    datePublished: articlePublishedIso(article.date),
+    datePublished: article.publishedAt || articlePublishedIso(article.date),
     author: {
       "@type": "Organization",
-      name: "Atla",
+      name: article.authorName || ORGANIZATION_NAME,
     },
     publisher: {
       "@type": "Organization",
-      name: "Atla",
+      name: ORGANIZATION_NAME,
+      logo: {
+        "@type": "ImageObject",
+        url: ORGANIZATION_LOGO_URL,
+      },
     },
-    mainEntityOfPage: `https://atla-website.vercel.app${canonicalPath}`,
+    mainEntityOfPage: `${SITE_ORIGIN}${canonicalPath}`,
     articleBody: articleText || description,
   };
+
+  if (articleImage) {
+    articleSchema.image = [articleImage];
+  }
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -77,13 +104,13 @@ export default function AtlaArticle() {
         "@type": "ListItem",
         position: 1,
         name: "Journal",
-        item: "https://atla-website.vercel.app/journal",
+        item: `${SITE_ORIGIN}/journal`,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: article.title,
-        item: `https://atla-website.vercel.app${canonicalPath}`,
+        item: `${SITE_ORIGIN}${canonicalPath}`,
       },
     ],
   };
@@ -94,7 +121,7 @@ export default function AtlaArticle() {
         title={article.seoTitle || article.title}
         description={description}
         pathname={canonicalPath}
-        image={article.coverImage}
+        image={articleImage || undefined}
         type="article"
         robots={robots}
         structuredData={[articleSchema, breadcrumbSchema]}
@@ -113,9 +140,11 @@ export default function AtlaArticle() {
         >
           {isMobile && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <div style={{ width: "100%", aspectRatio: "370 / 400", overflow: "hidden" }}>
-                <img src={article.coverImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-              </div>
+              {articleImage ? (
+                <div style={{ width: "100%", aspectRatio: "370 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
+                  <img src={articleImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </div>
+              ) : null}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <h1
                   style={{
@@ -136,75 +165,86 @@ export default function AtlaArticle() {
           )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: 40, minWidth: 0 }}>
-            {!isMobile && <div style={{ height: 450 }} />}
-            {article.introParagraphs.length > 0 && (
-              <div style={{ maxWidth: 460, display: "flex", flexDirection: "column", gap: 20 }}>
-                {article.introParagraphs.map((paragraph) => (
-                  <p key={paragraph} style={BODY}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            )}
+            {!isMobile && articleImage ? <div style={{ height: 450 }} /> : null}
 
-            {article.bodySections.map((section, index) => (
-              <div key={`${article.slug}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                {section.paragraphs.length > 0 && (
-                  <div style={{ maxWidth: 460, display: "flex", flexDirection: "column", gap: 20, padding: section.image || section.wideImage ? "0 0 20px" : 0 }}>
-                    {section.paragraphs.map((paragraph) => (
+            {hasPortableTextBody ? (
+              <JournalPortableText value={article.body} />
+            ) : (
+              <>
+                {article.introParagraphs.length > 0 && (
+                  <div style={{ maxWidth: 620, display: "flex", flexDirection: "column", gap: 20 }}>
+                    {article.introParagraphs.map((paragraph) => (
                       <p key={paragraph} style={BODY}>
                         {paragraph}
                       </p>
                     ))}
                   </div>
                 )}
-                {section.image && (
-                  <div style={{ width: isMobile ? "100%" : 460, minHeight: 400 }}>
-                    <img src={section.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  </div>
-                )}
-                {section.wideImage && (
-                  <div style={{ width: "100%", minHeight: 400 }}>
-                    <img src={section.wideImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  </div>
-                )}
-              </div>
-            ))}
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 40, maxWidth: 460 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                <p style={LABEL}>Source:</p>
-                <p style={BODY}>{article.sourceName || "Atla Journal"}</p>
+                {article.bodySections.map((section, index) => (
+                  <div key={`${article.slug}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 620 }}>
+                    {section.paragraphs.length > 0 && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: section.image || section.wideImage ? "0 0 20px" : 0 }}>
+                        {section.paragraphs.map((paragraph) => (
+                          <p key={paragraph} style={BODY}>
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {section.image && (
+                      <div style={{ width: "100%", minHeight: 400 }}>
+                        <img src={section.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      </div>
+                    )}
+                    {section.wideImage && (
+                      <div style={{ width: "100%", minHeight: 400 }}>
+                        <img src={section.wideImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
+
+            {!hasPortableTextBody && !hasLegacyBody ? null : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 40, maxWidth: 620 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                  <p style={LABEL}>Source:</p>
+                  <p style={BODY}>{article.sourceName || "Atla Journal"}</p>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                  <p style={LABEL}>Author:</p>
+                  <p style={BODY}>{article.authorName || "Atla"}</p>
+                </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                <p style={LABEL}>Author:</p>
-                <p style={BODY}>{article.authorName || "Atla"}</p>
-              </div>
-            </div>
+            )}
           </div>
 
           {!isMobile && (
-          <div style={{ position: "sticky", top: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ width: "100%", aspectRatio: "575 / 400", overflow: "hidden" }}>
-              <img src={article.coverImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <div style={{ position: "sticky", top: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {articleImage ? (
+                <div style={{ width: "100%", aspectRatio: "575 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
+                  <img src={articleImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </div>
+              ) : null}
+              <div style={{ paddingTop: articleImage ? 20 : 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                <h1
+                  style={{
+                    fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                    fontSize: 64,
+                    fontWeight: 400,
+                    lineHeight: "1.1",
+                    color: "#222",
+                    margin: 0,
+                  }}
+                >
+                  {article.title}
+                </h1>
+                <p style={LABEL}>{article.category}</p>
+                <p style={LABEL}>{article.date.toUpperCase()}</p>
+              </div>
             </div>
-            <div style={{ paddingTop: 20, display: "flex", flexDirection: "column", gap: 4 }}>
-              <h1
-                style={{
-                  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-                  fontSize: isMobile ? 44 : 64,
-                  fontWeight: 400,
-                  lineHeight: "1.1",
-                  color: "#222",
-                  margin: 0,
-                }}
-              >
-                {article.title}
-              </h1>
-              <p style={LABEL}>{article.category}</p>
-              <p style={LABEL}>{article.date.toUpperCase()}</p>
-            </div>
-          </div>
           )}
         </section>
 
@@ -228,11 +268,26 @@ export default function AtlaArticle() {
               </p>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 64 : 10 }}>
                 {otherNews.map((item) => (
-                  <a key={item.slug} href={`/journal/${item.slug}`} className="atla-card" style={{ textDecoration: "none", color: "#222", display: "flex", flexDirection: "column", gap: 20 }}>
-                    <div style={{ width: "100%", aspectRatio: "282.5 / 246.54", overflow: "hidden" }}>
-                      <img src={item.coverImage} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <a
+                    key={item.slug}
+                    href={`/journal/${item.slug}`}
+                    className="atla-card"
+                    onClick={() =>
+                      trackEvent("journal_cta_click", {
+                        page: canonicalPath,
+                        article_slug: item.slug,
+                        article_category: item.category,
+                        cta_type: "related_article",
+                      })}
+                    style={{ textDecoration: "none", color: "#222", display: "flex", flexDirection: "column", gap: 20 }}
+                  >
+                    <div style={{ width: "100%", aspectRatio: "282.5 / 246.54", overflow: "hidden", backgroundColor: "#efefef" }}>
+                      {item.coverImage ? (
+                        <img src={item.coverImage} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      ) : null}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      <p style={{ ...LABEL, fontSize: 12 }}>{item.category}</p>
                       <h2
                         style={{
                           fontFamily: "'Libre Franklin', Helvetica, sans-serif",

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is overwritten in dist/public during npm run build using live Sanity content. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://atla-website.vercel.app/</loc>
@@ -17,59 +18,5 @@
   </url>
   <url>
     <loc>https://atla-website.vercel.app/terms</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/aureon</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/reggie</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/digital-poetics</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/lume-agency</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/avenir-motors</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/nova-frame</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/obsidian</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/terran-collective</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/halo-visual</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/flux-division</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/neutra-lab</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/projects/solari-house</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/digital-poetics-when-code-becomes-canvas</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/the-aesthetics-of-technology-designing-the-invisible</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/human-machines-art-at-the-edge-of-intelligence</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/generative-design-when-creativity-becomes-autonomous</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/beyond-the-screen-the-future-of-digital-presence</loc>
-  </url>
-  <url>
-    <loc>https://atla-website.vercel.app/journal/architecture-in-motion-the-new-language-of-digital-space</loc>
   </url>
 </urlset>

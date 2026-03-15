@@ -6,7 +6,6 @@ export const journalArticleType = defineType({
   type: "document",
   groups: [
     { name: "editorial", title: "Editorial", default: true },
-    { name: "media", title: "Media" },
     { name: "seo", title: "SEO" },
     { name: "relationships", title: "Relationships" },
   ],
@@ -27,8 +26,8 @@ export const journalArticleType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "primaryCategory",
-      title: "Primary category",
+      name: "category",
+      title: "Category",
       type: "reference",
       group: "relationships",
       to: [{ type: "category" }],
@@ -46,6 +45,7 @@ export const journalArticleType = defineType({
       title: "Published at",
       type: "datetime",
       group: "editorial",
+      description: "The article appears on the site when this date is set and is not in the future.",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -55,76 +55,92 @@ export const journalArticleType = defineType({
       group: "editorial",
     }),
     defineField({
+      name: "status",
+      title: "Status",
+      type: "string",
+      group: "editorial",
+      options: {
+        list: [
+          { title: "Draft", value: "draft" },
+          { title: "Published", value: "published" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "draft",
+      description: "Editorial flag. Site visibility is still controlled by the published date.",
+    }),
+    defineField({
       name: "excerpt",
       title: "Excerpt",
       type: "text",
       group: "editorial",
       rows: 3,
+      description: "Used on journal cards and as the default meta description.",
       validation: (rule) => rule.required().max(220),
     }),
     defineField({
-      name: "heroImage",
-      title: "Hero image",
-      type: "image",
-      group: "media",
-      options: { hotspot: true },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "coverImage",
-      title: "Cover image",
-      type: "image",
-      group: "media",
-      options: { hotspot: true },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "introParagraphs",
-      title: "Intro paragraphs",
+      name: "body",
+      title: "Body",
       type: "array",
       group: "editorial",
-      of: [defineArrayMember({ type: "text", rows: 4 })],
-    }),
-    defineField({
-      name: "bodySections",
-      title: "Body sections",
-      type: "array",
-      group: "editorial",
+      validation: (rule) => rule.required().min(1),
       of: [
         defineArrayMember({
-          type: "object",
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "H2", value: "h2" },
+            { title: "H3", value: "h3" },
+            { title: "H4", value: "h4" },
+            { title: "Blockquote", value: "blockquote" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                title: "Link",
+                type: "object",
+                fields: [
+                  defineField({
+                    name: "href",
+                    title: "URL",
+                    type: "url",
+                    validation: (rule) =>
+                      rule.required().uri({
+                        allowRelative: true,
+                        scheme: ["http", "https", "mailto", "tel"],
+                      }),
+                  }),
+                  defineField({
+                    name: "blank",
+                    title: "Open in new tab",
+                    type: "boolean",
+                    initialValue: false,
+                  }),
+                ],
+              },
+            ],
+          },
+        }),
+        defineArrayMember({
+          type: "image",
+          options: { hotspot: true },
           fields: [
             defineField({
-              name: "paragraphs",
-              title: "Paragraphs",
-              type: "array",
-              of: [defineArrayMember({ type: "text", rows: 4 })],
+              name: "alt",
+              title: "Alt text",
+              type: "string",
             }),
             defineField({
-              name: "image",
-              title: "Image",
-              type: "image",
-              options: { hotspot: true },
-            }),
-            defineField({
-              name: "wideImage",
-              title: "Wide image",
-              type: "image",
-              options: { hotspot: true },
+              name: "caption",
+              title: "Caption",
+              type: "string",
             }),
           ],
-          preview: {
-            select: {
-              title: "paragraphs.0",
-              media: "image",
-            },
-            prepare({ title, media }) {
-              return {
-                title: title || "Body section",
-                media,
-              };
-            },
-          },
         }),
       ],
     }),
@@ -149,17 +165,31 @@ export const journalArticleType = defineType({
       of: [defineArrayMember({ type: "reference", to: [{ type: "journalArticle" }] })],
     }),
     defineField({
-      name: "seo",
-      title: "SEO",
-      type: "seo",
+      name: "noIndex",
+      title: "No index",
+      type: "boolean",
       group: "seo",
+      initialValue: false,
+      description: "Exclude this article from indexable journal listings and sitemap generation.",
+    }),
+    defineField({
+      name: "seoTitle",
+      title: "SEO title",
+      type: "string",
+      group: "seo",
+    }),
+    defineField({
+      name: "seoDescription",
+      title: "SEO description",
+      type: "text",
+      group: "seo",
+      rows: 3,
     }),
   ],
   preview: {
     select: {
       title: "title",
-      subtitle: "primaryCategory.title",
-      media: "coverImage",
+      subtitle: "category.title",
     },
   },
 });

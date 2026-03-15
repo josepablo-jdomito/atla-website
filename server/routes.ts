@@ -1,8 +1,12 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
-import { fetchJournalArticleBySlugFromSanity, fetchJournalArticlesFromSanity } from "./sanity/journalService.ts";
+import {
+  fetchJournalArticleBySlugFromSanity,
+  fetchJournalArticlesFromSanity,
+  fetchJournalCategoriesFromSanity,
+} from "./sanity/journalService.ts";
 import {
   fetchProjectBySlugOrIdFromSanity,
   fetchProjectsFromSanity,
@@ -10,6 +14,8 @@ import {
 } from "./sanity/projectService.ts";
 
 const ADMIN_COOKIE_NAME = "atla_admin_session";
+const LEGACY_PROJECTS_ADMIN_MESSAGE =
+  "Legacy projects admin has been retired. Projects are managed in Sanity Studio.";
 
 function getCookieValue(cookieHeader: string | undefined, name: string) {
   if (!cookieHeader) return null;
@@ -22,10 +28,66 @@ function getAdminSecret() {
   return process.env.ADMIN_ACCESS_PASSWORD || process.env.ATLA_ADMIN_PASSWORD || null;
 }
 
-function isAuthorizedAdmin(req: Parameters<Express["get"]>[1] extends (...args: infer A) => any ? A[0] : never) {
+function isAuthorizedAdmin(req: Request) {
   const secret = getAdminSecret();
   if (!secret) return false;
   return getCookieValue(req.headers.cookie, ADMIN_COOKIE_NAME) === secret;
+}
+
+function getRequestOrigin(req: Request) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const forwardedHost = req.headers["x-forwarded-host"];
+  const protocol = typeof forwardedProto === "string" ? forwardedProto.split(",")[0].trim() : req.protocol;
+  const host = typeof forwardedHost === "string" ? forwardedHost.split(",")[0].trim() : req.get("host");
+
+  if (!host) {
+    return "https://atla-website.vercel.app";
+  }
+
+  return `${protocol || "https"}://${host}`;
+}
+
+function escapeXml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
+function createSitemapXml(origin: string, staticPaths: string[], projectSlugs: string[], articleSlugs: string[]) {
+  const urls = [
+    ...staticPaths,
+    ...projectSlugs.map((slug) => `/projects/${slug}`),
+    ...articleSlugs.map((slug) => `/journal/${slug}`),
+  ]
+    .filter((value, index, all) => all.indexOf(value) === index)
+    .map((pathname) => `  <url>\n    <loc>${escapeXml(`${origin}${pathname}`)}</loc>\n  </url>`)
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+}
+
+function createRssFeedXml(origin: string, articles: Awaited<ReturnType<typeof fetchJournalArticlesFromSanity>>) {
+  const items = articles.slice(0, 20).map((article) => {
+    const publishedAt = article.publishedAt ? new Date(article.publishedAt) : null;
+    const pubDate = publishedAt && !Number.isNaN(publishedAt.getTime())
+      ? publishedAt.toUTCString()
+      : undefined;
+
+    return `    <item>
+      <title>${escapeXml(article.title)}</title>
+      <link>${escapeXml(`${origin}/journal/${article.slug}`)}</link>
+      <guid isPermaLink="true">${escapeXml(`${origin}/journal/${article.slug}`)}</guid>
+      <description>${escapeXml(article.excerpt || article.title)}</description>
+      ${pubDate ? `<pubDate>${escapeXml(pubDate)}</pubDate>` : ""}
+      <author>${escapeXml(article.authorName || "Atla")}</author>
+      <category>${escapeXml(article.category || "Journal")}</category>
+    </item>`;
+  }).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>Atla Journal</title>\n    <link>${escapeXml(`${origin}/journal`)}</link>\n    <description>Branding strategy, identity design, and honest perspectives from the team at Atla.</description>\n    <language>en-us</language>\n    <atom:link href="${escapeXml(`${origin}/api/feed.xml`)}" rel="self" type="application/rss+xml"/>\n${items}\n  </channel>\n</rss>\n`;
 }
 
 export async function registerRoutes(
@@ -33,6 +95,9 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.get("/api/admin/session", async (req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
+    }
     if (!getAdminSecret()) {
       return res.status(503).json({ error: "Admin access is not configured" });
     }
@@ -43,6 +108,9 @@ export async function registerRoutes(
   });
 
   app.post("/api/admin/login", async (req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
+    }
     const secret = getAdminSecret();
     if (!secret) {
       return res.status(503).json({ error: "Admin access is not configured" });
@@ -60,6 +128,9 @@ export async function registerRoutes(
   });
 
   app.post("/api/admin/logout", async (_req, res) => {
+    if (isProjectSanityConfigured()) {
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
+    }
     res.setHeader(
       "Set-Cookie",
       `${ADMIN_COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Secure`,
@@ -107,7 +178,7 @@ export async function registerRoutes(
 
   app.post("/api/projects", async (req, res) => {
     if (isProjectSanityConfigured()) {
-      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
     }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -129,7 +200,7 @@ export async function registerRoutes(
 
   app.patch("/api/projects/:id", async (req, res) => {
     if (isProjectSanityConfigured()) {
-      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
     }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -152,7 +223,7 @@ export async function registerRoutes(
 
   app.delete("/api/projects/:id", async (req, res) => {
     if (isProjectSanityConfigured()) {
-      return res.status(501).json({ error: "Projects are managed in Sanity Studio" });
+      return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
     }
     if (!isAuthorizedAdmin(req)) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -176,6 +247,16 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/journal/categories", async (_req, res) => {
+    try {
+      const categories = await fetchJournalCategoriesFromSanity();
+      res.json(categories);
+    } catch (err) {
+      console.error("Failed to fetch journal categories:", err);
+      res.status(500).json({ error: "Failed to fetch journal categories" });
+    }
+  });
+
   app.get("/api/journal/:slug", async (req, res) => {
     try {
       const article = await fetchJournalArticleBySlugFromSanity(req.params.slug);
@@ -184,6 +265,54 @@ export async function registerRoutes(
     } catch (err) {
       console.error(`Failed to fetch journal article ${req.params.slug}:`, err);
       res.status(500).json({ error: "Failed to fetch journal article" });
+    }
+  });
+
+  app.get("/api/sitemap.xml", async (req, res) => {
+    try {
+      const origin = getRequestOrigin(req);
+      const projects = isProjectSanityConfigured()
+        ? await fetchProjectsFromSanity()
+        : await storage.getAllProjects();
+      const articles = await fetchJournalArticlesFromSanity();
+      const categories = await fetchJournalCategoriesFromSanity();
+      const xml = createSitemapXml(
+        origin,
+        [
+          "/",
+          "/about",
+          "/services",
+          "/work",
+          "/journal",
+          "/privacy",
+          "/terms",
+          ...categories.map((category) => `/journal/category/${category.slug}`),
+        ],
+        projects.map((project) => project.slug),
+        articles.map((article) => article.slug),
+      );
+
+      res.setHeader("Content-Type", "application/xml");
+      res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+      res.send(xml);
+    } catch (err) {
+      console.error("Failed to generate sitemap:", err);
+      res.status(500).send("Failed to generate sitemap");
+    }
+  });
+
+  app.get("/api/feed.xml", async (req, res) => {
+    try {
+      const origin = getRequestOrigin(req);
+      const articles = await fetchJournalArticlesFromSanity();
+      const xml = createRssFeedXml(origin, articles);
+
+      res.setHeader("Content-Type", "application/rss+xml");
+      res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+      res.send(xml);
+    } catch (err) {
+      console.error("Failed to generate feed:", err);
+      res.status(500).send("Failed to generate feed");
     }
   });
 

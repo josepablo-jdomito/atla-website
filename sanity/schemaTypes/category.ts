@@ -24,6 +24,19 @@ export const categoryType = defineType({
       type: "text",
       rows: 3,
     }),
+    defineField({
+      name: "seoTitle",
+      title: "SEO title",
+      type: "string",
+      description: "Optional override for category page title tags.",
+    }),
+    defineField({
+      name: "seoDescription",
+      title: "SEO description",
+      type: "text",
+      rows: 3,
+      description: "Optional override for category page meta descriptions.",
+    }),
   ],
   preview: {
     select: {

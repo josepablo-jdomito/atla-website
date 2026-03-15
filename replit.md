@@ -11,21 +11,24 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
 - **Frontend**: React + Vite + TanStack Query + Wouter router + Tailwind CSS (v4)
 - **Backend**: Express at `server/` — REST API routes at `/api/*`
 - **Database**: PostgreSQL + Drizzle ORM (schema at `shared/schema.ts`)
-- **CMS**: Projects table serves as CMS for all design projects across the site
-- **Admin UI**: `/admin/projects` — full CRUD management interface for projects
+- **CMS**: Portfolio and journal content are read from Sanity
+- **Admin UI**: `/admin/projects` is retired and only shows a legacy notice
+- **Journal publishing**: published Sanity journal entries drive the API, prerendered SEO pages, and sitemap
 - **API routes**:
-  - `GET /api/projects` — list all projects (add `?featured=true` for homepage projects)
-  - `GET /api/projects/:slugOrId` — single project by slug or UUID
-  - `POST /api/projects` — create project
-  - `PATCH /api/projects/:id` — update project
-  - `DELETE /api/projects/:id` — delete project
+  - `GET /api/projects` — list all portfolio projects from Sanity (add `?featured=true` for homepage projects)
+  - `GET /api/projects/:slugOrId` — single portfolio project from Sanity by slug or ID
+  - `POST /api/projects` — legacy write route, retired when Sanity is active
+  - `PATCH /api/projects/:id` — legacy write route, retired when Sanity is active
+  - `DELETE /api/projects/:id` — legacy write route, retired when Sanity is active
+  - `GET /api/journal` — list published journal articles from Sanity
+  - `GET /api/journal/:slug` — single published journal article from Sanity
 - **Figma assets**: served from `client/public/figmaAssets/` (logo `p-framer-text.png`, toggle icons, media, photos, hero, symbol)
 - **Mockup sandbox**: live component previews at `/__mockup/preview/atla/*`
 - **Shared layout modules**: `client/src/components/atla/AtlaNav.tsx` (navbar + mobile menu overlay) and `client/src/components/atla/AtlaFooter.tsx` — import and drop into any page
 - **Pages**:
   - `/` → `client/src/pages/ElementDefault.tsx` — Home (1200×750px gallery + bottom strip)
   - `/about` → `client/src/pages/AtlaAbout.tsx` — About (hero + About/Team/Services/Clients/Honors sections)
-  - `/admin/projects` → `client/src/pages/ProjectsAdmin.tsx` — CMS admin
+  - `/admin/projects` → `client/src/pages/ProjectsAdmin.tsx` — retired legacy admin notice
 - **Fonts**: Libre Franklin + Roboto Mono (Google Fonts via `<link>` in index.html), ABC Synt Variable Unlicensed Trial + PP Playground (local fallback via `@font-face`)
 
 ## Vercel Deployment
@@ -34,6 +37,8 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
 - **`api/index.ts`** — Vercel serverless entry point; imports the Express app from `server/app.ts`
 - **`server/app.ts`** — shared Express app setup (middleware + routes) used by both local `server/index.ts` and the Vercel serverless function; does NOT call `.listen()`
 - Requires `DATABASE_URL` environment variable set in Vercel project settings
+- Requires `SANITY_JOURNAL_*` environment variables in Vercel so journal routes, prerendered SEO pages, and the sitemap can build from Sanity content
+- `npm run audit:journal` audits published or scheduled journal entries straight from Sanity
 
 ## Stack
 

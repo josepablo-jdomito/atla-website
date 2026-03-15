@@ -7,7 +7,7 @@ const LIBRE = "'Libre Franklin', Helvetica, sans-serif";
 const NAV_LINKS = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/about#services" },
+  { label: "Services", href: "/services" },
   { label: "Careers", href: "/about" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/about#contact" },

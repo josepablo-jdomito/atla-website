@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AtlaNav } from "@/components/atla/AtlaNav";
+import { buildImageSrcSet, getOptimizedImageUrl } from "@shared/imageDelivery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { Project } from "@shared/schema";
 
@@ -169,6 +170,16 @@ export const ElementDefault = (): JSX.Element => {
               : slotFrames.map((slot, index) => {
                   const project = visibleProjects[index];
                   const src = project?.coverImage || FALLBACK_IMAGES[index];
+                  const optimizedSrc =
+                    getOptimizedImageUrl(src, {
+                      width: slot.width * 2,
+                      quality: index === 2 ? 84 : 78,
+                    }) || src;
+                  const srcSet = buildImageSrcSet(
+                    src,
+                    [slot.width, slot.width * 1.5, slot.width * 2],
+                    { quality: index === 2 ? 84 : 78 },
+                  );
                   const alt = project?.title || "Atla project";
                   const slug = project?.slug;
                   const isCenter = index === 2;
@@ -194,13 +205,16 @@ export const ElementDefault = (): JSX.Element => {
                       data-testid={`card-gallery-${index}`}
                     >
                       <img
-                        src={src}
+                        src={optimizedSrc}
+                        srcSet={srcSet}
+                        sizes={`${Math.round(slot.width)}px`}
                         alt={alt}
                         width={slot.width}
                         height={slot.height}
                         className="atla-home-card-image"
                         loading={isCenter ? "eager" : "lazy"}
                         fetchPriority={isCenter ? "high" : undefined}
+                        decoding="async"
                         data-testid={`img-gallery-${index}`}
                       />
                     </div>
@@ -251,7 +265,7 @@ export const ElementDefault = (): JSX.Element => {
             <p
               style={{
                 fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: isMobile ? 10 : 12,
+                fontSize: isMobile ? 12 : 12,
                 fontWeight: 600,
                 letterSpacing: isMobile ? 0.4 : 0.48,
                 lineHeight: "1.2",
@@ -268,7 +282,7 @@ export const ElementDefault = (): JSX.Element => {
             <p
               style={{
                 fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: isMobile ? 10 : 12,
+                fontSize: isMobile ? 12 : 12,
                 fontWeight: 600,
                 letterSpacing: isMobile ? 0.4 : 0.48,
                 lineHeight: "1.2",
