@@ -53,25 +53,25 @@ function SectionTitle({ children, mobile = false }: { children: React.ReactNode;
 }
 
 const TEAM = [
-  { name: "Jose Pablo Dominguez", role: "( Founder & Creative Director )", src: "/figmaAssets/photo-1.jpg" },
-  { name: "Paola Diaz", role: "( COO )", src: "/figmaAssets/photo-2.jpg" },
-  { name: "Levi Ramirez", role: "( Head of Growth )", src: "/figmaAssets/photo-3.jpg" },
+  { name: "José Pablo Domínguez", role: "( Founder & Creative Director )", src: "/figmaAssets/photo-1.jpg" },
+  { name: "Paola Díaz", role: "( COO )", src: "/figmaAssets/photo-2.jpg" },
+  { name: "Levi Ramírez", role: "( Head of Growth )", src: "/figmaAssets/photo-3.jpg" },
   { name: "Mariela Alata", role: "( Project Manager )", src: "/figmaAssets/photo-4.jpg" },
   { name: "Tais Kahatt", role: "( Art Director )", src: "/figmaAssets/photo-4.jpg" },
-  { name: "Adriana Mendez", role: "( Brand designer )", src: "/figmaAssets/photo-4.jpg" },
-  { name: "José Aceves Covarrubias", role: "( Brand designer )", src: "/figmaAssets/photo-3.jpg" },
+  { name: "Adriana Méndez", role: "( Brand Designer )", src: "/figmaAssets/photo-4.jpg" },
+  { name: "José Aceves Covarrubias", role: "( Brand Designer )", src: "/figmaAssets/photo-3.jpg" },
 ];
 
 const SERVICES = [
-  "Creative direction",
-  "Brand strategy",
-  "Identity",
-  "Digital design",
+  "Creative Direction",
+  "Brand Strategy",
+  "Identity Design",
+  "Digital Design",
   "Motion",
-  "Print and packaging",
-  "Art direction",
+  "Print & Packaging",
+  "Art Direction",
   "Copywriting",
-  "Tone of voice",
+  "Tone of Voice",
 ];
 
 const CLIENTS = [
@@ -90,7 +90,7 @@ export default function AtlaAbout() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
-
+      <div className="atla-dark-surface">
       <div
         className="atla-enter"
         style={{
@@ -136,12 +136,12 @@ export default function AtlaAbout() {
               margin: 0,
             }}
           >
-            We design brands that go beyond just looking good—it's central to the brand itself.
+            We don&apos;t design brands that just look good. We build brands that work.
           </p>
         </div>
       </div>
 
-      <div
+      <main
         style={{
           width: "100%",
           display: "flex",
@@ -159,10 +159,14 @@ export default function AtlaAbout() {
           <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
             <div style={{ width: isMobile ? "100%" : 456 }}>
               <p style={LF_REG18}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum,
-                ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                inceptos himenaeos. Curabitur tempus urna at turpis condimentum lobortis. Ut commodo efficitur
-                neque. Ut diam quam, semper iaculis condimentum ac, vestibulum eu nisl.
+                Atla is a branding studio built on one belief: a brand is only as strong as the system behind it.
+                We work with founders and teams who understand that identity isn&apos;t decoration, it&apos;s
+                infrastructure. Strategy, design, and expression. All connected. All intentional. Our team is
+                small by design. Senior creatives. Direct access. No account managers filtering the work. Every
+                project runs through the same standard: clarity in positioning, precision in craft, coherence
+                across every surface it touches. Based between Mexico City and Austin, we work with companies
+                across the US and Latin America, from hospitality and CPG to wellness, SaaS, and lifestyle
+                brands ready to be taken seriously.
               </p>
             </div>
           </div>
@@ -285,7 +289,8 @@ export default function AtlaAbout() {
                   Book a Call
                 </p>
                 <p style={{ fontFamily: "'Libre Franklin', Helvetica, sans-serif", fontSize: 20, fontWeight: 500, lineHeight: "1.1", color: "#fafafa", margin: 0, maxWidth: 320 }}>
-                  Let&apos;s create something visual. We collaborate with brands, artists, and studios worldwide.
+                  Good brands don&apos;t happen by accident. If you&apos;re building something worth remembering,
+                  let&apos;s talk about what comes next.
                 </p>
                 <a
                   href="mailto:hello@atla.studio"
@@ -311,8 +316,8 @@ export default function AtlaAbout() {
           </div>
         </div>
 
+      </main>
       </div>
-
       {/* Footer */}
       <AtlaFooter />
     </div>

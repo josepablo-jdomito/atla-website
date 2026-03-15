@@ -1,4 +1,4 @@
-import { createRoot, hydrateRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { hydrate, type DehydratedState } from "@tanstack/react-query";
 import App from "./App";
 import { queryClient } from "./lib/queryClient";
@@ -20,7 +20,6 @@ const dehydratedState = window.__ATLA_DEHYDRATED_STATE__;
 
 if (dehydratedState) {
   hydrate(queryClient, dehydratedState);
-  hydrateRoot(container, <App />);
-} else {
-  createRoot(container).render(<App />);
 }
+
+createRoot(container).render(<App />);

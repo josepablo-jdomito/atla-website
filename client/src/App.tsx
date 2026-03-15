@@ -1,10 +1,6 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { usePageAnalytics } from "@/hooks/use-analytics";
 import { AppRouter } from "./AppRouter";
@@ -20,6 +16,8 @@ const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
 const AtlaArticle = lazy(() => import("@/pages/AtlaArticle"));
 const AtlaPrivacy = lazy(() => import("@/pages/AtlaPrivacy"));
 const AtlaTerms = lazy(() => import("@/pages/AtlaTerms"));
+const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
+const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));
 
 function Router() {
   usePageAnalytics();
@@ -43,16 +41,57 @@ function Router() {
   );
 }
 
+function DeferredEnhancements() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+
+    const enable = () => {
+      window.setTimeout(() => setEnabled(true), 1200);
+    };
+
+    if (document.readyState === "complete") {
+      enable();
+      return;
+    }
+
+    window.addEventListener("load", enable, { once: true });
+    return () => window.removeEventListener("load", enable);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled || !import.meta.env.PROD) return;
+    if (document.getElementById("atla-gtm-script")) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+
+    const script = document.createElement("script");
+    script.id = "atla-gtm-script";
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtm.js?id=GTM-NFDF5TFQ";
+    document.head.appendChild(script);
+  }, [enabled]);
+
+  if (!enabled || !import.meta.env.PROD) {
+    return null;
+  }
+
+  return (
+    <Suspense fallback={null}>
+      <Analytics />
+      <SpeedInsights />
+    </Suspense>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-          <Analytics />
-          <SpeedInsights />
-        </TooltipProvider>
+        <Router />
+        <DeferredEnhancements />
       </ThemeProvider>
     </QueryClientProvider>
   );

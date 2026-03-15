@@ -80,6 +80,7 @@ export const ElementDefault = (): JSX.Element => {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <div
+        className="atla-dark-surface"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -94,27 +95,36 @@ export const ElementDefault = (): JSX.Element => {
       >
         <AtlaNav />
 
-        <section
-          data-testid="gallery-section"
-          className="atla-enter"
+        <main
           style={{
             width: "100%",
-            position: "relative",
+            display: "flex",
             flex: "1 1 auto",
-            flexShrink: 0,
-            padding: isMobile ? "8px 0 0" : "18px 0 0",
-            boxSizing: "border-box",
-            overflow: "hidden",
+            flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
-          <div
-            className="atla-home-stage"
+          <section
+            data-testid="gallery-section"
+            className="atla-enter"
             style={{
               width: "100%",
-              height: stageHeight,
-              minHeight: isMobile ? 520 : 620,
+              position: "relative",
+              flex: "1 1 auto",
+              flexShrink: 0,
+              padding: isMobile ? "8px 0 0" : "18px 0 0",
+              boxSizing: "border-box",
+              overflow: "hidden",
             }}
           >
+            <div
+              className="atla-home-stage"
+              style={{
+                width: "100%",
+                height: stageHeight,
+                minHeight: isMobile ? 520 : 620,
+              }}
+            >
             <div
               style={{
                 position: "absolute",
@@ -245,58 +255,59 @@ export const ElementDefault = (): JSX.Element => {
                   );
                 })}
           </div>
-        </section>
+          </section>
 
-        <div
-          data-testid="home-footer-strip"
-          style={{
-            display: "flex",
-            height: isMobile ? 40 : 50,
-            alignItems: "flex-start",
-            justifyContent: "center",
-            gap: 10,
-            padding: isMobile ? "0 10px" : "0 20px",
-            width: "100%",
-            boxSizing: "border-box",
-            flexShrink: 0,
-          }}
-        >
-          <div style={{ flex: "1 0 0", display: "flex", alignItems: "center" }}>
-            <p
-              style={{
-                fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: isMobile ? 12 : 12,
-                fontWeight: 600,
-                letterSpacing: isMobile ? 0.4 : 0.48,
-                lineHeight: "1.2",
-                color: "#222",
-                textTransform: "uppercase",
-                margin: 0,
-                whiteSpace: "pre-line",
-              }}
-            >
-              {"Working around \nthe Us & Latam"}
-            </p>
+          <div
+            data-testid="home-footer-strip"
+            style={{
+              display: "flex",
+              height: isMobile ? 40 : 50,
+              alignItems: "flex-start",
+              justifyContent: "center",
+              gap: 10,
+              padding: isMobile ? "0 10px" : "0 20px",
+              width: "100%",
+              boxSizing: "border-box",
+              flexShrink: 0,
+            }}
+          >
+            <div style={{ flex: "1 0 0", display: "flex", alignItems: "center" }}>
+              <p
+                style={{
+                  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+                  fontSize: isMobile ? 12 : 12,
+                  fontWeight: 600,
+                  letterSpacing: isMobile ? 0.4 : 0.48,
+                  lineHeight: "1.2",
+                  color: "#222",
+                  textTransform: "uppercase",
+                  margin: 0,
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {"Across the US &\nLatin America"}
+              </p>
+            </div>
+            <div style={{ flex: "1 0 0", display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+              <p
+                style={{
+                  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+                  fontSize: isMobile ? 12 : 12,
+                  fontWeight: 600,
+                  letterSpacing: isMobile ? 0.4 : 0.48,
+                  lineHeight: "1.2",
+                  color: "#222",
+                  textTransform: "uppercase",
+                  textAlign: "right",
+                  margin: 0,
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {"Design with\nintention"}
+              </p>
+            </div>
           </div>
-          <div style={{ flex: "1 0 0", display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-            <p
-              style={{
-                fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: isMobile ? 12 : 12,
-                fontWeight: 600,
-                letterSpacing: isMobile ? 0.4 : 0.48,
-                lineHeight: "1.2",
-                color: "#222",
-                textTransform: "uppercase",
-                textAlign: "right",
-                margin: 0,
-                whiteSpace: "pre-line",
-              }}
-            >
-              {"design with\nintention"}
-            </p>
-          </div>
-        </div>
+        </main>
       </div>
     </div>
   );

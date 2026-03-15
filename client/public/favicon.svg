@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Atla favicon">
+  <rect width="64" height="64" rx="6" fill="#FFC629"/>
+  <g fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="31" cy="22" r="11" stroke-width="3"/>
+    <path d="M20 22h22" stroke-width="3"/>
+    <path d="M31 11c-3 3-4.5 7-4.5 11s1.5 8 4.5 11" stroke-width="3"/>
+    <path d="M31 11c3 3 4.5 7 4.5 11s-1.5 8-4.5 11" stroke-width="3"/>
+    <path d="M24 15.5c2.2 1.4 4.6 2.1 7 2.1s4.8-.7 7-2.1" stroke-width="2.6"/>
+    <path d="M24 28.5c2.2-1.4 4.6-2.1 7-2.1s4.8.7 7 2.1" stroke-width="2.6"/>
+    <path d="M31 33v8" stroke-width="3.4"/>
+    <path d="M23.5 41h15" stroke-width="3.4"/>
+    <path d="M26 41 22.8 51h7.5l1.7 7h-6.3" stroke-width="4"/>
+    <path d="M36 41h6.2L39 51h-6.8" stroke-width="4"/>
+    <path d="M32 48h6.5v8l5.5-1.2" stroke-width="4"/>
+  </g>
+</svg>

@@ -42,7 +42,7 @@ const LF_SMALL: React.CSSProperties = {
 
 const FILTERS = {
   region: ["All", "America", "Europe", "Asia", "Middle East"],
-  industry: ["All", "Hospitality", "Food & Beverage", "Consumer Goods", "SAAS", "Digital"],
+  industry: ["All", "Hospitality", "Food & Beverage", "Consumer Goods", "SaaS", "Digital"],
   service: ["All", "Branding", "Art Direction", "Packaging", "Website"],
   view: ["Masonry", "Grid", "List"],
 } as const;
@@ -130,7 +130,8 @@ export default function AtlaWork() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
-      <div style={{ width: "100%", position: "relative", minHeight: 750 }}>
+      <div className="atla-dark-surface">
+      <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
         <AtlaNav />
 
         <div
@@ -208,8 +209,8 @@ export default function AtlaWork() {
             })}
           </div>
         </div>
+      </main>
       </div>
-
       <AtlaFooter />
     </div>
   );

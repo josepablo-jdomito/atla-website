@@ -7,6 +7,7 @@ export default function NotFound() {
 
   return (
     <div style={{ minHeight: "100svh", width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+      <div className="atla-dark-surface">
       <section
         style={{
           position: "relative",
@@ -79,7 +80,7 @@ export default function NotFound() {
           </div>
         </div>
       </section>
-
+      </div>
       <AtlaFooter />
     </div>
   );

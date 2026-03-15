@@ -327,8 +327,8 @@ async function prerenderRoutes() {
   const staticRoutes = [
     {
       pathname: "/",
-      title: "Atla — Design Studio",
-      description: "Atla is a design studio specializing in brand identity, visual communication, and digital experiences across the US and Latin America.",
+      title: "Atla — Branding Studio",
+      description: "Atla is a branding studio for ambitious companies across the US and Latin America. Strategy, identity, digital, and creative direction — built as one system.",
       image: projects[0]?.coverImage,
       preloadImage: getOptimizedImageUrl(projects[2]?.coverImage || projects[0]?.coverImage, { width: 680, quality: 84 }),
       includeInSitemap: true,
@@ -342,7 +342,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/services",
-      title: "Services — Atla Design Studio",
+      title: "Services — Atla Branding Studio",
       description: "Brand strategy, identity design, digital design, and creative direction for companies that take their brand seriously.",
       image: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
@@ -381,7 +381,7 @@ async function prerenderRoutes() {
     {
       pathname: "/journal",
       title: "Journal — Atla",
-      description: "Essays, process notes, and studio reflections on branding, digital craft, motion, and visual storytelling from Atla.",
+      description: "How we think about brands, design, and the work behind the work. Essays, process notes, and studio perspectives.",
       image: articles[0]?.coverImage,
       includeInSitemap: true,
       structuredData: {

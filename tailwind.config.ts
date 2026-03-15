@@ -1,8 +1,14 @@
 module.exports = {
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}",
-    "./src/**/*.{html,js,ts,jsx,tsx}",
-    "app/**/*.{ts,tsx}",
-    "components/**/*.{ts,tsx}",
+  content: [
+    "./client/index.html",
+    "./client/src/App.tsx",
+    "./client/src/AppRouter.tsx",
+    "./client/src/main.tsx",
+    "./client/src/pages/**/*.{js,jsx,ts,tsx}",
+    "./client/src/components/atla/**/*.{js,jsx,ts,tsx}",
+    "./client/src/components/journal/**/*.{js,jsx,ts,tsx}",
+    "./client/src/components/seo/**/*.{js,jsx,ts,tsx}",
+    "./client/src/components/theme/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {

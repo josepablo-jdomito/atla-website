@@ -143,7 +143,8 @@ export default function AtlaProject() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
-      <div style={{ width: "100%", position: "relative" }}>
+      <div className="atla-dark-surface">
+      <main style={{ width: "100%", position: "relative" }}>
         <AtlaNav />
 
         <section
@@ -301,8 +302,8 @@ export default function AtlaProject() {
             </div>
           </div>
         </section>
+      </main>
       </div>
-
       <AtlaFooter />
     </div>
   );

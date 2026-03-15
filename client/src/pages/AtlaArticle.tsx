@@ -126,7 +126,8 @@ export default function AtlaArticle() {
         robots={robots}
         structuredData={[articleSchema, breadcrumbSchema]}
       />
-      <div style={{ width: "100%", position: "relative" }}>
+      <div className="atla-dark-surface">
+      <main style={{ width: "100%", position: "relative" }}>
         <AtlaNav />
 
         <section
@@ -309,8 +310,8 @@ export default function AtlaArticle() {
             </div>
           </div>
         </section>
+      </main>
       </div>
-
       <AtlaFooter />
     </div>
   );

@@ -77,7 +77,7 @@ export default function AtlaJournal() {
   const pageDescription = activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION;
   const heroTitle = activeCategory
     ? activeCategory.title
-    : "We document ideas in motion — from digital craft to visual storytelling. Here you’ll find essays, process notes, and studio reflections.";
+    : "How we think about brands, design, and the work behind the work. Essays, process notes, and studio perspectives.";
   const heroDescription = activeCategory?.description;
 
   const collectionSchema = {
@@ -114,7 +114,8 @@ export default function AtlaJournal() {
         image={heroArticle?.coverImage || undefined}
         structuredData={collectionSchema}
       />
-      <div style={{ width: "100%", position: "relative" }}>
+      <div className="atla-dark-surface">
+      <main style={{ width: "100%", position: "relative" }}>
         <div style={{ position: "relative", minHeight: 750, backgroundColor: "#222", overflow: "hidden" }}>
           {heroImage ? (
             <img
@@ -284,16 +285,16 @@ export default function AtlaJournal() {
                   margin: 0,
                 }}
               >
-                No articles in this category yet.
+                Nothing here yet.
               </p>
               <p style={{ ...BODY, maxWidth: 420 }}>
-                We’ll add articles here as the journal grows. You can still browse the full archive from the All view.
+                We&apos;ll publish articles in this category soon. Browse the full archive from All.
               </p>
             </div>
           )}
         </div>
+      </main>
       </div>
-
       <AtlaFooter />
     </div>
   );

@@ -45,6 +45,7 @@ export default function AtlaPrivacy() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+      <div className="atla-dark-surface">
       <AtlaNav />
       <main style={{ padding: isMobile ? "80px 10px 100px" : "120px 20px 160px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 620px", gap: isMobile ? 32 : 20 }}>
         <div>
@@ -101,6 +102,7 @@ export default function AtlaPrivacy() {
           </Section>
         </div>
       </main>
+      </div>
       <AtlaFooter />
     </div>
   );

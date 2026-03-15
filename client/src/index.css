@@ -63,20 +63,19 @@ html.atla-dark #root {
   color: #f3f3ef !important;
 }
 
-html.atla-dark #root {
+html.atla-dark .atla-dark-surface {
   filter: invert(1) hue-rotate(180deg);
   transition: filter 220ms ease, background-color 220ms ease;
 }
 
-html.atla-dark img,
-html.atla-dark video,
-html.atla-dark iframe,
-html.atla-dark canvas {
+html.atla-dark .atla-dark-surface img,
+html.atla-dark .atla-dark-surface video,
+html.atla-dark .atla-dark-surface iframe,
+html.atla-dark .atla-dark-surface canvas {
   filter: invert(1) hue-rotate(180deg);
 }
 
-html.atla-dark .atla-theme-preserve,
-html.atla-dark .atla-theme-preserve * {
+html.atla-dark .atla-dark-surface .atla-theme-preserve {
   filter: invert(1) hue-rotate(180deg);
 }
 

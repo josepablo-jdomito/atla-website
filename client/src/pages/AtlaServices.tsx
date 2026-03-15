@@ -8,56 +8,56 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const HERO_COPY =
-  "We build brands from the strategic layer down to the final expression. Every service here is designed to sharpen the brand, not add noise to it.";
+  "Strategy first. Expression second. Every service here exists to sharpen the brand, not add noise to it.";
 
 const INTRO =
-  "Brand strategy, identity, digital design, and creative direction should work as one system. We approach each service as part of the same brand world, so the work stays coherent across every surface it touches.";
+  "Most studios sell services in silos. We don't. Strategy, identity, digital, and creative direction work as one system here — so the brand stays coherent across every surface it touches.";
 
 const SERVICES = [
   {
     title: "Creative Direction",
     description:
-      "Defining the visual and conceptual vision for a brand across every touchpoint. We set the creative standard and make sure everything that goes out — campaigns, content, packaging — feels like it belongs to the same world.",
+      "Setting the visual and conceptual standard for a brand across every touchpoint. Campaigns, content, packaging — everything that goes out should feel like it belongs to the same world. We make sure it does.",
   },
   {
     title: "Brand Strategy",
     description:
-      "Positioning, messaging architecture, audience definition, and competitive framing. The foundational thinking that tells you what to say, to whom, and why it matters — before any design work begins.",
+      "Positioning, messaging, audience definition, and competitive framing. The foundational thinking that tells you what to say, to whom, and why it matters. Before any design work begins.",
   },
   {
     title: "Identity",
     description:
-      "Logo, typography, color, iconography, and the system that holds them together. We build identities that work across digital and physical, at every scale, without losing coherence.",
+      "Logo, typography, color, iconography, and the system that holds them together. Built to work across digital and physical, at every scale, without losing coherence.",
   },
   {
     title: "Digital Design",
     description:
-      "Websites, landing pages, and digital products designed for clarity, conversion, and brand consistency. We handle UX structure, visual design, and Webflow/dev-ready handoff.",
+      "Websites, landing pages, and digital products designed for clarity, conversion, and brand consistency. UX structure, visual design, and dev-ready handoff.",
   },
   {
     title: "Motion",
     description:
-      "Brand animations, logo reveals, social content, and UI motion. Adding movement to a brand in ways that feel intentional, not decorative.",
+      "Brand animations, logo reveals, social content, and UI motion. Movement that feels intentional, not decorative.",
   },
   {
     title: "Print & Packaging",
     description:
-      "Packaging systems, editorial layouts, environmental graphics, and collateral. Physical brand expressions that carry the same precision as the digital ones.",
+      "Packaging systems, editorial layouts, environmental graphics, and collateral. Physical brand expressions held to the same precision as the digital ones.",
   },
   {
     title: "Art Direction",
     description:
-      "Guiding photography, illustration, and content production to stay on-brand. We define the visual language and direct the execution, whether it's a photoshoot or an ad campaign.",
+      "Directing photography, illustration, and content production to stay on-brand. We define the visual language and lead the execution — photoshoot, ad campaign, or editorial.",
   },
   {
     title: "Copywriting",
     description:
-      "Headlines, taglines, product copy, and brand narratives. Words that sound like the brand — not like a template.",
+      "Headlines, taglines, product copy, and brand narratives. Words that sound like the brand, not like a template.",
   },
   {
     title: "Tone of Voice",
     description:
-      "A documented system for how the brand speaks: vocabulary, sentence structure, attitude, and channel-specific guidelines. So every team member and contractor writes in one voice.",
+      "A documented system for how the brand speaks: vocabulary, sentence structure, attitude, and channel-specific guidelines. So every team member and collaborator writes in one voice.",
   },
 ];
 
@@ -143,12 +143,12 @@ export default function AtlaServices() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <SeoHead
-        title="Services — Atla Design Studio"
+        title="Services — Atla Branding Studio"
         description="Brand strategy, identity design, digital design, and creative direction for companies that take their brand seriously."
         pathname="/services"
         structuredData={[breadcrumbSchema, ...servicesSchema]}
       />
-
+      <div className="atla-dark-surface">
       <div
         className="atla-enter"
         style={{
@@ -214,7 +214,7 @@ export default function AtlaServices() {
         </div>
       </div>
 
-      <div
+      <main
         style={{
           width: "100%",
           display: "flex",
@@ -362,7 +362,8 @@ export default function AtlaServices() {
                     maxWidth: 360,
                   }}
                 >
-                  We work best when strategy and execution need to be aligned from the beginning. Let&apos;s talk through scope, timing, and what the brand needs next.
+                  We work best when strategy and execution are aligned from day one. Let&apos;s talk scope, timing,
+                  and what the brand needs next.
                 </p>
                 <a
                   href="/about#contact"
@@ -387,6 +388,7 @@ export default function AtlaServices() {
             </div>
           </div>
         </div>
+      </main>
       </div>
 
       <AtlaFooter />

@@ -56,7 +56,7 @@ function useOfficeTimes() {
       ) as Record<string, Intl.DateTimeFormat>,
     [],
   );
-  const [times, setTimes] = useState<Record<string, string>>(() => computeTimes(formatters));
+  const [times, setTimes] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const syncTimes = () => setTimes(computeTimes(formatters));
@@ -107,9 +107,11 @@ export function AtlaFooter() {
   return (
     <footer
       data-testid="atla-footer"
-      className="atla-theme-preserve"
       style={{
+        background: "#FFC629",
         backgroundColor: "#ffc629",
+        backgroundImage: "none",
+        colorScheme: "light",
         width: "100%",
         minHeight: "100svh",
         display: "flex",
@@ -172,7 +174,7 @@ export function AtlaFooter() {
                       <div key={city} style={{ display: "grid", gridTemplateColumns: "1fr auto", columnGap: 16, alignItems: "baseline", width: "100%" }}>
                         <p style={{ ...BOLD14, textAlign: "left", whiteSpace: "nowrap" }}>{city}</p>
                         <p className="atla-time" style={{ ...MED14, textAlign: "right", whiteSpace: "nowrap" }} data-testid={`office-time-${city.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} title={tz}>
-                          {times[city]}
+                          {times[city] ?? "--:--:--"}
                         </p>
                       </div>
                     ))}
@@ -218,7 +220,7 @@ export function AtlaFooter() {
                       <div key={city} style={{ display: "grid", gridTemplateColumns: "1fr auto", columnGap: 12, width: "100%", alignItems: "baseline" }}>
                         <p style={{ ...BOLD14, fontSize: 12, textAlign: "left", whiteSpace: "nowrap" }}>{city}</p>
                         <p className="atla-time" style={{ ...MED14, fontSize: 12, textAlign: "right", whiteSpace: "nowrap" }} data-testid={`office-time-${city.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} title={tz}>
-                          {times[city]}
+                          {times[city] ?? "--:--:--"}
                         </p>
                       </div>
                     ))}
@@ -229,7 +231,8 @@ export function AtlaFooter() {
 
             <div style={{ width: isMobile ? "100%" : 320 }}>
               <p style={{ ...MED14, fontSize: isMobile ? 12 : 14, lineHeight: "1.1" }}>
-                Atla is a design studio for brands across the US and Latin America. We build identities that communicate with clarity and purpose, from wordmarks to motion, packaging to web.
+                Atla is a branding studio for companies across the US and Latin America. Strategy, identity,
+                digital, and creative direction — built as one system.
               </p>
             </div>
           </div>
@@ -259,7 +262,7 @@ export function AtlaFooter() {
                   {link.label}
                 </a>
               ))}
-              <p style={{ ...SMALL, textAlign: "right" }}>2026 Atla® All Rights Reserved.</p>
+              <p style={{ ...SMALL, textAlign: "right" }}>© 2026 Atla® All Rights Reserved.</p>
             </div>
           </div>
         </div>

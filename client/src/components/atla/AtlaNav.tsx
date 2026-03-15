@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AtlaSymbol, AtlaWordmark, DarkModeGlyph, LightModeGlyph } from "@/components/atla/AtlaMarks";
 import { useTheme } from "@/components/theme/ThemeProvider";
@@ -81,7 +82,7 @@ function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () =
 
   if (!isOpen) return null;
 
-  return (
+  const overlay = (
     <div
       data-testid="mobile-menu-overlay"
       className="fixed inset-0 z-50 flex flex-col atla-menu-panel"
@@ -150,6 +151,12 @@ function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () =
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") {
+    return overlay;
+  }
+
+  return createPortal(overlay, document.body);
 }
 
 export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
