@@ -9,6 +9,7 @@ import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { ElementDefault } from "./pages/ElementDefault";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import AtlaAbout from "./pages/AtlaAbout";
+import AtlaContact from "./pages/AtlaContact";
 import AtlaServices from "./pages/AtlaServices";
 import AtlaWork from "./pages/AtlaWork";
 import AtlaProject from "./pages/AtlaProject";
@@ -89,6 +90,7 @@ export function renderPrerenderedRoute(
             ElementDefault={ElementDefault}
             ProjectsAdmin={ProjectsAdmin}
             AtlaAbout={AtlaAbout}
+            AtlaContact={AtlaContact}
             AtlaServices={AtlaServices}
             AtlaWork={AtlaWork}
             AtlaProject={AtlaProject}

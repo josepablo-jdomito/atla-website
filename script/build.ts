@@ -3,10 +3,12 @@ import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import { createRequire } from "module";
 import path from "path";
-import { getOptimizedImageUrl } from "../shared/imageDelivery.ts";
+import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
 import {
+  DEFAULT_OG_IMAGE_URL,
+  formatMetaTitle,
   ORGANIZATION_LOGO_URL,
   ORGANIZATION_NAME,
   SITE_NAME,
@@ -53,6 +55,18 @@ const allowlist = [
 const DEFAULT_JOURNAL_CATEGORY_DESCRIPTION =
   "Selected writing from Atla Journal on branding, strategy, digital craft, and creative direction.";
 
+function ensureDescriptionLength(description: string, fallback: string) {
+  const cleanDescription = description.trim();
+  if (cleanDescription.length >= 130 && cleanDescription.length <= 160) return cleanDescription;
+  if (cleanDescription.length > 160) {
+    return `${cleanDescription.slice(0, 157).trimEnd()}...`;
+  }
+
+  const cleanFallback = fallback.trim();
+  const combined = `${cleanDescription} ${cleanFallback}`.trim();
+  return combined.length > 160 ? `${combined.slice(0, 157).trimEnd()}...` : combined;
+}
+
 type PrerenderRouteData = {
   projects?: Project[];
   project?: Project | null;
@@ -80,6 +94,7 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
+  await writeFontLoaderScript();
   await prerenderRoutes();
 
   console.log("building server...");
@@ -158,6 +173,9 @@ function createHeadMarkup({
   pathname,
   image,
   preloadImage,
+  preloadImageSrcSet,
+  preloadImageSizes,
+  preloadImages,
   type = "website",
   robots = "index,follow",
   structuredData,
@@ -167,11 +185,19 @@ function createHeadMarkup({
   pathname: string;
   image?: string;
   preloadImage?: string;
+  preloadImageSrcSet?: string;
+  preloadImageSizes?: string;
+  preloadImages?: Array<{
+    href: string;
+    srcSet?: string;
+    sizes?: string;
+  }>;
   type?: string;
   robots?: string;
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }) {
   const url = `${SITE_ORIGIN}${pathname}`;
+  const imageUrl = image || DEFAULT_OG_IMAGE_URL;
   const tags = [
     `<title>${escapeHtml(title)}</title>`,
     `<meta name="description" content="${escapeHtml(description)}">`,
@@ -182,18 +208,44 @@ function createHeadMarkup({
     `<meta property="og:type" content="${escapeHtml(type)}">`,
     `<meta property="og:url" content="${escapeHtml(url)}">`,
     `<meta property="og:site_name" content="${escapeHtml(SITE_NAME)}">`,
-    `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${escapeHtml(title)}">`,
     `<meta name="twitter:description" content="${escapeHtml(description)}">`,
+    `<meta property="og:image" content="${escapeHtml(imageUrl)}">`,
+    `<meta name="twitter:image" content="${escapeHtml(imageUrl)}">`,
   ];
 
-  if (preloadImage) {
-    tags.unshift(`<link rel="preload" as="image" href="${escapeHtml(preloadImage)}">`);
-  }
+  const allPreloads = [
+    ...(preloadImage
+      ? [{
+        href: preloadImage,
+        srcSet: preloadImageSrcSet,
+        sizes: preloadImageSizes,
+      }]
+      : []),
+    ...(preloadImages ?? []),
+  ];
 
-  if (image) {
-    tags.push(`<meta property="og:image" content="${escapeHtml(image)}">`);
-    tags.push(`<meta name="twitter:image" content="${escapeHtml(image)}">`);
+  if (allPreloads.length > 0) {
+    const preloadTags = allPreloads.map((preload) => {
+      const preloadAttrs = [
+        `rel="preload"`,
+        `as="image"`,
+        `href="${escapeHtml(preload.href)}"`,
+      ];
+
+      if (preload.srcSet) {
+        preloadAttrs.push(`imagesrcset="${escapeHtml(preload.srcSet)}"`);
+      }
+
+      if (preload.sizes) {
+        preloadAttrs.push(`imagesizes="${escapeHtml(preload.sizes)}"`);
+      }
+
+      return `<link ${preloadAttrs.join(" ")}>`;
+    });
+
+    tags.unshift(...preloadTags.reverse());
   }
 
   if (structuredData) {
@@ -204,6 +256,76 @@ function createHeadMarkup({
   }
 
   return tags.join("\n    ");
+}
+
+function resolveArticleImage(article: JournalArticle) {
+  const portableTextImage = article.body.find((block) => block._type === "image" && typeof block.asset?.url === "string")?.asset?.url;
+  const legacyImage = article.bodySections.find((section) => Boolean(section.image))?.image
+    || article.bodySections.find((section) => Boolean(section.wideImage))?.wideImage;
+
+  return article.coverImage || article.heroImage || portableTextImage || legacyImage || DEFAULT_OG_IMAGE_URL;
+}
+
+function resolveProjectHeroImage(project: Project) {
+  return project.coverImage || project.images[0] || DEFAULT_OG_IMAGE_URL;
+}
+
+function buildResponsiveImagePreload(
+  src: string | undefined,
+  widths: number[],
+  quality: number,
+  sizes: string,
+) {
+  if (!src || widths.length === 0) return {};
+
+  return {
+    preloadImage: getOptimizedImageUrl(src, { width: widths[widths.length - 1], quality }),
+    preloadImageSrcSet: buildImageSrcSet(src, widths, { quality }),
+    preloadImageSizes: sizes,
+  };
+}
+
+function buildImagePreloadEntries(
+  entries: Array<{
+    src?: string;
+    widths: number[];
+    quality: number;
+    sizes: string;
+  }>,
+) {
+  return entries
+    .filter((entry) => entry.src && entry.widths.length > 0)
+    .map((entry) => ({
+      href: getOptimizedImageUrl(entry.src, { width: entry.widths[entry.widths.length - 1], quality: entry.quality }) || entry.src!,
+      srcSet: buildImageSrcSet(entry.src!, entry.widths, { quality: entry.quality }),
+      sizes: entry.sizes,
+    }));
+}
+
+function hydrationScriptPaths(pathname: string) {
+  const relativePath = pathname === "/" ? "index.js" : `${pathname.replace(/^\//, "")}.js`;
+  return {
+    filePath: path.resolve("dist/public", "_hydration", relativePath),
+    publicPath: `/_hydration/${relativePath}`,
+  };
+}
+
+async function writeHydrationScript(pathname: string, dehydratedState: unknown) {
+  const { filePath } = hydrationScriptPaths(pathname);
+  await mkdir(path.dirname(filePath), { recursive: true });
+  await writeFile(
+    filePath,
+    `window.__ATLA_DEHYDRATED_STATE__=${serializeJsonForScript(dehydratedState)};`,
+    "utf8",
+  );
+}
+
+async function writeFontLoaderScript() {
+  await writeFile(
+    path.resolve("dist/public/font-loader.js"),
+    `(()=>{const link=document.getElementById("atla-fonts-stylesheet");if(link){link.media="all";}})();`,
+    "utf8",
+  );
 }
 
 function replaceHead(template: string, headMarkup: string) {
@@ -264,11 +386,13 @@ async function injectPrerenderedApp(
 ) {
   const { renderPrerenderedRoute } = await loadPrerenderRenderer();
   const { appHtml, dehydratedState } = renderPrerenderedRoute(pathname, routeData);
-  const hydrationScript = `<script>window.__ATLA_DEHYDRATED_STATE__=${serializeJsonForScript(dehydratedState)};</script>`;
+  const { publicPath } = hydrationScriptPaths(pathname);
+
+  await writeHydrationScript(pathname, dehydratedState);
 
   return template.replace(
     '<div id="root"></div>',
-    `<div id="root">${appHtml}</div>\n    ${hydrationScript}`,
+    `<div id="root">${appHtml}</div>\n    <script defer src="${publicPath}"></script>`,
   );
 }
 
@@ -323,28 +447,75 @@ async function prerenderRoutes() {
   const templatePath = path.resolve("dist/public/index.html");
   const template = await readFile(templatePath, "utf8");
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
+  const homeFeaturedProject = projects[2] ?? projects[0];
+  const workFeaturedProject = projects[0];
+  const homeFeaturedImage = homeFeaturedProject ? resolveProjectHeroImage(homeFeaturedProject) : DEFAULT_OG_IMAGE_URL;
+  const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
+  const homeVisibleProjects = projects.slice(0, 5);
+  const workVisibleProjects = projects.slice(0, 4);
+  const homePreloadImages = buildImagePreloadEntries([
+    { src: resolveProjectHeroImage(homeVisibleProjects[0]), widths: [78, 117, 156], quality: 78, sizes: "78px" },
+    { src: resolveProjectHeroImage(homeVisibleProjects[1]), widths: [112, 168, 224], quality: 78, sizes: "112px" },
+    { src: resolveProjectHeroImage(homeVisibleProjects[2]), widths: [274, 411, 548], quality: 84, sizes: "274px" },
+    { src: resolveProjectHeroImage(homeVisibleProjects[3]), widths: [112, 168, 224], quality: 78, sizes: "112px" },
+    { src: resolveProjectHeroImage(homeVisibleProjects[4]), widths: [78, 117, 156], quality: 78, sizes: "78px" },
+  ]);
+  const workPreloadImages = buildImagePreloadEntries(
+    workVisibleProjects.map((project) => ({
+      src: resolveProjectHeroImage(project),
+      widths: [290, 435, 580],
+      quality: 82,
+      sizes: "calc(100vw - 20px)",
+    })),
+  );
 
   const staticRoutes = [
     {
       pathname: "/",
-      title: "Atla — Branding Studio",
-      description: "Atla is a branding studio for ambitious companies across the US and Latin America. Strategy, identity, digital, and creative direction — built as one system.",
-      image: projects[0]?.coverImage,
-      preloadImage: getOptimizedImageUrl(projects[2]?.coverImage || projects[0]?.coverImage, { width: 680, quality: 84 }),
+      title: formatMetaTitle("Atla Branding Studio", "Strategy, Identity, Digital"),
+      description: "Atla is a branding studio building strategy-led identities, websites, and creative systems for companies across the US and Latin America.",
+      image: homeFeaturedImage,
+      preloadImages: homePreloadImages,
       includeInSitemap: true,
     },
     {
       pathname: "/about",
-      title: "About Atla",
-      description: "Meet Atla, a design studio building brand identity, digital experiences, and editorial systems with clarity and purpose.",
+      title: formatMetaTitle("About Atla", "Branding Studio in Mexico City and Austin"),
+      description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
       image: "/figmaAssets/about-hero.jpg",
+      preloadImage: "/figmaAssets/about-hero.jpg",
+      preloadImages: [
+        { href: "/figmaAssets/photo-1.jpg" },
+        { href: "/figmaAssets/photo-2.jpg" },
+      ],
       includeInSitemap: true,
     },
     {
-      pathname: "/services",
-      title: "Services — Atla Branding Studio",
-      description: "Brand strategy, identity design, digital design, and creative direction for companies that take their brand seriously.",
+      pathname: "/contact",
+      title: formatMetaTitle("Contact Atla", "Start a Branding or Digital Project"),
+      description: "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
       image: "/figmaAssets/about-hero.jpg",
+      preloadImage: "/figmaAssets/about-hero.jpg",
+      includeInSitemap: true,
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        name: "Contact Atla",
+        url: `${SITE_ORIGIN}/contact`,
+        mainEntity: {
+          "@type": "Organization",
+          name: ORGANIZATION_NAME,
+          email: "hello@atla.studio",
+          url: SITE_ORIGIN,
+        },
+      },
+    },
+    {
+      pathname: "/services",
+      title: formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla"),
+      description: "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
+      image: "/figmaAssets/about-hero.jpg",
+      preloadImage: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
       structuredData: {
         "@context": "https://schema.org",
@@ -373,16 +544,17 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/work",
-      title: "Portfolio — Atla",
-      description: "Selected branding, digital, packaging, and art direction work from Atla.",
-      image: projects[0]?.coverImage,
+      title: formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla"),
+      description: "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.",
+      image: workFeaturedImage,
+      preloadImages: workPreloadImages,
       includeInSitemap: true,
     },
     {
       pathname: "/journal",
-      title: "Journal — Atla",
-      description: "How we think about brands, design, and the work behind the work. Essays, process notes, and studio perspectives.",
-      image: articles[0]?.coverImage,
+      title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
+      description: "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.",
+      image: articles[0] ? resolveArticleImage(articles[0]) : DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
       structuredData: {
         "@context": "https://schema.org",
@@ -401,14 +573,16 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/privacy",
-      title: "Privacy Policy — Atla",
-      description: "How Atla handles site data, browser storage, contact information, and infrastructure providers.",
+      title: formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data"),
+      description: "Read how Atla handles browser storage, hosting data, and information shared through direct studio inquiries across the website.",
+      image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
     {
       pathname: "/terms",
-      title: "Terms of Use — Atla",
-      description: "Terms governing access to and use of the Atla website and its content.",
+      title: formatMetaTitle("Atla Terms of Use", "Website and Content Access"),
+      description: "Review the terms governing access to the Atla website, intellectual property, third-party services, and permitted use of site content.",
+      image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
     {
@@ -432,8 +606,11 @@ async function prerenderRoutes() {
   for (const category of categories) {
     const categoryArticles = articles.filter((article) => article.categorySlug === category.slug);
     const pathname = `/journal/category/${category.slug}`;
-    const description = category.seoDescription || category.description || DEFAULT_JOURNAL_CATEGORY_DESCRIPTION;
-    const title = category.seoTitle || `${category.title} — Atla Journal`;
+    const description = ensureDescriptionLength(
+      category.seoDescription || category.description || DEFAULT_JOURNAL_CATEGORY_DESCRIPTION,
+      "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems."
+    );
+    const title = formatMetaTitle(category.seoTitle || `${category.title} Articles`, "Atla Journal");
 
     const html = await injectPrerenderedApp(
       replaceHead(
@@ -442,7 +619,7 @@ async function prerenderRoutes() {
           title,
           description,
           pathname,
-          image: categoryArticles[0]?.coverImage,
+          image: categoryArticles[0] ? resolveArticleImage(categoryArticles[0]) : DEFAULT_OG_IMAGE_URL,
           type: "website",
           structuredData: {
             "@context": "https://schema.org",
@@ -468,7 +645,7 @@ async function prerenderRoutes() {
       "@type": "CreativeWork",
       name: project.title,
       description: project.description,
-      image: project.coverImage,
+      image: resolveProjectHeroImage(project),
       url: `${SITE_ORIGIN}/projects/${project.slug}`,
       creator: {
         "@type": "Organization",
@@ -477,15 +654,32 @@ async function prerenderRoutes() {
     };
 
     const pathname = `/projects/${project.slug}`;
+    const projectGalleryPreloads = buildImagePreloadEntries(
+      (project.images.length > 0 ? project.images.slice(0, 2) : [resolveProjectHeroImage(project)]).map((src) => ({
+        src,
+        widths: [600, 900, 1200],
+        quality: 82,
+        sizes: "(max-width: 767px) 100vw, 50vw",
+      })),
+    );
     const html = await injectPrerenderedApp(
       replaceHead(
         template,
         createHeadMarkup({
-          title: `${project.title} — Atla`,
-          description: project.description,
+          title: formatMetaTitle(`${project.title} ${project.category} Case Study`, "Atla"),
+          description: ensureDescriptionLength(
+            project.description,
+            `Explore how Atla shaped ${project.client} through strategy, identity, and implementation across brand touchpoints.`,
+          ),
           pathname,
-          image: project.coverImage,
-          preloadImage: getOptimizedImageUrl(project.coverImage, { width: 1400, quality: 84 }),
+          image: resolveProjectHeroImage(project),
+          ...buildResponsiveImagePreload(
+            resolveProjectHeroImage(project),
+            [600, 900, 1200, 1400],
+            84,
+            "(max-width: 767px) 100vw, 55vw",
+          ),
+          preloadImages: projectGalleryPreloads,
           structuredData,
         }),
       ),
@@ -500,13 +694,17 @@ async function prerenderRoutes() {
 
   for (const article of articles) {
     const articleDetail = articleDetails[article.slug] ?? article;
-    const description = article.seoDescription || article.excerpt;
+    const articleImage = resolveArticleImage(articleDetail);
+    const description = ensureDescriptionLength(
+      article.seoDescription || article.excerpt,
+      "Read the full article from Atla Journal for practical thinking on branding, strategy, and digital craft.",
+    );
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       headline: article.seoTitle || article.title,
       description,
-      image: article.coverImage,
+      image: articleImage,
       url: `${SITE_ORIGIN}/journal/${article.slug}`,
       author: {
         "@type": "Organization",
@@ -528,11 +726,11 @@ async function prerenderRoutes() {
       replaceHead(
         template,
         createHeadMarkup({
-          title: `${article.seoTitle || article.title} — Atla Journal`,
+          title: formatMetaTitle(article.seoTitle || article.title, "Atla Journal"),
           description,
           pathname,
-          image: article.coverImage,
-          preloadImage: getOptimizedImageUrl(article.coverImage, { width: 1200, quality: 82 }),
+          image: articleImage,
+          preloadImage: getOptimizedImageUrl(articleImage, { width: 1200, quality: 82 }) || articleImage,
           type: "article",
           structuredData,
         }),

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
+  formatMetaTitle,
   ORGANIZATION_LOGO_URL,
   ORGANIZATION_NAME,
   SITE_ORIGIN,
@@ -15,6 +16,8 @@ import NotFound from "@/pages/not-found";
 import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
 import { articleBodyText, articleDescription, articlePublishedIso } from "@/lib/journalSeo";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getImageDimensions } from "@shared/imageDelivery";
+import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
 
 const BODY: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -28,7 +31,7 @@ const BODY: React.CSSProperties = {
 
 const LABEL: React.CSSProperties = {
   ...BODY,
-  color: "#8e8e8e",
+  color: "#666",
 };
 
 export default function AtlaArticle() {
@@ -58,12 +61,28 @@ export default function AtlaArticle() {
     return <NotFound />;
   }
 
-  const otherNews = articles.filter((item) => item.slug !== article.slug).slice(0, 2);
+  const otherNews = articles
+    .filter((item) => item.slug !== article.slug)
+    .sort((left, right) => {
+      const leftScore =
+        Number(left.categorySlug === article.categorySlug) * 3 +
+        Number(left.category === article.category) * 2;
+      const rightScore =
+        Number(right.categorySlug === article.categorySlug) * 3 +
+        Number(right.category === article.category) * 2;
+      return rightScore - leftScore;
+    })
+    .slice(0, 3);
   const articleText = articleBodyText(article);
   const description = articleDescription(article);
   const canonicalPath = `/journal/${article.slug}`;
   const robots = articleText.length >= 280 ? "index,follow" : "noindex,follow";
-  const articleImage = article.coverImage || article.heroImage || "";
+  const fallbackBodyImage =
+    article.body.find((block) => block._type === "image" && typeof block.asset?.url === "string")?.asset?.url ||
+    article.bodySections.find((section) => Boolean(section.image))?.image ||
+    article.bodySections.find((section) => Boolean(section.wideImage))?.wideImage ||
+    DEFAULT_OG_IMAGE_URL;
+  const articleImage = article.coverImage || article.heroImage || fallbackBodyImage;
   const hasPortableTextBody = article.body.length > 0;
   const hasLegacyBody = article.introParagraphs.length > 0 || article.bodySections.some(
     (section) => section.paragraphs.length > 0 || Boolean(section.image) || Boolean(section.wideImage),
@@ -118,7 +137,7 @@ export default function AtlaArticle() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <SeoHead
-        title={article.seoTitle || article.title}
+        title={formatMetaTitle(article.seoTitle || article.title, "Atla Journal")}
         description={description}
         pathname={canonicalPath}
         image={articleImage || undefined}
@@ -143,7 +162,15 @@ export default function AtlaArticle() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {articleImage ? (
                 <div style={{ width: "100%", aspectRatio: "370 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
-                  <img src={articleImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img
+                    src={articleImage}
+                    alt={article.title}
+                    width={getImageDimensions(articleImage)?.width}
+                    height={getImageDimensions(articleImage)?.height}
+                    fetchPriority="high"
+                    decoding="async"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
                 </div>
               ) : null}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -195,12 +222,28 @@ export default function AtlaArticle() {
                     )}
                     {section.image && (
                       <div style={{ width: "100%", minHeight: 400 }}>
-                        <img src={section.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                        <img
+                          src={section.image}
+                          alt={`${article.title} editorial image ${index + 1}`}
+                          width={getImageDimensions(section.image)?.width}
+                          height={getImageDimensions(section.image)?.height}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
                       </div>
                     )}
                     {section.wideImage && (
                       <div style={{ width: "100%", minHeight: 400 }}>
-                        <img src={section.wideImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                        <img
+                          src={section.wideImage}
+                          alt={`${article.title} wide editorial image ${index + 1}`}
+                          width={getImageDimensions(section.wideImage)?.width}
+                          height={getImageDimensions(section.wideImage)?.height}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
                       </div>
                     )}
                   </div>
@@ -226,7 +269,15 @@ export default function AtlaArticle() {
             <div style={{ position: "sticky", top: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               {articleImage ? (
                 <div style={{ width: "100%", aspectRatio: "575 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
-                  <img src={articleImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img
+                    src={articleImage}
+                    alt={article.title}
+                    width={getImageDimensions(articleImage)?.width}
+                    height={getImageDimensions(articleImage)?.height}
+                    fetchPriority="high"
+                    decoding="async"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
                 </div>
               ) : null}
               <div style={{ paddingTop: articleImage ? 20 : 0, display: "flex", flexDirection: "column", gap: 4 }}>
@@ -267,6 +318,10 @@ export default function AtlaArticle() {
               >
                 Other news
               </p>
+              <p style={{ ...BODY, lineHeight: "1.5", maxWidth: 520 }}>
+                Keep reading through related journal pieces, or jump into the broader archive to see how strategy,
+                identity, digital craft, and category-specific thinking connect across the studio&apos;s writing.
+              </p>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 64 : 10 }}>
                 {otherNews.map((item) => (
                   <a
@@ -284,7 +339,15 @@ export default function AtlaArticle() {
                   >
                     <div style={{ width: "100%", aspectRatio: "282.5 / 246.54", overflow: "hidden", backgroundColor: "#efefef" }}>
                       {item.coverImage ? (
-                        <img src={item.coverImage} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                        <img
+                          src={item.coverImage}
+                          alt={item.title}
+                          width={getImageDimensions(item.coverImage)?.width}
+                          height={getImageDimensions(item.coverImage)?.height}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
                       ) : null}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -301,11 +364,29 @@ export default function AtlaArticle() {
                       >
                         {item.title}
                       </h2>
-                      <p style={{ ...LABEL, maxWidth: 226 }}>{item.excerpt}</p>
+                      <p style={{ ...BODY, color: "#5f5f5f", lineHeight: "1.5", maxWidth: 260 }}>{item.excerpt}</p>
                       <p style={BODY}>{item.date}</p>
                     </div>
                   </a>
                 ))}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+                {article.categorySlug ? (
+                  <a
+                    href={`/journal/category/${article.categorySlug}`}
+                    className="atla-link"
+                    style={{ ...LABEL, color: "#222", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}
+                  >
+                    More in {article.category}
+                  </a>
+                ) : null}
+                <a
+                  href="/journal"
+                  className="atla-link"
+                  style={{ ...LABEL, color: "#222", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}
+                >
+                  Browse all journal articles
+                </a>
               </div>
             </div>
           </div>

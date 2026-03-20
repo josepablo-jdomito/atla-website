@@ -3,14 +3,14 @@ import { AtlaSymbol } from "@/components/atla/AtlaMarks";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const LIBRE = "'Libre Franklin', Helvetica, sans-serif";
+const TOUCH_TARGET = 44;
 
 const NAV_LINKS = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Careers", href: "/about" },
   { label: "Journal", href: "/journal" },
-  { label: "Contact", href: "/about#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com" },
@@ -103,6 +103,35 @@ const SMALL: React.CSSProperties = {
 export function AtlaFooter() {
   const times = useOfficeTimes();
   const isMobile = useIsMobile();
+  const desktopFooterGridStyle: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "minmax(120px, 140px) minmax(120px, 140px) minmax(220px, 260px) minmax(260px, 1fr) 220px",
+    columnGap: 32,
+    rowGap: 24,
+    width: "100%",
+    alignItems: "start",
+  };
+  const footerColumnStyle: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    minWidth: 0,
+  };
+  const desktopLinkStyle: React.CSSProperties = {
+    ...MED14,
+    display: "inline-flex",
+    alignItems: "center",
+    minHeight: 52,
+    padding: "14px 4px",
+  };
+  const mobileLinkStyle: React.CSSProperties = {
+    ...MED14,
+    fontSize: 12,
+    display: "inline-flex",
+    alignItems: "center",
+    minHeight: 52,
+    padding: "14px 4px",
+  };
 
   return (
     <footer
@@ -113,11 +142,9 @@ export function AtlaFooter() {
         backgroundImage: "none",
         colorScheme: "light",
         width: "100%",
-        minHeight: "100svh",
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        justifyContent: "flex-end",
         boxSizing: "border-box",
       }}
     >
@@ -125,30 +152,29 @@ export function AtlaFooter() {
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: isMobile ? 24 : 48,
+          gap: isMobile ? 24 : 40,
           alignItems: "flex-start",
-          padding: isMobile ? "80px 20px 20px" : 20,
+          padding: isMobile ? "64px 20px 20px" : "56px 24px 24px",
           width: "100%",
           boxSizing: "border-box",
-          minHeight: isMobile ? 780 : undefined,
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%", flex: isMobile ? "1 0 auto" : undefined }}>
-          <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: isMobile ? 64 : 240, alignItems: "flex-start", minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+          <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: isMobile ? 40 : 0, alignItems: "flex-start", minWidth: 0 }}>
             {!isMobile && (
-              <div style={{ display: "flex", gap: 72, alignItems: "flex-start", width: "100%", fontFamily: LIBRE, fontWeight: 500, fontSize: 14, color: "#222", letterSpacing: 0.28 }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: 24, whiteSpace: "nowrap" }}>
+              <div style={desktopFooterGridStyle}>
+                <div style={{ ...footerColumnStyle, whiteSpace: "nowrap" }}>
                   <p style={BOLD14}>Atla</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {NAV_LINKS.map((item) => (
-                      <a key={item.label} href={item.href} data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={MED14}>
+                      <a key={item.label} href={item.href} data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={desktopLinkStyle}>
                         {item.label}
                       </a>
                     ))}
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 24, whiteSpace: "nowrap" }}>
+                <div style={{ ...footerColumnStyle, whiteSpace: "nowrap" }}>
                   <p style={BOLD14}>Socials</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {SOCIALS.map((item) => (
@@ -159,7 +185,7 @@ export function AtlaFooter() {
                         rel="noopener noreferrer"
                         data-testid={`link-footer-${item.label.toLowerCase()}`}
                         className="atla-link"
-                        style={MED14}
+                        style={desktopLinkStyle}
                       >
                         {item.label}
                       </a>
@@ -167,7 +193,7 @@ export function AtlaFooter() {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 208 }}>
+                <div style={{ ...footerColumnStyle, width: "100%" }}>
                   <p style={BOLD14}>Offices</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
                     {OFFICES.map(({ city, tz }) => (
@@ -178,6 +204,21 @@ export function AtlaFooter() {
                         </p>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                <div style={{ ...footerColumnStyle, justifyContent: "space-between", minHeight: 320 }}>
+                  <div style={{ maxWidth: 320 }}>
+                    <p style={{ ...MED14, fontSize: 14, lineHeight: "1.15" }}>
+                      Atla is a branding studio for companies across the US and Latin America. Strategy, identity,
+                      digital, and creative direction built as one system.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", minHeight: 320, color: "#222" }}>
+                  <div style={{ width: 220, height: 360 }}>
+                    <AtlaSymbol className="atla-symbol-float" />
                   </div>
                 </div>
               </div>
@@ -192,12 +233,12 @@ export function AtlaFooter() {
             )}
 
             {isMobile && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16, width: "100%", alignItems: "start" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 32, width: "100%", alignItems: "start" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 24, minWidth: 0 }}>
                   <p style={{ ...BOLD14, fontSize: 12 }}>Atla</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {NAV_LINKS.map((item) => (
-                      <a key={item.label} href={item.href} data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={{ ...MED14, fontSize: 12 }}>
+                      <a key={item.label} href={item.href} data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={mobileLinkStyle}>
                         {item.label}
                       </a>
                     ))}
@@ -207,7 +248,7 @@ export function AtlaFooter() {
                   <p style={{ ...BOLD14, fontSize: 12 }}>Socials</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {SOCIALS.map((item) => (
-                      <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={{ ...MED14, fontSize: 12 }}>
+                      <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" data-testid={`link-footer-${item.label.toLowerCase()}`} className="atla-link" style={mobileLinkStyle}>
                         {item.label}
                       </a>
                     ))}
@@ -215,7 +256,7 @@ export function AtlaFooter() {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 24, minWidth: 0 }}>
                   <p style={{ ...BOLD14, fontSize: 12 }}>Offices</p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
                     {OFFICES.map(({ city, tz }) => (
                       <div key={city} style={{ display: "grid", gridTemplateColumns: "1fr auto", columnGap: 12, width: "100%", alignItems: "baseline" }}>
                         <p style={{ ...BOLD14, fontSize: 12, textAlign: "left", whiteSpace: "nowrap" }}>{city}</p>
@@ -228,37 +269,32 @@ export function AtlaFooter() {
                 </div>
               </div>
             )}
-
-            <div style={{ width: isMobile ? "100%" : 320 }}>
-              <p style={{ ...MED14, fontSize: isMobile ? 12 : 14, lineHeight: "1.1" }}>
-                Atla is a branding studio for companies across the US and Latin America. Strategy, identity,
-                digital, and creative direction — built as one system.
-              </p>
-            </div>
+            {isMobile && (
+              <div style={{ width: "100%", maxWidth: 320 }}>
+                <p style={{ ...MED14, fontSize: 12, lineHeight: "1.1" }}>
+                  Atla is a branding studio for companies across the US and Latin America. Strategy, identity,
+                  digital, and creative direction built as one system.
+                </p>
+              </div>
+            )}
           </div>
-
-          {!isMobile && (
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", alignSelf: "stretch", flexShrink: 0, color: "#222", width: 232 }}>
-              <AtlaSymbol className="atla-symbol-float" />
-            </div>
-          )}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-end", width: "100%" }}>
           <div style={{ width: "100%", height: 1, backgroundColor: "#222" }} />
           <div style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", width: "100%", gap: 16, flexDirection: isMobile ? "column" : "row" }}>
-            <a
-              href="#top"
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              data-testid="link-back-to-top"
-              className="atla-link"
-              style={{ ...SMALL, textDecoration: "none" }}
-            >
+              <a
+                href="#top"
+                onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                data-testid="link-back-to-top"
+                className="atla-link"
+              style={{ ...SMALL, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}
+              >
               Back to top ↑
             </a>
             <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", justifyContent: isMobile ? "flex-start" : "flex-end" }}>
               {LEGAL_LINKS.map((link) => (
-                <a key={link.label} href={link.href} className="atla-link" style={{ ...SMALL, textDecoration: "none" }}>
+                <a key={link.label} href={link.href} className="atla-link" style={{ ...SMALL, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}>
                   {link.label}
                 </a>
               ))}

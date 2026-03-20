@@ -9,6 +9,7 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const ElementDefault = lazy(() => import("@/pages/ElementDefault").then((module) => ({ default: module.ElementDefault })));
 const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
 const AtlaAbout = lazy(() => import("@/pages/AtlaAbout"));
+const AtlaContact = lazy(() => import("@/pages/AtlaContact"));
 const AtlaServices = lazy(() => import("@/pages/AtlaServices"));
 const AtlaWork = lazy(() => import("@/pages/AtlaWork"));
 const AtlaProject = lazy(() => import("@/pages/AtlaProject"));
@@ -29,6 +30,7 @@ function Router() {
         ElementDefault={ElementDefault}
         ProjectsAdmin={ProjectsAdmin}
         AtlaAbout={AtlaAbout}
+        AtlaContact={AtlaContact}
         AtlaServices={AtlaServices}
         AtlaWork={AtlaWork}
         AtlaProject={AtlaProject}
