@@ -16,6 +16,8 @@ const LF_MEDIUM: React.CSSProperties = {
   cursor: "pointer",
 };
 
+const TOUCH_TARGET = 44;
+
 const LEFT_NAV = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
@@ -23,15 +25,14 @@ const LEFT_NAV = [
 ];
 const RIGHT_NAV = [
   { label: "Journal", href: "/journal" },
-  { label: "Contact", href: "/about#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 const ALL_NAV = [
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Careers", href: "/about" },
   { label: "Journal", href: "/journal" },
-  { label: "Contact", href: "/about#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com" },
@@ -54,11 +55,13 @@ function ToggleModeIcons({ inverted = false }: { inverted?: boolean }) {
       style={{
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
         gap: 4,
-        height: 20,
+        minWidth: TOUCH_TARGET,
+        minHeight: TOUCH_TARGET,
         background: "none",
         border: "none",
-        padding: 0,
+        padding: 10,
         cursor: "pointer",
       }}
     >
@@ -88,20 +91,20 @@ function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () =
       className="fixed inset-0 z-50 flex flex-col atla-menu-panel"
       style={{ backgroundColor: "#222", fontFamily: "'Libre Franklin', Helvetica, sans-serif" }}
     >
-      <div className="flex items-end justify-between shrink-0" style={{ height: 40, padding: "0 10px" }}>
+      <div className="flex items-end justify-between shrink-0" style={{ height: 48, padding: "0 10px" }}>
         <div style={{ color: "#fafafa", width: 108, height: 18 }}>
           <AtlaWordmark />
         </div>
         <button
           data-testid="button-close-menu"
           onClick={onClose}
-          style={{ ...LF_MEDIUM, fontSize: 12, background: "none", border: "none", color: "#fafafa", padding: 0 }}
+          style={{ ...LF_MEDIUM, fontSize: 12, background: "none", border: "none", color: "#fafafa", minWidth: TOUCH_TARGET, minHeight: TOUCH_TARGET, padding: 12 }}
         >
           Close
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center" style={{ padding: "40px 10px 20px" }}>
+      <div className="flex-1 flex flex-col justify-center" style={{ padding: "32px 10px 20px" }}>
         {ALL_NAV.map((link) => (
           <a
             key={link.label}
@@ -117,7 +120,10 @@ function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () =
               color: "#fafafa",
               textAlign: "left",
               textDecoration: "none",
-              paddingBottom: 24,
+              display: "flex",
+              alignItems: "center",
+              minHeight: TOUCH_TARGET,
+              padding: "8px 0 14px",
               ["--atla-delay" as string]: `${0.06 * (ALL_NAV.indexOf(link) + 1)}s`,
             }}
           >
@@ -136,7 +142,7 @@ function MobileMenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () =
               rel="noopener noreferrer"
               data-testid={`link-social-${s.label.toLowerCase()}`}
               className="atla-link"
-              style={{ ...LF_MEDIUM, color: "#fafafa" }}
+              style={{ ...LF_MEDIUM, color: "#fafafa", display: "inline-flex", alignItems: "center", minHeight: TOUCH_TARGET, padding: "8px 0" }}
             >
               {s.label}
             </a>
@@ -169,7 +175,11 @@ export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
 
   const linkStyle: React.CSSProperties = {
     ...LF_MEDIUM,
-    color: inverted ? "#fafafa" : "#222",
+    color: inverted ? "#ded4c6" : "#222",
+    display: "inline-flex",
+    alignItems: "center",
+    minHeight: 52,
+    padding: "14px 6px",
   };
 
   return (
@@ -180,7 +190,7 @@ export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
         style={{
           display: "flex",
           width: "100%",
-          height: isMobile ? 40 : 50,
+          height: isMobile ? 52 : 50,
           position: "relative",
           zIndex: 20,
           alignItems: "flex-end",
@@ -205,11 +215,13 @@ export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
               aria-label="Atla home"
               className="atla-logo"
               style={{
-                color: inverted ? "#fafafa" : "#222",
+                color: inverted ? "#ded4c6" : "#222",
                 width: 108,
-                height: 18,
+                minHeight: 52,
                 flexShrink: 0,
-                display: "block",
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "0 4px",
               }}
             >
               <AtlaWordmark />
@@ -224,11 +236,14 @@ export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
               aria-label="Atla home"
               className="atla-logo"
               style={{
-                color: inverted ? "#fafafa" : "#222",
+                color: inverted ? "#ded4c6" : "#222",
                 width: 244,
-                height: 18,
+                minHeight: 52,
                 flexShrink: 0,
-                display: "block",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 6px",
               }}
             >
               <AtlaWordmark />
@@ -240,9 +255,9 @@ export function AtlaNav({ inverted = false }: { inverted?: boolean }) {
               data-testid="button-open-menu"
               onClick={() => setMenuOpen(true)}
               className="atla-link"
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 6 }}
+              style={{ background: "none", border: "none", cursor: "pointer", minWidth: 52, minHeight: 52, padding: 14, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}
             >
-              <span style={{ ...LF_MEDIUM, fontSize: 12, color: inverted ? "#fafafa" : "#222" }}>Menu</span>
+              <span style={{ ...LF_MEDIUM, fontSize: 12, color: inverted ? "#ded4c6" : "#222" }}>Menu</span>
             </button>
           </div>
         )}
