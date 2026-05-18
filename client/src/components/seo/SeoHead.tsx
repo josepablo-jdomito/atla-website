@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
 
 type SeoHeadProps = {
   title: string;
@@ -50,7 +51,7 @@ export function SeoHead({
   useEffect(() => {
     const origin = getOrigin();
     const canonicalUrl = new URL(pathname, origin).toString();
-    const imageUrl = image ? new URL(image, origin).toString() : undefined;
+    const imageUrl = new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString();
     const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
     document.title = fullTitle;
@@ -61,14 +62,12 @@ export function SeoHead({
     upsertMeta('meta[property="og:type"]', { property: "og:type" }, type);
     upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonicalUrl);
     upsertMeta('meta[property="og:site_name"]', { property: "og:site_name" }, SITE_NAME);
-    upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, imageUrl ? "summary_large_image" : "summary");
+    upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
     upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, fullTitle);
     upsertMeta('meta[name="twitter:description"]', { name: "twitter:description" }, description);
 
-    if (imageUrl) {
-      upsertMeta('meta[property="og:image"]', { property: "og:image" }, imageUrl);
-      upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, imageUrl);
-    }
+    upsertMeta('meta[property="og:image"]', { property: "og:image" }, imageUrl);
+    upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, imageUrl);
 
     upsertLink("canonical", canonicalUrl);
 

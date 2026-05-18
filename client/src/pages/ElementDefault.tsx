@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AtlaNav } from "@/components/atla/AtlaNav";
+import { SeoHead } from "@/components/seo/SeoHead";
 import { buildImageSrcSet, getOptimizedImageUrl } from "@shared/imageDelivery";
+import { formatMetaTitle } from "@shared/siteSeo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { Project } from "@shared/schema";
 
@@ -79,6 +81,12 @@ export const ElementDefault = (): JSX.Element => {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+      <SeoHead
+        title={formatMetaTitle("Atla Branding Studio", "Strategy, Identity, Digital")}
+        description="Atla is a branding studio building strategy-led identities, websites, and creative systems for companies across the US and Latin America."
+        pathname="/"
+        image={centerProject?.coverImage || undefined}
+      />
       <div
         className="atla-dark-surface"
         style={{
@@ -104,6 +112,21 @@ export const ElementDefault = (): JSX.Element => {
             justifyContent: "space-between",
           }}
         >
+          <h1
+            style={{
+              position: "absolute",
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            Atla branding studio for strategy, identity, and digital design
+          </h1>
           <section
             data-testid="gallery-section"
             className="atla-enter"
@@ -193,6 +216,7 @@ export const ElementDefault = (): JSX.Element => {
                   const alt = project?.title || "Atla project";
                   const slug = project?.slug;
                   const isCenter = index === 2;
+                  const isVisibleAboveFold = index < slotFrames.length;
                   const shellStyle = {
                     position: "absolute" as const,
                     left: slot.left,
@@ -222,7 +246,7 @@ export const ElementDefault = (): JSX.Element => {
                         width={slot.width}
                         height={slot.height}
                         className="atla-home-card-image"
-                        loading={isCenter ? "eager" : "lazy"}
+                        loading={isVisibleAboveFold ? "eager" : "lazy"}
                         fetchPriority={isCenter ? "high" : undefined}
                         decoding="async"
                         data-testid={`img-gallery-${index}`}

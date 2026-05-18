@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
+  formatMetaTitle,
   ORGANIZATION_LOGO_URL,
   ORGANIZATION_NAME,
   SITE_ORIGIN,
@@ -14,6 +15,7 @@ import NotFound from "@/pages/not-found";
 import { fetchJournalArticles, fetchJournalCategories } from "@/lib/journalApi";
 import { articleDescription, articlePublishedIso } from "@/lib/journalSeo";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
 const BODY: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -33,8 +35,38 @@ const LABEL: React.CSSProperties = {
   textTransform: "uppercase",
 };
 
+const MUTED_TEXT = "#6f6f6f";
 const DEFAULT_PAGE_DESCRIPTION =
-  "Atla Journal publishes essays, studio notes, and articles on branding, digital craft, motion, and visual storytelling.";
+  "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.";
+const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
+  branding: [
+    "This category collects practical essays on naming, positioning, rebrands, launch systems, and the strategic choices that help a company stay recognizable as it grows.",
+    "It is meant for founders, operators, and marketing teams who need clearer language around what branding work actually changes once it reaches the website, packaging, investor narrative, or customer experience.",
+  ],
+  strategy: [
+    "Strategy pieces focus on the choices that come before visual execution: where a company sits in the market, what it needs to be known for, and how that point of view should shape messaging, structure, and rollout.",
+    "The goal is not abstract theory. It is to make positioning, audience clarity, and business decisions legible enough that the creative work can move faster and hold together under pressure.",
+  ],
+  insights: [
+    "Insights gathers shorter observations from the studio about client work, launch patterns, brand operations, and the recurring decisions that tend to shape better outcomes over time.",
+    "These pieces are useful when you want a quick signal rather than a full framework: the kind of guidance that helps a team sharpen a conversation before it turns into a larger engagement.",
+    "Think of this category as field notes from ongoing brand work. It is where smaller lessons live before they become larger systems, and where teams can often spot the pattern behind a problem they are already feeling internally.",
+  ],
+  "web-design": [
+    "Web design articles in the journal focus on how structure, narrative, interaction, and visual hierarchy turn a brand system into a site that feels clear, credible, and commercially useful.",
+    "They are especially relevant for teams redesigning a homepage, launch site, or company website that needs to look stronger while also explaining the business more convincingly.",
+    "The emphasis is on websites as business tools, not just visual containers. These essays look at how copy, hierarchy, case studies, and conversion paths need to support the same brand logic as the visual layer.",
+    "They also cover the practical tension most teams run into during redesigns: how to improve the visual language without losing clarity, speed, or the commercial usefulness of the site once it is live.",
+    "That makes this category especially useful for founders and marketing teams trying to evaluate whether a redesign needs a visual refresh, a stronger story architecture, or a deeper strategic reset before design decisions start getting made.",
+  ],
+};
+
+function ensureDescriptionLength(description: string) {
+  if (description.length >= 130) return description;
+  const fallback = "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems.";
+  const combined = `${description} ${fallback}`.trim();
+  return combined.length > 160 ? `${combined.slice(0, 157).trimEnd()}...` : combined;
+}
 
 export default function AtlaJournal() {
   const isMobile = useIsMobile();
@@ -73,12 +105,27 @@ export default function AtlaJournal() {
   const heroArticle = featured[0] ?? articles[0];
   const heroImage = heroArticle?.heroImage || heroArticle?.coverImage || "";
   const pathname = activeCategory ? `/journal/category/${activeCategory.slug}` : "/journal";
-  const pageTitle = activeCategory?.seoTitle || (activeCategory ? `${activeCategory.title} — Atla Journal` : "Journal");
-  const pageDescription = activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION;
+  const pageTitle = activeCategory
+    ? formatMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`, "Atla Journal")
+    : formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft");
+  const pageDescription = ensureDescriptionLength(activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION);
   const heroTitle = activeCategory
     ? activeCategory.title
     : "How we think about brands, design, and the work behind the work. Essays, process notes, and studio perspectives.";
   const heroDescription = activeCategory?.description;
+  const categorySupportCopy = activeCategory
+    ? CATEGORY_SUPPORT_COPY[activeCategory.slug] || [
+      `A tighter selection of ${activeCategory.title.toLowerCase()} writing from the Atla Journal archive, focused on how ideas translate into sharper decisions, better systems, and stronger execution.`,
+      `Use this category as a more specific way into the journal if you are trying to solve one problem at a time rather than browse the full archive.`,
+    ]
+    : [];
+  const heroImageDimensions = getImageDimensions(heroImage);
+  const heroImageSrc = heroImage
+    ? getOptimizedImageUrl(heroImage, { width: isMobile ? 900 : 1600, quality: 82 }) || heroImage
+    : "";
+  const heroImageSrcSet = heroImage
+    ? buildImageSrcSet(heroImage, isMobile ? [640, 900] : [900, 1280, 1600], { quality: 82 })
+    : "";
 
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -119,8 +166,13 @@ export default function AtlaJournal() {
         <div style={{ position: "relative", minHeight: 750, backgroundColor: "#222", overflow: "hidden" }}>
           {heroImage ? (
             <img
-              src={heroImage}
+              src={heroImageSrc}
+              srcSet={heroImageSrcSet}
+              sizes="100vw"
               alt=""
+              width={heroImageDimensions?.width}
+              height={heroImageDimensions?.height}
+              fetchPriority="high"
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.64 }}
             />
           ) : null}
@@ -140,7 +192,7 @@ export default function AtlaJournal() {
             <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {activeCategory ? (
-                  <p style={{ ...LABEL, color: "#fafafa" }}>Journal category</p>
+                  <p style={{ ...LABEL, color: "#d8d1c6" }}>Journal category</p>
                 ) : null}
                 <h1
                   style={{
@@ -148,7 +200,7 @@ export default function AtlaJournal() {
                     fontSize: isMobile ? 40 : 64,
                     fontWeight: 400,
                     lineHeight: "1.1",
-                    color: "#fafafa",
+                    color: "#e2dbd1",
                     margin: 0,
                     maxWidth: isMobile ? 366 : 928,
                   }}
@@ -156,8 +208,20 @@ export default function AtlaJournal() {
                   {heroTitle}
                 </h1>
                 {heroDescription ? (
-                  <p style={{ ...BODY, color: "#fafafa", maxWidth: 520 }}>
+                  <p style={{ ...BODY, color: "#d8d1c6", maxWidth: 560, lineHeight: "1.5" }}>
                     {heroDescription}
+                  </p>
+                ) : null}
+                {categorySupportCopy.map((paragraph) => (
+                  <p key={paragraph} style={{ ...BODY, color: "#cfc5b8", maxWidth: 640, lineHeight: "1.55" }}>
+                    {paragraph}
+                  </p>
+                ))}
+                {!activeCategory ? (
+                  <p style={{ ...BODY, color: "#cfc5b8", maxWidth: 640, lineHeight: "1.55" }}>
+                    Use the journal as both an archive and a working reference. Some pieces are short and tactical,
+                    others are longer frameworks, but they all aim to make brand, strategy, and digital decisions easier
+                    to evaluate before teams commit time, budget, or attention in the wrong direction.
                   </p>
                 ) : null}
               </div>
@@ -168,10 +232,13 @@ export default function AtlaJournal() {
                   className="atla-link"
                   style={{
                     ...LABEL,
-                    color: "#fafafa",
+                    color: "#d8d1c6",
                     textDecoration: "none",
-                    borderBottom: activeCategory ? "1px solid transparent" : "1px solid #fafafa",
-                    paddingBottom: 4,
+                    borderBottom: activeCategory ? "1px solid transparent" : "1px solid #d8d1c6",
+                    padding: "14px 4px",
+                    minHeight: 52,
+                    display: "inline-flex",
+                    alignItems: "center",
                   }}
                 >
                   All
@@ -183,13 +250,16 @@ export default function AtlaJournal() {
                       key={category.slug}
                       href={`/journal/category/${category.slug}`}
                       className="atla-link"
-                      style={{
+                    style={{
                         ...LABEL,
-                        color: "#fafafa",
+                        color: "#d3cabd",
                         textDecoration: "none",
-                        borderBottom: isActive ? "1px solid #fafafa" : "1px solid transparent",
-                        paddingBottom: 4,
-                        opacity: isActive ? 1 : 0.72,
+                        borderBottom: isActive ? "1px solid #d8d1c6" : "1px solid transparent",
+                        padding: "14px 4px",
+                        minHeight: 52,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        opacity: isActive ? 1 : 0.88,
                       }}
                     >
                       {category.title}
@@ -215,11 +285,11 @@ export default function AtlaJournal() {
                   style={{ color: "#fafafa", textDecoration: "none", display: "flex", flexDirection: "column", gap: 32 }}
                 >
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    <p style={{ ...LABEL, color: "#fafafa" }}>{article.category}</p>
-                    <p style={{ ...BODY, color: "#fafafa" }}>{article.title}</p>
+                    <p style={{ ...LABEL, color: "#d8d1c6" }}>{article.category}</p>
+                    <p style={{ ...BODY, color: "#e2dbd1" }}>{article.title}</p>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <p style={{ ...BODY, color: "#fafafa" }}>{article.date.toUpperCase()}</p>
+                    <p style={{ ...BODY, color: "#d8d1c6" }}>{article.date.toUpperCase()}</p>
                     <div style={{ width: "100%", height: 1, backgroundColor: "rgba(250,250,250,0.2)" }} />
                   </div>
                 </a>
@@ -237,6 +307,16 @@ export default function AtlaJournal() {
             rowGap: isMobile ? 64 : 80,
           }}
         >
+          {activeCategory ? (
+            <div style={{ gridColumn: isMobile ? "auto" : "1 / span 3", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
+              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
+                Category pages are designed to be useful on their own, not just as filters. Each one brings together essays that solve a related problem, whether that is repositioning a company, planning a rebrand, structuring a launch, or improving how a website communicates value.
+              </p>
+              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
+                If you are comparing articles, start with the most practical piece first and then move into the longer framework essays. That usually gives enough context to understand not just what to change, but why the change matters operationally.
+              </p>
+            </div>
+          ) : null}
           {cards.length > 0 ? cards.map((article) => (
             <a
               key={article.slug}
@@ -253,11 +333,19 @@ export default function AtlaJournal() {
             >
               <div style={{ width: "100%", aspectRatio: "380 / 331.63", overflow: "hidden", backgroundColor: "#efefef" }}>
                 {article.coverImage ? (
-                  <img src={article.coverImage} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img
+                    src={article.coverImage}
+                    alt={article.title}
+                    width={getImageDimensions(article.coverImage)?.width}
+                    height={getImageDimensions(article.coverImage)?.height}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
                 ) : null}
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <p style={{ ...LABEL, color: "#8e8e8e" }}>{article.category}</p>
+                <p style={{ ...LABEL, color: MUTED_TEXT }}>{article.category}</p>
                 <h2
                   style={{
                     fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -270,7 +358,7 @@ export default function AtlaJournal() {
                 >
                   {article.title}
                 </h2>
-                <p style={{ ...BODY, color: "#8e8e8e", maxWidth: 304 }}>{article.excerpt}</p>
+                <p style={{ ...BODY, color: MUTED_TEXT, maxWidth: 304 }}>{article.excerpt}</p>
                 <p style={{ ...BODY, paddingTop: 10 }}>{article.date}</p>
               </div>
             </a>

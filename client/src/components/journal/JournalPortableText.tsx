@@ -93,6 +93,8 @@ const components: PortableTextComponents = {
       const alt = typeof imageValue.alt === "string" ? imageValue.alt : "";
       const caption = typeof imageValue.caption === "string" ? imageValue.caption : "";
       const aspectRatio = imageValue.asset?.metadata?.dimensions?.aspectRatio;
+      const width = imageValue.asset?.metadata?.dimensions?.width;
+      const height = imageValue.asset?.metadata?.dimensions?.height;
 
       if (!url) return null;
 
@@ -101,7 +103,10 @@ const components: PortableTextComponents = {
           <img
             src={url}
             alt={alt}
+            width={width}
+            height={height}
             loading="lazy"
+            decoding="async"
             style={{
               width: "100%",
               display: "block",
@@ -141,7 +146,6 @@ const components: PortableTextComponents = {
 
 function normalizeHref(href: string) {
   if (!href) return href;
-  if (href === "/contact") return "/about#contact";
   if (href.startsWith("/blog/")) return href.replace(/^\/blog\//, "/journal/");
   return href;
 }
@@ -149,6 +153,11 @@ function normalizeHref(href: string) {
 export function JournalPortableText({ value }: { value: JournalPortableTextBlock[] }) {
   if (!Array.isArray(value) || value.length === 0) {
     return null;
+  }
+
+  const chunks: JournalPortableTextBlock[][] = [];
+  for (let index = 0; index < value.length; index += 12) {
+    chunks.push(value.slice(index, index + 12));
   }
 
   return (
@@ -161,7 +170,9 @@ export function JournalPortableText({ value }: { value: JournalPortableTextBlock
         gap: 24,
       }}
     >
-      <PortableText value={value} components={components} />
+      {chunks.map((chunk, index) => (
+        <PortableText key={index} value={chunk} components={components} />
+      ))}
     </div>
   );
 }

@@ -7,6 +7,13 @@ type ImageDeliveryOptions = {
 };
 
 const SANITY_IMAGE_HOST = "cdn.sanity.io";
+const LOCAL_IMAGE_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  "/figmaAssets/about-hero.jpg": { width: 1200, height: 810 },
+  "/figmaAssets/photo-1.jpg": { width: 550, height: 550 },
+  "/figmaAssets/photo-2.jpg": { width: 403, height: 600 },
+  "/figmaAssets/photo-3.jpg": { width: 736, height: 920 },
+  "/figmaAssets/photo-4.jpg": { width: 800, height: 800 },
+};
 
 function roundDimension(value?: number) {
   if (!value || !Number.isFinite(value)) return undefined;
@@ -83,4 +90,31 @@ export function buildImageSrcSet(
   return normalizedWidths
     .map((width) => `${getOptimizedImageUrl(src, { ...options, width })} ${width}w`)
     .join(", ");
+}
+
+export function getImageDimensions(src?: string | null) {
+  if (!src) return undefined;
+
+  let normalizedSrc = src;
+
+  try {
+    normalizedSrc = new URL(src, "https://atla-website.vercel.app").pathname;
+  } catch {
+    normalizedSrc = src;
+  }
+
+  if (LOCAL_IMAGE_DIMENSIONS[normalizedSrc]) {
+    return LOCAL_IMAGE_DIMENSIONS[normalizedSrc];
+  }
+
+  const sanityMatch = src.match(/-(\d+)x(\d+)\.(?:png|jpe?g|webp|avif|gif|svg)(?:\?|$)/i);
+  if (sanityMatch) {
+    const width = Number(sanityMatch[1]);
+    const height = Number(sanityMatch[2]);
+    if (Number.isFinite(width) && Number.isFinite(height) && width > 0 && height > 0) {
+      return { width, height };
+    }
+  }
+
+  return undefined;
 }

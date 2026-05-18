@@ -1,6 +1,8 @@
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { formatMetaTitle } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
   fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
@@ -45,6 +47,11 @@ export default function AtlaPrivacy() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+      <SeoHead
+        title={formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data")}
+        description="Read how Atla handles browser storage, hosting data, and information shared through direct studio inquiries across the website."
+        pathname="/privacy"
+      />
       <div className="atla-dark-surface">
       <AtlaNav />
       <main style={{ padding: isMobile ? "80px 10px 100px" : "120px 20px 160px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 620px", gap: isMobile ? 32 : 20 }}>
@@ -98,6 +105,10 @@ export default function AtlaPrivacy() {
           <Section title="Updates">
             <p style={bodyStyle}>
               We may update this policy as the site changes. The latest version published on this page will control.
+            </p>
+            <p style={bodyStyle}>
+              If Atla introduces new analytics tools, client portals, embedded scheduling tools, or other third-party
+              services that change what data is processed, this page should be revised before those changes go live.
             </p>
           </Section>
         </div>

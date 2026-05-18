@@ -1,4 +1,5 @@
 import {
+  formatMetaTitle,
   ORGANIZATION_NAME,
   SITE_ORIGIN,
 } from "@shared/siteSeo";
@@ -6,6 +7,7 @@ import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getImageDimensions } from "@shared/imageDelivery";
 
 const HERO_COPY =
   "Strategy first. Expression second. Every service here exists to sharpen the brand, not add noise to it.";
@@ -22,12 +24,12 @@ const SERVICES = [
   {
     title: "Brand Strategy",
     description:
-      "Positioning, messaging, audience definition, and competitive framing. The foundational thinking that tells you what to say, to whom, and why it matters. Before any design work begins.",
+      "Positioning, messaging, audience definition, and competitive framing. The foundational thinking that clarifies what the company stands for, who it needs to reach, and why it should matter before visual exploration begins.",
   },
   {
     title: "Identity",
     description:
-      "Logo, typography, color, iconography, and the system that holds them together. Built to work across digital and physical, at every scale, without losing coherence.",
+      "Logo, typography, color, iconography, and the system that holds them together. Built to work across digital and physical touchpoints, at every scale, without losing coherence.",
   },
   {
     title: "Digital Design",
@@ -52,7 +54,7 @@ const SERVICES = [
   {
     title: "Copywriting",
     description:
-      "Headlines, taglines, product copy, and brand narratives. Words that sound like the brand, not like a template.",
+      "Headlines, taglines, product copy, and narratives. Words that sound unmistakably like the company, not like a category template.",
   },
   {
     title: "Tone of Voice",
@@ -76,7 +78,7 @@ const LF_SB12: React.CSSProperties = {
   fontWeight: 600,
   letterSpacing: 0.48,
   lineHeight: "1.2",
-  color: "#8e8e8e",
+  color: "#6f6f6f",
   textTransform: "uppercase",
   margin: 0,
 };
@@ -113,6 +115,7 @@ function SectionTitle({ children, mobile = false }: { children: React.ReactNode;
 
 export default function AtlaServices() {
   const isMobile = useIsMobile();
+  const heroDimensions = getImageDimensions("/figmaAssets/about-hero.jpg");
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -143,8 +146,8 @@ export default function AtlaServices() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <SeoHead
-        title="Services — Atla Branding Studio"
-        description="Brand strategy, identity design, digital design, and creative direction for companies that take their brand seriously."
+        title={formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla")}
+        description="Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies."
         pathname="/services"
         structuredData={[breadcrumbSchema, ...servicesSchema]}
       />
@@ -176,7 +179,10 @@ export default function AtlaServices() {
         >
           <img
             src="/figmaAssets/about-hero.jpg"
-            alt=""
+            alt="Atla services hero image"
+            width={heroDimensions?.width}
+            height={heroDimensions?.height}
+            fetchPriority="high"
             style={{
               width: "100%",
               height: "100%",
@@ -211,6 +217,21 @@ export default function AtlaServices() {
           >
             {HERO_COPY}
           </p>
+          <h1
+            style={{
+              position: "absolute",
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            Atla branding and digital design services
+          </h1>
         </div>
       </div>
 
@@ -240,6 +261,11 @@ export default function AtlaServices() {
           <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
             <div style={{ width: isMobile ? "100%" : 456 }}>
               <p style={LF_REG18}>{INTRO}</p>
+              <p style={{ ...LF_REG18, marginTop: 18 }}>
+                That structure matters because most companies do not need more disconnected outputs. They need sharper
+                decisions, clearer systems, and a way to move from positioning to rollout without losing the logic that
+                made the work strong in the first place.
+              </p>
             </div>
           </div>
         </div>
@@ -291,103 +317,6 @@ export default function AtlaServices() {
           </div>
         </div>
 
-        <div
-          id="contact"
-          style={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: isMobile ? 24 : 0,
-            width: "100%",
-          }}
-        >
-          <SectionTitle mobile={isMobile}>Contact</SectionTitle>
-          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
-            <div
-              style={{
-                width: "100%",
-                height: isMobile ? 320 : 410,
-                borderRadius: 4,
-                overflow: "hidden",
-                position: "relative",
-                backgroundColor: "#222",
-              }}
-            >
-              <img
-                src="https://www.figma.com/api/mcp/asset/1f8f5121-d0f3-4e6d-9359-88b75c689c5b"
-                alt=""
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: 0.6,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 36,
-                  textAlign: "center",
-                  padding: 24,
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                    fontSize: 48,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: "#fafafa",
-                    margin: 0,
-                  }}
-                >
-                  Start a Project
-                </p>
-                <p
-                  style={{
-                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                    fontSize: 20,
-                    fontWeight: 500,
-                    lineHeight: "1.1",
-                    color: "#fafafa",
-                    margin: 0,
-                    maxWidth: 360,
-                  }}
-                >
-                  We work best when strategy and execution are aligned from day one. Let&apos;s talk scope, timing,
-                  and what the brand needs next.
-                </p>
-                <a
-                  href="/about#contact"
-                  className="atla-footer-cta"
-                  style={{
-                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    letterSpacing: 0.56,
-                    lineHeight: "1.2",
-                    color: "#222",
-                    textTransform: "uppercase",
-                    textDecoration: "none",
-                    padding: 12,
-                    backgroundColor: "#ffc629",
-                    borderRadius: 4,
-                  }}
-                >
-                  Get in Touch
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
       </div>
 

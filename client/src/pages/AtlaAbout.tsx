@@ -1,7 +1,10 @@
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaSymbol } from "@/components/atla/AtlaMarks";
+import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getImageDimensions } from "@shared/imageDelivery";
+import { formatMetaTitle } from "@shared/siteSeo";
 
 const LF_REG18: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -17,7 +20,7 @@ const LF_SB12: React.CSSProperties = {
   fontWeight: 600,
   letterSpacing: 0.48,
   lineHeight: "1.2",
-  color: "#8e8e8e",
+  color: "#6f6f6f",
   textTransform: "uppercase",
   margin: 0,
 };
@@ -30,7 +33,7 @@ const RM14: React.CSSProperties = {
   textTransform: "uppercase",
   margin: 0,
 };
-const RM14_GRAY: React.CSSProperties = { ...RM14, color: "#8e8e8e" };
+const RM14_GRAY: React.CSSProperties = { ...RM14, color: "#6f6f6f" };
 
 function SectionTitle({ children, mobile = false }: { children: React.ReactNode; mobile?: boolean }) {
   return (
@@ -87,9 +90,16 @@ const CLIENTS = [
 
 export default function AtlaAbout() {
   const isMobile = useIsMobile();
+  const heroDimensions = getImageDimensions("/figmaAssets/about-hero.jpg");
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+      <SeoHead
+        title={formatMetaTitle("About Atla", "Branding Studio in Mexico City and Austin")}
+        description="Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America."
+        pathname="/about"
+        image="/figmaAssets/about-hero.jpg"
+      />
       <div className="atla-dark-surface">
       <div
         className="atla-enter"
@@ -109,7 +119,10 @@ export default function AtlaAbout() {
         <div style={{ position: isMobile ? "relative" : "absolute", inset: isMobile ? "auto" : 0, top: 0, left: 0, width: "100%", height: isMobile ? 300 : 750 }}>
           <img
             src="/figmaAssets/about-hero.jpg"
-            alt=""
+            alt="Atla team members in the studio"
+            width={heroDimensions?.width}
+            height={heroDimensions?.height}
+            fetchPriority="high"
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }}
           />
         </div>
@@ -138,6 +151,21 @@ export default function AtlaAbout() {
           >
             We don&apos;t design brands that just look good. We build brands that work.
           </p>
+          <h1
+            style={{
+              position: "absolute",
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            About Atla branding studio
+          </h1>
         </div>
       </div>
 
@@ -168,6 +196,13 @@ export default function AtlaAbout() {
                 across the US and Latin America, from hospitality and CPG to wellness, SaaS, and lifestyle
                 brands ready to be taken seriously.
               </p>
+              <p style={{ ...LF_REG18, marginTop: 18 }}>
+                The work usually begins with a hard question, not a visual one. What does the brand need to say
+                more clearly? Where is the disconnect between perception and reality? Which touchpoints are carrying
+                the most strategic weight right now? We build from there so the outcome is not just recognizable,
+                but durable across product, packaging, websites, launch materials, and the day-to-day decisions a
+                growing company has to make.
+              </p>
             </div>
           </div>
         </div>
@@ -178,11 +213,21 @@ export default function AtlaAbout() {
             {isMobile ? TEAM.map((member, idx) => (
               <div key={member.name} style={{ width: "100%", maxWidth: 300, marginLeft: idx % 2 === 0 ? 0 : "auto", display: "flex", flexDirection: "column", gap: 16 }}>
                 <div style={{ height: 400, position: "relative", width: "100%", overflow: "clip" }}>
+                  {(() => {
+                    const dimensions = getImageDimensions(member.src);
+                    return (
                   <img
                     src={member.src}
                     alt={member.name}
+                    width={dimensions?.width}
+                    height={dimensions?.height}
+                    loading={idx < 2 ? "eager" : "lazy"}
+                    fetchPriority={idx < 2 ? "high" : undefined}
+                    decoding="async"
                     style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
                   />
+                    );
+                  })()}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: idx % 2 === 0 ? "flex-start" : "flex-end" }}>
                   <p style={{ ...LF_REG18, textAlign: idx % 2 === 0 ? "left" : "right", whiteSpace: "normal" }}>{member.name}</p>
@@ -194,11 +239,21 @@ export default function AtlaAbout() {
                 {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).map((member, idx) => (
                   <div key={idx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, overflow: "hidden" }}>
                     <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", overflow: "clip" }}>
+                      {(() => {
+                        const dimensions = getImageDimensions(member.src);
+                        return (
                       <img
                         src={member.src}
                         alt={member.name}
+                        width={dimensions?.width}
+                        height={dimensions?.height}
+                        loading={rowIdx === 0 ? "eager" : "lazy"}
+                        fetchPriority={rowIdx === 0 ? "high" : undefined}
+                        decoding="async"
                         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
                       />
+                        );
+                      })()}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
                       <p style={{ ...LF_REG18, textAlign: "center", whiteSpace: "nowrap" }}>{member.name}</p>
@@ -244,75 +299,6 @@ export default function AtlaAbout() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        <div id="contact" style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
-          <SectionTitle mobile={isMobile}>Contact</SectionTitle>
-          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
-            <div
-              style={{
-                width: "100%",
-                height: isMobile ? 320 : 410,
-                borderRadius: 4,
-                overflow: "hidden",
-                position: "relative",
-                backgroundColor: "#222",
-              }}
-            >
-              <img
-                src="https://www.figma.com/api/mcp/asset/1f8f5121-d0f3-4e6d-9359-88b75c689c5b"
-                alt=""
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: 0.6,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 36,
-                  textAlign: "center",
-                  padding: 24,
-                }}
-              >
-                <p style={{ fontFamily: "'Libre Franklin', Helvetica, sans-serif", fontSize: 48, fontWeight: 400, lineHeight: "1.1", color: "#fafafa", margin: 0 }}>
-                  Book a Call
-                </p>
-                <p style={{ fontFamily: "'Libre Franklin', Helvetica, sans-serif", fontSize: 20, fontWeight: 500, lineHeight: "1.1", color: "#fafafa", margin: 0, maxWidth: 320 }}>
-                  Good brands don&apos;t happen by accident. If you&apos;re building something worth remembering,
-                  let&apos;s talk about what comes next.
-                </p>
-                <a
-                  href="mailto:hello@atla.studio"
-                  className="atla-footer-cta"
-                  style={{
-                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    letterSpacing: 0.56,
-                    lineHeight: "1.2",
-                    color: "#222",
-                    textTransform: "uppercase",
-                    textDecoration: "none",
-                    padding: 12,
-                    backgroundColor: "#ffc629",
-                    borderRadius: 4,
-                  }}
-                >
-                  Get in Touch
-                </a>
-              </div>
-            </div>
           </div>
         </div>
 
