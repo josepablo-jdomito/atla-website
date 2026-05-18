@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -6,7 +6,6 @@ import { usePageAnalytics } from "@/hooks/use-analytics";
 import { AppRouter } from "./AppRouter";
 
 const NotFound = lazy(() => import("@/pages/not-found"));
-const ElementDefault = lazy(() => import("@/pages/ElementDefault").then((module) => ({ default: module.ElementDefault })));
 const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
 const AtlaAbout = lazy(() => import("@/pages/AtlaAbout"));
 const AtlaContact = lazy(() => import("@/pages/AtlaContact"));
@@ -17,6 +16,12 @@ const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
 const AtlaArticle = lazy(() => import("@/pages/AtlaArticle"));
 const AtlaPrivacy = lazy(() => import("@/pages/AtlaPrivacy"));
 const AtlaTerms = lazy(() => import("@/pages/AtlaTerms"));
+const AtlaHospitalityBranding = lazy(() => import("@/pages/AtlaHospitalityBranding"));
+const AtlaCpgBranding = lazy(() => import("@/pages/AtlaCpgBranding"));
+const AtlaWellnessBranding = lazy(() => import("@/pages/AtlaWellnessBranding"));
+const AtlaSaasBranding = lazy(() => import("@/pages/AtlaSaasBranding"));
+const AtlaBrandStrategy = lazy(() => import("@/pages/AtlaBrandStrategy"));
+const AtlaHowWeWork = lazy(() => import("@/pages/AtlaHowWeWork"));
 const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
 const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));
 
@@ -27,7 +32,6 @@ function Router() {
     <Suspense fallback={null}>
       <AppRouter
         NotFound={NotFound}
-        ElementDefault={ElementDefault}
         ProjectsAdmin={ProjectsAdmin}
         AtlaAbout={AtlaAbout}
         AtlaContact={AtlaContact}
@@ -38,45 +42,19 @@ function Router() {
         AtlaArticle={AtlaArticle}
         AtlaPrivacy={AtlaPrivacy}
         AtlaTerms={AtlaTerms}
+        AtlaHospitalityBranding={AtlaHospitalityBranding}
+        AtlaCpgBranding={AtlaCpgBranding}
+        AtlaWellnessBranding={AtlaWellnessBranding}
+        AtlaSaasBranding={AtlaSaasBranding}
+        AtlaBrandStrategy={AtlaBrandStrategy}
+        AtlaHowWeWork={AtlaHowWeWork}
       />
     </Suspense>
   );
 }
 
 function DeferredEnhancements() {
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    if (!import.meta.env.PROD) return;
-
-    const enable = () => {
-      window.setTimeout(() => setEnabled(true), 1200);
-    };
-
-    if (document.readyState === "complete") {
-      enable();
-      return;
-    }
-
-    window.addEventListener("load", enable, { once: true });
-    return () => window.removeEventListener("load", enable);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled || !import.meta.env.PROD) return;
-    if (document.getElementById("atla-gtm-script")) return;
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-
-    const script = document.createElement("script");
-    script.id = "atla-gtm-script";
-    script.async = true;
-    script.src = "https://www.googletagmanager.com/gtm.js?id=GTM-NFDF5TFQ";
-    document.head.appendChild(script);
-  }, [enabled]);
-
-  if (!enabled || !import.meta.env.PROD) {
+  if (!import.meta.env.PROD) {
     return null;
   }
 

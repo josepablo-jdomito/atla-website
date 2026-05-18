@@ -6,7 +6,6 @@ import type { JournalArticle, JournalCategory } from "@shared/journal";
 import type { Project } from "@shared/schema";
 import { AppRouter } from "./AppRouter";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
-import { ElementDefault } from "./pages/ElementDefault";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import AtlaAbout from "./pages/AtlaAbout";
 import AtlaContact from "./pages/AtlaContact";
@@ -17,6 +16,12 @@ import AtlaJournal from "./pages/AtlaJournal";
 import AtlaArticle from "./pages/AtlaArticle";
 import AtlaPrivacy from "./pages/AtlaPrivacy";
 import AtlaTerms from "./pages/AtlaTerms";
+import AtlaHospitalityBranding from "./pages/AtlaHospitalityBranding";
+import AtlaCpgBranding from "./pages/AtlaCpgBranding";
+import AtlaWellnessBranding from "./pages/AtlaWellnessBranding";
+import AtlaSaasBranding from "./pages/AtlaSaasBranding";
+import AtlaBrandStrategy from "./pages/AtlaBrandStrategy";
+import AtlaHowWeWork from "./pages/AtlaHowWeWork";
 import NotFound from "./pages/not-found";
 
 export type PrerenderRouteData = {
@@ -87,7 +92,6 @@ export function renderPrerenderedRoute(
         <Router ssrPath={pathname}>
           <AppRouter
             NotFound={NotFound}
-            ElementDefault={ElementDefault}
             ProjectsAdmin={ProjectsAdmin}
             AtlaAbout={AtlaAbout}
             AtlaContact={AtlaContact}
@@ -98,6 +102,12 @@ export function renderPrerenderedRoute(
             AtlaArticle={AtlaArticle}
             AtlaPrivacy={AtlaPrivacy}
             AtlaTerms={AtlaTerms}
+            AtlaHospitalityBranding={AtlaHospitalityBranding}
+            AtlaCpgBranding={AtlaCpgBranding}
+            AtlaWellnessBranding={AtlaWellnessBranding}
+            AtlaSaasBranding={AtlaSaasBranding}
+            AtlaBrandStrategy={AtlaBrandStrategy}
+            AtlaHowWeWork={AtlaHowWeWork}
           />
         </Router>
       </ThemeProvider>

@@ -14,7 +14,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: https://www.clarity.ms https://*.clarity.ms; frame-src https://www.googletagmanager.com"
+          "value": "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://scripts.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: https://www.clarity.ms https://*.clarity.ms https://c.bing.com https://*.bing.com; frame-src https://www.googletagmanager.com https://player.vimeo.com https://vimeo.com"
         },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
@@ -22,6 +22,35 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
       ]
     }
+  ],
+  "redirects": [
+    { "source": "/studio", "destination": "https://atla-dvufm78f.sanity.studio", "permanent": true },
+    { "source": "/studio/:path*", "destination": "https://atla-dvufm78f.sanity.studio/:path*", "permanent": true },
+    { "source": "/work", "destination": "/", "permanent": true },
+    { "source": "/work/", "destination": "/", "permanent": true },
+    { "source": "/blog", "destination": "/journal", "permanent": true },
+    { "source": "/blog/", "destination": "/journal", "permanent": true },
+    { "source": "/blog/10-successful-rebranding-examples-that-changed-the-game", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true },
+    { "source": "/blog/10-successful-rebranding-examples-that-changed-the-game/", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true },
+    { "source": "/blog/the-complete-rebranding-process-from-planning-to-launch", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true },
+    { "source": "/blog/what-holds-all-the-elements-of-a-design-together", "destination": "/journal", "permanent": true },
+    { "source": "/blog/subscription-design-trends", "destination": "/journal", "permanent": true },
+    { "source": "/blog/brand-director-vs-marketing-director", "destination": "/journal/art-direction-vs-graphic-design", "permanent": true },
+    { "source": "/blog/branding-questionnaire-guide", "destination": "/journal/how-to-brief-a-branding-agency", "permanent": true },
+    { "source": "/blog/what-is-a-creative-branding-agency-and-how-it-can-elevate-your-business", "destination": "/journal/what-is-a-branding-agency", "permanent": true },
+    { "source": "/blog/how-to-copy-a-website-design", "destination": "/journal", "permanent": true },
+    { "source": "/blog/best-branding-kits-2025", "destination": "/journal", "permanent": true },
+    { "source": "/blog/the-bridge-hospitality-branding-case-study", "destination": "/journal/hospitality-branding-guide", "permanent": true },
+    { "source": "/blog/ando-cpg-packaging-case-study", "destination": "/journal/brand-audit-framework", "permanent": true },
+    { "source": "/blog/conscious-care-co-wellness-branding-case-study", "destination": "/journal/brand-strategy-vs-brand-identity", "permanent": true },
+    { "source": "/blog/:path*", "destination": "/journal", "permanent": true },
+    { "source": "/portfolio", "destination": "/", "permanent": true },
+    { "source": "/portfolio/", "destination": "/", "permanent": true },
+    { "source": "/portfolio/:path*", "destination": "/", "permanent": true },
+    { "source": "/top-branding-agencies-for-startups", "destination": "/journal/how-to-select-a-branding-agency", "permanent": true },
+    { "source": "/best-startup-branding-agencies", "destination": "/journal/how-to-select-a-branding-agency", "permanent": true },
+    { "source": "/how-to-edit-a-website-page", "destination": "/journal", "permanent": true },
+    { "source": "/10-successful-rebranding-examples-that-changed-the-game", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true }
   ],
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" }

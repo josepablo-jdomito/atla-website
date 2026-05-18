@@ -1,6 +1,7 @@
 import { authorType } from "./author";
 import { categoryType } from "./category";
 import { journalArticleType } from "./journalArticle";
+import { projectType } from "./project";
 import { servicePageType } from "./servicePage";
 import { seoSettingsType } from "./seoSettings";
 import { seoType } from "./objects/seo";
@@ -11,6 +12,7 @@ export const schemaTypes = [
   socialLinkType,
   authorType,
   categoryType,
+  projectType,
   seoSettingsType,
   journalArticleType,
   servicePageType,

@@ -121,10 +121,10 @@ export default function AtlaJournal() {
     : [];
   const heroImageDimensions = getImageDimensions(heroImage);
   const heroImageSrc = heroImage
-    ? getOptimizedImageUrl(heroImage, { width: isMobile ? 900 : 1600, quality: 82 }) || heroImage
+    ? getOptimizedImageUrl(heroImage, { width: isMobile ? 1200 : 2000, quality: 90 }) || heroImage
     : "";
   const heroImageSrcSet = heroImage
-    ? buildImageSrcSet(heroImage, isMobile ? [640, 900] : [900, 1280, 1600], { quality: 82 })
+    ? buildImageSrcSet(heroImage, isMobile ? [800, 1200] : [1200, 1600, 2000], { quality: 90 })
     : "";
 
   const collectionSchema = {
@@ -169,7 +169,7 @@ export default function AtlaJournal() {
               src={heroImageSrc}
               srcSet={heroImageSrcSet}
               sizes="100vw"
-              alt=""
+              alt={heroTitle}
               width={heroImageDimensions?.width}
               height={heroImageDimensions?.height}
               fetchPriority="high"
@@ -232,6 +232,7 @@ export default function AtlaJournal() {
                   className="atla-link"
                   style={{
                     ...LABEL,
+                    fontSize: 14,
                     color: "#d8d1c6",
                     textDecoration: "none",
                     borderBottom: activeCategory ? "1px solid transparent" : "1px solid #d8d1c6",
@@ -252,6 +253,7 @@ export default function AtlaJournal() {
                       className="atla-link"
                     style={{
                         ...LABEL,
+                        fontSize: 14,
                         color: "#d3cabd",
                         textDecoration: "none",
                         borderBottom: isActive ? "1px solid #d8d1c6" : "1px solid transparent",
@@ -314,6 +316,9 @@ export default function AtlaJournal() {
               </p>
               <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
                 If you are comparing articles, start with the most practical piece first and then move into the longer framework essays. That usually gives enough context to understand not just what to change, but why the change matters operationally.
+              </p>
+              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
+                Use this archive as a decision aid: identify the scenario that matches your current stage, then map the recommended sequence from strategy through execution. The objective is to reduce guesswork and help teams move from reading to actionable next steps without losing coherence.
               </p>
             </div>
           ) : null}

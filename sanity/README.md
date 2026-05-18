@@ -24,6 +24,7 @@ Register [`schemaTypes`](/Users/josepablo/.codex/worktrees/74cd/New%20project/sa
 
 Document types included:
 
+- `project`
 - `journalArticle`
 - `author`
 - `category`
@@ -37,6 +38,7 @@ Reusable object types:
 
 Recommended editorial setup:
 
+- one `project` per portfolio case study
 - one `journalArticle` per published article
 - one `servicePage` per long-form services landing page
 - one `seoSettings` singleton document for site-wide defaults
@@ -82,3 +84,31 @@ Important site-wide SEO fields on `seoSettings`:
 - `twitterHandle`
 - `socialProfiles`
 - `robotsDefault`
+
+## Studio runtime (Dashboard-compatible)
+
+This repo now includes a dedicated Studio workspace at [`/studio`](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/studio) using:
+
+- `sanity@5.1.0`
+- `react@19.2.2`
+- `react-dom@19.2.2`
+
+This is intentionally isolated from the main web app (React 18) to avoid dependency conflicts.
+
+Run commands:
+
+- `npm run studio:dev`
+- `npm run studio:build`
+- `npm run studio:deploy`
+
+Environment variables for Studio:
+
+- `SANITY_STUDIO_PROJECT_ID` (or fallback `SANITY_PROJECT_ID`)
+- `SANITY_STUDIO_DATASET` (or fallback `SANITY_DATASET`)
+
+If Studio is embedded in an iframe (e.g. Dashboard), the host serving Studio cannot use:
+
+- `X-Frame-Options: DENY`
+- `Content-Security-Policy: frame-ancestors 'none'`
+
+Allow Sanity parents instead (on the Studio host route).

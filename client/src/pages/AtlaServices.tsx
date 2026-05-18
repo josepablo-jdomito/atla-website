@@ -317,6 +317,77 @@ export default function AtlaServices() {
           </div>
         </div>
 
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: isMobile ? 24 : 0,
+            width: "100%",
+          }}
+        >
+          <SectionTitle mobile={isMobile}>Where to Start</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14 }}>
+            <p style={LF_REG18}>
+              If your team needs the sequence, start with{" "}
+              <a href="/brand-strategy" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                brand strategy
+              </a>
+              . If you need delivery mechanics, review{" "}
+              <a href="/how-we-work" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                how we work
+              </a>
+              . If you need proof of execution, browse{" "}
+              <a href="/" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                selected work
+              </a>
+              .
+            </p>
+            <p style={LF_REG18}>
+              Category-specific entry points:{" "}
+              <a href="/hospitality-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                hospitality branding
+              </a>
+              ,{" "}
+              <a href="/cpg-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                CPG branding
+              </a>
+              ,{" "}
+              <a href="/wellness-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                wellness branding
+              </a>
+              , and{" "}
+              <a href="/saas-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                SaaS branding
+              </a>
+              .
+            </p>
+            <p style={LF_REG18}>
+              Live examples:{" "}
+              <a href="/projects/the-bridge" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                The Bridge
+              </a>
+              ,{" "}
+              <a href="/projects/ando" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                Ando
+              </a>
+              , and{" "}
+              <a href="/projects/conscious-care-co" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                Conscious Care Co
+              </a>
+              .
+            </p>
+            <p style={LF_REG18}>
+              Narrative publishing template:{" "}
+              <a href="/journal/how-to-brief-a-branding-agency" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                how to brief a branding agency
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+
       </main>
       </div>
 

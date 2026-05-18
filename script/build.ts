@@ -54,6 +54,7 @@ const allowlist = [
 
 const DEFAULT_JOURNAL_CATEGORY_DESCRIPTION =
   "Selected writing from Atla Journal on branding, strategy, digital craft, and creative direction.";
+const PRERENDER_REMOTE_TIMEOUT_MS = 12_000;
 
 function ensureDescriptionLength(description: string, fallback: string) {
   const cleanDescription = description.trim();
@@ -167,6 +168,70 @@ async function hydrateBuildEnvFromLocalFile() {
   }
 }
 
+function resolvePrerenderApiOrigin() {
+  const configuredOrigin = (process.env.PRERENDER_API_ORIGIN || process.env.SITE_ORIGIN || SITE_ORIGIN).trim();
+  return configuredOrigin.replace(/\/+$/, "");
+}
+
+async function fetchPrerenderJson<T>(url: string, fallbackValue: T): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), PRERENDER_REMOTE_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      headers: { accept: "application/json" },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request failed (${response.status}) for ${url}`);
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.warn(`[build] Failed to fetch prerender payload from ${url}:`, error);
+    return fallbackValue;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function loadPrerenderContentFromPublicApi(): Promise<{
+  projects: Project[];
+  articles: JournalArticle[];
+  articleDetails: Record<string, JournalArticle>;
+  categories: JournalCategory[];
+}> {
+  const origin = resolvePrerenderApiOrigin();
+  console.warn(`[build] Falling back to remote prerender API: ${origin}`);
+
+  const [projectsRaw, articlesRaw, categoriesRaw] = await Promise.all([
+    fetchPrerenderJson<unknown>(`${origin}/api/projects`, []),
+    fetchPrerenderJson<unknown>(`${origin}/api/journal`, []),
+    fetchPrerenderJson<unknown>(`${origin}/api/journal/categories`, []),
+  ]);
+
+  const projects = Array.isArray(projectsRaw) ? (projectsRaw as Project[]) : [];
+  const articles = Array.isArray(articlesRaw) ? (articlesRaw as JournalArticle[]) : [];
+  const categories = Array.isArray(categoriesRaw) ? (categoriesRaw as JournalCategory[]) : [];
+
+  const articleDetails = Object.fromEntries(
+    await Promise.all(
+      articles.map(async (article) => {
+        const detail = await fetchPrerenderJson<unknown>(`${origin}/api/journal/${article.slug}`, article);
+        return [article.slug, (detail as JournalArticle) ?? article] as const;
+      }),
+    ),
+  );
+
+  return {
+    projects,
+    articles,
+    articleDetails,
+    categories,
+  };
+}
+
 function createHeadMarkup({
   title,
   description,
@@ -268,6 +333,46 @@ function resolveArticleImage(article: JournalArticle) {
 
 function resolveProjectHeroImage(project: Project) {
   return project.coverImage || project.images[0] || DEFAULT_OG_IMAGE_URL;
+}
+
+function toVimeoEmbedUrl(rawValue: string) {
+  const value = rawValue.trim().replace(/&amp;/gi, "&");
+  const iframeSrc = value.match(/<iframe[^>]+src=["']([^"']+)["']/i)?.[1]?.trim();
+  const source = (iframeSrc || value).replace(/^\/\//, "https://");
+
+  try {
+    const parsed = new URL(
+      /^https?:\/\//i.test(source) ? source : `https://${source.replace(/^\/+/, "")}`,
+    );
+    const host = parsed.hostname.toLowerCase();
+
+    if (host.includes("player.vimeo.com")) {
+      const match = parsed.pathname.match(/\/video\/(\d+)/i);
+      if (!match) return null;
+      return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
+    }
+
+    if (host === "vimeo.com" || host.endsWith(".vimeo.com")) {
+      const match = parsed.pathname.match(/\/(\d+)(?:$|\/)/i) || parsed.pathname.match(/\/(\d+)\b/i);
+      if (match) return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
+    }
+  } catch {
+    // Fallback regex parsing below.
+  }
+
+  const playerMatch = source.match(/player\.vimeo\.com\/video\/(\d+)(\?[^"'\s>]*)?/i);
+  if (playerMatch) return `https://player.vimeo.com/video/${playerMatch[1]}${playerMatch[2] || ""}`;
+
+  const directMatch = source.match(/vimeo\.com\/(?:.*\/)?(\d+)/i);
+  if (directMatch) return `https://player.vimeo.com/video/${directMatch[1]}`;
+
+  return null;
+}
+
+function toVimeoWatchUrl(embedUrl: string) {
+  const match = embedUrl.match(/player\.vimeo\.com\/video\/(\d+)/i);
+  if (!match) return "https://vimeo.com";
+  return `https://vimeo.com/${match[1]}`;
 }
 
 function buildResponsiveImagePreload(
@@ -447,35 +552,25 @@ async function prerenderRoutes() {
   const templatePath = path.resolve("dist/public/index.html");
   const template = await readFile(templatePath, "utf8");
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
-  const homeFeaturedProject = projects[2] ?? projects[0];
   const workFeaturedProject = projects[0];
-  const homeFeaturedImage = homeFeaturedProject ? resolveProjectHeroImage(homeFeaturedProject) : DEFAULT_OG_IMAGE_URL;
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
-  const homeVisibleProjects = projects.slice(0, 5);
   const workVisibleProjects = projects.slice(0, 4);
-  const homePreloadImages = buildImagePreloadEntries([
-    { src: resolveProjectHeroImage(homeVisibleProjects[0]), widths: [78, 117, 156], quality: 78, sizes: "78px" },
-    { src: resolveProjectHeroImage(homeVisibleProjects[1]), widths: [112, 168, 224], quality: 78, sizes: "112px" },
-    { src: resolveProjectHeroImage(homeVisibleProjects[2]), widths: [274, 411, 548], quality: 84, sizes: "274px" },
-    { src: resolveProjectHeroImage(homeVisibleProjects[3]), widths: [112, 168, 224], quality: 78, sizes: "112px" },
-    { src: resolveProjectHeroImage(homeVisibleProjects[4]), widths: [78, 117, 156], quality: 78, sizes: "78px" },
-  ]);
   const workPreloadImages = buildImagePreloadEntries(
     workVisibleProjects.map((project) => ({
       src: resolveProjectHeroImage(project),
-      widths: [290, 435, 580],
+      widths: [320, 480, 640],
       quality: 82,
-      sizes: "calc(100vw - 20px)",
+      sizes: "(max-width: 767px) calc(100vw - 40px), 20vw",
     })),
   );
 
   const staticRoutes = [
     {
       pathname: "/",
-      title: formatMetaTitle("Atla Branding Studio", "Strategy, Identity, Digital"),
-      description: "Atla is a branding studio building strategy-led identities, websites, and creative systems for companies across the US and Latin America.",
-      image: homeFeaturedImage,
-      preloadImages: homePreloadImages,
+      title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
+      description: "Atla is a strategy-led branding studio for teams across the US and Latin America.",
+      image: workFeaturedImage,
+      preloadImages: workPreloadImages,
       includeInSitemap: true,
     },
     {
@@ -543,11 +638,45 @@ async function prerenderRoutes() {
       },
     },
     {
-      pathname: "/work",
-      title: formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla"),
-      description: "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.",
+      pathname: "/hospitality-branding",
+      title: formatMetaTitle("Hospitality Branding Agency", "Hotels, Restaurants and Travel"),
+      description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",
       image: workFeaturedImage,
-      preloadImages: workPreloadImages,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/cpg-branding",
+      title: formatMetaTitle("CPG Branding and Packaging Agency", "Consumer Goods"),
+      description: "Brand identity and packaging design for CPG companies launching or repositioning products. Strategy-led systems that perform on shelf and screen.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/wellness-branding",
+      title: formatMetaTitle("Wellness and Health Brand Design Agency", "Atla"),
+      description: "Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/saas-branding",
+      title: formatMetaTitle("SaaS Branding Agency", "Brand Identity for Software Companies"),
+      description: "Brand strategy and identity for SaaS teams. Positioning and digital systems built for clear differentiation.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/brand-strategy",
+      title: formatMetaTitle("Brand Strategy for Growing Companies", "Process and Framework"),
+      description: "How brand strategy actually works — positioning, messaging, audience definition, and competitive framing. The strategic foundation before design begins.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/how-we-work",
+      title: formatMetaTitle("How We Work", "Branding Process and Engagement Model"),
+      description: "How Atla runs branding engagements — from discovery to launch. Strategy, identity, digital, and creative direction working as one system.",
+      image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
@@ -640,18 +769,59 @@ async function prerenderRoutes() {
   }
 
   for (const project of projects) {
-    const structuredData = {
+    const projectClientLabel = project.client === "Confidential" ? "a confidential client" : project.client;
+    const projectCategoryLabel = project.category && project.category !== "Uncategorized" ? project.category.toLowerCase() : "brand system";
+    const projectMetaFallback =
+      `${project.title} is an Atla case study for ${projectClientLabel}. Explore how ${projectCategoryLabel} strategy, identity, and implementation were translated across launch touchpoints.`;
+    const parsedProjectYear = Number.parseInt(String(project.year), 10);
+    const videoUploadDate = Number.isFinite(parsedProjectYear) ? `${parsedProjectYear}-01-01T00:00:00.000Z` : undefined;
+    const videoStructuredData = (project.videos ?? [])
+      .map((videoUrl, index) => {
+        const embedUrl = toVimeoEmbedUrl(videoUrl);
+        if (!embedUrl) return null;
+        const watchUrl = toVimeoWatchUrl(embedUrl);
+        return {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: `${project.title} video ${index + 1}`,
+          description: `${project.title} case study video ${index + 1} from Atla.`,
+          mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
+          embedUrl,
+          contentUrl: watchUrl,
+          url: watchUrl,
+          thumbnailUrl: project.images[index] || resolveProjectHeroImage(project),
+          ...(videoUploadDate ? { uploadDate: videoUploadDate } : {}),
+          inLanguage: "en",
+          isFamilyFriendly: true,
+          publisher: {
+            "@type": "Organization",
+            name: ORGANIZATION_NAME,
+            url: SITE_ORIGIN,
+            logo: {
+              "@type": "ImageObject",
+              url: ORGANIZATION_LOGO_URL,
+            },
+          },
+        };
+      })
+      .filter((item): item is Record<string, unknown> => Boolean(item));
+
+    const structuredDataBlocks: Array<Record<string, unknown>> = [{
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       name: project.title,
-      description: project.description,
+      description: ensureDescriptionLength(project.description, projectMetaFallback),
       image: resolveProjectHeroImage(project),
       url: `${SITE_ORIGIN}/projects/${project.slug}`,
       creator: {
         "@type": "Organization",
         name: ORGANIZATION_NAME,
       },
-    };
+    }];
+
+    if (videoStructuredData.length > 0) {
+      structuredDataBlocks.push(...videoStructuredData);
+    }
 
     const pathname = `/projects/${project.slug}`;
     const projectGalleryPreloads = buildImagePreloadEntries(
@@ -667,10 +837,7 @@ async function prerenderRoutes() {
         template,
         createHeadMarkup({
           title: formatMetaTitle(`${project.title} ${project.category} Case Study`, "Atla"),
-          description: ensureDescriptionLength(
-            project.description,
-            `Explore how Atla shaped ${project.client} through strategy, identity, and implementation across brand touchpoints.`,
-          ),
+          description: ensureDescriptionLength(project.description, projectMetaFallback),
           pathname,
           image: resolveProjectHeroImage(project),
           ...buildResponsiveImagePreload(
@@ -680,7 +847,7 @@ async function prerenderRoutes() {
             "(max-width: 767px) 100vw, 55vw",
           ),
           preloadImages: projectGalleryPreloads,
-          structuredData,
+          structuredData: structuredDataBlocks,
         }),
       ),
       pathname,
@@ -777,30 +944,34 @@ async function loadPrerenderContent(): Promise<{
   categories: JournalCategory[];
 }> {
   if (!isJournalSanityConfigured()) {
-    throw new Error("Sanity journal env vars are required for production prerender and sitemap generation.");
+    return loadPrerenderContentFromPublicApi();
   }
+  try {
+    const [projects, articles, categories] = await Promise.all([
+      fetchProjectsFromSanity(),
+      fetchJournalArticlesFromSanity(),
+      fetchJournalCategoriesFromSanity(),
+    ]);
 
-  const [projects, articles, categories] = await Promise.all([
-    fetchProjectsFromSanity(),
-    fetchJournalArticlesFromSanity(),
-    fetchJournalCategoriesFromSanity(),
-  ]);
+    const articleDetails = Object.fromEntries(
+      await Promise.all(
+        articles.map(async (article) => {
+          const detail = await fetchJournalArticleBySlugFromSanity(article.slug);
+          return [article.slug, detail ?? article] as const;
+        }),
+      ),
+    );
 
-  const articleDetails = Object.fromEntries(
-    await Promise.all(
-      articles.map(async (article) => {
-        const detail = await fetchJournalArticleBySlugFromSanity(article.slug);
-        return [article.slug, detail ?? article] as const;
-      }),
-    ),
-  );
-
-  return {
-    projects,
-    articles,
-    articleDetails,
-    categories,
-  };
+    return {
+      projects,
+      articles,
+      articleDetails,
+      categories,
+    };
+  } catch (error) {
+    console.warn("[build] Sanity prerender fetch failed; using public API fallback.", error);
+    return loadPrerenderContentFromPublicApi();
+  }
 }
 
 function createSitemapXml({

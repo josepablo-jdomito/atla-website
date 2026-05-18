@@ -11,11 +11,37 @@ import {
   fetchProjectBySlugOrIdFromSanity,
   fetchProjectsFromSanity,
   isProjectSanityConfigured,
+  normalizeProjectFacetsForApi,
 } from "./sanity/projectService.ts";
 
 const ADMIN_COOKIE_NAME = "atla_admin_session";
 const LEGACY_PROJECTS_ADMIN_MESSAGE =
   "Legacy projects admin has been retired. Projects are managed in Sanity Studio.";
+const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [
+  { from: "/work", to: "/" },
+  { from: "/work/", to: "/" },
+  { from: "/blog", to: "/journal" },
+  { from: "/blog/", to: "/journal" },
+  { from: "/blog/10-successful-rebranding-examples-that-changed-the-game", to: "/journal/why-most-startups-rebrand-too-late" },
+  { from: "/blog/10-successful-rebranding-examples-that-changed-the-game/", to: "/journal/why-most-startups-rebrand-too-late" },
+  { from: "/blog/the-complete-rebranding-process-from-planning-to-launch", to: "/journal/why-most-startups-rebrand-too-late" },
+  { from: "/blog/what-holds-all-the-elements-of-a-design-together", to: "/journal" },
+  { from: "/blog/subscription-design-trends", to: "/journal" },
+  { from: "/blog/brand-director-vs-marketing-director", to: "/journal/art-direction-vs-graphic-design" },
+  { from: "/blog/branding-questionnaire-guide", to: "/journal/how-to-brief-a-branding-agency" },
+  { from: "/blog/what-is-a-creative-branding-agency-and-how-it-can-elevate-your-business", to: "/journal/what-is-a-branding-agency" },
+  { from: "/blog/how-to-copy-a-website-design", to: "/journal" },
+  { from: "/blog/best-branding-kits-2025", to: "/journal" },
+  { from: "/blog/the-bridge-hospitality-branding-case-study", to: "/journal/hospitality-branding-guide" },
+  { from: "/blog/ando-cpg-packaging-case-study", to: "/journal/brand-audit-framework" },
+  { from: "/blog/conscious-care-co-wellness-branding-case-study", to: "/journal/brand-strategy-vs-brand-identity" },
+  { from: "/portfolio", to: "/" },
+  { from: "/portfolio/", to: "/" },
+  { from: "/top-branding-agencies-for-startups", to: "/journal/how-to-select-a-branding-agency" },
+  { from: "/best-startup-branding-agencies", to: "/journal/how-to-select-a-branding-agency" },
+  { from: "/how-to-edit-a-website-page", to: "/journal" },
+  { from: "/10-successful-rebranding-examples-that-changed-the-game", to: "/journal/why-most-startups-rebrand-too-late" },
+];
 
 function getCookieValue(cookieHeader: string | undefined, name: string) {
   if (!cookieHeader) return null;
@@ -41,7 +67,7 @@ function getRequestOrigin(req: Request) {
   const host = typeof forwardedHost === "string" ? forwardedHost.split(",")[0].trim() : req.get("host");
 
   if (!host) {
-    return "https://atla-website.vercel.app";
+    return "https://www.atla.design";
   }
 
   return `${protocol || "https"}://${host}`;
@@ -94,6 +120,20 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  for (const redirect of LEGACY_REDIRECTS) {
+    app.get(redirect.from, (_req, res) => {
+      res.redirect(301, redirect.to);
+    });
+  }
+
+  app.get(/^\/blog\/.+$/, (_req, res) => {
+    res.redirect(301, "/journal");
+  });
+
+  app.get(/^\/portfolio\/.+$/, (_req, res) => {
+    res.redirect(301, "/");
+  });
+
   app.get("/api/admin/session", async (req, res) => {
     if (isProjectSanityConfigured()) {
       return res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
@@ -143,14 +183,14 @@ export async function registerRoutes(
       if (isProjectSanityConfigured()) {
         const { featured } = req.query;
         const data = await fetchProjectsFromSanity({ featured: featured === "true" });
-        return res.json(data);
+        return res.json(data.map((project) => normalizeProjectFacetsForApi(project)));
       }
 
       const { featured } = req.query;
       const data = featured === "true"
         ? await storage.getFeaturedProjects()
         : await storage.getAllProjects();
-      res.json(data);
+      res.json(data.map((project) => normalizeProjectFacetsForApi(project)));
     } catch (err) {
       console.error("Failed to fetch projects:", err);
       res.status(500).json({ error: "Failed to fetch projects" });
@@ -163,14 +203,14 @@ export async function registerRoutes(
       if (isProjectSanityConfigured()) {
         const project = await fetchProjectBySlugOrIdFromSanity(slugOrId);
         if (!project) return res.status(404).json({ error: "Project not found" });
-        return res.json(project);
+        return res.json(normalizeProjectFacetsForApi(project));
       }
 
       const project =
         await storage.getProjectBySlug(slugOrId) ??
         await storage.getProjectById(slugOrId);
       if (!project) return res.status(404).json({ error: "Project not found" });
-      res.json(project);
+      res.json(normalizeProjectFacetsForApi(project));
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch project" });
     }
@@ -281,8 +321,14 @@ export async function registerRoutes(
         [
           "/",
           "/about",
+          "/contact",
           "/services",
-          "/work",
+          "/hospitality-branding",
+          "/cpg-branding",
+          "/wellness-branding",
+          "/saas-branding",
+          "/brand-strategy",
+          "/how-we-work",
           "/journal",
           "/privacy",
           "/terms",

@@ -69,6 +69,34 @@ export default function AtlaContact() {
               right now, and what has to happen next. That gives us enough context to tell you whether the right next
               move is a brand audit, a full identity engagement, a digital reset, or a narrower decision first.
             </p>
+            <section className="sr-only" aria-label="Contact details and process">
+              <h2>How to start a project with Atla</h2>
+              <p>
+                Atla works with founders and leadership teams who need one integrated approach across brand strategy,
+                identity design, packaging, and digital execution. Most conversations start with a short project brief
+                that includes your current stage, the key business objective, and any deadlines that shape scope.
+              </p>
+              <p>
+                If your team is deciding between repositioning, a new identity system, a website redesign, or launch
+                support, include that context in your first message. We review inquiries directly and respond with the
+                next recommended step, including the right conversation format, likely workstream, and the inputs
+                required to move quickly.
+              </p>
+              <p>
+                Contact can be initiated by email at hello@atla.studio or through the command center inside the site,
+                where visitors can draft a brief, ask questions, or share a project link. The goal is to reduce
+                friction and get from inquiry to clear direction as fast as possible.
+              </p>
+              <p>
+                Typical kickoff information includes budget range, internal approval flow, launch milestones, current
+                brand constraints, and whether support is needed across packaging, website, messaging, or campaign
+                rollout. Sharing this in the first note improves speed and recommendation quality.
+              </p>
+              <p>
+                When timing is tight, we can prioritize the smallest sequence of decisions that unlocks momentum
+                first, then expand scope with less risk.
+              </p>
+            </section>
           </div>
         </main>
       </div>

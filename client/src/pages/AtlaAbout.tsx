@@ -4,7 +4,12 @@ import { AtlaSymbol } from "@/components/atla/AtlaMarks";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
-import { formatMetaTitle } from "@shared/siteSeo";
+import {
+  formatMetaTitle,
+  ORGANIZATION_LOGO_URL,
+  ORGANIZATION_NAME,
+  SITE_ORIGIN,
+} from "@shared/siteSeo";
 
 const LF_REG18: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -91,6 +96,19 @@ const CLIENTS = [
 export default function AtlaAbout() {
   const isMobile = useIsMobile();
   const heroDimensions = getImageDimensions("/figmaAssets/about-hero.jpg");
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: ORGANIZATION_NAME,
+    url: SITE_ORIGIN,
+    logo: ORGANIZATION_LOGO_URL,
+    sameAs: [
+      "https://www.instagram.com/atla.studio",
+      "https://www.behance.net/atla",
+      "https://www.linkedin.com",
+    ],
+    areaServed: ["United States", "Latin America"],
+  };
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
@@ -99,6 +117,7 @@ export default function AtlaAbout() {
         description="Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America."
         pathname="/about"
         image="/figmaAssets/about-hero.jpg"
+        structuredData={organizationSchema}
       />
       <div className="atla-dark-surface">
       <div
@@ -203,6 +222,46 @@ export default function AtlaAbout() {
                 but durable across product, packaging, websites, launch materials, and the day-to-day decisions a
                 growing company has to make.
               </p>
+              <p style={{ ...LF_REG18, marginTop: 18 }}>
+                For the full method, read{" "}
+                <a href="/how-we-work" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  how we work
+                </a>{" "}
+                and the{" "}
+                <a href="/brand-strategy" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  brand strategy framework
+                </a>
+                . Category entry points are available via{" "}
+                <a href="/hospitality-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  hospitality
+                </a>
+                ,{" "}
+                <a href="/cpg-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  CPG
+                </a>
+                ,{" "}
+                <a href="/wellness-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  wellness
+                </a>
+                , and{" "}
+                <a href="/saas-branding" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                  SaaS branding
+                </a>
+                .
+              </p>
+              <section className="sr-only" aria-label="About Atla detailed context">
+                <h2>Studio operating model</h2>
+                <p>
+                  Atla keeps teams intentionally small so every engagement stays senior-led from strategy through
+                  implementation. We prioritize clear decision frameworks, practical documentation, and identity systems
+                  that scale across channels without drifting in tone, quality, or recognition over time.
+                </p>
+                <p>
+                  Our process is designed for companies moving fast: align on positioning, define the visual and verbal
+                  system, and execute launch-ready deliverables that can be operated by internal teams after handoff.
+                  This balance of rigor and speed is the core of how we work.
+                </p>
+              </section>
             </div>
           </div>
         </div>

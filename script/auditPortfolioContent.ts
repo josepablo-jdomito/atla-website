@@ -11,6 +11,9 @@ type ApiProject = {
   coverImage?: unknown;
   images?: unknown;
   body?: unknown;
+  description?: unknown;
+  projectDescription?: unknown;
+  summary?: unknown;
   tags?: unknown;
   year?: unknown;
   category?: unknown;
@@ -66,7 +69,7 @@ async function fetchPortfolioProjectAuditFromApi(
     const missing = {
       coverImage: !isNonEmptyString(project.coverImage),
       galleryImages: gallery.length === 0,
-      bodyText: !hasBodyContent(project.body),
+      bodyText: !hasNarrativeContent(project),
       tags: tags.length === 0,
       year: !hasYearValue(project.year),
       category: !isNonEmptyString(project.category),
@@ -183,6 +186,14 @@ function hasBodyContent(value: unknown) {
         child.text.trim().length > 0,
       );
     });
+  });
+}
+
+function hasNarrativeContent(project: ApiProject) {
+  if (hasBodyContent(project.body)) return true;
+
+  return [project.description, project.projectDescription, project.summary].some((value) => {
+    return typeof value === "string" && value.trim().length > 0;
   });
 }
 

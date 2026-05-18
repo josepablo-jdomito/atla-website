@@ -79,6 +79,22 @@ export const journalArticleType = defineType({
       validation: (rule) => rule.required().max(220),
     }),
     defineField({
+      name: "heroImage",
+      title: "Hero image",
+      type: "image",
+      group: "editorial",
+      options: { hotspot: true },
+      description: "Primary visual used in the top hero section on the journal page.",
+    }),
+    defineField({
+      name: "coverImage",
+      title: "Cover image",
+      type: "image",
+      group: "editorial",
+      options: { hotspot: true },
+      description: "Card image used in journal listings and SEO/social previews.",
+    }),
+    defineField({
       name: "body",
       title: "Body",
       type: "array",

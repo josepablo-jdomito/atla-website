@@ -11,10 +11,12 @@ Every published portfolio entry should include these fields:
 - `client`
 - `year`
 - `category` or `category->title`
+- `region`
 - `description`
 - `body` or `content` with real text content
 - `coverImage` or one of the supported image aliases
 - `gallery`, `images`, or `galleryImages` with at least one image
+- optional `vimeoVideos[]` for project-page embeds
 - `tags` or `keywords` with at least one value
 - `status` set to `published` when the entry should appear on the site
 
@@ -26,12 +28,14 @@ The current bridge in [projectService.ts](/Users/josepablo/.codex/worktrees/74cd
 - Client: `client`, `clientName`, `brand`
 - Year: `year`
 - Category: `category->title`, `category`, `projectType`, `discipline`
+- Region: `region`, `location`, `market`
 - Tags: `tags`, `keywords`
 - Description: `description`, `excerpt`, `summary`
 - Body: `body`, `content`
 - Featured flag: `featured`, `featuredOnHomepage`
 - Cover image: `coverImage`, `mainImage`, `heroImage`, `thumbnail`
 - Gallery images: `gallery`, `images`, `galleryImages`
+- Vimeo videos: `vimeoVideos`, `videos`
 
 ## Why These Fields Matter
 

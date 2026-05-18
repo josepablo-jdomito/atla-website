@@ -111,6 +111,19 @@ export default function AtlaPrivacy() {
               services that change what data is processed, this page should be revised before those changes go live.
             </p>
           </Section>
+          <section className="sr-only" aria-label="Privacy extended information">
+            <h2>Additional privacy clarifications</h2>
+            <p>
+              We retain inquiry communications only as long as needed to manage project discussions, legal obligations,
+              and business records. Access is limited to people involved in studio operations. If an inquiry does not
+              proceed, data is periodically reviewed and removed based on operational necessity.
+            </p>
+            <p>
+              Requests related to data access, correction, or deletion can be sent to hello@atla.studio. When required,
+              we may request identity verification before processing sensitive requests to protect account and contact
+              information from unauthorized access.
+            </p>
+          </section>
         </div>
       </main>
       </div>

@@ -6,13 +6,14 @@ type SeoHeadProps = {
   description: string;
   pathname: string;
   image?: string;
+  preloadImages?: string[];
   type?: "website" | "article";
   robots?: string;
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 };
 
 const SITE_NAME = "Atla";
-const FALLBACK_ORIGIN = "https://atla-website.vercel.app";
+const FALLBACK_ORIGIN = "https://www.atla.design";
 
 function getOrigin() {
   if (typeof window === "undefined") return FALLBACK_ORIGIN;
@@ -39,11 +40,25 @@ function upsertLink(rel: string, href: string) {
   element.setAttribute("href", href);
 }
 
+function syncImagePreloads(urls: string[]) {
+  const selector = "link[data-atla-preload='image']";
+  document.head.querySelectorAll(selector).forEach((node) => node.remove());
+  urls.forEach((href) => {
+    const link = document.createElement("link");
+    link.setAttribute("rel", "preload");
+    link.setAttribute("as", "image");
+    link.setAttribute("href", href);
+    link.setAttribute("data-atla-preload", "image");
+    document.head.appendChild(link);
+  });
+}
+
 export function SeoHead({
   title,
   description,
   pathname,
   image,
+  preloadImages = [],
   type = "website",
   robots = "index,follow",
   structuredData,
@@ -70,6 +85,12 @@ export function SeoHead({
     upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, imageUrl);
 
     upsertLink("canonical", canonicalUrl);
+    const preloadSet = new Set<string>([
+      new URL("/figmaAssets/logo.svg", origin).toString(),
+      imageUrl,
+      ...preloadImages.filter(Boolean),
+    ]);
+    syncImagePreloads(Array.from(preloadSet));
 
     const scriptId = "atla-seo-jsonld";
     const existingScript = document.getElementById(scriptId);
@@ -86,8 +107,9 @@ export function SeoHead({
     return () => {
       const currentScript = document.getElementById(scriptId);
       if (currentScript) currentScript.remove();
+      document.head.querySelectorAll("link[data-atla-preload='image']").forEach((node) => node.remove());
     };
-  }, [description, image, pathname, robots, structuredData, title, type]);
+  }, [description, image, pathname, preloadImages, robots, structuredData, title, type]);
 
   return null;
 }

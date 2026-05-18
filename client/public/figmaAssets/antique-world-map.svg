@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1200" role="img" aria-label="Antique world map">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f3e8d0"/>
+      <stop offset="48%" stop-color="#e7d5af"/>
+      <stop offset="100%" stop-color="#d5bc8f"/>
+    </linearGradient>
+    <radialGradient id="wash" cx="50%" cy="48%" r="68%">
+      <stop offset="0%" stop-color="#fff4de" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#a57e48" stop-opacity=".10"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0 .03 .05"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="2000" height="1200" fill="url(#paper)"/>
+  <rect width="2000" height="1200" fill="url(#wash)"/>
+  <rect width="2000" height="1200" filter="url(#grain)" opacity=".34"/>
+
+  <g stroke="#6f4c24" stroke-opacity=".35" fill="none">
+    <rect x="24" y="24" width="1952" height="1152" stroke-width="2"/>
+    <rect x="56" y="56" width="1888" height="1088" stroke-width="1.5"/>
+    <line x1="1000" y1="56" x2="1000" y2="1144" stroke-width="1.2"/>
+    <line x1="56" y1="600" x2="1944" y2="600" stroke-width="1.2"/>
+  </g>
+
+  <g stroke="#8a6739" stroke-opacity=".35" fill="none">
+    <circle cx="520" cy="600" r="360" stroke-width="2"/>
+    <circle cx="1480" cy="600" r="360" stroke-width="2"/>
+    <circle cx="520" cy="600" r="280" stroke-width="1"/>
+    <circle cx="1480" cy="600" r="280" stroke-width="1"/>
+    <circle cx="520" cy="600" r="180" stroke-width="1"/>
+    <circle cx="1480" cy="600" r="180" stroke-width="1"/>
+    <path d="M160 600h720"/>
+    <path d="M1120 600h720"/>
+    <path d="M520 240v720"/>
+    <path d="M1480 240v720"/>
+    <path d="M224 420c136 80 456 80 592 0"/>
+    <path d="M224 780c136-80 456-80 592 0"/>
+    <path d="M1184 420c136 80 456 80 592 0"/>
+    <path d="M1184 780c136-80 456-80 592 0"/>
+    <path d="M220 600c124-132 476-132 600 0"/>
+    <path d="M220 600c124 132 476 132 600 0"/>
+    <path d="M1180 600c124-132 476-132 600 0"/>
+    <path d="M1180 600c124 132 476 132 600 0"/>
+  </g>
+
+  <g fill="#927149" fill-opacity=".36" stroke="#5d3f1d" stroke-opacity=".5" stroke-width="2.2">
+    <path d="M318 432l48-56 110-40 112 8 58 42 34 60-20 72-52 42-42 48-18 56-38 14-42-38-10-52-52-42-48-10-20-58z"/>
+    <path d="M504 624l46 26 38 54-10 68-36 84-42 42-26-36 4-64-26-38-26-66 18-54z"/>
+    <path d="M656 852l30 42 20 88-20 76-30 34-14-54 6-82-20-40z"/>
+    <path d="M1272 400l118-28 126 18 66 46-4 44-72 30-104 2-50 22-12 42 42 22 98-2 74 36 18 54-40 50-104 34-104-12-50-70-30-8-26 44 18 70-46 34-54-32-4-92-52-20-64-78 6-68 54-42 110-10z"/>
+    <path d="M1336 732l58 18 22 50-18 66-42 54-28-8-22-56 10-64z"/>
+    <path d="M1670 844l48 10 48 34 6 42-48 22-60-10-34-34 10-42z"/>
+    <path d="M1454 910l32 20 30 40-10 34-40 14-26-20-10-38z"/>
+  </g>
+
+  <g stroke="#7b5930" stroke-opacity=".24" fill="none" stroke-width="1.5">
+    <path d="M332 388c54 60 208 108 332 124"/>
+    <path d="M470 716c24 56 54 106 112 168"/>
+    <path d="M1268 424c78 74 256 124 372 132"/>
+    <path d="M1322 838c62-18 150-18 242 0"/>
+  </g>
+
+  <g fill="none" stroke="#6b4923" stroke-opacity=".35">
+    <circle cx="183" cy="152" r="46" stroke-width="2"/>
+    <circle cx="1817" cy="152" r="46" stroke-width="2"/>
+    <circle cx="1000" cy="126" r="56" stroke-width="2"/>
+    <path d="M183 106v92M137 152h92M1000 70v112M944 126h112M1817 106v92M1771 152h92"/>
+  </g>
+
+  <g fill="#6a4721" fill-opacity=".55" font-family="Georgia, serif">
+    <text x="368" y="258" font-size="16" letter-spacing="8">OCCIDENTAL HEMISPHERE</text>
+    <text x="1286" y="258" font-size="16" letter-spacing="8">ORIENTAL HEMISPHERE</text>
+    <text x="940" y="1130" font-size="15" letter-spacing="6">ATLA CARTOGRAPHIC VIEW</text>
+  </g>
+</svg>

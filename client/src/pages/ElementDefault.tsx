@@ -206,12 +206,12 @@ export const ElementDefault = (): JSX.Element => {
                   const optimizedSrc =
                     getOptimizedImageUrl(src, {
                       width: slot.width * 2,
-                      quality: index === 2 ? 84 : 78,
+                      quality: index === 2 ? 92 : 90,
                     }) || src;
                   const srcSet = buildImageSrcSet(
                     src,
                     [slot.width, slot.width * 1.5, slot.width * 2],
-                    { quality: index === 2 ? 84 : 78 },
+                    { quality: index === 2 ? 92 : 90 },
                   );
                   const alt = project?.title || "Atla project";
                   const slug = project?.slug;

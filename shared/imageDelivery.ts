@@ -7,6 +7,7 @@ type ImageDeliveryOptions = {
 };
 
 const SANITY_IMAGE_HOST = "cdn.sanity.io";
+const LOCAL_IMAGE_PREFIX = "/figmaAssets/";
 const LOCAL_IMAGE_DIMENSIONS: Record<string, { width: number; height: number }> = {
   "/figmaAssets/about-hero.jpg": { width: 1200, height: 810 },
   "/figmaAssets/photo-1.jpg": { width: 550, height: 550 },
@@ -14,6 +15,51 @@ const LOCAL_IMAGE_DIMENSIONS: Record<string, { width: number; height: number }> 
   "/figmaAssets/photo-3.jpg": { width: 736, height: 920 },
   "/figmaAssets/photo-4.jpg": { width: 800, height: 800 },
 };
+
+export function sanitizeImageUrl(src?: string | null) {
+  if (!src || typeof src !== "string") return null;
+
+  const trimmed = src.trim();
+  if (!trimmed) return null;
+  if (/^javascript:/i.test(trimmed)) return null;
+  if (/^data:/i.test(trimmed)) return null;
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith("//")) {
+    return `https:${trimmed}`;
+  }
+
+  if (trimmed.startsWith(`${SANITY_IMAGE_HOST}/`)) {
+    return `https://${trimmed}`;
+  }
+
+  if (trimmed.startsWith(LOCAL_IMAGE_PREFIX) || trimmed.startsWith("/")) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith("figmaAssets/")) {
+    return `/${trimmed}`;
+  }
+
+  return null;
+}
+
+export function sanitizeImageUrls(sources: Array<string | null | undefined>) {
+  const normalized: string[] = [];
+  const seen = new Set<string>();
+
+  for (const source of sources) {
+    const value = sanitizeImageUrl(source);
+    if (!value || seen.has(value)) continue;
+    seen.add(value);
+    normalized.push(value);
+  }
+
+  return normalized;
+}
 
 function roundDimension(value?: number) {
   if (!value || !Number.isFinite(value)) return undefined;
@@ -24,7 +70,7 @@ export function isSanityImageUrl(src?: string | null) {
   if (!src) return false;
 
   try {
-    return new URL(src, "https://atla-website.vercel.app").hostname === SANITY_IMAGE_HOST;
+    return new URL(src, "https://www.atla.design").hostname === SANITY_IMAGE_HOST;
   } catch {
     return false;
   }
@@ -35,7 +81,7 @@ export function getOptimizedImageUrl(
   {
     width,
     height,
-    quality = 82,
+    quality = 92,
     fit = "max",
     autoFormat = true,
   }: ImageDeliveryOptions = {},
@@ -98,7 +144,7 @@ export function getImageDimensions(src?: string | null) {
   let normalizedSrc = src;
 
   try {
-    normalizedSrc = new URL(src, "https://atla-website.vercel.app").pathname;
+    normalizedSrc = new URL(src, "https://www.atla.design").pathname;
   } catch {
     normalizedSrc = src;
   }
