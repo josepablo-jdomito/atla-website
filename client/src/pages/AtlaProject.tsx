@@ -12,7 +12,7 @@ import { formatMetaTitle, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_ORIGIN 
 
 const LABEL: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
+  fontSize: 10,
   fontWeight: 600,
   letterSpacing: 0.4,
   lineHeight: "1.2",
@@ -22,16 +22,24 @@ const LABEL: React.CSSProperties = {
 
 const BODY: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 13,
+  fontSize: 12,
   fontWeight: 500,
   letterSpacing: 0,
-  lineHeight: "1.3",
+  lineHeight: "1.1",
   margin: 0,
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+  minWidth: 0,
+  maxWidth: "100%",
+  whiteSpace: "normal",
+  boxSizing: "border-box",
 };
 const SURFACE_PREFERENCE_STORAGE_KEY = "atla-surface-preference-v1";
-const PROJECT_PAGE_GUTTER_DESKTOP = 8;
-const PROJECT_PAGE_GUTTER_MOBILE = 6;
-const PROJECT_TEXT_MAX_WIDTH = 1280;
+const PROJECT_PAGE_GUTTER_DESKTOP = 12;
+const PROJECT_PAGE_GUTTER_MOBILE = 20;
+const PROJECT_CANVAS_MAX_WIDTH = 896;
+const PROJECT_MEDIA_MAX_WIDTH = 872;
+const PROJECT_TEXT_MAX_WIDTH = 810;
 const MOBILE_TOUCH_TARGET = 44;
 
 type ProjectApi = Project & {
@@ -131,6 +139,183 @@ const PROJECT_BLOG_CASE_STUDIES: Record<string, ProjectRelatedLink> = {
     label: "Read brand strategy vs brand identity",
   },
 };
+
+type ProjectMediaTileSpec = {
+  aspectRatio: string;
+  weight?: number;
+};
+
+type ProjectMediaRowSpec = {
+  tiles: ProjectMediaTileSpec[];
+  gap?: number;
+};
+
+type ProjectGalleryItem = {
+  src: string;
+  sourceIndex: number;
+};
+
+const mediaTile = (width: number, height: number): ProjectMediaTileSpec => ({
+  aspectRatio: `${width} / ${height}`,
+  weight: width,
+});
+
+const mediaRow = (tiles: ProjectMediaTileSpec[], gap = 10): ProjectMediaRowSpec => ({
+  tiles,
+  gap,
+});
+
+const mediaFull = (width: number, height: number) => mediaRow([mediaTile(width, height)]);
+const mediaSplit = (left: [number, number], right: [number, number], gap = 10) => (
+  mediaRow([mediaTile(left[0], left[1]), mediaTile(right[0], right[1])], gap)
+);
+
+const FIGMA_PROJECT_MEDIA_ROWS = {
+  common: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870.462, 558.858),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(870.462, 515.266),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(869, 552.14),
+  ],
+  rustico: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaSplit([393.253, 563.932], [470.059, 563.932]),
+    mediaFull(870.462, 558.858),
+    mediaSplit([353.582, 585.613], [502.119, 585.613]),
+    mediaFull(870.462, 515.266),
+    mediaFull(871.154, 525.184),
+    mediaSplit([372.956, 525.875], [490.817, 525.875]),
+    mediaFull(870.462, 377.8),
+  ],
+  tequila: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(871.77, 459.469),
+    mediaSplit([425, 553], [425, 553]),
+    mediaFull(871.77, 586),
+    mediaSplit([426, 586], [430, 586]),
+    mediaFull(871.77, 537),
+  ],
+  anything: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870.462, 558.858),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(869, 586),
+    mediaFull(870.462, 515.266),
+    mediaSplit([428, 572], [428, 572]),
+  ],
+  vyv: [
+    mediaSplit([465.215, 593.455], [396, 594]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870.462, 558.858),
+    mediaSplit([299, 586], [554, 586]),
+    mediaFull(869, 586),
+    mediaFull(867, 489),
+    mediaSplit([428, 572], [428, 572]),
+  ],
+  casaColora: [
+    mediaSplit([465.215, 593.455], [409.256, 610.072]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870.462, 558.858),
+    mediaSplit([377, 586], [484, 586]),
+    mediaFull(869, 586),
+    mediaFull(867, 489),
+    mediaFull(870.462, 515.266),
+    mediaFull(870.462, 442.612),
+  ],
+  arcStudio: [
+    mediaSplit([416, 593], [444, 593]),
+    mediaFull(870.462, 442.612),
+    mediaFull(869, 557),
+    mediaSplit([377, 586], [484, 586]),
+    mediaFull(869, 586),
+    mediaFull(869, 515),
+    mediaFull(869, 488.812),
+  ],
+  bondBloom: [
+    mediaSplit([465.215, 593.455], [400, 599.368]),
+    mediaFull(866, 444),
+    mediaFull(870.462, 558.858),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(869, 579.333),
+    mediaFull(870.462, 515.266),
+    mediaFull(869, 488.812),
+  ],
+  huemac: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaFull(869, 586),
+    mediaFull(870.462, 515.266),
+    mediaFull(869, 537),
+  ],
+  peachyPatients: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870, 225),
+    mediaFull(869, 586),
+    mediaFull(869, 586),
+  ],
+  boviHealth: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(870.462, 442.612),
+    mediaFull(870.462, 558.858),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(869, 299),
+  ],
+  persona: [
+    mediaSplit([465.215, 593.455], [395.714, 593.57]),
+    mediaFull(871, 443),
+    mediaFull(870.462, 558.858),
+    mediaSplit([430, 586], [430, 586]),
+    mediaFull(869, 586),
+  ],
+  pathizeHealth: [
+    mediaSplit([465.215, 593.455], [396, 593.57]),
+    mediaFull(870.462, 558.858),
+    mediaFull(869, 586),
+  ],
+} satisfies Record<string, ProjectMediaRowSpec[]>;
+
+const PROJECT_MEDIA_ROW_PRESETS: Record<string, ProjectMediaRowSpec[]> = {
+  rustico: FIGMA_PROJECT_MEDIA_ROWS.rustico,
+  baristio: FIGMA_PROJECT_MEDIA_ROWS.common,
+  reggie: FIGMA_PROJECT_MEDIA_ROWS.common,
+  "tequila-unido": FIGMA_PROJECT_MEDIA_ROWS.tequila,
+  anything: FIGMA_PROJECT_MEDIA_ROWS.anything,
+  "anything-ai": FIGMA_PROJECT_MEDIA_ROWS.anything,
+  vyv: FIGMA_PROJECT_MEDIA_ROWS.vyv,
+  "casa-colora": FIGMA_PROJECT_MEDIA_ROWS.casaColora,
+  "arc-studio": FIGMA_PROJECT_MEDIA_ROWS.arcStudio,
+  "bond-and-bloom": FIGMA_PROJECT_MEDIA_ROWS.bondBloom,
+  "bond-bloom": FIGMA_PROJECT_MEDIA_ROWS.bondBloom,
+  huemac: FIGMA_PROJECT_MEDIA_ROWS.huemac,
+  "peachy-patients": FIGMA_PROJECT_MEDIA_ROWS.peachyPatients,
+  "bovi-health": FIGMA_PROJECT_MEDIA_ROWS.boviHealth,
+  persona: FIGMA_PROJECT_MEDIA_ROWS.persona,
+  "pathize-health": FIGMA_PROJECT_MEDIA_ROWS.pathizeHealth,
+};
+
+function normalizeProjectKey(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getProjectMediaRows(project: ProjectPageView) {
+  return (
+    PROJECT_MEDIA_ROW_PRESETS[normalizeProjectKey(project.slug)] ||
+    PROJECT_MEDIA_ROW_PRESETS[normalizeProjectKey(project.title)] ||
+    FIGMA_PROJECT_MEDIA_ROWS.common
+  );
+}
 
 function inferVerticalFromProject(project: ProjectPageView): ProjectRelatedLink {
   const direct = PROJECT_VERTICAL_OVERRIDES[project.slug];
@@ -308,6 +493,121 @@ function buildProjectMetaDescription(project: ProjectPageView) {
   return fallback.slice(0, 155);
 }
 
+function ProjectMediaMosaic({
+  rows,
+  items,
+  projectTitle,
+  isMobile,
+  isSurfaceDark,
+  onOpen,
+  onImageError,
+}: {
+  rows: ProjectMediaRowSpec[];
+  items: ProjectGalleryItem[];
+  projectTitle: string;
+  isMobile: boolean;
+  isSurfaceDark: boolean;
+  onOpen: (sourceIndex: number) => void;
+  onImageError: (event: SyntheticEvent<HTMLImageElement>) => void;
+}) {
+  let itemIndex = 0;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: PROJECT_MEDIA_MAX_WIDTH,
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: isMobile ? 2 : 10,
+        padding: isMobile ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px` : 0,
+        boxSizing: "border-box",
+      }}
+    >
+      {rows.map((row, rowIndex) => {
+        const rowTiles = row.tiles
+          .map((tile) => {
+            const item = items[itemIndex];
+            itemIndex += 1;
+            return item ? { tile, item } : null;
+          })
+          .filter((tile): tile is { tile: ProjectMediaTileSpec; item: ProjectGalleryItem } => Boolean(tile));
+
+        if (rowTiles.length === 0) return null;
+
+        return (
+          <div
+            key={`row-${rowIndex}`}
+            style={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              gap: isMobile ? 2 : row.gap ?? 10,
+              width: "100%",
+            }}
+          >
+            {rowTiles.map(({ tile, item }) => {
+              const imageDimensions = getImageDimensions(item.src);
+              const isFullWidthTile = rowTiles.length === 1;
+              const targetWidth = isMobile
+                ? 1400
+                : isFullWidthTile
+                  ? 2200
+                  : Math.max(1200, Math.round((tile.weight ?? PROJECT_MEDIA_MAX_WIDTH) * 2.2));
+              const optimizedSrc = getOptimizedImageUrl(item.src, { width: targetWidth, quality: 92 }) || item.src;
+              const srcSet = buildImageSrcSet(
+                item.src,
+                [Math.round(targetWidth * 0.5), Math.round(targetWidth * 0.75), targetWidth],
+                { quality: 92 },
+              );
+              const imageAlt = `${projectTitle} project image ${item.sourceIndex + 1}`;
+
+              return (
+                <button
+                  key={`${item.src}-${item.sourceIndex}`}
+                  type="button"
+                  onClick={() => onOpen(item.sourceIndex)}
+                  aria-label={`Open ${imageAlt} in fullscreen`}
+                  style={{
+                    border: "none",
+                    backgroundColor: isSurfaceDark ? "#0f0f0f" : "#ececec",
+                    padding: 0,
+                    margin: 0,
+                    cursor: "zoom-in",
+                    overflow: "hidden",
+                    flex: isMobile ? "1 1 auto" : `${tile.weight ?? 1} ${tile.weight ?? 1} 0`,
+                    minWidth: 0,
+                  }}
+                >
+                  <img
+                    src={optimizedSrc}
+                    srcSet={srcSet}
+                    sizes={isMobile ? "100vw" : isFullWidthTile ? "872px" : "50vw"}
+                    alt={imageAlt}
+                    width={imageDimensions?.width}
+                    height={imageDimensions?.height}
+                    loading={item.sourceIndex <= 3 ? "eager" : "lazy"}
+                    fetchPriority={item.sourceIndex <= 3 ? "high" : undefined}
+                    decoding="async"
+                    onError={onImageError}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "block",
+                      objectFit: "cover",
+                      aspectRatio: tile.aspectRatio,
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AtlaProject() {
   const [, params] = useRoute("/projects/:slug");
   const slug = params?.slug ?? "";
@@ -411,9 +711,7 @@ export default function AtlaProject() {
   }
 
   const heroDimensions = getImageDimensions(project.heroImage);
-  const heroAspectRatio = heroDimensions
-    ? `${heroDimensions.width} / ${heroDimensions.height}`
-    : "16 / 9";
+  const heroAspectRatio = isMobile ? "4 / 3" : "872 / 482";
   const heroSrc = getOptimizedImageUrl(project.heroImage, { width: isMobile ? 1200 : 2200, quality: 92 }) || project.heroImage;
   const heroSrcSet = buildImageSrcSet(project.heroImage, isMobile ? [800, 1200] : [1200, 1600, 2200], { quality: 92 });
   const projectMetaDescription = buildProjectMetaDescription(project);
@@ -427,17 +725,8 @@ export default function AtlaProject() {
       ? getOptimizedImageUrl(project.gallery[1], { width: 1400, quality: 90 }) || project.gallery[1]
       : null,
   ].filter((src): src is string => Boolean(src));
-  const orderedProjectSlugs = (allProjects ?? [])
-    .slice()
-    .sort((left, right) => left.year - right.year || left.title.localeCompare(right.title))
-    .map((item) => item.slug);
-  const projectOrdinal = Math.max(1, orderedProjectSlugs.indexOf(project.slug) + 1);
   const parsedYear = Number.parseInt(project.dateLabel, 10);
-  const projectYearToken = Number.isFinite(parsedYear)
-    ? String(Math.abs(parsedYear) % 100).padStart(2, "0")
-    : project.dateLabel.slice(-2).padStart(2, "0");
   const videoUploadDate = Number.isFinite(parsedYear) ? `${parsedYear}-01-01T00:00:00.000Z` : undefined;
-  const projectMarker = `${String(projectOrdinal).padStart(2, "0")} ${projectYearToken}`;
   const galleryStream = project.gallery
     .map((src, sourceIndex) => ({ src, sourceIndex }))
     .filter(({ src, sourceIndex }) => !(sourceIndex === 0 && src === project.heroImage));
@@ -459,6 +748,7 @@ export default function AtlaProject() {
     ? getOptimizedImageUrl(fullscreenImageSrc, { width: isMobile ? 1800 : 2800, quality: 95 }) || fullscreenImageSrc
     : null;
   const galleryTiles = galleryStream;
+  const mediaRows = getProjectMediaRows(project);
   const videoEmbeds = project.videos
     .map((videoUrl) => {
       const embedUrl = toVimeoEmbedUrl(videoUrl);
@@ -539,6 +829,7 @@ export default function AtlaProject() {
         width: "100%",
         display: "flex",
         flexDirection: "column",
+        overflowX: "hidden",
         backgroundColor: surfaceColor,
         color: primaryTextColor,
         ["--atla-text-color" as string]: primaryTextColor,
@@ -563,10 +854,10 @@ export default function AtlaProject() {
       <main style={{ width: "100%", position: "relative" }}>
           <section
             style={{
-              width: "100vw",
-              marginLeft: "calc(50% - 50vw)",
-              marginRight: "calc(50% - 50vw)",
-              padding: isMobile ? "0 0 24px" : "0 0 40px",
+              width: "100%",
+              maxWidth: PROJECT_CANVAS_MAX_WIDTH,
+              margin: "0 auto",
+              padding: isMobile ? "0 0 24px" : "11px 0 0",
             }}
           >
             <section className="sr-only" aria-label={`${project.title} case study context`}>
@@ -580,7 +871,8 @@ export default function AtlaProject() {
               aria-label={heroFullscreenLabel}
               style={{
                 position: "relative",
-                width: "100%",
+                width: isMobile ? "100%" : "calc(100% - 24px)",
+                margin: "0 auto",
                 border: "none",
                 cursor: "zoom-in",
                 display: "block",
@@ -613,24 +905,24 @@ export default function AtlaProject() {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: isMobile ? 10 : 24,
+                  gap: isMobile ? 14 : 36,
                   padding: isMobile
-                    ? `12px ${PROJECT_PAGE_GUTTER_MOBILE}px 0`
-                    : `34px ${PROJECT_PAGE_GUTTER_DESKTOP}px 0`,
-                  width: "100%",
+                    ? "20px 0 0"
+                    : `53px ${PROJECT_PAGE_GUTTER_DESKTOP}px 0`,
+                  width: isMobile ? `calc(100% - ${PROJECT_PAGE_GUTTER_MOBILE * 2}px)` : "100%",
                   maxWidth: PROJECT_TEXT_MAX_WIDTH,
                   margin: "0 auto",
+                  boxSizing: "border-box",
                 }}
               >
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 4 : 8 }}>
-                <p style={{ ...LABEL, color: "#8e8e8e" }}>{projectMarker}</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
                 <h1
                   style={{
                     fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
                     fontSize: isMobile ? 38 : 64,
                     fontWeight: 400,
-                    lineHeight: "1.02",
-                    letterSpacing: -0.3,
+                    lineHeight: "1.1",
+                    letterSpacing: 0,
                     color: primaryTextColor,
                     margin: 0,
                   }}
@@ -643,15 +935,15 @@ export default function AtlaProject() {
                 style={{
                   display: "grid",
                   gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? 10 : 32,
-                  rowGap: isMobile ? 8 : 10,
+                  columnGap: isMobile ? 10 : 36,
+                  rowGap: isMobile ? 10 : 12,
                 }}
               >
-                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8, minWidth: 0 }}>
                   <p style={{ ...LABEL, color: "#8e8e8e" }}>( Clients )</p>
                   <p style={{ ...BODY, color: primaryTextColor }}>{project.client || "Confidential"}</p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8, minWidth: 0 }}>
                   <p style={{ ...LABEL, color: "#8e8e8e" }}>( Service )</p>
                   <p style={{ ...BODY, color: primaryTextColor }}>
                     {project.services.length > 0 ? project.services.join(" · ") : "Brand Identity"}
@@ -663,7 +955,7 @@ export default function AtlaProject() {
                 style={{
                   display: "grid",
                   gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? 10 : 32,
+                  columnGap: isMobile ? 10 : 36,
                   rowGap: isMobile ? 8 : 10,
                   alignItems: "end",
                 }}
@@ -673,11 +965,12 @@ export default function AtlaProject() {
                 </p>
                 <div
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "140px 1fr",
-                    gap: isMobile ? 6 : 8,
-                  }}
-                >
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "140px 1fr",
+                  gap: isMobile ? 6 : 8,
+                  minWidth: 0,
+                }}
+              >
                   <p style={{ ...BODY, color: primaryTextColor }}>{project.country || project.region || "—"}</p>
                   <p style={{ ...BODY, color: primaryTextColor }}>{project.dateLabel}</p>
                 </div>
@@ -688,19 +981,20 @@ export default function AtlaProject() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: isMobile ? 18 : 40,
+                gap: isMobile ? 34 : 64,
                 padding: isMobile
-                  ? `18px ${PROJECT_PAGE_GUTTER_MOBILE}px 28px`
-                  : `28px ${PROJECT_PAGE_GUTTER_DESKTOP}px 84px`,
-                width: "100%",
+                  ? "34px 0 44px"
+                  : `40px 20px 120px`,
+                width: isMobile ? `calc(100% - ${PROJECT_PAGE_GUTTER_MOBILE * 2}px)` : "100%",
                 maxWidth: PROJECT_TEXT_MAX_WIDTH,
                 margin: "0 auto",
+                boxSizing: "border-box",
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 14 : 24 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 36 }}>
                 {projectNarratives.map((item) => (
                   <article key={item.label} style={{ display: "flex", flexDirection: "column", gap: isMobile ? 6 : 8 }}>
-                    <p style={{ ...LABEL, color: primaryTextColor, paddingBottom: isMobile ? 4 : 8 }}>{item.label}</p>
+                    <p style={{ ...LABEL, color: primaryTextColor, paddingBottom: isMobile ? 8 : 12 }}>{item.label}</p>
                     <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>{item.text}</p>
                   </article>
                 ))}
@@ -713,6 +1007,7 @@ export default function AtlaProject() {
                     flexDirection: "column",
                     gap: isMobile ? 8 : 10,
                     width: "100%",
+                    maxWidth: isMobile ? "100%" : 573,
                   }}
                 >
                   <p style={{ ...LABEL, color: primaryTextColor, paddingBottom: 4 }}>( Credits )</p>
@@ -727,7 +1022,7 @@ export default function AtlaProject() {
                       }}
                     >
                       <p style={{ ...BODY, color: "#8e8e8e" }}>{credit.role}</p>
-                      <p style={{ ...BODY, color: primaryTextColor, textAlign: "left", lineHeight: "1.1" }}>
+                      <p style={{ ...BODY, color: primaryTextColor, textAlign: isMobile ? "left" : "right", lineHeight: "1.1" }}>
                         {credit.names.join(", ")}
                       </p>
                     </div>
@@ -740,10 +1035,11 @@ export default function AtlaProject() {
           {uploadedVideos.length > 0 || videoEmbeds.length > 0 ? (
             <section
               style={{
-                width: "100vw",
-                marginLeft: "calc(50% - 50vw)",
-                marginRight: "calc(50% - 50vw)",
-                padding: isMobile ? "0 0 14px" : "0 0 30px",
+                width: "100%",
+                maxWidth: PROJECT_MEDIA_MAX_WIDTH,
+                margin: "0 auto",
+                padding: isMobile ? "0 10px 14px" : "0 0 30px",
+                boxSizing: "border-box",
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 10 }}>
@@ -751,9 +1047,6 @@ export default function AtlaProject() {
                   style={{
                     ...LABEL,
                     color: primaryTextColor,
-                    padding: isMobile
-                      ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px`
-                      : `0 ${PROJECT_PAGE_GUTTER_DESKTOP}px`,
                   }}
                 >
                   ( Videos )
@@ -787,11 +1080,9 @@ export default function AtlaProject() {
                     {video.caption ? (
                       <figcaption
                         style={{
-                          ...BODY,
-                          color: mutedTextColor,
-                          padding: isMobile
-                            ? `10px ${PROJECT_PAGE_GUTTER_MOBILE}px`
-                            : `4px ${PROJECT_PAGE_GUTTER_DESKTOP}px`,
+                        ...BODY,
+                        color: mutedTextColor,
+                          padding: isMobile ? "10px 0" : "4px 0",
                         }}
                       >
                         {video.caption}
@@ -836,9 +1127,7 @@ export default function AtlaProject() {
                         ...BODY,
                         color: mutedTextColor,
                         textDecoration: "none",
-                        padding: isMobile
-                          ? `10px ${PROJECT_PAGE_GUTTER_MOBILE}px`
-                          : `4px ${PROJECT_PAGE_GUTTER_DESKTOP}px`,
+                        padding: isMobile ? "10px 0" : "4px 0",
                         width: "fit-content",
                         display: "inline-flex",
                         alignItems: "center",
@@ -856,92 +1145,19 @@ export default function AtlaProject() {
           {galleryTiles.length > 0 ? (
             <section
               style={{
-                width: "100vw",
-                marginLeft: "calc(50% - 50vw)",
-                marginRight: "calc(50% - 50vw)",
+                width: "100%",
                 padding: isMobile ? "0 0 32px" : "0 0 64px",
               }}
             >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                  gap: isMobile ? 2 : 10,
-                }}
-              >
-                {galleryTiles.map(({ src, sourceIndex }, tileIndex) => {
-                  const imageDimensions = getImageDimensions(src);
-                  const tileMap = [
-                    { gridColumn: "span 1", aspectRatio: "465 / 594" },
-                    { gridColumn: "span 1", aspectRatio: "395 / 594" },
-                    { gridColumn: "1 / -1", aspectRatio: "870 / 443" },
-                    { gridColumn: "span 1", aspectRatio: "393 / 564" },
-                    { gridColumn: "span 1", aspectRatio: "470 / 564" },
-                    { gridColumn: "1 / -1", aspectRatio: "870 / 559" },
-                    { gridColumn: "span 1", aspectRatio: "400 / 623" },
-                    { gridColumn: "span 1", aspectRatio: "457 / 623" },
-                    { gridColumn: "1 / -1", aspectRatio: "870 / 515" },
-                  ] as const;
-                  const tilePreset = tileMap[tileIndex % tileMap.length];
-                  const isFullWidthTile = tilePreset.gridColumn === "1 / -1";
-                  const targetWidth = isMobile
-                    ? isFullWidthTile ? 1600 : 1200
-                    : isFullWidthTile ? 2800 : 2000;
-                  const optimizedSrc = getOptimizedImageUrl(src, { width: targetWidth, quality: 92 }) || src;
-                  const srcSet = buildImageSrcSet(
-                    src,
-                    [Math.round(targetWidth * 0.5), Math.round(targetWidth * 0.75), targetWidth],
-                    { quality: 92 },
-                  );
-                  const imageAlt = `${project.title} project image ${sourceIndex + 1}`;
-
-                  return (
-                    <button
-                      key={`${src}-${sourceIndex}`}
-                      type="button"
-                      onClick={() => setFullscreenIndex(sourceIndex)}
-                      aria-label={`Open ${imageAlt} in fullscreen`}
-                      style={{
-                        border: "none",
-                        backgroundColor: isSurfaceDark ? "#0f0f0f" : "#ececec",
-                        padding: 0,
-                        margin: 0,
-                        cursor: "zoom-in",
-                        overflow: "hidden",
-                        gridColumn: tilePreset.gridColumn,
-                      }}
-                    >
-                      <img
-                        src={optimizedSrc}
-                        srcSet={srcSet}
-                        sizes={
-                          isMobile
-                            ? isFullWidthTile
-                              ? "100vw"
-                              : "50vw"
-                            : isFullWidthTile
-                              ? "100vw"
-                              : "50vw"
-                        }
-                        alt={imageAlt}
-                        width={imageDimensions?.width}
-                        height={imageDimensions?.height}
-                        loading={sourceIndex <= 3 ? "eager" : "lazy"}
-                        fetchPriority={sourceIndex <= 3 ? "high" : undefined}
-                        decoding="async"
-                        onError={handleImageError}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          display: "block",
-                          objectFit: "cover",
-                          aspectRatio: tilePreset.aspectRatio,
-                        }}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
+              <ProjectMediaMosaic
+                rows={mediaRows}
+                items={galleryTiles}
+                projectTitle={project.title}
+                isMobile={isMobile}
+                isSurfaceDark={isSurfaceDark}
+                onOpen={setFullscreenIndex}
+                onImageError={handleImageError}
+              />
             </section>
           ) : null}
 
