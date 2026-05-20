@@ -250,6 +250,63 @@ export const projectType = defineType({
       ],
     }),
     defineField({
+      name: "videoFiles",
+      title: "Uploaded videos",
+      type: "array",
+      group: "media",
+      description:
+        "High-quality project videos uploaded as original files. Use MP4 for broad playback; add a poster image for premium loading and sharing quality.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "projectVideoFile",
+          title: "Uploaded video",
+          fields: [
+            defineField({
+              name: "file",
+              title: "Video file",
+              type: "file",
+              options: {
+                accept: "video/mp4,video/webm,video/quicktime",
+              },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "poster",
+              title: "Poster image",
+              type: "image",
+              options: { hotspot: true },
+              description: "Still frame shown before playback. Upload this at the same visual quality as portfolio images.",
+            }),
+            defineField({
+              name: "title",
+              title: "Title",
+              type: "string",
+            }),
+            defineField({
+              name: "caption",
+              title: "Caption",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              fileName: "file.asset.originalFilename",
+              media: "poster",
+            },
+            prepare(selection) {
+              return {
+                title: selection.title || selection.fileName || "Uploaded video",
+                subtitle: "Original video file",
+                media: selection.media,
+              };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: "featured",
       title: "Featured",
       type: "boolean",

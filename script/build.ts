@@ -151,20 +151,28 @@ function parseDotenv(content: string) {
 async function hydrateBuildEnvFromLocalFile() {
   if (isJournalSanityConfigured()) return;
 
-  const envPath = path.resolve(".env.vercel.local");
+  const envPaths = [
+    ".env.vercel.local",
+    ".env.vercel",
+    ".env.local",
+  ].map((fileName) => path.resolve(fileName));
 
-  try {
-    const file = await readFile(envPath, "utf8");
-    const env = parseDotenv(file);
+  for (const envPath of envPaths) {
+    if (isJournalSanityConfigured()) return;
 
-    for (const [key, value] of Object.entries(env)) {
-      if (!process.env[key]) {
-        process.env[key] = value;
+    try {
+      const file = await readFile(envPath, "utf8");
+      const env = parseDotenv(file);
+
+      for (const [key, value] of Object.entries(env)) {
+        if (!process.env[key]) {
+          process.env[key] = value;
+        }
       }
+    } catch (error) {
+      const notFound = error instanceof Error && "code" in error && error.code === "ENOENT";
+      if (!notFound) throw error;
     }
-  } catch (error) {
-    const notFound = error instanceof Error && "code" in error && error.code === "ENOENT";
-    if (!notFound) throw error;
   }
 }
 

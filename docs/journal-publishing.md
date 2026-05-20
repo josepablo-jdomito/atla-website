@@ -23,10 +23,10 @@ Once at least one article is published in Sanity, the journal switches to the Sa
 
 The journal schema lives in:
 
-- [journalArticle.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/journalArticle.ts)
-- [author.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/author.ts)
-- [category.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/category.ts)
-- [seoSettings.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/seoSettings.ts)
+- [journalArticle.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/journalArticle.ts)
+- [author.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/author.ts)
+- [category.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/category.ts)
+- [seoSettings.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/seoSettings.ts)
 
 For a journal article to appear on the site, it should have:
 
@@ -117,7 +117,7 @@ The hook and webhook still need to be created in their dashboards; they are not 
 
 ## Relevant Files
 
-- [journalService.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/server/sanity/journalService.ts)
-- [build.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/script/build.ts)
-- [auditJournalContent.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/script/auditJournalContent.ts)
-- [seedJournalSanity.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/script/seedJournalSanity.ts)
+- [journalService.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/server/sanity/journalService.ts)
+- [build.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/script/build.ts)
+- [auditJournalContent.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/script/auditJournalContent.ts)
+- [seedJournalSanity.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/script/seedJournalSanity.ts)

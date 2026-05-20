@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import type { Project } from "@shared/schema";
+import type { Project, ProjectVideoAsset } from "@shared/schema";
 import { trackEvent } from "@/hooks/use-analytics";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -37,6 +37,7 @@ const MOBILE_TOUCH_TARGET = 44;
 type ProjectApi = Project & {
   country?: string | null;
   locationName?: string | null;
+  videoFiles?: ProjectVideoAsset[];
 };
 
 function hexToRgb(hex: string) {
@@ -89,6 +90,7 @@ type ProjectPageView = {
   storyImage?: string;
   gallery: string[];
   videos: string[];
+  videoFiles: ProjectVideoAsset[];
   credits: Array<{ role: string; names: string[] }>;
   related: Array<{ slug: string; title: string; date: string }>;
 };
@@ -199,6 +201,37 @@ function toVimeoWatchUrl(embedUrl: string) {
   return `https://vimeo.com/${match[1]}`;
 }
 
+function sanitizeMediaUrl(src?: string | null) {
+  if (!src || typeof src !== "string") return "";
+  const trimmed = src.trim();
+  if (!trimmed || /^javascript:/i.test(trimmed) || /^data:/i.test(trimmed)) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("//")) return `https:${trimmed}`;
+  if (trimmed.startsWith("/")) return trimmed;
+  return "";
+}
+
+function normalizeProjectVideoFiles(videos?: ProjectVideoAsset[]) {
+  if (!Array.isArray(videos)) return [];
+
+  const byUrl = new Map<string, ProjectVideoAsset>();
+  for (const video of videos) {
+    const url = sanitizeMediaUrl(video.url);
+    if (!url || byUrl.has(url)) continue;
+
+    const poster = sanitizeImageUrls([video.poster])[0];
+    byUrl.set(url, {
+      url,
+      title: video.title?.trim() || undefined,
+      caption: video.caption?.trim() || undefined,
+      mimeType: video.mimeType?.trim() || undefined,
+      poster,
+    });
+  }
+
+  return Array.from(byUrl.values());
+}
+
 function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): ProjectPageView {
   const client = project.client === "Confidential" ? "" : project.client;
   const category = project.category === "Uncategorized" ? "" : project.category;
@@ -249,6 +282,7 @@ function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): P
     storyImage: project.images[1] || heroImage,
     gallery,
     videos: project.videos.filter(Boolean),
+    videoFiles: normalizeProjectVideoFiles(project.videoFiles),
     credits: [
       ...(client ? [{ role: "Client", names: [client] }] : []),
       ...(region ? [{ role: "Region", names: [region] }] : []),
@@ -435,6 +469,7 @@ export default function AtlaProject() {
       };
     })
     .filter((video): video is { embedUrl: string; watchUrl: string } => Boolean(video));
+  const uploadedVideos = project.videoFiles;
   const creativeWorkSchema = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -454,29 +489,49 @@ export default function AtlaProject() {
     },
     about: [project.category, project.client, project.region, ...project.services].filter(Boolean),
   };
-  const videoStructuredData = videoEmbeds.map((video, index) => ({
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    name: `${project.title} video ${index + 1}`,
-    description: `${project.title} case study video ${index + 1} from Atla.`,
-    mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
-    embedUrl: video.embedUrl,
-    contentUrl: video.watchUrl,
-    url: video.watchUrl,
-    thumbnailUrl: project.gallery[index] || project.heroImage,
-    uploadDate: videoUploadDate,
-    inLanguage: "en",
-    isFamilyFriendly: true,
-    publisher: {
-      "@type": "Organization",
-      name: ORGANIZATION_NAME,
-      url: SITE_ORIGIN,
-      logo: {
-        "@type": "ImageObject",
-        url: ORGANIZATION_LOGO_URL,
-      },
+  const videoPublisherSchema = {
+    "@type": "Organization",
+    name: ORGANIZATION_NAME,
+    url: SITE_ORIGIN,
+    logo: {
+      "@type": "ImageObject",
+      url: ORGANIZATION_LOGO_URL,
     },
-  }));
+  };
+  const videoStructuredData = [
+    ...uploadedVideos.map((video, index) => ({
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      name: video.title || `${project.title} video ${index + 1}`,
+      description: video.caption || `${project.title} case study video ${index + 1} from Atla.`,
+      mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
+      contentUrl: video.url,
+      url: video.url,
+      thumbnailUrl: video.poster || project.gallery[index] || project.heroImage,
+      uploadDate: videoUploadDate,
+      inLanguage: "en",
+      isFamilyFriendly: true,
+      publisher: videoPublisherSchema,
+    })),
+    ...videoEmbeds.map((video, index) => {
+      const videoIndex = uploadedVideos.length + index;
+      return {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        name: `${project.title} video ${videoIndex + 1}`,
+        description: `${project.title} case study video ${videoIndex + 1} from Atla.`,
+        mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
+        embedUrl: video.embedUrl,
+        contentUrl: video.watchUrl,
+        url: video.watchUrl,
+        thumbnailUrl: project.gallery[videoIndex] || project.heroImage,
+        uploadDate: videoUploadDate,
+        inLanguage: "en",
+        isFamilyFriendly: true,
+        publisher: videoPublisherSchema,
+      };
+    }),
+  ];
 
   return (
     <div
@@ -682,7 +737,7 @@ export default function AtlaProject() {
             </section>
           </section>
 
-          {videoEmbeds.length > 0 ? (
+          {uploadedVideos.length > 0 || videoEmbeds.length > 0 ? (
             <section
               style={{
                 width: "100vw",
@@ -703,6 +758,47 @@ export default function AtlaProject() {
                 >
                   ( Videos )
                 </p>
+                {uploadedVideos.map((video, index) => (
+                  <figure
+                    key={video.url}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      margin: 0,
+                    }}
+                  >
+                    <video
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={video.poster}
+                      aria-label={video.title || `${project.title} video ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        maxHeight: "86svh",
+                        display: "block",
+                        backgroundColor: isSurfaceDark ? "#101010" : "#ececec",
+                      }}
+                    >
+                      <source src={video.url} type={video.mimeType || "video/mp4"} />
+                    </video>
+                    {video.caption ? (
+                      <figcaption
+                        style={{
+                          ...BODY,
+                          color: mutedTextColor,
+                          padding: isMobile
+                            ? `10px ${PROJECT_PAGE_GUTTER_MOBILE}px`
+                            : `4px ${PROJECT_PAGE_GUTTER_DESKTOP}px`,
+                        }}
+                      >
+                        {video.caption}
+                      </figcaption>
+                    ) : null}
+                  </figure>
+                ))}
                 {videoEmbeds.map(({ embedUrl, watchUrl }, index) => (
                   <div key={embedUrl} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <div

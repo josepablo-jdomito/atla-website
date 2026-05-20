@@ -22,7 +22,8 @@ export function log(message: string, source = "express") {
   }
 
   const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen({ port, host: "0.0.0.0", reusePort: true }, () => {
-    log(`serving on port ${port}`);
+  const host = process.env.HOST || (process.env.REPLIT_DEV_DOMAIN ? "0.0.0.0" : "127.0.0.1");
+  httpServer.listen({ port, host }, () => {
+    log(`serving on ${host}:${port}`);
   });
 })();

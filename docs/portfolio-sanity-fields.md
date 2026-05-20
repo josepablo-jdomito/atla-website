@@ -16,13 +16,14 @@ Every published portfolio entry should include these fields:
 - `body` or `content` with real text content
 - `coverImage` or one of the supported image aliases
 - `gallery`, `images`, or `galleryImages` with at least one image
+- optional `videoFiles[]` for high-quality uploaded project videos
 - optional `vimeoVideos[]` for project-page embeds
 - `tags` or `keywords` with at least one value
 - `status` set to `published` when the entry should appear on the site
 
 ## Supported Field Aliases
 
-The current bridge in [projectService.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/server/sanity/projectService.ts) accepts these aliases so the site can read the approved production dataset without changing visual output:
+The current bridge in [projectService.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/server/sanity/projectService.ts) accepts these aliases so the site can read the approved production dataset without changing visual output:
 
 - Title: `title`, `name`
 - Client: `client`, `clientName`, `brand`
@@ -35,13 +36,15 @@ The current bridge in [projectService.ts](/Users/josepablo/.codex/worktrees/74cd
 - Featured flag: `featured`, `featuredOnHomepage`
 - Cover image: `coverImage`, `mainImage`, `heroImage`, `thumbnail`
 - Gallery images: `gallery`, `images`, `galleryImages`
+- Uploaded videos: `videoFiles[]` with `file`, optional `poster`, optional `title`, optional `caption`
 - Vimeo videos: `vimeoVideos`, `videos`
 
 ## Why These Fields Matter
 
 - `/work` depends on `title`, `slug`, `client`, `year`, `category`, `description`, and `coverImage`.
 - `/projects/:slug` depends on `title`, `client`, `year`, `description`, `body`, `coverImage`, and gallery images.
-- Missing `body` is especially risky. The current project detail page falls back to the static showcase copy in [atlaContent.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/client/src/data/atlaContent.ts), which can leak unrelated approved copy into another project page.
+- `/projects/:slug` renders `videoFiles[]` as native video files first, then Vimeo embeds. Sanity keeps uploaded files as originals, so upload clean MP4 exports and pair each one with a high-quality poster image.
+- Missing `body` is especially risky. The current project detail page falls back to the static showcase copy in [atlaContent.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/client/src/data/atlaContent.ts), which can leak unrelated approved copy into another project page.
 
 ## Current Production Audit
 

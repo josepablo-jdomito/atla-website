@@ -3,11 +3,11 @@
 The live site now reads both the portfolio and the journal from Sanity.
 
 The journal schema lives in this repo. The portfolio bridge is implemented in
-[projectService.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/server/sanity/projectService.ts),
+[projectService.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/server/sanity/projectService.ts),
 and the required portfolio field contract is documented in
-[docs/portfolio-sanity-fields.md](/Users/josepablo/.codex/worktrees/74cd/New%20project/docs/portfolio-sanity-fields.md).
+[docs/portfolio-sanity-fields.md](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/docs/portfolio-sanity-fields.md).
 The journal publishing workflow is documented in
-[docs/journal-publishing.md](/Users/josepablo/.codex/worktrees/74cd/New%20project/docs/journal-publishing.md).
+[docs/journal-publishing.md](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/docs/journal-publishing.md).
 Published or scheduled journal entries can be audited locally with
 `npm run audit:journal`.
 
@@ -20,7 +20,7 @@ Environment variables used by the app:
 - `SANITY_JOURNAL_API_VERSION`
 - `SANITY_JOURNAL_READ_TOKEN` (optional for private datasets or draft reads)
 
-Register [`schemaTypes`](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/index.ts) in your Sanity Studio to create the SEO-ready journal model.
+Register [`schemaTypes`](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/index.ts) in your Sanity Studio to create the SEO-ready journal model.
 
 Document types included:
 
@@ -45,10 +45,18 @@ Recommended editorial setup:
 - one `author` per writer/editor
 - one `category` per journal taxonomy term
 
+Portfolio video setup:
+
+- use `videoFiles` when the source asset should live in Sanity as an original uploaded file
+- upload MP4 for the broadest browser support; WebM and QuickTime are accepted for editorial flexibility
+- add a `poster` image for every video so the project page loads with a crisp still frame before playback
+- keep `vimeoVideos` for existing Vimeo embeds or projects that still need Vimeo-hosted playback
+- for very long films or adaptive streaming needs, use a dedicated video pipeline such as Mux and store the playback URL in Sanity
+
 Service page migration:
 
-- schema file: [servicePage.ts](/Users/josepablo/.codex/worktrees/74cd/New%20project/sanity/schemaTypes/servicePage.ts)
-- migration script: [migrateServicePages.mjs](/Users/josepablo/.codex/worktrees/74cd/New%20project/script/migrateServicePages.mjs)
+- schema file: [servicePage.ts](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/sanity/schemaTypes/servicePage.ts)
+- migration script: [migrateServicePages.mjs](/Users/josepablo/Documents/Local%20Dev%20Projects/Atla/script/migrateServicePages.mjs)
 - run with: `SANITY_TOKEN=... npm run migrate:service-pages:sanity`
 - the script creates 13 `servicePage` documents as drafts in the `dvufm78f/production` dataset
 
@@ -103,8 +111,8 @@ Run commands:
 
 Environment variables for Studio:
 
-- `SANITY_STUDIO_PROJECT_ID` (or fallback `SANITY_PROJECT_ID`)
-- `SANITY_STUDIO_DATASET` (or fallback `SANITY_DATASET`)
+- `SANITY_STUDIO_PROJECT_ID` (or fallback `SANITY_PROJECT_ID`, `SANITY_JOURNAL_PROJECT_ID`, then `dvufm78f`)
+- `SANITY_STUDIO_DATASET` (or fallback `SANITY_DATASET`, `SANITY_JOURNAL_DATASET`, then `production`)
 
 If Studio is embedded in an iframe (e.g. Dashboard), the host serving Studio cannot use:
 
