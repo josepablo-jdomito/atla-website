@@ -27,8 +27,8 @@ const BODY: React.CSSProperties = {
   letterSpacing: 0,
   lineHeight: "1.1",
   margin: 0,
-  overflowWrap: "anywhere",
-  wordBreak: "break-word",
+  overflowWrap: "normal",
+  wordBreak: "normal",
   minWidth: 0,
   maxWidth: "100%",
   whiteSpace: "normal",
@@ -36,7 +36,7 @@ const BODY: React.CSSProperties = {
 };
 const SURFACE_PREFERENCE_STORAGE_KEY = "atla-surface-preference-v1";
 const PROJECT_PAGE_GUTTER_DESKTOP = 12;
-const PROJECT_PAGE_GUTTER_MOBILE = 20;
+const PROJECT_PAGE_GUTTER_MOBILE = 32;
 const PROJECT_CANVAS_MAX_WIDTH = 896;
 const PROJECT_MEDIA_MAX_WIDTH = 872;
 const PROJECT_TEXT_MAX_WIDTH = 810;
@@ -154,6 +154,15 @@ type ProjectGalleryItem = {
   src: string;
   sourceIndex: number;
 };
+
+const getMobileTextFrameStyle = (): React.CSSProperties => ({
+  width: "auto",
+  maxWidth: "none",
+  margin: `0 ${PROJECT_PAGE_GUTTER_MOBILE}px`,
+  boxSizing: "border-box",
+  minWidth: 0,
+  overflow: "hidden",
+});
 
 const mediaTile = (width: number, height: number): ProjectMediaTileSpec => ({
   aspectRatio: `${width} / ${height}`,
@@ -523,6 +532,7 @@ function ProjectMediaMosaic({
         gap: isMobile ? 2 : 10,
         padding: isMobile ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px` : 0,
         boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       {rows.map((row, rowIndex) => {
@@ -577,6 +587,7 @@ function ProjectMediaMosaic({
                     overflow: "hidden",
                     flex: isMobile ? "1 1 auto" : `${tile.weight ?? 1} ${tile.weight ?? 1} 0`,
                     minWidth: 0,
+                    width: isMobile ? "100%" : undefined,
                   }}
                 >
                   <img
@@ -740,6 +751,9 @@ export default function AtlaProject() {
     { label: "( The Challenge )", text: challengeNarrative },
     { label: "( The Result )", text: resultNarrative },
   ];
+  const serviceLabel = project.services.length > 0
+    ? project.services.join(isMobile ? ", " : " · ")
+    : "Brand Identity";
   const totalGalleryImages = project.gallery.length;
   const heroFullscreenLabel = `Open Fullscreen · 1/${totalGalleryImages}`;
   const fullscreenImageSrc = fullscreenIndex !== null ? project.gallery[fullscreenIndex] : null;
@@ -851,13 +865,14 @@ export default function AtlaProject() {
           }}
         />
       ) : null}
-      <main style={{ width: "100%", position: "relative" }}>
+      <main style={{ width: "100%", maxWidth: "100vw", overflowX: "hidden", position: "relative" }}>
           <section
             style={{
               width: "100%",
               maxWidth: PROJECT_CANVAS_MAX_WIDTH,
               margin: "0 auto",
               padding: isMobile ? "0 0 24px" : "11px 0 0",
+              overflow: "hidden",
             }}
           >
             <section className="sr-only" aria-label={`${project.title} case study context`}>
@@ -905,21 +920,23 @@ export default function AtlaProject() {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: isMobile ? 14 : 36,
-                  padding: isMobile
-                    ? "20px 0 0"
-                    : `53px ${PROJECT_PAGE_GUTTER_DESKTOP}px 0`,
-                  width: isMobile ? `calc(100% - ${PROJECT_PAGE_GUTTER_MOBILE * 2}px)` : "100%",
-                  maxWidth: PROJECT_TEXT_MAX_WIDTH,
-                  margin: "0 auto",
-                  boxSizing: "border-box",
+                  gap: isMobile ? 18 : 36,
+                  padding: isMobile ? "24px 0 0" : `53px ${PROJECT_PAGE_GUTTER_DESKTOP}px 0`,
+                  ...(isMobile
+                    ? getMobileTextFrameStyle()
+                    : {
+                      width: "100%",
+                      maxWidth: PROJECT_TEXT_MAX_WIDTH,
+                      margin: "0 auto",
+                      boxSizing: "border-box",
+                    }),
                 }}
               >
               <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
                 <h1
                   style={{
                     fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-                    fontSize: isMobile ? 38 : 64,
+                    fontSize: isMobile ? 42 : 64,
                     fontWeight: 400,
                     lineHeight: "1.1",
                     letterSpacing: 0,
@@ -934,9 +951,10 @@ export default function AtlaProject() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? 10 : 36,
-                  rowGap: isMobile ? 10 : 12,
+                  gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(0, 1fr))",
+                  columnGap: isMobile ? 0 : 36,
+                  rowGap: isMobile ? 14 : 12,
+                  minWidth: 0,
                 }}
               >
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8, minWidth: 0 }}>
@@ -946,7 +964,7 @@ export default function AtlaProject() {
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 8, minWidth: 0 }}>
                   <p style={{ ...LABEL, color: "#8e8e8e" }}>( Service )</p>
                   <p style={{ ...BODY, color: primaryTextColor }}>
-                    {project.services.length > 0 ? project.services.join(" · ") : "Brand Identity"}
+                    {serviceLabel}
                   </p>
                 </div>
               </div>
@@ -954,10 +972,11 @@ export default function AtlaProject() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? 10 : 36,
-                  rowGap: isMobile ? 8 : 10,
+                  gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(0, 1fr))",
+                  columnGap: isMobile ? 0 : 36,
+                  rowGap: isMobile ? 14 : 10,
                   alignItems: "end",
+                  minWidth: 0,
                 }}
               >
                 <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>
@@ -981,14 +1000,16 @@ export default function AtlaProject() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: isMobile ? 34 : 64,
-                padding: isMobile
-                  ? "34px 0 44px"
-                  : `40px 20px 120px`,
-                width: isMobile ? `calc(100% - ${PROJECT_PAGE_GUTTER_MOBILE * 2}px)` : "100%",
-                maxWidth: PROJECT_TEXT_MAX_WIDTH,
-                margin: "0 auto",
-                boxSizing: "border-box",
+                gap: isMobile ? 36 : 64,
+                padding: isMobile ? "40px 0 56px" : `40px 20px 120px`,
+                ...(isMobile
+                  ? getMobileTextFrameStyle()
+                  : {
+                    width: "100%",
+                    maxWidth: PROJECT_TEXT_MAX_WIDTH,
+                    margin: "0 auto",
+                    boxSizing: "border-box",
+                  }),
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 36 }}>
@@ -1016,9 +1037,10 @@ export default function AtlaProject() {
                       key={credit.role}
                       style={{
                         display: "grid",
-                        gridTemplateColumns: isMobile ? "96px minmax(0, 1fr)" : "180px minmax(0, 1fr)",
-                        gap: isMobile ? 2 : 4,
+                        gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "180px minmax(0, 1fr)",
+                        gap: isMobile ? 3 : 4,
                         alignItems: "start",
+                        minWidth: 0,
                       }}
                     >
                       <p style={{ ...BODY, color: "#8e8e8e" }}>{credit.role}</p>
@@ -1038,8 +1060,9 @@ export default function AtlaProject() {
                 width: "100%",
                 maxWidth: PROJECT_MEDIA_MAX_WIDTH,
                 margin: "0 auto",
-                padding: isMobile ? "0 10px 14px" : "0 0 30px",
+                padding: isMobile ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px 24px` : "0 0 30px",
                 boxSizing: "border-box",
+                overflow: "hidden",
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 10 }}>
