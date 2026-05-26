@@ -941,8 +941,8 @@ export default function AtlaWork() {
               columnGap: isMobile ? FILTER_COLUMN_GAP_MOBILE : isListView ? 20 : FILTER_COLUMN_GAP_DESKTOP,
               rowGap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP,
               width: "100%",
-              maxWidth: isListView && !isMobile ? 1160 : "none",
-              margin: isMobile ? "0 auto" : isListView ? "200px auto 0" : "8px auto 0",
+              maxWidth: "none",
+              margin: isMobile ? "0 auto" : isListView ? "200px 0 0" : "8px auto 0",
             }}
           >
             {isListView ? (
@@ -1133,7 +1133,7 @@ export default function AtlaWork() {
             ) : null}
           </div>
 
-          <div id="atla-work-results" style={{ width: "100%", maxWidth: isListView && !isMobile ? 1160 : "none", margin: "0 auto" }}>
+          <div id="atla-work-results" style={{ width: "100%", maxWidth: "none", margin: 0 }}>
           <section className="sr-only" aria-label="Work archive context">
             <h2>About the Atla work archive</h2>
             <p>
