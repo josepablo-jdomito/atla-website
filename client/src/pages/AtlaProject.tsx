@@ -667,6 +667,7 @@ function ProjectMediaMosaic({
                     }}
                   >
                     <video
+                      src={item.src}
                       autoPlay
                       loop
                       muted
@@ -676,6 +677,11 @@ function ProjectMediaMosaic({
                       disablePictureInPicture
                       controlsList="nodownload noplaybackrate noremoteplayback"
                       aria-label={item.title || `${projectTitle} project video`}
+                      onCanPlay={(event) => {
+                        const video = event.currentTarget;
+                        video.muted = true;
+                        void video.play().catch(() => undefined);
+                      }}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -683,9 +689,7 @@ function ProjectMediaMosaic({
                         objectFit: "cover",
                         aspectRatio: tile.aspectRatio,
                       }}
-                    >
-                      <source src={item.src} type={item.mimeType || "video/mp4"} />
-                    </video>
+                    />
                   </div>
                 );
               }
