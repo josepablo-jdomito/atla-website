@@ -37,7 +37,6 @@ const BODY: React.CSSProperties = {
 const SURFACE_PREFERENCE_STORAGE_KEY = "atla-surface-preference-v1";
 const PROJECT_PAGE_GUTTER_DESKTOP = 12;
 const PROJECT_PAGE_GUTTER_MOBILE = 32;
-const PROJECT_CANVAS_MAX_WIDTH = 896;
 const PROJECT_MEDIA_MAX_WIDTH = 872;
 const PROJECT_TEXT_MAX_WIDTH = 810;
 const MOBILE_TOUCH_TARGET = 44;
@@ -525,8 +524,8 @@ function ProjectMediaMosaic({
     <div
       style={{
         width: "100%",
-        maxWidth: PROJECT_MEDIA_MAX_WIDTH,
-        margin: "0 auto",
+        maxWidth: isMobile ? PROJECT_MEDIA_MAX_WIDTH : "none",
+        margin: isMobile ? "0 auto" : 0,
         display: "flex",
         flexDirection: "column",
         gap: isMobile ? 2 : 10,
@@ -562,8 +561,8 @@ function ProjectMediaMosaic({
               const targetWidth = isMobile
                 ? 1400
                 : isFullWidthTile
-                  ? 2200
-                  : Math.max(1200, Math.round((tile.weight ?? PROJECT_MEDIA_MAX_WIDTH) * 2.2));
+                  ? 3200
+                  : Math.max(1800, Math.round((tile.weight ?? PROJECT_MEDIA_MAX_WIDTH) * 3.2));
               const optimizedSrc = getOptimizedImageUrl(item.src, { width: targetWidth, quality: 92 }) || item.src;
               const srcSet = buildImageSrcSet(
                 item.src,
@@ -593,7 +592,7 @@ function ProjectMediaMosaic({
                   <img
                     src={optimizedSrc}
                     srcSet={srcSet}
-                    sizes={isMobile ? "100vw" : isFullWidthTile ? "872px" : "50vw"}
+                    sizes={isMobile ? "100vw" : isFullWidthTile ? "100vw" : "50vw"}
                     alt={imageAlt}
                     width={imageDimensions?.width}
                     height={imageDimensions?.height}
@@ -869,8 +868,7 @@ export default function AtlaProject() {
           <section
             style={{
               width: "100%",
-              maxWidth: PROJECT_CANVAS_MAX_WIDTH,
-              margin: "0 auto",
+              margin: 0,
               padding: isMobile ? "0 0 24px" : "11px 0 0",
               overflow: "hidden",
             }}
@@ -886,8 +884,8 @@ export default function AtlaProject() {
               aria-label={heroFullscreenLabel}
               style={{
                 position: "relative",
-                width: isMobile ? "100%" : "calc(100% - 24px)",
-                margin: "0 auto",
+                width: "100%",
+                margin: 0,
                 border: "none",
                 cursor: "zoom-in",
                 display: "block",
@@ -1058,8 +1056,8 @@ export default function AtlaProject() {
             <section
               style={{
                 width: "100%",
-                maxWidth: PROJECT_MEDIA_MAX_WIDTH,
-                margin: "0 auto",
+                maxWidth: isMobile ? PROJECT_MEDIA_MAX_WIDTH : "none",
+                margin: isMobile ? "0 auto" : 0,
                 padding: isMobile ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px 24px` : "0 0 30px",
                 boxSizing: "border-box",
                 overflow: "hidden",
