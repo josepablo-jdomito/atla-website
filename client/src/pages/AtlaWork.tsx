@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
@@ -38,6 +38,10 @@ type MasonryPhotoItem = {
   imageSrc: string;
 };
 
+type MasonryFeedItem = MasonryPhotoItem & {
+  feedKey: string;
+};
+
 const LF_MEDIUM: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
   fontSize: 14,
@@ -70,10 +74,10 @@ const SERVICE_BASE_OPTIONS = ["Branding", "Art Direction", "Packaging", "Website
 const BACKGROUND_FILTERS = ["White", "Black", "Random", "System"] as const;
 const SURFACE_PREFERENCE_STORAGE_KEY = "atla-surface-preference-v1";
 const LIST_THUMBNAIL_COUNT = 4;
-const MASONRY_INITIAL_ITEMS_DESKTOP = 20;
-const MASONRY_INITIAL_ITEMS_MOBILE = 14;
-const MASONRY_BATCH_DESKTOP = 12;
-const MASONRY_BATCH_MOBILE = 8;
+const MASONRY_INITIAL_ITEMS_DESKTOP = 45;
+const MASONRY_INITIAL_ITEMS_MOBILE = 22;
+const MASONRY_BATCH_DESKTOP = 25;
+const MASONRY_BATCH_MOBILE = 12;
 const WORK_PAGE_GUTTER_DESKTOP = 8;
 const WORK_PAGE_GUTTER_MOBILE = 6;
 const FILTER_COLUMN_GAP_DESKTOP = 12;
@@ -340,6 +344,43 @@ function normalizeProjects(projects?: Project[]): WorkProject[] {
   });
 }
 
+function hashString(value: string) {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+function sortMasonryItems(items: MasonryPhotoItem[]) {
+  return [...items].sort((left, right) => {
+    const leftHash = hashString(`${left.slug}-${left.key}`);
+    const rightHash = hashString(`${right.slug}-${right.key}`);
+    return leftHash - rightHash;
+  });
+}
+
+function buildMasonryFeedItems(items: MasonryPhotoItem[], count: number): MasonryFeedItem[] {
+  if (items.length === 0 || count < 1) return [];
+
+  return Array.from({ length: count }, (_, index) => {
+    const cycle = Math.floor(index / items.length);
+    const offset = (cycle * 7) % items.length;
+    const item = items[(index + offset) % items.length];
+    return {
+      ...item,
+      feedKey: `${item.key}-loop-${cycle}-${index}`,
+    };
+  });
+}
+
+function getMasonryAspectRatio(item: MasonryPhotoItem, index: number, isMobile: boolean) {
+  if (isMobile) return index % 5 === 0 ? "4 / 5" : "1 / 1";
+
+  const ratios = ["0.74 / 1", "1.16 / 1", "0.86 / 1", "1 / 1.08", "0.78 / 1", "1.24 / 1", "0.92 / 1"];
+  return ratios[hashString(item.key) % ratios.length];
+}
+
 function FilterColumn({
   label,
   options,
@@ -447,6 +488,7 @@ export default function AtlaWork() {
   const [visibleMasonryCount, setVisibleMasonryCount] = useState(
     isMobile ? MASONRY_INITIAL_ITEMS_MOBILE : MASONRY_INITIAL_ITEMS_DESKTOP,
   );
+  const masonrySentinelRef = useRef<HTMLDivElement | null>(null);
 
   const { data } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -504,14 +546,13 @@ export default function AtlaWork() {
       });
     }
 
-    const shuffled = [...allItems];
-    for (let index = shuffled.length - 1; index > 0; index -= 1) {
-      const randomIndex = Math.floor(Math.random() * (index + 1));
-      [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
-    }
-
-    return shuffled;
+    return sortMasonryItems(allItems);
   }, [filteredProjects]);
+
+  const masonryFeedItems = useMemo(
+    () => buildMasonryFeedItems(masonryPhotoPool, visibleMasonryCount),
+    [masonryPhotoPool, visibleMasonryCount],
+  );
 
   const timelineProjects = useMemo(
     () => [...filteredProjects].sort((left, right) => left.year - right.year),
@@ -527,21 +568,60 @@ export default function AtlaWork() {
     if (view !== "Masonry" || typeof window === "undefined") return;
 
     const batchSize = isMobile ? MASONRY_BATCH_MOBILE : MASONRY_BATCH_DESKTOP;
-    const onScroll = () => {
-      const bottomThreshold = 560;
+    let frameId = 0;
+    let lastLoadAt = 0;
+    let isLoadLocked = false;
+    const loadNextBatch = () => {
+      const now = Date.now();
+      if (isLoadLocked || now - lastLoadAt < 180) return;
+      isLoadLocked = true;
+      lastLoadAt = now;
+      setVisibleMasonryCount((current) => current + batchSize);
+    };
+    const maybeLoadNextBatch = () => {
+      const bottomThreshold = isMobile ? 900 : 1500;
       const scrollBottom = window.scrollY + window.innerHeight;
       const pageHeight = document.documentElement.scrollHeight;
-      if (scrollBottom < pageHeight - bottomThreshold) return;
-
-      setVisibleMasonryCount((current) => {
-        if (current >= masonryPhotoPool.length) return current;
-        return Math.min(current + batchSize, masonryPhotoPool.length);
-      });
+      if (scrollBottom >= pageHeight - bottomThreshold) loadNextBatch();
     };
 
+    let observer: IntersectionObserver | null = null;
+    if ("IntersectionObserver" in window && masonrySentinelRef.current) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
+        },
+        { root: null, rootMargin: isMobile ? "900px 0px" : "1500px 0px", threshold: 0 },
+      );
+
+      observer.observe(masonrySentinelRef.current);
+    }
+
+    const unlockForUserScroll = () => {
+      isLoadLocked = false;
+    };
+    const onScroll = () => {
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(maybeLoadNextBatch);
+    };
+
+    window.addEventListener("wheel", unlockForUserScroll, { passive: true });
+    window.addEventListener("touchmove", unlockForUserScroll, { passive: true });
+    window.addEventListener("keydown", unlockForUserScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isMobile, masonryPhotoPool.length, view]);
+    const intervalId = window.setInterval(maybeLoadNextBatch, 400);
+    maybeLoadNextBatch();
+
+    return () => {
+      observer?.disconnect();
+      window.clearInterval(intervalId);
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("wheel", unlockForUserScroll);
+      window.removeEventListener("touchmove", unlockForUserScroll);
+      window.removeEventListener("keydown", unlockForUserScroll);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [isMobile, view]);
 
   const isSurfaceDark = useMemo(() => relativeLuminance(surfaceColor) < 0.35, [surfaceColor]);
   const primaryTextColor = isSurfaceDark ? "#f5f5f5" : "#222222";
@@ -1267,74 +1347,87 @@ export default function AtlaWork() {
           ) : view === "Masonry" ? (
             <div
               style={{
-                columnCount: isMobile ? 1 : 5,
-                columnGap: isMobile ? 10 : 14,
                 width: "100%",
                 backgroundColor: surfaceColor,
-                padding: isMobile ? 0 : 0,
                 boxSizing: "border-box",
               }}
             >
-              {masonryPhotoPool.slice(0, visibleMasonryCount).map((item, index) => {
-                const imageDimensions = getImageDimensions(item.imageSrc);
-                const targetWidth = isMobile ? 1200 : 1500;
-                const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 90 }) || item.imageSrc;
-                const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
-                const shouldPrioritize = index < 2;
-                const masonryAspectRatios = ["0.72 / 1", "1.35 / 1", "0.88 / 1", "1.08 / 1", "0.78 / 1", "1.2 / 1", "0.95 / 1"];
-                const aspectRatio = isMobile ? "1 / 1" : masonryAspectRatios[index % masonryAspectRatios.length];
+              <div
+                style={{
+                  columnCount: isMobile ? 1 : 5,
+                  columnGap: isMobile ? 10 : 14,
+                  width: "100%",
+                }}
+              >
+                {masonryFeedItems.map((item, index) => {
+                  const imageDimensions = getImageDimensions(item.imageSrc);
+                  const targetWidth = isMobile ? 1200 : 1500;
+                  const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 90 }) || item.imageSrc;
+                  const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                  const shouldPrioritize = index < (isMobile ? 3 : 8);
+                  const aspectRatio = getMasonryAspectRatio(item, index, isMobile);
 
-                return (
-                  <a
-                    key={item.key}
-                    href={`/projects/${item.slug}`}
-                    aria-label={`Open project ${item.title}`}
-                    data-project-slug={item.slug}
-                    className="atla-card"
-                    style={{
-                      display: "inline-block",
-                      width: "100%",
-                      marginBottom: isMobile ? 10 : 14,
-                      textDecoration: "none",
-                      breakInside: "avoid",
-                      backgroundColor: surfaceColor,
-                      boxShadow: commandFocusSlug === item.slug ? `0 0 0 2px ${primaryTextColor}` : "none",
-                    }}
-                  >
-                    <span className="sr-only">Open project {item.title}</span>
-                    <div
+                  return (
+                    <a
+                      key={item.feedKey}
+                      href={`/projects/${item.slug}`}
+                      aria-label={`Open project ${item.title}`}
+                      data-project-slug={item.slug}
+                      className="atla-card"
                       style={{
-                        position: "relative",
+                        display: "inline-block",
                         width: "100%",
-                        aspectRatio,
-                        backgroundColor: "#111",
-                        overflow: "hidden",
+                        marginBottom: isMobile ? 10 : 14,
+                        textDecoration: "none",
+                        breakInside: "avoid",
+                        backgroundColor: surfaceColor,
+                        boxShadow: commandFocusSlug === item.slug ? `0 0 0 2px ${primaryTextColor}` : "none",
                       }}
                     >
-                      <img
-                        src={optimizedSrc}
-                        srcSet={srcSet}
-                        sizes={isMobile ? "calc(100vw - 40px)" : "20vw"}
-                        alt={item.title}
-                        width={imageDimensions?.width}
-                        height={imageDimensions?.height}
-                        loading={shouldPrioritize ? "eager" : "lazy"}
-                        fetchPriority={shouldPrioritize ? "high" : undefined}
-                        decoding="async"
-                        onError={handleImageError}
+                      <span className="sr-only">Open project {item.title}</span>
+                      <div
                         style={{
-                          position: "absolute",
-                          inset: 0,
+                          position: "relative",
                           width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
+                          aspectRatio,
+                          backgroundColor: "#111",
+                          overflow: "hidden",
                         }}
-                      />
-                    </div>
-                  </a>
-                );
-              })}
+                      >
+                        <img
+                          src={optimizedSrc}
+                          srcSet={srcSet}
+                          sizes={isMobile ? "calc(100vw - 40px)" : "20vw"}
+                          alt={item.title}
+                          width={imageDimensions?.width}
+                          height={imageDimensions?.height}
+                          loading={shouldPrioritize ? "eager" : "lazy"}
+                          fetchPriority={shouldPrioritize ? "high" : undefined}
+                          decoding="async"
+                          onError={handleImageError}
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            display: "block",
+                          }}
+                        />
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+              <div
+                ref={masonrySentinelRef}
+                aria-hidden="true"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: 1,
+                }}
+              />
             </div>
           ) : (
             <div
