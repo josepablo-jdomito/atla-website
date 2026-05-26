@@ -1,4 +1,4 @@
-import type { Project, ProjectVideoAsset } from "../../shared/schema.ts";
+import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "../../shared/schema.ts";
 import { getJournalSanityClient, isJournalSanityConfigured } from "./journalClient.ts";
 
 type SanityProject = {
@@ -27,6 +27,7 @@ type SanityProject = {
   services?: unknown;
   vimeoVideos?: unknown;
   videoFiles?: unknown;
+  mediaItems?: unknown;
   videos?: unknown;
   description?: unknown;
   excerpt?: unknown;
@@ -79,6 +80,7 @@ type SanityProjectAuditSource = {
   services?: unknown;
   vimeoVideos?: unknown;
   videoFiles?: unknown;
+  mediaItems?: unknown;
   videos?: unknown;
   body?: unknown;
   content?: unknown;
@@ -144,6 +146,15 @@ const PROJECT_QUERY = `
     service,
     services,
     vimeoVideos,
+    mediaItems[]{
+      mediaType,
+      title,
+      caption,
+      "imageUrl": image.asset->url,
+      "videoUrl": file.asset->url,
+      "mimeType": file.asset->mimeType,
+      "poster": poster.asset->url
+    },
     videoFiles[]{
       title,
       caption,
@@ -198,6 +209,15 @@ const PROJECT_AUDIT_QUERY = `
     service,
     services,
     vimeoVideos,
+    mediaItems[]{
+      mediaType,
+      title,
+      caption,
+      "imageUrl": image.asset->url,
+      "videoUrl": file.asset->url,
+      "mimeType": file.asset->mimeType,
+      "poster": poster.asset->url
+    },
     videoFiles[]{
       title,
       caption,
@@ -484,6 +504,7 @@ function normalizeProject(project: SanityProject): Project {
   const country = firstNonEmptyString(project.country);
   const videos = extractVimeoEmbedSources(project.vimeoVideos, project.videos);
   const videoFiles = extractVideoFileAssets(project.videoFiles);
+  const mediaItems = extractProjectMediaAssets(project.mediaItems);
   const description = firstNonEmptyString(project.description, project.excerpt, project.summary);
   const body = portableTextToPlainText(project.body ?? project.content ?? project.caseStudy);
   const locationName = firstNonEmptyString(
@@ -513,6 +534,7 @@ function normalizeProject(project: SanityProject): Project {
     images: Array.isArray(project.gallery) ? project.gallery.filter(isNonEmptyString) : [],
     videos,
     videoFiles,
+    mediaItems,
     featured: Boolean(project.featured),
     status: project.status === "draft" ? "draft" : "published",
     createdAt: new Date(),
@@ -685,6 +707,47 @@ function extractVideoFileAssets(value: unknown): ProjectVideoAsset[] {
   }
 
   return Array.from(byUrl.values());
+}
+
+function extractProjectMediaAssets(value: unknown): ProjectMediaAsset[] {
+  if (!Array.isArray(value)) return [];
+
+  const mediaItems = value.flatMap((item): ProjectMediaAsset[] => {
+    if (!item || typeof item !== "object") return [];
+
+    const mediaType = firstNonEmptyString(getStringField(item, "mediaType"));
+    if (mediaType === "video") {
+      const url = firstNonEmptyString(getStringField(item, "videoUrl"));
+      if (!url) return [];
+
+      return [{
+        type: "video",
+        url,
+        title: firstNonEmptyString(getStringField(item, "title")) || undefined,
+        caption: firstNonEmptyString(getStringField(item, "caption")) || undefined,
+        mimeType: firstNonEmptyString(getStringField(item, "mimeType")) || undefined,
+        poster: firstNonEmptyString(getStringField(item, "poster")) || undefined,
+      }];
+    }
+
+    const url = firstNonEmptyString(getStringField(item, "imageUrl"));
+    if (!url) return [];
+
+    return [{
+      type: "image",
+      url,
+      title: firstNonEmptyString(getStringField(item, "title")) || undefined,
+      caption: firstNonEmptyString(getStringField(item, "caption")) || undefined,
+    }];
+  });
+
+  const seen = new Set<string>();
+  return mediaItems.filter((item) => {
+    const key = `${item.type}:${item.url}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function extractVimeoEmbedSources(...values: unknown[]) {

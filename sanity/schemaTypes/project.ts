@@ -172,6 +172,99 @@ export const projectType = defineType({
       ],
     }),
     defineField({
+      name: "mediaItems",
+      title: "Media sequence",
+      type: "array",
+      group: "media",
+      description:
+        "Use this to control the exact project media order. Mix high-quality photos and uploaded MP4s in the same sequence.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "projectMediaItem",
+          title: "Media item",
+          fields: [
+            defineField({
+              name: "mediaType",
+              title: "Type",
+              type: "string",
+              initialValue: "image",
+              options: {
+                layout: "radio",
+                list: [
+                  { title: "Photo", value: "image" },
+                  { title: "Video", value: "video" },
+                ],
+              },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "image",
+              title: "Photo",
+              type: "image",
+              options: { hotspot: true },
+              hidden: ({ parent }) => (parent as { mediaType?: string } | undefined)?.mediaType === "video",
+              validation: (rule) =>
+                rule.custom((value, context) => {
+                  const parent = context.parent as { mediaType?: string } | undefined;
+                  if (parent?.mediaType !== "video" && !value) return "Add a photo.";
+                  return true;
+                }),
+            }),
+            defineField({
+              name: "file",
+              title: "Video file",
+              type: "file",
+              options: {
+                accept: "video/mp4,video/webm,video/quicktime",
+              },
+              hidden: ({ parent }) => (parent as { mediaType?: string } | undefined)?.mediaType !== "video",
+              validation: (rule) =>
+                rule.custom((value, context) => {
+                  const parent = context.parent as { mediaType?: string } | undefined;
+                  if (parent?.mediaType === "video" && !value) return "Add a video file.";
+                  return true;
+                }),
+            }),
+            defineField({
+              name: "poster",
+              title: "Video poster image",
+              type: "image",
+              options: { hotspot: true },
+              hidden: ({ parent }) => (parent as { mediaType?: string } | undefined)?.mediaType !== "video",
+            }),
+            defineField({
+              name: "title",
+              title: "Title",
+              type: "string",
+            }),
+            defineField({
+              name: "caption",
+              title: "Caption",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: {
+              mediaType: "mediaType",
+              title: "title",
+              image: "image",
+              poster: "poster",
+              fileName: "file.asset.originalFilename",
+            },
+            prepare(selection) {
+              const isVideo = selection.mediaType === "video";
+              return {
+                title: selection.title || selection.fileName || (isVideo ? "Video" : "Photo"),
+                subtitle: isVideo ? "Uploaded video" : "Photo",
+                media: isVideo ? selection.poster : selection.image,
+              };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: "vimeoVideos",
       title: "Vimeo videos",
       type: "array",

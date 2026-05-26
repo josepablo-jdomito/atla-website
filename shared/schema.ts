@@ -51,6 +51,22 @@ export type ProjectVideoAsset = {
   poster?: string;
 };
 
+export type ProjectMediaAsset =
+  | {
+      type: "image";
+      url: string;
+      title?: string;
+      caption?: string;
+    }
+  | {
+      type: "video";
+      url: string;
+      title?: string;
+      caption?: string;
+      mimeType?: string;
+      poster?: string;
+    };
+
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
 export type Project = typeof projects.$inferSelect;

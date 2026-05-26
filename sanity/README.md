@@ -47,9 +47,11 @@ Recommended editorial setup:
 
 Portfolio video setup:
 
+- use `mediaItems` as the preferred project-page sequence when photos and uploaded MP4s need to appear in a specific mixed order
 - use `videoFiles` when the source asset should live in Sanity as an original uploaded file
 - upload MP4 for the broadest browser support; WebM and QuickTime are accepted for editorial flexibility
 - add a `poster` image for every video so the project page loads with a crisp still frame before playback
+- uploaded videos in `mediaItems` autoplay, loop, stay muted, and render without visible playback controls
 - keep `vimeoVideos` for existing Vimeo embeds or projects that still need Vimeo-hosted playback
 - for very long films or adaptive streaming needs, use a dedicated video pipeline such as Mux and store the playback URL in Sanity
 

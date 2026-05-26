@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import type { Project, ProjectVideoAsset } from "@shared/schema";
+import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "@shared/schema";
 import { trackEvent } from "@/hooks/use-analytics";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -45,6 +45,7 @@ type ProjectApi = Project & {
   country?: string | null;
   locationName?: string | null;
   videoFiles?: ProjectVideoAsset[];
+  mediaItems?: ProjectMediaAsset[];
 };
 
 function hexToRgb(hex: string) {
@@ -98,6 +99,7 @@ type ProjectPageView = {
   gallery: string[];
   videos: string[];
   videoFiles: ProjectVideoAsset[];
+  mediaItems: ProjectMediaAsset[];
   credits: Array<{ role: string; names: string[] }>;
   related: Array<{ slug: string; title: string; date: string }>;
 };
@@ -150,9 +152,26 @@ type ProjectMediaRowSpec = {
 };
 
 type ProjectGalleryItem = {
+  type: "image";
   src: string;
   sourceIndex: number;
 };
+
+type ProjectUploadedVideoMediaItem = {
+  type: "video";
+  src: string;
+  title?: string;
+  mimeType?: string;
+  poster?: string;
+};
+
+type ProjectVimeoMediaItem = {
+  type: "vimeo";
+  src: string;
+  title?: string;
+};
+
+type ProjectMediaMosaicItem = ProjectGalleryItem | ProjectUploadedVideoMediaItem | ProjectVimeoMediaItem;
 
 const getMobileTextFrameStyle = (): React.CSSProperties => ({
   width: "auto",
@@ -317,12 +336,34 @@ function normalizeProjectKey(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function getProjectMediaRows(project: ProjectPageView) {
-  return (
+function getProjectMediaRows(project: ProjectPageView, itemCount = project.gallery.length) {
+  const baseRows = (
     PROJECT_MEDIA_ROW_PRESETS[normalizeProjectKey(project.slug)] ||
     PROJECT_MEDIA_ROW_PRESETS[normalizeProjectKey(project.title)] ||
     FIGMA_PROJECT_MEDIA_ROWS.common
   );
+  const rows = [...baseRows];
+  let tileCapacity = rows.reduce((total, row) => total + row.tiles.length, 0);
+  let fallbackRowIndex = 0;
+
+  while (tileCapacity < itemCount) {
+    const nextRow = FIGMA_PROJECT_MEDIA_ROWS.common[fallbackRowIndex % FIGMA_PROJECT_MEDIA_ROWS.common.length];
+    rows.push(nextRow);
+    tileCapacity += nextRow.tiles.length;
+    fallbackRowIndex += 1;
+  }
+
+  return rows;
+}
+
+function getProjectFullscreenImages(project: ProjectPageView) {
+  return Array.from(new Set([
+    project.heroImage,
+    ...project.gallery,
+    ...project.mediaItems
+      .filter((item): item is Extract<ProjectMediaAsset, { type: "image" }> => item.type === "image")
+      .map((item) => item.url),
+  ].filter(Boolean)));
 }
 
 function inferVerticalFromProject(project: ProjectPageView): ProjectRelatedLink {
@@ -394,6 +435,21 @@ function toVimeoWatchUrl(embedUrl: string) {
   return `https://vimeo.com/${match[1]}`;
 }
 
+function toVimeoBackgroundUrl(embedUrl: string) {
+  try {
+    const parsed = new URL(embedUrl);
+    parsed.searchParams.set("autoplay", "1");
+    parsed.searchParams.set("muted", "1");
+    parsed.searchParams.set("loop", "1");
+    parsed.searchParams.set("background", "1");
+    parsed.searchParams.set("controls", "0");
+    parsed.searchParams.set("playsinline", "1");
+    return parsed.toString();
+  } catch {
+    return embedUrl;
+  }
+}
+
 function sanitizeMediaUrl(src?: string | null) {
   if (!src || typeof src !== "string") return "";
   const trimmed = src.trim();
@@ -423,6 +479,44 @@ function normalizeProjectVideoFiles(videos?: ProjectVideoAsset[]) {
   }
 
   return Array.from(byUrl.values());
+}
+
+function normalizeProjectMediaItems(mediaItems?: ProjectMediaAsset[]) {
+  if (!Array.isArray(mediaItems)) return [];
+
+  const items: ProjectMediaAsset[] = [];
+  const seen = new Set<string>();
+  for (const item of mediaItems) {
+    const url = sanitizeMediaUrl(item.url);
+    if (!url) continue;
+
+    const key = `${item.type}:${url}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    if (item.type === "video") {
+      items.push({
+        type: "video",
+        url,
+        title: item.title?.trim() || undefined,
+        caption: item.caption?.trim() || undefined,
+        mimeType: item.mimeType?.trim() || undefined,
+        poster: sanitizeImageUrls([item.poster])[0],
+      });
+      continue;
+    }
+
+    const imageUrl = sanitizeImageUrls([url])[0];
+    if (!imageUrl) continue;
+    items.push({
+      type: "image",
+      url: imageUrl,
+      title: item.title?.trim() || undefined,
+      caption: item.caption?.trim() || undefined,
+    });
+  }
+
+  return items;
 }
 
 function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): ProjectPageView {
@@ -476,6 +570,7 @@ function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): P
     gallery,
     videos: project.videos.filter(Boolean),
     videoFiles: normalizeProjectVideoFiles(project.videoFiles),
+    mediaItems: normalizeProjectMediaItems(project.mediaItems),
     credits: [
       ...(client ? [{ role: "Client", names: [client] }] : []),
       ...(region ? [{ role: "Region", names: [region] }] : []),
@@ -511,7 +606,7 @@ function ProjectMediaMosaic({
   onImageError,
 }: {
   rows: ProjectMediaRowSpec[];
-  items: ProjectGalleryItem[];
+  items: ProjectMediaMosaicItem[];
   projectTitle: string;
   isMobile: boolean;
   isSurfaceDark: boolean;
@@ -541,7 +636,7 @@ function ProjectMediaMosaic({
             itemIndex += 1;
             return item ? { tile, item } : null;
           })
-          .filter((tile): tile is { tile: ProjectMediaTileSpec; item: ProjectGalleryItem } => Boolean(tile));
+          .filter((tile): tile is { tile: ProjectMediaTileSpec; item: ProjectMediaMosaicItem } => Boolean(tile));
 
         if (rowTiles.length === 0) return null;
 
@@ -556,8 +651,80 @@ function ProjectMediaMosaic({
             }}
           >
             {rowTiles.map(({ tile, item }) => {
-              const imageDimensions = getImageDimensions(item.src);
               const isFullWidthTile = rowTiles.length === 1;
+              const tileKey = `${item.type}-${item.src}-${item.type === "image" ? item.sourceIndex : rowIndex}`;
+
+              if (item.type === "video") {
+                return (
+                  <div
+                    key={tileKey}
+                    style={{
+                      backgroundColor: isSurfaceDark ? "#0f0f0f" : "#ececec",
+                      overflow: "hidden",
+                      flex: isMobile ? "1 1 auto" : `${tile.weight ?? 1} ${tile.weight ?? 1} 0`,
+                      minWidth: 0,
+                      width: isMobile ? "100%" : undefined,
+                    }}
+                  >
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      poster={item.poster}
+                      disablePictureInPicture
+                      controlsList="nodownload noplaybackrate noremoteplayback"
+                      aria-label={item.title || `${projectTitle} project video`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "block",
+                        objectFit: "cover",
+                        aspectRatio: tile.aspectRatio,
+                      }}
+                    >
+                      <source src={item.src} type={item.mimeType || "video/mp4"} />
+                    </video>
+                  </div>
+                );
+              }
+
+              if (item.type === "vimeo") {
+                return (
+                  <div
+                    key={tileKey}
+                    style={{
+                      position: "relative",
+                      backgroundColor: isSurfaceDark ? "#0f0f0f" : "#ececec",
+                      overflow: "hidden",
+                      flex: isMobile ? "1 1 auto" : `${tile.weight ?? 1} ${tile.weight ?? 1} 0`,
+                      minWidth: 0,
+                      width: isMobile ? "100%" : undefined,
+                      aspectRatio: tile.aspectRatio,
+                    }}
+                  >
+                    <iframe
+                      src={toVimeoBackgroundUrl(item.src)}
+                      title={item.title || `${projectTitle} project video`}
+                      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        border: 0,
+                      }}
+                    />
+                  </div>
+                );
+              }
+
+              const imageItem = item;
+              const imageDimensions = getImageDimensions(item.src);
               const targetWidth = isMobile
                 ? 1400
                 : isFullWidthTile
@@ -569,13 +736,13 @@ function ProjectMediaMosaic({
                 [Math.round(targetWidth * 0.5), Math.round(targetWidth * 0.75), targetWidth],
                 { quality: 92 },
               );
-              const imageAlt = `${projectTitle} project image ${item.sourceIndex + 1}`;
+              const imageAlt = `${projectTitle} project image ${imageItem.sourceIndex + 1}`;
 
               return (
                 <button
-                  key={`${item.src}-${item.sourceIndex}`}
+                  key={tileKey}
                   type="button"
-                  onClick={() => onOpen(item.sourceIndex)}
+                  onClick={() => onOpen(imageItem.sourceIndex)}
                   aria-label={`Open ${imageAlt} in fullscreen`}
                   style={{
                     border: "none",
@@ -596,8 +763,8 @@ function ProjectMediaMosaic({
                     alt={imageAlt}
                     width={imageDimensions?.width}
                     height={imageDimensions?.height}
-                    loading={item.sourceIndex <= 3 ? "eager" : "lazy"}
-                    fetchPriority={item.sourceIndex <= 3 ? "high" : undefined}
+                    loading={imageItem.sourceIndex <= 3 ? "eager" : "lazy"}
+                    fetchPriority={imageItem.sourceIndex <= 3 ? "high" : undefined}
                     decoding="async"
                     onError={onImageError}
                     style={{
@@ -677,7 +844,7 @@ export default function AtlaProject() {
   useEffect(() => {
     if (fullscreenIndex === null) return;
 
-    const totalImages = project?.gallery.length ?? 0;
+    const totalImages = project ? getProjectFullscreenImages(project).length : 0;
     if (totalImages < 1) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -710,7 +877,7 @@ export default function AtlaProject() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [fullscreenIndex, project?.gallery.length]);
+  }, [fullscreenIndex, project]);
 
   if (!slug || (!project && isProjectPending)) {
     return null;
@@ -737,8 +904,10 @@ export default function AtlaProject() {
   ].filter((src): src is string => Boolean(src));
   const parsedYear = Number.parseInt(project.dateLabel, 10);
   const videoUploadDate = Number.isFinite(parsedYear) ? `${parsedYear}-01-01T00:00:00.000Z` : undefined;
-  const galleryStream = project.gallery
-    .map((src, sourceIndex) => ({ src, sourceIndex }))
+  const fullscreenImages = getProjectFullscreenImages(project);
+  const heroFullscreenIndex = Math.max(0, fullscreenImages.indexOf(project.heroImage));
+  const galleryStream: ProjectMediaMosaicItem[] = fullscreenImages
+    .map((src, sourceIndex) => ({ type: "image" as const, src, sourceIndex }))
     .filter(({ src, sourceIndex }) => !(sourceIndex === 0 && src === project.heroImage));
   const narrativePool = project.bodySections.filter(Boolean);
   const introText = project.intro || project.bodySections[0] || "Case study documentation and execution details.";
@@ -753,15 +922,13 @@ export default function AtlaProject() {
   const serviceLabel = project.services.length > 0
     ? project.services.join(isMobile ? ", " : " · ")
     : "Brand Identity";
-  const totalGalleryImages = project.gallery.length;
+  const totalGalleryImages = fullscreenImages.length;
   const heroFullscreenLabel = `Open Fullscreen · 1/${totalGalleryImages}`;
-  const fullscreenImageSrc = fullscreenIndex !== null ? project.gallery[fullscreenIndex] : null;
+  const fullscreenImageSrc = fullscreenIndex !== null ? fullscreenImages[fullscreenIndex] : null;
   const fullscreenImageAlt = fullscreenIndex !== null ? `${project.title} project image ${fullscreenIndex + 1}` : "";
   const fullscreenOptimizedSrc = fullscreenImageSrc
     ? getOptimizedImageUrl(fullscreenImageSrc, { width: isMobile ? 1800 : 2800, quality: 95 }) || fullscreenImageSrc
     : null;
-  const galleryTiles = galleryStream;
-  const mediaRows = getProjectMediaRows(project);
   const videoEmbeds = project.videos
     .map((videoUrl) => {
       const embedUrl = toVimeoEmbedUrl(videoUrl);
@@ -773,6 +940,61 @@ export default function AtlaProject() {
     })
     .filter((video): video is { embedUrl: string; watchUrl: string } => Boolean(video));
   const uploadedVideos = project.videoFiles;
+  const mediaItemsFromSequence = project.mediaItems.flatMap((item): ProjectMediaMosaicItem[] => {
+    if (item.type === "video") {
+      return [{
+        type: "video" as const,
+        src: item.url,
+        title: item.title,
+        mimeType: item.mimeType,
+        poster: item.poster,
+      }];
+    }
+
+    const sourceIndex = fullscreenImages.indexOf(item.url);
+    if (sourceIndex < 0 || item.url === project.heroImage) return [];
+    return [{ type: "image" as const, src: item.url, sourceIndex }];
+  });
+  const fallbackMediaItems: ProjectMediaMosaicItem[] = galleryStream.reduce<ProjectMediaMosaicItem[]>((items, imageItem, index) => {
+    items.push(imageItem);
+    const video = uploadedVideos[index];
+    if (video) {
+      items.push({
+        type: "video",
+        src: video.url,
+        title: video.title,
+        mimeType: video.mimeType,
+        poster: video.poster,
+      });
+    }
+    const vimeo = videoEmbeds[index];
+    if (vimeo) {
+      items.push({
+        type: "vimeo",
+        src: vimeo.embedUrl,
+        title: `${project.title} Vimeo video ${index + 1}`,
+      });
+    }
+    return items;
+  }, []);
+  uploadedVideos.slice(galleryStream.length).forEach((video) => {
+    fallbackMediaItems.push({
+      type: "video",
+      src: video.url,
+      title: video.title,
+      mimeType: video.mimeType,
+      poster: video.poster,
+    });
+  });
+  videoEmbeds.slice(galleryStream.length).forEach((video, index) => {
+    fallbackMediaItems.push({
+      type: "vimeo",
+      src: video.embedUrl,
+      title: `${project.title} Vimeo video ${galleryStream.length + index + 1}`,
+    });
+  });
+  const galleryTiles = mediaItemsFromSequence.length > 0 ? mediaItemsFromSequence : fallbackMediaItems;
+  const mediaRows = getProjectMediaRows(project, galleryTiles.length);
   const creativeWorkSchema = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -880,7 +1102,7 @@ export default function AtlaProject() {
 
             <button
               type="button"
-              onClick={() => setFullscreenIndex(0)}
+              onClick={() => setFullscreenIndex(heroFullscreenIndex)}
               aria-label={heroFullscreenLabel}
               style={{
                 position: "relative",
@@ -1051,117 +1273,6 @@ export default function AtlaProject() {
               ) : null}
             </section>
           </section>
-
-          {uploadedVideos.length > 0 || videoEmbeds.length > 0 ? (
-            <section
-              style={{
-                width: "100%",
-                maxWidth: isMobile ? PROJECT_MEDIA_MAX_WIDTH : "none",
-                margin: isMobile ? "0 auto" : 0,
-                padding: isMobile ? `0 ${PROJECT_PAGE_GUTTER_MOBILE}px 24px` : "0 0 30px",
-                boxSizing: "border-box",
-                overflow: "hidden",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 10 }}>
-                <p
-                  style={{
-                    ...LABEL,
-                    color: primaryTextColor,
-                  }}
-                >
-                  ( Videos )
-                </p>
-                {uploadedVideos.map((video, index) => (
-                  <figure
-                    key={video.url}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                      margin: 0,
-                    }}
-                  >
-                    <video
-                      controls
-                      playsInline
-                      preload="metadata"
-                      poster={video.poster}
-                      aria-label={video.title || `${project.title} video ${index + 1}`}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        maxHeight: "86svh",
-                        display: "block",
-                        backgroundColor: isSurfaceDark ? "#101010" : "#ececec",
-                      }}
-                    >
-                      <source src={video.url} type={video.mimeType || "video/mp4"} />
-                    </video>
-                    {video.caption ? (
-                      <figcaption
-                        style={{
-                        ...BODY,
-                        color: mutedTextColor,
-                          padding: isMobile ? "10px 0" : "4px 0",
-                        }}
-                      >
-                        {video.caption}
-                      </figcaption>
-                    ) : null}
-                  </figure>
-                ))}
-                {videoEmbeds.map(({ embedUrl, watchUrl }, index) => (
-                  <div key={embedUrl} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        backgroundColor: isSurfaceDark ? "#101010" : "#ececec",
-                        paddingTop: "56.25%",
-                      }}
-                    >
-                      <iframe
-                        src={embedUrl}
-                        title={`${project.title} Vimeo video ${index + 1}`}
-                        width={1280}
-                        height={720}
-                        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                        allowFullScreen
-                        loading={index === 0 ? "eager" : "lazy"}
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          width: "100%",
-                          height: "100%",
-                          border: 0,
-                        }}
-                      />
-                    </div>
-                    <a
-                      href={watchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="atla-link"
-                      style={{
-                        ...BODY,
-                        color: mutedTextColor,
-                        textDecoration: "none",
-                        padding: isMobile ? "10px 0" : "4px 0",
-                        width: "fit-content",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        minHeight: isMobile ? MOBILE_TOUCH_TARGET : 26,
-                      }}
-                    >
-                      Open on Vimeo if embed is restricted
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ) : null}
 
           {galleryTiles.length > 0 ? (
             <section
