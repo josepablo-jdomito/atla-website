@@ -69,7 +69,7 @@ const INDUSTRY_BASE_OPTIONS = ["Hospitality", "Food & Beverage", "Consumer Goods
 const SERVICE_BASE_OPTIONS = ["Branding", "Art Direction", "Packaging", "Website"] as const;
 const BACKGROUND_FILTERS = ["White", "Black", "Random", "System"] as const;
 const SURFACE_PREFERENCE_STORAGE_KEY = "atla-surface-preference-v1";
-const LIST_THUMBNAIL_COUNT = 10;
+const LIST_THUMBNAIL_COUNT = 4;
 const MASONRY_INITIAL_ITEMS_DESKTOP = 20;
 const MASONRY_INITIAL_ITEMS_MOBILE = 14;
 const MASONRY_BATCH_DESKTOP = 12;
@@ -776,6 +776,7 @@ export default function AtlaWork() {
     : "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.";
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
+  const isListView = view === "List";
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -828,10 +829,14 @@ export default function AtlaWork() {
         <div
           className="atla-enter"
           style={{
-            padding: isMobile ? `4px ${WORK_PAGE_GUTTER_MOBILE}px 12px` : `0 ${WORK_PAGE_GUTTER_DESKTOP}px 56px`,
+            padding: isMobile
+              ? `4px ${WORK_PAGE_GUTTER_MOBILE}px 12px`
+              : isListView
+                ? `0 ${WORK_PAGE_GUTTER_DESKTOP}px 56px`
+                : `0 ${WORK_PAGE_GUTTER_DESKTOP}px 56px`,
             display: "flex",
             flexDirection: "column",
-            gap: isMobile ? 3 : 12,
+            gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
           <h1
@@ -852,17 +857,28 @@ export default function AtlaWork() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(7, minmax(0, 1fr))",
-              columnGap: isMobile ? FILTER_COLUMN_GAP_MOBILE : FILTER_COLUMN_GAP_DESKTOP,
+              gridTemplateColumns: isMobile ? "1fr" : isListView ? "repeat(4, minmax(0, 1fr))" : "repeat(7, minmax(0, 1fr))",
+              columnGap: isMobile ? FILTER_COLUMN_GAP_MOBILE : isListView ? 20 : FILTER_COLUMN_GAP_DESKTOP,
               rowGap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP,
               width: "100%",
-              margin: isMobile ? "0 auto" : "8px auto 0",
+              maxWidth: isListView && !isMobile ? 1160 : "none",
+              margin: isMobile ? "0 auto" : isListView ? "200px auto 0" : "8px auto 0",
             }}
           >
-            <FilterColumn label="( Region )" options={FILTERS.region} value={region} onChange={setRegion} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
-            <FilterColumn label="( Industry )" options={industryOptions} value={industry} onChange={setIndustry} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
-            <FilterColumn label="( Service )" options={serviceOptions} value={service} onChange={setService} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
-            <FilterColumn label="( Year )" options={FILTERS.year} value={year} onChange={setYear} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+            {isListView ? (
+              <>
+                <FilterColumn label="( Industry )" options={industryOptions} value={industry} onChange={setIndustry} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+                <FilterColumn label="( Service )" options={serviceOptions} value={service} onChange={setService} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+                <FilterColumn label="( Region )" options={FILTERS.region} value={region} onChange={setRegion} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+              </>
+            ) : (
+              <>
+                <FilterColumn label="( Region )" options={FILTERS.region} value={region} onChange={setRegion} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+                <FilterColumn label="( Industry )" options={industryOptions} value={industry} onChange={setIndustry} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+                <FilterColumn label="( Service )" options={serviceOptions} value={service} onChange={setService} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+                <FilterColumn label="( Year )" options={FILTERS.year} value={year} onChange={setYear} primaryColor={primaryTextColor} mutedColor={mutedTextColor} />
+              </>
+            )}
             <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
               <p style={{ ...LF_SMALL, color: primaryTextColor }}>( View )</p>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
@@ -978,62 +994,66 @@ export default function AtlaWork() {
                 })}
               </div>
             </div>
-            <FilterColumn
-              label="( Background )"
-              options={BACKGROUND_FILTERS}
-              value={backgroundMode}
-              onChange={(value) => applyBackgroundChoice(value as (typeof BACKGROUND_FILTERS)[number])}
-              primaryColor={primaryTextColor}
-              mutedColor={mutedTextColor}
-            />
-            <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
-              <p style={{ ...LF_SMALL, color: primaryTextColor }}>( Actions )</p>
-              <div style={{ display: "flex", flexDirection: isMobile ? "row" : "column", flexWrap: isMobile ? "wrap" : "nowrap", gap: isMobile ? FILTER_COLUMN_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
-                <button
-                  type="button"
-                  onClick={() => resetArchiveState()}
-                  style={{
-                    ...LF_MEDIUM,
-                    fontSize: isMobile ? FILTER_OPTION_MOBILE_FONT_SIZE : LF_MEDIUM.fontSize,
-                    color: mutedTextColor,
-                    border: "none",
-                    background: "none",
-                    textAlign: "left",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    minHeight: isMobile ? FILTER_OPTION_MIN_HEIGHT_MOBILE : FILTER_OPTION_MIN_HEIGHT_DESKTOP,
-                    minWidth: isMobile ? 24 : 0,
-                    padding: isMobile ? FILTER_OPTION_MOBILE_PADDING : "2px 2px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Reset
-                </button>
-                <button
-                  type="button"
-                  onClick={shareCurrentPage}
-                  style={{
-                    ...LF_MEDIUM,
-                    fontSize: isMobile ? FILTER_OPTION_MOBILE_FONT_SIZE : LF_MEDIUM.fontSize,
-                    color: mutedTextColor,
-                    border: "none",
-                    background: "none",
-                    textAlign: "left",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    minHeight: isMobile ? FILTER_OPTION_MIN_HEIGHT_MOBILE : FILTER_OPTION_MIN_HEIGHT_DESKTOP,
-                    minWidth: isMobile ? 24 : 0,
-                    padding: isMobile ? FILTER_OPTION_MOBILE_PADDING : "2px 2px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Share
-                </button>
-              </div>
-            </div>
+            {!isListView ? (
+              <>
+                <FilterColumn
+                  label="( Background )"
+                  options={BACKGROUND_FILTERS}
+                  value={backgroundMode}
+                  onChange={(value) => applyBackgroundChoice(value as (typeof BACKGROUND_FILTERS)[number])}
+                  primaryColor={primaryTextColor}
+                  mutedColor={mutedTextColor}
+                />
+                <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
+                  <p style={{ ...LF_SMALL, color: primaryTextColor }}>( Actions )</p>
+                  <div style={{ display: "flex", flexDirection: isMobile ? "row" : "column", flexWrap: isMobile ? "wrap" : "nowrap", gap: isMobile ? FILTER_COLUMN_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP }}>
+                    <button
+                      type="button"
+                      onClick={() => resetArchiveState()}
+                      style={{
+                        ...LF_MEDIUM,
+                        fontSize: isMobile ? FILTER_OPTION_MOBILE_FONT_SIZE : LF_MEDIUM.fontSize,
+                        color: mutedTextColor,
+                        border: "none",
+                        background: "none",
+                        textAlign: "left",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        minHeight: isMobile ? FILTER_OPTION_MIN_HEIGHT_MOBILE : FILTER_OPTION_MIN_HEIGHT_DESKTOP,
+                        minWidth: isMobile ? 24 : 0,
+                        padding: isMobile ? FILTER_OPTION_MOBILE_PADDING : "2px 2px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      type="button"
+                      onClick={shareCurrentPage}
+                      style={{
+                        ...LF_MEDIUM,
+                        fontSize: isMobile ? FILTER_OPTION_MOBILE_FONT_SIZE : LF_MEDIUM.fontSize,
+                        color: mutedTextColor,
+                        border: "none",
+                        background: "none",
+                        textAlign: "left",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        minHeight: isMobile ? FILTER_OPTION_MIN_HEIGHT_MOBILE : FILTER_OPTION_MIN_HEIGHT_DESKTOP,
+                        minWidth: isMobile ? 24 : 0,
+                        padding: isMobile ? FILTER_OPTION_MOBILE_PADDING : "2px 2px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Share
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : null}
           </div>
 
-          <div id="atla-work-results" style={{ width: "100%", margin: "0 auto" }}>
+          <div id="atla-work-results" style={{ width: "100%", maxWidth: isListView && !isMobile ? 1160 : "none", margin: "0 auto" }}>
           <section className="sr-only" aria-label="Work archive context">
             <h2>About the Atla work archive</h2>
             <p>
@@ -1153,7 +1173,7 @@ export default function AtlaWork() {
               </div>
             </div>
           ) : view === "List" ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 3 : 2 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 48 : 68 }}>
               {filteredProjects.map((project, index) => {
                 const baseListPhotos = [project.coverImage, ...project.images]
                   .filter((src, imageIndex, sources) => Boolean(src) && sources.indexOf(src) === imageIndex);
@@ -1172,38 +1192,61 @@ export default function AtlaWork() {
                     className="atla-card"
                     style={{
                       textDecoration: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: isMobile ? 6 : 10,
-                      borderBottom: `1px solid ${borderColor}`,
-                      padding: isMobile ? "2px 0 4px" : "2px 0 3px",
+                      display: "grid",
+                      gap: isMobile ? 18 : 34,
+                      borderBottom: "none",
+                      padding: 0,
                       backgroundColor: commandFocusSlug === project.slug ? (isSurfaceDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)") : "transparent",
                     }}
                   >
-                    <p style={{ ...LF_MEDIUM, fontSize: isMobile ? 12 : 13, color: primaryTextColor, lineHeight: "1", flex: "1 1 auto", minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{project.title}</p>
                     <div
-                      className="atla-hide-scrollbar"
                       style={{
                         display: "grid",
-                        gridTemplateColumns: `repeat(${listPhotos.length || 1}, ${isMobile ? 30 : 42}px)`,
-                        gap: isMobile ? 3 : 4,
-                        overflowX: "auto",
-                        paddingBottom: 1,
-                        justifyContent: "end",
-                        flexShrink: 0,
+                        gridTemplateColumns: isMobile ? "1fr" : "157px 433px 295px 1fr",
+                        columnGap: isMobile ? 0 : 0,
+                        rowGap: isMobile ? 7 : 12,
+                        alignItems: "start",
+                        minWidth: 0,
+                      }}
+                    >
+                      <p style={{ ...LF_MEDIUM, fontSize: isMobile ? 12 : 12, color: primaryTextColor, lineHeight: "1.2", minWidth: 0 }}>{project.title}</p>
+                      <p style={{ ...LF_MEDIUM, fontSize: isMobile ? 12 : 12, color: mutedTextColor, lineHeight: "1.2", minWidth: 0 }}>
+                        {[project.service, project.industry].filter(Boolean).join(", ")}
+                      </p>
+                      <p style={{ ...LF_MEDIUM, fontSize: isMobile ? 12 : 12, color: mutedTextColor, lineHeight: "1.2", minWidth: 0 }}>{project.region || project.country || "—"}</p>
+                      <p style={{ ...LF_MEDIUM, fontSize: isMobile ? 12 : 12, color: primaryTextColor, lineHeight: "1.2", minWidth: 0 }}>{project.year}</p>
+                      <p
+                        style={{
+                          ...LF_MEDIUM,
+                          gridColumn: isMobile ? "auto" : "1 / span 2",
+                          maxWidth: isMobile ? "100%" : 432,
+                          fontSize: isMobile ? 12 : 12,
+                          color: primaryTextColor,
+                          lineHeight: "1.2",
+                          minWidth: 0,
+                        }}
+                      >
+                        {project.description}
+                      </p>
+                    </div>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : `repeat(${LIST_THUMBNAIL_COUNT}, minmax(0, 1fr))`,
+                        gap: isMobile ? 8 : 20,
+                        width: "100%",
                       }}
                     >
                       {listPhotos.map((photoSrc, photoIndex) => {
                         const photoDimensions = getImageDimensions(photoSrc);
-                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 120 : 168, quality: 90 }) || photoSrc;
-                        const photoSrcSet = buildImageSrcSet(photoSrc, [96, 120, 168], { quality: 90 });
+                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 700 : 900, quality: 90 }) || photoSrc;
+                        const photoSrcSet = buildImageSrcSet(photoSrc, isMobile ? [360, 520, 700] : [520, 700, 900], { quality: 90 });
                         return (
-                          <div key={`${project.slug}-list-photo-${photoIndex}`} style={{ position: "relative", width: isMobile ? 30 : 42, aspectRatio: "1 / 1", backgroundColor: "#ece9e2", overflow: "hidden" }}>
+                          <div key={`${project.slug}-list-photo-${photoIndex}`} style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", backgroundColor: "#ece9e2", overflow: "hidden" }}>
                             <img
                               src={optimizedPhotoSrc}
                               srcSet={photoSrcSet}
-                              sizes={isMobile ? "30px" : "42px"}
+                              sizes={isMobile ? "50vw" : "25vw"}
                               alt={`${project.title} photo ${photoIndex + 1}`}
                               width={photoDimensions?.width}
                               height={photoDimensions?.height}
