@@ -10,7 +10,7 @@
   },
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/((?!waitlist|_next|api/quiz|api/collect|images/logos|images/carousel).*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -53,6 +53,13 @@
     { "source": "/10-successful-rebranding-examples-that-changed-the-game", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/waitlist", "destination": "https://start.atla.design/waitlist" },
+    { "source": "/waitlist/:path*", "destination": "https://start.atla.design/waitlist/:path*" },
+    { "source": "/_next/:path*", "destination": "https://start.atla.design/_next/:path*" },
+    { "source": "/api/quiz/:path*", "destination": "https://start.atla.design/api/quiz/:path*" },
+    { "source": "/api/collect", "destination": "https://start.atla.design/api/collect" },
+    { "source": "/images/logos/:path*", "destination": "https://start.atla.design/images/logos/:path*" },
+    { "source": "/images/carousel/:path*", "destination": "https://start.atla.design/images/carousel/:path*" },
     { "source": "/api/:path*", "destination": "/api/index" }
   ]
 }
