@@ -14,8 +14,7 @@ const NAV_LINKS = ["Work", "About", "Services", "Journal", "Contact"] as const;
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://www.instagram.com/atla.studio" },
   { label: "Behance", href: "https://www.behance.net/atla" },
-  { label: "Linkedin", href: "https://www.linkedin.com" },
-  { label: "Facebook", href: "https://www.facebook.com" },
+  { label: "Linkedin", href: "https://www.linkedin.com/company/atlabrandingagency" },
 ] as const;
 
 function getCityTimes() {

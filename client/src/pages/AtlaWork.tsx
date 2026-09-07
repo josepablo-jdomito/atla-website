@@ -866,7 +866,7 @@ export default function AtlaWork() {
     sameAs: [
       "https://www.instagram.com/atla.studio",
       "https://www.behance.net/atla",
-      "https://www.linkedin.com",
+      "https://www.linkedin.com/company/atlabrandingagency",
     ],
     areaServed: ["United States", "Latin America"],
   };
