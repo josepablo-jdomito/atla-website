@@ -1,6 +1,7 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
+import { registerContactRoute } from "./contact.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
@@ -133,6 +134,8 @@ export async function registerRoutes(
   app.get(/^\/portfolio\/.+$/, (_req, res) => {
     res.redirect(301, "/");
   });
+
+  registerContactRoute(app);
 
   app.get("/api/admin/session", async (req, res) => {
     if (isProjectSanityConfigured()) {
