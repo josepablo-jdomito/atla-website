@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
+import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { CONTACT_EMAIL, formatMetaTitle, START_URL } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
@@ -53,15 +53,44 @@ const buttonStyle: React.CSSProperties = {
   cursor: "pointer",
 };
 
-type FormStatus =
-  | { state: "idle" }
-  | { state: "submitting" }
-  | { state: "sent" }
-  | { state: "unavailable" }
-  | { state: "error"; message: string };
+const SUCCESS_TEXT = "Received. We read every note directly and reply with the next recommended step.";
+const OFFLINE_TEXT = `The form is offline right now. Send your note to ${CONTACT_EMAIL} and we will pick it up there.`;
+const GENERIC_ERROR = "Something went wrong. Email us instead.";
+
+/** Messages for the no-JavaScript path, where the server redirects back with ?error=<code>. */
+const REDIRECT_ERRORS: Record<string, string> = {
+  unavailable: OFFLINE_TEXT,
+  invalid: "Check the fields and try again.",
+  busy: "Too many messages from this connection. Try again in a few minutes.",
+  failed: "We could not save your message. Email us instead.",
+};
+
+type FormStatus = "idle" | "submitting" | "sent" | { error: string };
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={labelStyle}>{label}</span>
+      {children}
+    </label>
+  );
+}
 
 function ContactForm() {
-  const [status, setStatus] = useState<FormStatus>({ state: "idle" });
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const statusRef = useRef<HTMLDivElement | null>(null);
+
+  // The prerendered form can submit natively before hydration; the server then redirects back here.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sent") === "1") setStatus("sent");
+    const code = params.get("error");
+    if (code) setStatus({ error: REDIRECT_ERRORS[code] || GENERIC_ERROR });
+  }, []);
+
+  useEffect(() => {
+    if (status === "sent") statusRef.current?.focus();
+  }, [status]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,99 +101,95 @@ function ContactForm() {
       email: String(data.get("email") || ""),
       company: String(data.get("company") || ""),
       message: String(data.get("message") || ""),
-      website: String(data.get("website") || ""),
-      page: typeof window !== "undefined" ? window.location.pathname : "",
+      _gotcha: String(data.get("_gotcha") || ""),
+      page: window.location.pathname,
     };
 
-    setStatus({ state: "submitting" });
+    setStatus("submitting");
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify(payload),
       });
       if (response.status === 503) {
-        setStatus({ state: "unavailable" });
+        setStatus({ error: OFFLINE_TEXT });
         return;
       }
       if (!response.ok) {
         const body = (await response.json().catch(() => null)) as { error?: string } | null;
-        setStatus({ state: "error", message: body?.error || "Something went wrong. Email us instead." });
+        setStatus({ error: body?.error || GENERIC_ERROR });
         return;
       }
       form.reset();
-      setStatus({ state: "sent" });
+      setStatus("sent");
     } catch {
-      setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
+      setStatus({ error: "We could not reach the server. Email us instead." });
     }
   }
 
-  if (status.state === "sent") {
-    return (
-      <div role="status" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <p style={{ ...bodyStyle, fontWeight: 600 }}>Received. We read every note directly and reply with the next recommended step.</p>
-        <p style={{ ...bodyStyle, color: "#6f6f6f" }}>
-          If it is urgent, write to <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
-        </p>
-      </div>
-    );
-  }
-
-  const isSubmitting = status.state === "submitting";
+  const isSubmitting = status === "submitting";
+  const isSent = status === "sent";
 
   return (
-    <form onSubmit={handleSubmit} noValidate={false} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-      <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <span style={labelStyle}>Name</span>
-        <input name="name" type="text" required maxLength={120} autoComplete="name" style={fieldStyle} />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <span style={labelStyle}>Email</span>
-        <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" style={fieldStyle} />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <span style={labelStyle}>Company or website (optional)</span>
-        <input name="company" type="text" maxLength={160} autoComplete="organization" style={fieldStyle} />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <span style={labelStyle}>What is the business, what feels misaligned, and what has to happen next?</span>
-        <textarea name="message" required minLength={10} maxLength={4000} rows={6} style={{ ...fieldStyle, resize: "vertical" }} />
-      </label>
-      {/* Honeypot: hidden from people, filled by bots. */}
-      <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
-        <label>
-          Website
-          <input name="website" type="text" tabIndex={-1} autoComplete="off" />
-        </label>
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {/* Always mounted so assistive tech announces the change; receives focus once the message is saved. */}
+      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} style={{ outline: "none" }}>
+        {isSent ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <p style={{ ...bodyStyle, fontWeight: 600 }}>{SUCCESS_TEXT}</p>
+            <p style={{ ...bodyStyle, color: "#6f6f6f" }}>
+              If it is urgent, write to <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
+            </p>
+          </div>
+        ) : null}
       </div>
 
-      {status.state === "error" ? (
-        <p role="alert" style={{ ...bodyStyle, color: "#9a2d1f" }}>
-          {status.message}{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>
-        </p>
-      ) : null}
-      {status.state === "unavailable" ? (
-        <p role="alert" style={{ ...bodyStyle, color: "#6f6f6f" }}>
-          The form is offline right now. Send your note to{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a> and we will pick it up there.
-        </p>
-      ) : null}
+      {isSent ? null : (
+        <form method="post" action="/api/contact" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <Field label="Name">
+            <input name="name" type="text" required maxLength={120} autoComplete="name" style={fieldStyle} />
+          </Field>
+          <Field label="Email">
+            <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" style={fieldStyle} />
+          </Field>
+          <Field label="Company or website (optional)">
+            <input name="company" type="text" maxLength={160} autoComplete="organization" style={fieldStyle} />
+          </Field>
+          <Field label="What is the business, what feels misaligned, and what has to happen next?">
+            <textarea name="message" required minLength={10} maxLength={4000} rows={6} style={{ ...fieldStyle, resize: "vertical" }} />
+          </Field>
+          {/* Honeypot. Named and labelled so browser autofill and password managers have nothing to match. */}
+          <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
+            <label>
+              Leave this field empty
+              <input name="_gotcha" type="text" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="atla-tap-target"
-          style={{ ...buttonStyle, background: "#222", color: "#fafafa", opacity: isSubmitting ? 0.7 : 1 }}
-        >
-          {isSubmitting ? "Sending…" : "Send message"}
-        </button>
-        <a href={`mailto:${CONTACT_EMAIL}`} style={{ ...bodyStyle, color: "#6f6f6f", textDecoration: "underline" }}>
-          or email {CONTACT_EMAIL}
-        </a>
-      </div>
-    </form>
+          {typeof status === "object" ? (
+            <p role="alert" style={{ ...bodyStyle, color: "#9a2d1f" }}>
+              {status.error}{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>
+            </p>
+          ) : null}
+
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="atla-tap-target"
+              style={{ ...buttonStyle, background: "#222", color: "#fafafa", opacity: isSubmitting ? 0.7 : 1 }}
+            >
+              {isSubmitting ? "Sending…" : "Send message"}
+            </button>
+            <a href={`mailto:${CONTACT_EMAIL}`} style={{ ...bodyStyle, color: "#6f6f6f", textDecoration: "underline" }}>
+              or email {CONTACT_EMAIL}
+            </a>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
 
@@ -214,9 +239,9 @@ export default function AtlaContact() {
             </div>
           </section>
 
-          <section aria-labelledby="contact-form" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <section id="contact-form" aria-labelledby="contact-form-heading" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <h2 id="contact-form" style={{ ...headingStyle, fontSize: isMobile ? 28 : 36 }}>Or write to us directly.</h2>
+              <h2 id="contact-form-heading" style={{ ...headingStyle, fontSize: isMobile ? 28 : 36 }}>Or write to us directly.</h2>
               <p style={{ ...bodyStyle, maxWidth: 520, color: "#6f6f6f" }}>
                 The strongest starting point is a straightforward note: what the business is, what feels misaligned
                 right now, and what has to happen next.
@@ -233,14 +258,24 @@ export default function AtlaContact() {
               that includes your current stage, the key business objective, and any deadlines that shape scope.
             </p>
             <p>
+              If your team is deciding between repositioning, a new identity system, a website redesign, or launch
+              support, include that context in your first message. We review inquiries directly and respond with the
+              next recommended step, including the right conversation format, likely workstream, and the inputs
+              required to move quickly.
+            </p>
+            <p>
               Contact can be initiated through the form on this page, by email at {CONTACT_EMAIL}, or through the
-              guided start at {START_URL}. We review inquiries directly and respond with the next recommended step,
-              including the right conversation format, likely workstream, and the inputs required to move quickly.
+              guided start at {START_URL}. The goal is to reduce friction and get from inquiry to clear direction as
+              fast as possible.
             </p>
             <p>
               Typical kickoff information includes budget range, internal approval flow, launch milestones, current
               brand constraints, and whether support is needed across packaging, website, messaging, or campaign
               rollout. Sharing this in the first note improves speed and recommendation quality.
+            </p>
+            <p>
+              When timing is tight, we can prioritize the smallest sequence of decisions that unlocks momentum
+              first, then expand scope with less risk.
             </p>
           </section>
         </main>
