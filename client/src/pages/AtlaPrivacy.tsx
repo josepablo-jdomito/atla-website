@@ -65,7 +65,7 @@ export default function AtlaPrivacy() {
 
           <Section title="Who we are">
             <p style={bodyStyle}>
-              Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href="mailto:hello@atla.studio" style={{ color: "#222" }}>hello@atla.studio</a>.
+              Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href="mailto:josepablo@atla.design" style={{ color: "#222" }}>josepablo@atla.design</a>.
             </p>
           </Section>
 
@@ -119,7 +119,7 @@ export default function AtlaPrivacy() {
               proceed, data is periodically reviewed and removed based on operational necessity.
             </p>
             <p>
-              Requests related to data access, correction, or deletion can be sent to hello@atla.studio. When required,
+              Requests related to data access, correction, or deletion can be sent to josepablo@atla.design. When required,
               we may request identity verification before processing sensitive requests to protect account and contact
               information from unauthorized access.
             </p>

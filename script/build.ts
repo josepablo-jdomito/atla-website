@@ -608,7 +608,7 @@ async function prerenderRoutes() {
         mainEntity: {
           "@type": "Organization",
           name: ORGANIZATION_NAME,
-          email: "hello@atla.studio",
+          email: "josepablo@atla.design",
           url: SITE_ORIGIN,
         },
       },

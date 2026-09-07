@@ -261,7 +261,7 @@ Static labels only. Article content is excluded.
 ### Sections
 
 #### Who we are
-- `Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact hello@atla.studio.`
+- `Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact josepablo@atla.design.`
 
 #### What we collect
 - `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message.`
@@ -308,7 +308,7 @@ Static labels only. Article content is excluded.
 - `To the extent permitted by law, Atla disclaims liability for damages arising from use of or inability to use the site, including indirect, incidental, or consequential losses.`
 
 #### Contact
-- `For questions about these terms, contact hello@atla.studio.`
+- `For questions about these terms, contact josepablo@atla.design.`
 
 ## Footer
 

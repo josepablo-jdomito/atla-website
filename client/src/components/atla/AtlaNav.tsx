@@ -7,7 +7,7 @@ import { SITE_ORIGIN } from "@shared/siteSeo";
 
 const NAV_HEIGHT_DESKTOP = 76;
 const NAV_HEIGHT_MOBILE = 68;
-const QUICK_EMAIL = "hello@atla.studio";
+const QUICK_EMAIL = "josepablo@atla.design";
 const SLACK_DEEP_LINK = "slack://open";
 const RECENT_PROJECTS_STORAGE_KEY = "atla-command-recent-projects-v1";
 const RECENT_ACTIONS_STORAGE_KEY = "atla-command-recent-actions-v1";

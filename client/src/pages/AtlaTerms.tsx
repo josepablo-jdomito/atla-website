@@ -133,7 +133,7 @@ export default function AtlaTerms() {
 
           <Section title="Contact">
             <p style={bodyStyle}>
-              For questions about these terms, contact <a href="mailto:hello@atla.studio" style={{ color: "#222" }}>hello@atla.studio</a>.
+              For questions about these terms, contact <a href="mailto:josepablo@atla.design" style={{ color: "#222" }}>josepablo@atla.design</a>.
             </p>
           </Section>
         </div>

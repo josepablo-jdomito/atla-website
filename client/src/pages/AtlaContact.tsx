@@ -83,7 +83,7 @@ export default function AtlaContact() {
                 required to move quickly.
               </p>
               <p>
-                Contact can be initiated by email at hello@atla.studio or through the command center inside the site,
+                Contact can be initiated by email at josepablo@atla.design or through the command center inside the site,
                 where visitors can draft a brief, ask questions, or share a project link. The goal is to reduce
                 friction and get from inquiry to clear direction as fast as possible.
               </p>
