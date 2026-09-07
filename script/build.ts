@@ -555,7 +555,8 @@ async function prerenderRoutes() {
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
   const workFeaturedProject = projects[0];
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
-  const workVisibleProjects = projects.slice(0, 4);
+  // Match the grid, which only marks the first two cards eager/high priority.
+  const workVisibleProjects = projects.slice(0, 2);
   const workPreloadImages = buildImagePreloadEntries(
     workVisibleProjects.map((project) => ({
       src: resolveProjectHeroImage(project),

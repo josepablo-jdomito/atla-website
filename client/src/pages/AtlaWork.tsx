@@ -943,22 +943,11 @@ export default function AtlaWork() {
             gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
-          <header
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.4fr) minmax(280px, 1fr)",
-              columnGap: isMobile ? 0 : 40,
-              rowGap: isMobile ? 20 : 0,
-              alignItems: "end",
-              padding: isMobile ? "28px 0 32px" : "56px 0 64px",
-              borderBottom: `1px solid ${borderColor}`,
-              marginBottom: isMobile ? 20 : 28,
-            }}
-          >
-            <h1 style={{ ...HERO_HEADING, fontSize: isMobile ? 38 : "clamp(44px, 4.6vw, 72px)", color: primaryTextColor, maxWidth: "18ch" }}>
+          <header className="atla-home-hero" style={{ borderBottom: `1px solid ${borderColor}` }}>
+            <h1 className="atla-home-hero__title" style={{ ...HERO_HEADING, color: primaryTextColor }}>
               Strategy-led branding for companies across the US and Latin America.
             </h1>
-            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 18 : 22 }}>
+            <div className="atla-home-hero__aside">
               <p style={{ ...HERO_BODY, color: mutedTextColor, maxWidth: "44ch" }}>
                 Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology
                 teams. Selected work is below.
