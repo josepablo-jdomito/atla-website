@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const CITIES = [
   { label: "Austin, US", timeZone: "America/Chicago" },
   { label: "CDMX, MX", timeZone: "America/Mexico_City" },
-  { label: "Caracas, VZ", timeZone: "America/Caracas" },
+  { label: "Caracas, VE", timeZone: "America/Caracas" },
   { label: "Lima, PE", timeZone: "America/Lima" },
   { label: "Tijuana, MX", timeZone: "America/Tijuana" },
 ] as const;
