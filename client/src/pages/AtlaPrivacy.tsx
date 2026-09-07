@@ -71,7 +71,7 @@ export default function AtlaPrivacy() {
 
           <Section title="What we collect">
             <p style={bodyStyle}>
-              The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message.
+              The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, together with the page you submitted it from.
             </p>
           </Section>
 
@@ -92,7 +92,7 @@ export default function AtlaPrivacy() {
 
           <Section title="Third parties">
             <p style={bodyStyle}>
-              The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs.
+              The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries.
             </p>
           </Section>
 
