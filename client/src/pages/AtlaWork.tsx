@@ -904,7 +904,7 @@ export default function AtlaWork() {
     ? formatMetaTitle("Atla", "Strategy-Led Branding Studio")
     : formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla");
   const pageDescription = isRootRoute
-    ? "Atla is a strategy-led branding studio for companies across the US and Latin America."
+    ? "Strategy-led branding studio for companies across the US and Latin America. Positioning, identity, packaging, and digital systems that hold up after launch."
     : "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.";
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";

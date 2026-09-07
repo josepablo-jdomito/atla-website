@@ -576,7 +576,7 @@ async function prerenderRoutes() {
     {
       pathname: "/",
       title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
-      description: "Atla is a strategy-led branding studio for teams across the US and Latin America.",
+      description: "Strategy-led branding studio for companies across the US and Latin America. Positioning, identity, packaging, and digital systems that hold up after launch.",
       image: workFeaturedImage,
       preloadImages: workPreloadImages,
       includeInSitemap: true,
@@ -669,7 +669,7 @@ async function prerenderRoutes() {
     {
       pathname: "/saas-branding",
       title: formatMetaTitle("SaaS Branding Agency", "Brand Identity for Software Companies"),
-      description: "Brand strategy and identity for SaaS teams. Positioning and digital systems built for clear differentiation.",
+      description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
