@@ -9,6 +9,7 @@ import {
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { AtlaNav, type AtlaCommandProject } from "@/components/atla/AtlaNav";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -62,6 +63,41 @@ const LF_SMALL: React.CSSProperties = {
   textTransform: "uppercase",
   margin: 0,
 };
+
+const HERO_HEADING: React.CSSProperties = {
+  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+  fontWeight: 400,
+  lineHeight: "1.02",
+  letterSpacing: -0.5,
+  margin: 0,
+};
+
+const HERO_BODY: React.CSSProperties = {
+  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+  fontSize: 16,
+  fontWeight: 500,
+  lineHeight: "1.5",
+  letterSpacing: 0.2,
+  margin: 0,
+};
+
+const HERO_CTA: React.CSSProperties = {
+  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+  fontSize: 14,
+  fontWeight: 600,
+  letterSpacing: 0.3,
+  lineHeight: 1,
+  textDecoration: "none",
+  borderRadius: 999,
+  minHeight: 48,
+  padding: "0 22px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  whiteSpace: "nowrap",
+};
+
+const START_URL = "https://start.atla.design";
 
 const FILTERS = {
   region: ["All", "America", "Europe", "Asia", "Middle East"],
@@ -495,6 +531,22 @@ export default function AtlaWork() {
   });
 
   const projects = useMemo(() => normalizeProjects(data), [data]);
+  const commandProjects = useMemo<AtlaCommandProject[]>(
+    () =>
+      projects.map((project) => ({
+        slug: project.slug,
+        title: project.title,
+        client: project.client,
+        year: project.year,
+        category: project.category,
+        region: project.region,
+        country: project.country,
+        service: project.service,
+        coverImage: project.coverImage,
+        description: project.description,
+      })),
+    [projects],
+  );
   const industryOptions = useMemo(
     () => buildFacetOptions(projects.map((project) => project.industry), INDUSTRY_BASE_OPTIONS),
     [projects],
@@ -905,6 +957,7 @@ export default function AtlaWork() {
         structuredData={[organizationSchema, itemListSchema]}
       />
       <div className="atla-dark-surface">
+      <AtlaNav commandProjects={commandProjects} currentSearch={searchQuery} />
       <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
         <div
           className="atla-enter"
@@ -919,21 +972,44 @@ export default function AtlaWork() {
             gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
-          <h1
+          <header
             style={{
-              position: "absolute",
-              width: 1,
-              height: 1,
-              padding: 0,
-              margin: -1,
-              overflow: "hidden",
-              clip: "rect(0, 0, 0, 0)",
-              whiteSpace: "nowrap",
-              border: 0,
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.4fr) minmax(280px, 1fr)",
+              columnGap: isMobile ? 0 : 40,
+              rowGap: isMobile ? 20 : 0,
+              alignItems: "end",
+              padding: isMobile ? "28px 0 32px" : "56px 0 64px",
+              borderBottom: `1px solid ${borderColor}`,
+              marginBottom: isMobile ? 20 : 28,
             }}
           >
-            Selected Atla branding and digital work
-          </h1>
+            <h1 style={{ ...HERO_HEADING, fontSize: isMobile ? 38 : "clamp(44px, 4.6vw, 72px)", color: primaryTextColor, maxWidth: "18ch" }}>
+              Strategy-led branding for companies across the US and Latin America.
+            </h1>
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 18 : 22 }}>
+              <p style={{ ...HERO_BODY, color: mutedTextColor, maxWidth: "44ch" }}>
+                Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology
+                teams. Selected work is below.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                <a
+                  href={START_URL}
+                  className="atla-tap-target"
+                  style={{ ...HERO_CTA, background: primaryTextColor, color: surfaceColor }}
+                >
+                  Start your project
+                </a>
+                <a
+                  href="/contact"
+                  className="atla-tap-target"
+                  style={{ ...HERO_CTA, border: `1px solid ${borderColor}`, color: primaryTextColor }}
+                >
+                  Contact
+                </a>
+              </div>
+            </div>
+          </header>
           <div
             style={{
               display: "grid",
