@@ -12,7 +12,7 @@ import {
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
-import { AtlaNav, type AtlaCommandProject } from "@/components/atla/AtlaNav";
+import { AtlaNav } from "@/components/atla/AtlaNav";
 import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
@@ -518,22 +518,10 @@ export default function AtlaWork() {
   });
 
   const projects = useMemo(() => normalizeProjects(data), [data]);
-  const commandProjects = useMemo<AtlaCommandProject[]>(
-    () =>
-      projects.map((project) => ({
-        slug: project.slug,
-        title: project.title,
-        client: project.client,
-        year: project.year,
-        category: project.category,
-        region: project.region,
-        country: project.country,
-        service: project.service,
-        coverImage: project.coverImage,
-        description: project.description,
-      })),
-    [projects],
-  );
+  // The atla:command listener below is registered once; read projects through a ref
+  // so a palette selection made after the query resolves sees the loaded list.
+  const projectsRef = useRef(projects);
+  projectsRef.current = projects;
   const industryOptions = useMemo(
     () => buildFacetOptions(projects.map((project) => project.industry), INDUSTRY_BASE_OPTIONS),
     [projects],
@@ -824,7 +812,7 @@ export default function AtlaWork() {
       }
 
       if (type === "focus-project" && typeof value === "string") {
-        const projectMatch = projects.find((project) => project.slug === value);
+        const projectMatch = projectsRef.current.find((project) => project.slug === value);
         if (!projectMatch) return;
         setRegion("All");
         setIndustry("All");
@@ -940,7 +928,7 @@ export default function AtlaWork() {
         structuredData={[organizationSchema, itemListSchema]}
       />
       <div className="atla-dark-surface">
-      <AtlaNav commandProjects={commandProjects} currentSearch={searchQuery} />
+      <AtlaNav commandProjects={projects} currentSearch={searchQuery} />
       <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
         <div
           className="atla-enter"
