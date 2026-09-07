@@ -3,10 +3,8 @@ import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { formatMetaTitle } from "@shared/siteSeo";
-
-const CONTACT_EMAIL = "josepablo@atla.design";
-const START_URL = "https://start.atla.design";
+import { ATLA_PILL } from "@/components/atla/atlaStyles";
+import { CONTACT_EMAIL, formatMetaTitle, START_URL } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
   fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
@@ -50,19 +48,7 @@ const fieldStyle: React.CSSProperties = {
 };
 
 const buttonStyle: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 600,
-  letterSpacing: 0.3,
-  lineHeight: 1,
-  textDecoration: "none",
-  borderRadius: 999,
-  minHeight: 48,
-  padding: "0 22px",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  whiteSpace: "nowrap",
+  ...ATLA_PILL,
   border: "1px solid #222",
   cursor: "pointer",
 };

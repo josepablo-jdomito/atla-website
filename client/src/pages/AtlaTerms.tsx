@@ -2,7 +2,7 @@ import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { formatMetaTitle } from "@shared/siteSeo";
+import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
   fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
@@ -133,7 +133,7 @@ export default function AtlaTerms() {
 
           <Section title="Contact">
             <p style={bodyStyle}>
-              For questions about these terms, contact <a href="mailto:josepablo@atla.design" style={{ color: "#222" }}>josepablo@atla.design</a>.
+              For questions about these terms, contact <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
             </p>
           </Section>
         </div>

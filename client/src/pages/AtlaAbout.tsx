@@ -4,12 +4,7 @@ import { AtlaSymbol } from "@/components/atla/AtlaMarks";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
-import {
-  formatMetaTitle,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
-  SITE_ORIGIN,
-} from "@shared/siteSeo";
+import { ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_ORIGIN, SOCIAL_PROFILES, formatMetaTitle } from "@shared/siteSeo";
 
 const LF_REG18: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -102,11 +97,7 @@ export default function AtlaAbout() {
     name: ORGANIZATION_NAME,
     url: SITE_ORIGIN,
     logo: ORGANIZATION_LOGO_URL,
-    sameAs: [
-      "https://www.instagram.com/atla.studio",
-      "https://www.behance.net/atla",
-      "https://www.linkedin.com/company/atlabrandingagency",
-    ],
+    sameAs: SOCIAL_PROFILES.map((profile) => profile.href),
     areaServed: ["United States", "Latin America"],
   };
 

@@ -3,11 +3,11 @@ import { FileText, Grid3X3, List, Mail, MessageCircleQuestion, Palette, RotateCc
 import { AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SITE_ORIGIN } from "@shared/siteSeo";
+import { CONTACT_EMAIL, SITE_ORIGIN } from "@shared/siteSeo";
 
 const NAV_HEIGHT_DESKTOP = 76;
 const NAV_HEIGHT_MOBILE = 68;
-const QUICK_EMAIL = "josepablo@atla.design";
+const QUICK_EMAIL = CONTACT_EMAIL;
 const SLACK_DEEP_LINK = "slack://open";
 const RECENT_PROJECTS_STORAGE_KEY = "atla-command-recent-projects-v1";
 const RECENT_ACTIONS_STORAGE_KEY = "atla-command-recent-actions-v1";

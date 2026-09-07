@@ -3,13 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
   formatMetaTitle,
+  HOME_META_DESCRIPTION,
   ORGANIZATION_LOGO_URL,
   ORGANIZATION_NAME,
   SITE_ORIGIN,
+  SOCIAL_PROFILES,
+  START_URL,
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav, type AtlaCommandProject } from "@/components/atla/AtlaNav";
+import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -81,23 +85,6 @@ const HERO_BODY: React.CSSProperties = {
   margin: 0,
 };
 
-const HERO_CTA: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 600,
-  letterSpacing: 0.3,
-  lineHeight: 1,
-  textDecoration: "none",
-  borderRadius: 999,
-  minHeight: 48,
-  padding: "0 22px",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  whiteSpace: "nowrap",
-};
-
-const START_URL = "https://start.atla.design";
 
 const FILTERS = {
   region: ["All", "America", "Europe", "Asia", "Middle East"],
@@ -904,7 +891,7 @@ export default function AtlaWork() {
     ? formatMetaTitle("Atla", "Strategy-Led Branding Studio")
     : formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla");
   const pageDescription = isRootRoute
-    ? "Strategy-led branding studio for companies across the US and Latin America. Positioning, identity, packaging, and digital systems that hold up after launch."
+    ? HOME_META_DESCRIPTION
     : "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.";
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
@@ -915,11 +902,7 @@ export default function AtlaWork() {
     name: ORGANIZATION_NAME,
     url: SITE_ORIGIN,
     logo: ORGANIZATION_LOGO_URL,
-    sameAs: [
-      "https://www.instagram.com/atla.studio",
-      "https://www.behance.net/atla",
-      "https://www.linkedin.com/company/atlabrandingagency",
-    ],
+    sameAs: SOCIAL_PROFILES.map((profile) => profile.href),
     areaServed: ["United States", "Latin America"],
   };
   const itemListSchema = {
@@ -996,14 +979,14 @@ export default function AtlaWork() {
                 <a
                   href={START_URL}
                   className="atla-tap-target"
-                  style={{ ...HERO_CTA, background: primaryTextColor, color: surfaceColor }}
+                  style={{ ...ATLA_PILL, background: primaryTextColor, color: surfaceColor }}
                 >
                   Start your project
                 </a>
                 <a
                   href="/contact"
                   className="atla-tap-target"
-                  style={{ ...HERO_CTA, border: `1px solid ${borderColor}`, color: primaryTextColor }}
+                  style={{ ...ATLA_PILL, border: `1px solid ${borderColor}`, color: primaryTextColor }}
                 >
                   Contact
                 </a>

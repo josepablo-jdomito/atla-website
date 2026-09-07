@@ -6,14 +6,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import {
-  DEFAULT_OG_IMAGE_URL,
-  formatMetaTitle,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
-  SITE_NAME,
-  SITE_ORIGIN,
-} from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -576,7 +569,7 @@ async function prerenderRoutes() {
     {
       pathname: "/",
       title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
-      description: "Strategy-led branding studio for companies across the US and Latin America. Positioning, identity, packaging, and digital systems that hold up after launch.",
+      description: HOME_META_DESCRIPTION,
       image: workFeaturedImage,
       preloadImages: workPreloadImages,
       includeInSitemap: true,
@@ -608,7 +601,7 @@ async function prerenderRoutes() {
         mainEntity: {
           "@type": "Organization",
           name: ORGANIZATION_NAME,
-          email: "josepablo@atla.design",
+          email: CONTACT_EMAIL,
           url: SITE_ORIGIN,
         },
       },
