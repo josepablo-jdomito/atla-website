@@ -22,11 +22,12 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
   - `DELETE /api/projects/:id` — legacy write route, retired when Sanity is active
   - `GET /api/journal` — list published journal articles from Sanity
   - `GET /api/journal/:slug` — single published journal article from Sanity
+  - `POST /api/contact` — contact form; writes the inquiry to Attio (person lookup or create + note); answers 503 without `ATTIO_API_KEY`
 - **Figma assets**: served from `client/public/figmaAssets/` (logo `p-framer-text.png`, toggle icons, media, photos, hero, symbol)
 - **Mockup sandbox**: live component previews at `/__mockup/preview/atla/*`
 - **Shared layout modules**: `client/src/components/atla/AtlaNav.tsx` (navbar + mobile menu overlay) and `client/src/components/atla/AtlaFooter.tsx` — import and drop into any page
 - **Pages**:
-  - `/` → `client/src/pages/ElementDefault.tsx` — Home (1200×750px gallery + bottom strip)
+  - `/` → `client/src/pages/AtlaWork.tsx` — Home (hero with H1 and CTAs + filterable work archive)
   - `/about` → `client/src/pages/AtlaAbout.tsx` — About (hero + About/Team/Services/Clients/Honors sections)
   - `/admin/projects` → `client/src/pages/ProjectsAdmin.tsx` — retired legacy admin notice
 - **Fonts**: Libre Franklin + Roboto Mono (Google Fonts via `<link>` in index.html), ABC Synt Variable Unlicensed Trial + PP Playground (local fallback via `@font-face`)
@@ -38,6 +39,7 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
 - **`server/app.ts`** — shared Express app setup (middleware + routes) used by both local `server/index.ts` and the Vercel serverless function; does NOT call `.listen()`
 - Requires `DATABASE_URL` environment variable set in Vercel project settings
 - Requires `SANITY_JOURNAL_*` environment variables in Vercel so journal routes, prerendered SEO pages, and the sitemap can build from Sanity content
+- Requires `ATTIO_API_KEY` in Vercel for `POST /api/contact`; without it the contact form shows the email fallback
 - `npm run audit:journal` audits published or scheduled journal entries straight from Sanity
 
 ## Stack

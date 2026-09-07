@@ -47,6 +47,12 @@ Excluded on purpose:
 
 ## Homepage
 
+### Hero
+- `Strategy-led branding for companies across the US and Latin America.`
+- `Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology teams. Selected work is below.`
+- `Start your project` (links to start.atla.design)
+- `Contact`
+
 ### Fallback center title
 - `Project Name`
 
@@ -250,6 +256,27 @@ Static labels only. Article content is excluded.
 - `Source:`
 - `Author:`
 
+## Contact Page
+
+### Hero
+- `Contact`
+- `Start the conversation before the project gets noisy.`
+- `We work with teams that need clarity, not decoration. If you are launching, repositioning, or rebuilding a brand system, we can help shape the strategy and the execution together.`
+
+### Guided start
+- `Not sure what you need yet?`
+- `Start with the guided path. It tells you whether the right next move is a Branding Analysis, a full identity engagement, or a narrower decision first.`
+- `Pick where to start` (links to start.atla.design)
+
+### Form
+- `Or write to us directly.`
+- `The strongest starting point is a straightforward note: what the business is, what feels misaligned right now, and what has to happen next.`
+- Labels: `Name`, `Email`, `Company or website (optional)`, `What is the business, what feels misaligned, and what has to happen next?`
+- `Send message` / `Sending…` / `or email josepablo@atla.design`
+- Success: `Received. We read every note directly and reply with the next recommended step.` / `If it is urgent, write to josepablo@atla.design.`
+- Offline: `The form is offline right now. Send your note to josepablo@atla.design and we will pick it up there.`
+- Errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.` / `Check the fields and try again.` / `Too many messages from this connection. Try again in a few minutes.` / `We could not save your message. Email us instead.`
+
 ## Privacy Policy
 
 ### Heading
@@ -264,7 +291,7 @@ Static labels only. Article content is excluded.
 - `Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact josepablo@atla.design.`
 
 #### What we collect
-- `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message.`
+- `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, together with the page you submitted it from.`
 
 #### Cookies and storage
 - `The site uses functional browser storage to remember your theme preference between light and dark mode. This is stored locally in your browser and is used only to keep the interface consistent across visits.`
@@ -274,7 +301,7 @@ Static labels only. Article content is excluded.
 - `We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities.`
 
 #### Third parties
-- `The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs.`
+- `The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries.`
 
 #### Your rights
 - `Depending on your jurisdiction, you may have rights to request access, correction, deletion, or restriction of personal data. Contact us and we will respond according to the applicable legal framework.`
@@ -329,12 +356,11 @@ Static labels only. Article content is excluded.
 - `Instagram`
 - `Behance`
 - `Linkedin`
-- `Facebook`
 
 ### Offices
 - `Austin, US`
 - `CDMX, MX`
-- `Caracas, VZ`
+- `Caracas, VE`
 - `Lima, PE`
 - `Tijuana, MX`
 
