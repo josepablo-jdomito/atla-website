@@ -7,20 +7,21 @@ Excluded on purpose:
 - Sanity-driven project content
 - Sanity-driven journal/article content
 - Dynamic categories, article titles, excerpts, dates, and related content
+- Screen-reader-only SEO prose (`sr-only` sections)
 
 ## Global / Meta
 
 ### Site title
-- `Atla — Design Studio`
+- `Atla — Branding Studio`
 
 ### Global meta description
-- `Atla is a design studio specializing in brand identity, visual communication, and digital experiences for ambitious companies across the US and Latin America.`
+- `Atla is a strategy-led branding studio for ambitious companies across the US and Latin America.`
 
 ### Global OG title
-- `Atla — Design Studio`
+- `Atla — Branding Studio`
 
 ### Global OG description
-- `Brand identity, visual communication, and digital experiences for ambitious companies.`
+- `Strategy, identity, and creative direction for companies that take their brand seriously.`
 
 ## Navigation
 
@@ -31,19 +32,23 @@ Excluded on purpose:
 - `Journal`
 - `Contact`
 
-### Mobile menu
-- `Menu`
-- `Close`
-- `Work`
-- `About`
-- `Services`
-- `Careers`
-- `Journal`
-- `Contact`
-- `Instagram`
-- `Behance`
-- `Linkedin`
-- `Facebook`
+### Header (command center trigger)
+- `start here`
+- `i want to.`
+- `Cmd K`
+
+### Command center actions
+- `Search archive`
+- `Write a brief`
+- `Ask a question`
+- `Share site via email`
+- `Share site via Slack`
+- `Reset archive state`
+- `Switch to Grid view`
+- `Switch to List view`
+- `Random background`
+- `System background`
+- `Copy contact email`
 
 ## Homepage
 
@@ -274,8 +279,9 @@ Static labels only. Article content is excluded.
 - Labels: `Name`, `Email`, `Company or website (optional)`, `What is the business, what feels misaligned, and what has to happen next?`
 - `Send message` / `Sending…` / `or email josepablo@atla.design`
 - Success: `Received. We read every note directly and reply with the next recommended step.` / `If it is urgent, write to josepablo@atla.design.`
-- Offline: `The form is offline right now. Send your note to josepablo@atla.design and we will pick it up there.`
-- Errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.` / `Check the fields and try again.` / `Too many messages from this connection. Try again in a few minutes.` / `We could not save your message. Email us instead.`
+- Offline: `The form is offline right now. Send your note to josepablo@atla.design`
+- Errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.` / server messages (`Name is required`, `Enter a valid email`, `Tell us a little more`, `Too many messages from this connection. Try again in a few minutes.`, `We could not save your message. Email us instead.`)
+- No-JavaScript result page (served by `POST /api/contact`): `Received.` / `The form is offline right now.` / `Something in the form needs a second look.` / `Too many messages from this connection.` / `We could not save your message.` / `This form only accepts submissions from atla.design.` / `Back to the contact page`
 
 ## Privacy Policy
 
@@ -301,7 +307,7 @@ Static labels only. Article content is excluded.
 - `We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities.`
 
 #### Third parties
-- `The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries.`
+- `The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up.`
 
 #### Your rights
 - `Depending on your jurisdiction, you may have rights to request access, correction, deletion, or restriction of personal data. Contact us and we will respond according to the applicable legal framework.`
@@ -348,7 +354,6 @@ Static labels only. Article content is excluded.
 - `Work`
 - `About`
 - `Services`
-- `Careers`
 - `Journal`
 - `Contact`
 
