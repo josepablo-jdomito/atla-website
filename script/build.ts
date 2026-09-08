@@ -434,6 +434,22 @@ async function writeFontLoaderScript() {
   );
 }
 
+const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+/** Preload entries for every <img loading="eager"> in rendered markup, in document order. */
+function eagerImagePreloads(html: string) {
+  const entries: Array<{ href: string; srcSet?: string; sizes?: string }> = [];
+  for (const tag of html.match(/<img\b[^>]*\bloading="eager"[^>]*>/g) ?? []) {
+    const attr = (name: string) => {
+      const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
+      return match ? unescapeAttr(match[1]) : undefined;
+    };
+    const href = attr("src");
+    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes") });
+  }
+  return entries;
+}
+
 function replaceHead(template: string, headMarkup: string) {
   return template
     .replace(/<title>[\s\S]*?<\/title>/, "")
@@ -555,15 +571,6 @@ async function prerenderRoutes() {
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
   const workFeaturedProject = projects[0];
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
-  const workVisibleProjects = projects.slice(0, 4);
-  const workPreloadImages = buildImagePreloadEntries(
-    workVisibleProjects.map((project) => ({
-      src: resolveProjectHeroImage(project),
-      widths: [320, 480, 640],
-      quality: 82,
-      sizes: "(max-width: 767px) calc(100vw - 40px), 20vw",
-    })),
-  );
 
   const staticRoutes = [
     {
@@ -571,7 +578,6 @@ async function prerenderRoutes() {
       title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
       description: HOME_META_DESCRIPTION,
       image: workFeaturedImage,
-      preloadImages: workPreloadImages,
       includeInSitemap: true,
       structuredData: ORGANIZATION_SCHEMA,
     },
@@ -727,12 +733,14 @@ async function prerenderRoutes() {
   ];
 
   for (const route of staticRoutes) {
-    const html = await injectPrerenderedApp(
-      replaceHead(template, createHeadMarkup(route)),
+    const body = await injectPrerenderedApp(
+      template,
       route.pathname,
       getStaticRoutePrerenderData(route.pathname, { projects, articles, categories }),
     );
-    await writeRoutePage(route.pathname, html);
+    // The home preloads exactly the images its markup loads eagerly, so the hints always match a real request.
+    const preloadImages = route.pathname === "/" ? eagerImagePreloads(body) : route.preloadImages;
+    await writeRoutePage(route.pathname, replaceHead(body, createHeadMarkup({ ...route, preloadImages })));
   }
 
   for (const category of categories) {

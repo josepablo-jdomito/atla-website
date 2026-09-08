@@ -640,13 +640,13 @@ export default function AtlaWork() {
     if (view === "Masonry") {
       return masonryPhotoPool
         .slice(0, 2)
-        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 960 : 1600, quality: 90 }) || item.imageSrc);
+        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 90 }) || item.imageSrc);
     }
 
     if (view === "Timeline") {
       return timelineProjects
         .slice(0, 2)
-        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 90 }) || project.coverImage);
+        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 90 }) || project.coverImage);
     }
 
     return filteredProjects
