@@ -22,10 +22,11 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
   - `DELETE /api/projects/:id` — legacy write route, retired when Sanity is active
   - `GET /api/journal` — list published journal articles from Sanity
   - `GET /api/journal/:slug` — single published journal article from Sanity
-  - `POST /api/contact` — contact form; writes the inquiry to Attio (person lookup or create + note); answers 503 without `ATTIO_API_KEY`
+  - `POST /api/contact` — contact form; writes the inquiry to Attio (person lookup or create + note). JSON requests get JSON; urlencoded (no-JavaScript) requests get a 303 to `GET /api/contact/result?o=<outcome>` and are refused (403) when Origin/Referer names another site. Answers 503 without `ATTIO_API_KEY`. The per-IP limiter is in-memory per instance: a Vercel rate rule on `/api/contact` is the real control
+  - `GET /api/contact/result` — self-contained HTML outcome page for the no-JavaScript form (fixed copy, no request data)
 - **Figma assets**: served from `client/public/figmaAssets/` (logo `p-framer-text.png`, toggle icons, media, photos, hero, symbol)
 - **Mockup sandbox**: live component previews at `/__mockup/preview/atla/*`
-- **Shared layout modules**: `client/src/components/atla/AtlaNav.tsx` (navbar + mobile menu overlay) and `client/src/components/atla/AtlaFooter.tsx` — import and drop into any page
+- **Shared layout modules**: `client/src/components/atla/AtlaNav.tsx` (wordmark + command center trigger and palette) and `client/src/components/atla/AtlaFooter.tsx` — import and drop into any page
 - **Pages**:
   - `/` → `client/src/pages/AtlaWork.tsx` — Home (hero with H1 and CTAs + filterable work archive)
   - `/about` → `client/src/pages/AtlaAbout.tsx` — About (hero + About/Team/Services/Clients/Honors sections)

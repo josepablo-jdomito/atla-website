@@ -25,13 +25,6 @@ Excluded on purpose:
 
 ## Navigation
 
-### Desktop nav
-- `Work`
-- `About`
-- `Services`
-- `Journal`
-- `Contact`
-
 ### Header (command center trigger)
 - `start here`
 - `i want to.`
@@ -279,9 +272,18 @@ Static labels only. Article content is excluded.
 - Labels: `Name`, `Email`, `Company or website (optional)`, `What is the business, what feels misaligned, and what has to happen next?`
 - `Send message` / `Sending…` / `or email josepablo@atla.design`
 - Success: `Received. We read every note directly and reply with the next recommended step.` / `If it is urgent, write to josepablo@atla.design.`
-- Offline: `The form is offline right now. Send your note to josepablo@atla.design`
-- Errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.` / server messages (`Name is required`, `Enter a valid email`, `Tell us a little more`, `Too many messages from this connection. Try again in a few minutes.`, `We could not save your message. Email us instead.`)
-- No-JavaScript result page (served by `POST /api/contact`): `Received.` / `The form is offline right now.` / `Something in the form needs a second look.` / `Too many messages from this connection.` / `We could not save your message.` / `This form only accepts submissions from atla.design.` / `Back to the contact page`
+- Offline: `The form is offline right now. Send your note to` + linked email + ` and we will pick it up there.`
+- Client errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.`
+- Server field messages (shown without the email): `Name is required` / `Enter a valid email` / `Tell us a little more` / `The request body could not be read.`
+- Server failure messages (shown with the email): `Too many messages from this connection. Try again in a few minutes, or email us.` / `We could not save your message. Email it to josepablo@atla.design instead.`
+- No-JavaScript result page (`GET /api/contact/result`), heading / body:
+  - `Received.` / `We read every note directly and reply with the next recommended step.`
+  - `The form is offline right now.` / `Send your note to josepablo@atla.design and we will pick it up there.`
+  - `Something in the form needs a second look.` / `Go back, check the fields, and send it again.`
+  - `Too many messages from this connection.` / `Try again in a few minutes, or email us.`
+  - `We could not save your message.` / `Email it to josepablo@atla.design instead.`
+  - `This form only accepts submissions from atla.design.` / `Open the contact page and send it from there.`
+  - `Back to the contact page`
 
 ## Privacy Policy
 
@@ -297,7 +299,7 @@ Static labels only. Article content is excluded.
 - `Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact josepablo@atla.design.`
 
 #### What we collect
-- `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, together with the page you submitted it from.`
+- `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter.`
 
 #### Cookies and storage
 - `The site uses functional browser storage to remember your theme preference between light and dark mode. This is stored locally in your browser and is used only to keep the interface consistent across visits.`
