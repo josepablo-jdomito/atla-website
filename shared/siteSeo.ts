@@ -15,6 +15,16 @@ export const SOCIAL_PROFILES = [
   { label: "Behance", href: "https://www.behance.net/atla" },
   { label: "Linkedin", href: "https://www.linkedin.com/company/atlabrandingagency" },
 ] as const;
+/** Organization JSON-LD asserted on / and /about. */
+export const ORGANIZATION_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: ORGANIZATION_NAME,
+  url: SITE_ORIGIN,
+  logo: ORGANIZATION_LOGO_URL,
+  sameAs: SOCIAL_PROFILES.map((profile) => profile.href),
+  areaServed: ["United States", "Latin America"],
+} as const;
 /** Home meta description, shared by the prerender route table and the runtime SeoHead. */
 export const HOME_META_DESCRIPTION =
   "Strategy-led branding studio for companies across the US and Latin America. Positioning, identity, packaging, and digital systems that hold up after launch.";

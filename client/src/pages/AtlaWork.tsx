@@ -2,13 +2,11 @@ import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from "react
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
-  formatMetaTitle,
   HOME_META_DESCRIPTION,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
+  ORGANIZATION_SCHEMA,
   SITE_ORIGIN,
-  SOCIAL_PROFILES,
   START_URL,
+  formatMetaTitle,
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
@@ -868,15 +866,6 @@ export default function AtlaWork() {
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
   const isListView = view === "List";
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: ORGANIZATION_NAME,
-    url: SITE_ORIGIN,
-    logo: ORGANIZATION_LOGO_URL,
-    sameAs: SOCIAL_PROFILES.map((profile) => profile.href),
-    areaServed: ["United States", "Latin America"],
-  };
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -909,7 +898,7 @@ export default function AtlaWork() {
         robots={robots}
         image={filteredProjects[0]?.coverImage || undefined}
         preloadImages={lcpPreloadImages}
-        structuredData={[organizationSchema, itemListSchema]}
+        structuredData={[ORGANIZATION_SCHEMA, itemListSchema]}
       />
       <div className="atla-dark-surface">
       <AtlaNav commandProjects={projects} currentSearch={searchQuery} />
