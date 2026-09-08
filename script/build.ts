@@ -6,7 +6,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -573,6 +573,7 @@ async function prerenderRoutes() {
       image: workFeaturedImage,
       preloadImages: workPreloadImages,
       includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
     },
     {
       pathname: "/about",
@@ -585,6 +586,7 @@ async function prerenderRoutes() {
         { href: "/figmaAssets/photo-2.jpg" },
       ],
       includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
     },
     {
       pathname: "/contact",
