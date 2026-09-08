@@ -310,7 +310,12 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
 }
 
 .atla-home-hero__title {
+  font-family: 'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif;
+  font-weight: 400;
   font-size: 38px;
+  line-height: 1.02;
+  letter-spacing: -0.5px;
+  margin: 0;
   max-width: 18ch;
 }
 
@@ -318,6 +323,16 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.atla-home-hero__aside p {
+  font-family: 'Libre Franklin', Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  margin: 0;
+  max-width: 44ch;
 }
 
 @media (min-width: 768px) {

@@ -68,22 +68,6 @@ const LF_SMALL: React.CSSProperties = {
   margin: 0,
 };
 
-const HERO_HEADING: React.CSSProperties = {
-  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-  fontWeight: 400,
-  lineHeight: "1.02",
-  letterSpacing: -0.5,
-  margin: 0,
-};
-
-const HERO_BODY: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 16,
-  fontWeight: 500,
-  lineHeight: "1.5",
-  letterSpacing: 0.2,
-  margin: 0,
-};
 
 
 const FILTERS = {
@@ -944,11 +928,11 @@ export default function AtlaWork() {
           }}
         >
           <header className="atla-home-hero" style={{ borderBottom: `1px solid ${borderColor}` }}>
-            <h1 className="atla-home-hero__title" style={{ ...HERO_HEADING, color: primaryTextColor }}>
+            <h1 className="atla-home-hero__title" style={{ color: primaryTextColor }}>
               Strategy-led branding for companies across the US and Latin America.
             </h1>
             <div className="atla-home-hero__aside">
-              <p style={{ ...HERO_BODY, color: mutedTextColor, maxWidth: "44ch" }}>
+              <p style={{ color: mutedTextColor }}>
                 Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology
                 teams. Selected work is below.
               </p>
