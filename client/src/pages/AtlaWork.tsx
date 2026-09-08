@@ -866,19 +866,26 @@ export default function AtlaWork() {
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
   const isListView = view === "List";
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Atla selected work",
-    itemListOrder: "https://schema.org/ItemListUnordered",
-    numberOfItems: filteredProjects.length,
-    itemListElement: filteredProjects.slice(0, 64).map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: project.title,
-      url: `${SITE_ORIGIN}/projects/${project.slug}`,
-    })),
-  };
+  // Memoized so SeoHead's effect (which rewrites head tags) does not re-run on every masonry batch.
+  const structuredData = useMemo(
+    () => [
+      ORGANIZATION_SCHEMA,
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "Atla selected work",
+        itemListOrder: "https://schema.org/ItemListUnordered",
+        numberOfItems: filteredProjects.length,
+        itemListElement: filteredProjects.slice(0, 64).map((project, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: project.title,
+          url: `${SITE_ORIGIN}/projects/${project.slug}`,
+        })),
+      },
+    ],
+    [filteredProjects],
+  );
 
   return (
     <div
@@ -898,7 +905,7 @@ export default function AtlaWork() {
         robots={robots}
         image={filteredProjects[0]?.coverImage || undefined}
         preloadImages={lcpPreloadImages}
-        structuredData={[ORGANIZATION_SCHEMA, itemListSchema]}
+        structuredData={structuredData}
       />
       <div className="atla-dark-surface">
       <AtlaNav commandProjects={projects} currentSearch={searchQuery} />

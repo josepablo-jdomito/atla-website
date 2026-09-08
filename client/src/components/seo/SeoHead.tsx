@@ -13,6 +13,7 @@ type SeoHeadProps = {
 };
 
 const SITE_NAME = "Atla";
+const NO_PRELOADS: string[] = [];
 const FALLBACK_ORIGIN = "https://www.atla.design";
 
 function getOrigin() {
@@ -58,7 +59,7 @@ export function SeoHead({
   description,
   pathname,
   image,
-  preloadImages = [],
+  preloadImages = NO_PRELOADS,
   type = "website",
   robots = "index,follow",
   structuredData,
