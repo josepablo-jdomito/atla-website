@@ -54,18 +54,13 @@ const buttonStyle: React.CSSProperties = {
 };
 
 const SUCCESS_TEXT = "Received. We read every note directly and reply with the next recommended step.";
-const OFFLINE_TEXT = `The form is offline right now. Send your note to ${CONTACT_EMAIL} and we will pick it up there.`;
-const GENERIC_ERROR = "Something went wrong. Email us instead.";
 
-/** Messages for the no-JavaScript path, where the server redirects back with ?error=<code>. */
-const REDIRECT_ERRORS: Record<string, string> = {
-  unavailable: OFFLINE_TEXT,
-  invalid: "Check the fields and try again.",
-  busy: "Too many messages from this connection. Try again in a few minutes.",
-  failed: "We could not save your message. Email us instead.",
-};
-
-type FormStatus = "idle" | "submitting" | "sent" | { error: string };
+type FormStatus =
+  | { state: "idle" }
+  | { state: "submitting" }
+  | { state: "sent" }
+  | { state: "offline" }
+  | { state: "error"; message: string };
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -77,59 +72,52 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function ContactForm() {
-  const [status, setStatus] = useState<FormStatus>("idle");
+  const [status, setStatus] = useState<FormStatus>({ state: "idle" });
   const statusRef = useRef<HTMLDivElement | null>(null);
 
-  // The prerendered form can submit natively before hydration; the server then redirects back here.
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("sent") === "1") setStatus("sent");
-    const code = params.get("error");
-    if (code) setStatus({ error: REDIRECT_ERRORS[code] || GENERIC_ERROR });
-  }, []);
-
-  useEffect(() => {
-    if (status === "sent") statusRef.current?.focus();
+    if (status.state === "sent") statusRef.current?.focus();
   }, [status]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const payload = {
-      name: String(data.get("name") || ""),
-      email: String(data.get("email") || ""),
-      company: String(data.get("company") || ""),
-      message: String(data.get("message") || ""),
-      _gotcha: String(data.get("_gotcha") || ""),
-      page: window.location.pathname,
-    };
+    const payload = Object.fromEntries(
+      ["name", "email", "company", "message", "page", "_gotcha"].map((key) => [key, String(data.get(key) || "")]),
+    );
 
-    setStatus("submitting");
+    setStatus({ state: "submitting" });
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "content-type": "application/json", accept: "application/json" },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
       if (response.status === 503) {
-        setStatus({ error: OFFLINE_TEXT });
+        setStatus({ state: "offline" });
         return;
       }
       if (!response.ok) {
         const body = (await response.json().catch(() => null)) as { error?: string } | null;
-        setStatus({ error: body?.error || GENERIC_ERROR });
+        setStatus({ state: "error", message: body?.error || "Something went wrong. Email us instead." });
         return;
       }
       form.reset();
-      setStatus("sent");
+      setStatus({ state: "sent" });
     } catch {
-      setStatus({ error: "We could not reach the server. Email us instead." });
+      setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
     }
   }
 
-  const isSubmitting = status === "submitting";
-  const isSent = status === "sent";
+  const isSubmitting = status.state === "submitting";
+  const isSent = status.state === "sent";
+  const notice =
+    status.state === "offline"
+      ? { text: "The form is offline right now. Send your note to", tone: "#6f6f6f" }
+      : status.state === "error"
+        ? { text: status.message, tone: "#9a2d1f" }
+        : null;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -159,6 +147,7 @@ function ContactForm() {
           <Field label="What is the business, what feels misaligned, and what has to happen next?">
             <textarea name="message" required minLength={10} maxLength={4000} rows={6} style={{ ...fieldStyle, resize: "vertical" }} />
           </Field>
+          <input type="hidden" name="page" value="/contact" />
           {/* Honeypot. Named and labelled so browser autofill and password managers have nothing to match. */}
           <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
             <label>
@@ -167,10 +156,9 @@ function ContactForm() {
             </label>
           </div>
 
-          {typeof status === "object" ? (
-            <p role="alert" style={{ ...bodyStyle, color: "#9a2d1f" }}>
-              {status.error}{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>
+          {notice ? (
+            <p role="alert" style={{ ...bodyStyle, color: notice.tone }}>
+              {notice.text} <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>
             </p>
           ) : null}
 
