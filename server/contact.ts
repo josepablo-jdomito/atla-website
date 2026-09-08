@@ -8,24 +8,26 @@ import { CONTACT_EMAIL } from "../shared/siteSeo.ts";
  * Inquiries are written to Attio (the CRM of record): the sender is looked up
  * by email and created only when missing (existing records are never
  * modified), then the message is attached as a plaintext note. The sender's
- * address is not verified, so a note on a pre-existing record says so.
+ * address is not verified, so every note says whether the record was created
+ * or matched.
  *
  * Two request shapes:
  * - JSON from the hydrated form. Answers JSON.
  * - application/x-www-form-urlencoded from the prerendered form submitted
- *   before hydration (or without JavaScript). Answers a small self-contained
- *   HTML page, because the static /contact page cannot show an outcome.
- *   Cross-site posts are refused by checking Origin/Referer against the
- *   request host.
+ *   before hydration (or without JavaScript). Answers a 303 to
+ *   GET /api/contact/result?o=<outcome>, a small self-contained HTML page,
+ *   because the static /contact page cannot show an outcome and a page served
+ *   on the POST itself would re-submit on reload. Cross-site posts are refused
+ *   by checking Origin/Referer against the request host.
  *
  * When ATTIO_API_KEY is not configured the endpoint answers 503 so the client
  * can fall back to the public email address instead of failing silently.
  *
  * The rate limiter is in-memory and therefore per process. On Vercel each
  * function instance keeps its own counters, so treat it as a cheap brake on
- * accidental loops, not as abuse protection; put a platform rule in front of
- * /api/contact if spam becomes a problem. Off Vercel, the reverse proxy must
- * strip client-supplied x-vercel-forwarded-for / x-real-ip headers.
+ * accidental loops, not as abuse protection; a platform rate rule in front of
+ * /api/contact is the real control. Off Vercel it keys on the socket address,
+ * which behind a reverse proxy is the proxy itself.
  */
 
 const ATTIO_BASE = "https://api.attio.com/v2";
@@ -35,6 +37,7 @@ const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_SWEEP_AT = 5_000;
 const HONEYPOT_FIELD = "_gotcha";
 const LOG_EXCERPT_CHARS = 160;
+const RESULT_PATH = "/api/contact/result";
 
 /** Collapse line breaks and control characters so a value stays on one line. */
 const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029]+/g, " ").trim();
@@ -44,8 +47,6 @@ const multiLine = (value: string) =>
     .replace(/\r\n?/g, "\n")
     .replace(/[\u0000-\u0009\u000b-\u001f\u007f\u0085\u2028\u2029]+/g, " ")
     .trim();
-/** The page a submission came from: only a same-site path is kept, anything else is dropped. */
-const sitePath = (value: string) => (/^\/[\w\-./]{0,199}$/.test(value) ? value : "");
 
 const contactSchema = z.object({
   name: z.string().transform(singleLine).pipe(z.string().min(1, "Name is required").max(120)),
@@ -55,10 +56,9 @@ const contactSchema = z.object({
     .pipe(z.string().email("Enter a valid email").max(200)),
   company: z.string().transform(singleLine).pipe(z.string().max(160)).optional().default(""),
   message: z.string().transform(multiLine).pipe(z.string().min(10, "Tell us a little more").max(4000)),
-  page: z.string().transform(singleLine).transform(sitePath).optional().default(""),
 });
 
-type ContactPayload = z.infer<typeof contactSchema>;
+export type ContactPayload = z.infer<typeof contactSchema>;
 
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
@@ -69,15 +69,16 @@ function headerValue(req: Request, name: string): string {
 }
 
 /**
- * Vercel sets x-vercel-forwarded-for and x-real-ip from the connecting client and
- * overwrites client-supplied values. The first x-forwarded-for entry is the usual
- * convention elsewhere; it is only as trustworthy as the proxy in front.
+ * On Vercel the platform overwrites x-vercel-forwarded-for and x-real-ip with the
+ * connecting client, so they are safe to key on. Anywhere else those headers are
+ * whatever the client sent, so only the socket address is trusted.
  */
 function clientIp(req: Request): string {
-  const platformIp = headerValue(req, "x-vercel-forwarded-for") || headerValue(req, "x-real-ip");
-  if (platformIp) return platformIp;
-  const first = headerValue(req, "x-forwarded-for").split(",")[0]?.trim();
-  return first || req.socket.remoteAddress || "unknown";
+  if (process.env.VERCEL === "1") {
+    const platformIp = headerValue(req, "x-vercel-forwarded-for") || headerValue(req, "x-real-ip");
+    if (platformIp) return platformIp;
+  }
+  return req.socket.remoteAddress || "unknown";
 }
 
 function isRateLimited(ip: string): boolean {
@@ -96,20 +97,30 @@ function isRateLimited(ip: string): boolean {
   return bucket.count > RATE_LIMIT_MAX;
 }
 
-/** Native form posts carry Origin (or at least Referer); a value from another host is a cross-site post. */
-function isSameSitePost(req: Request): boolean {
-  const source = headerValue(req, "origin") || headerValue(req, "referer");
-  if (!source) return true;
+/** atla.design and www.atla.design are the same site. */
+const siteKey = (host: string) => host.toLowerCase().replace(/^www\./, "");
+
+/**
+ * Native form posts carry Origin, or at least Referer, naming the page that held
+ * the form. Returns the foreign host when it names another site; null when it is
+ * ours or unknown ("null" from privacy tooling or sandboxed frames, or absent).
+ */
+function foreignPostSource(req: Request): string | null {
+  const origin = headerValue(req, "origin");
+  const source = origin && origin !== "null" ? origin : headerValue(req, "referer");
+  if (!source) return null;
   try {
-    return new URL(source).host === headerValue(req, "host");
+    const sourceHost = new URL(source).host;
+    return siteKey(sourceHost) === siteKey(headerValue(req, "host")) ? null : sourceHost;
   } catch {
-    return false;
+    return singleLine(source).slice(0, 80) || "unparseable";
   }
 }
 
 type AttioResult<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
 
-async function attio<T>(apiKey: string, path: string, body: unknown, check: (json: unknown) => T | undefined): Promise<AttioResult<T>> {
+/** POST to Attio. `parse` turns the JSON body into T, or returns undefined when the shape is not what we expect. */
+async function attio<T>(apiKey: string, path: string, body: unknown, parse?: (json: unknown) => T | undefined): Promise<AttioResult<T>> {
   try {
     const response = await fetch(`${ATTIO_BASE}${path}`, {
       method: "POST",
@@ -123,10 +134,10 @@ async function attio<T>(apiKey: string, path: string, body: unknown, check: (jso
     });
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
-      return { ok: false, status: response.status, error: detail.slice(0, 300) };
+      return { ok: false, status: response.status, error: singleLine(detail).slice(0, 300) };
     }
-    const json = (await response.json().catch(() => null)) as unknown;
-    const data = check(json);
+    if (!parse) return { ok: true, data: true as T };
+    const data = parse((await response.json().catch(() => null)) as unknown);
     if (data === undefined) return { ok: false, status: response.status, error: `Unexpected response shape from ${path}` };
     return { ok: true, data };
   } catch (error) {
@@ -178,7 +189,6 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
   const lines = [
     `From: ${payload.name} <${payload.email}>`,
     payload.company ? `Company / site: ${payload.company}` : null,
-    payload.page ? `Reported page: ${payload.page}` : null,
     `Received: ${new Date().toISOString()}`,
     person.data.created
       ? "Sender: new record created from this form. Email address not verified."
@@ -187,31 +197,32 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
     payload.message,
   ].filter((line): line is string => line !== null);
 
-  const note = await attio(
-    apiKey,
-    "/notes",
-    {
-      data: {
-        parent_object: "people",
-        parent_record_id: person.data.recordId,
-        title: "Website inquiry (atla.design/contact)",
-        format: "plaintext",
-        content: lines.join("\n"),
-      },
+  // Any 2xx means the note landed; the body is not needed.
+  const note = await attio(apiKey, "/notes", {
+    data: {
+      parent_object: "people",
+      parent_record_id: person.data.recordId,
+      title: "Website inquiry (atla.design/contact)",
+      format: "plaintext",
+      content: lines.join("\n"),
     },
-    (json) => (json && typeof json === "object" ? true : undefined),
-  );
-  if (!note.ok) return note;
+  });
+  if (!note.ok) {
+    return { ...note, error: `note failed for record ${person.data.recordId} (person ${person.data.created ? "created" : "matched"}): ${note.error}` };
+  }
 
   return { ok: true, data: { recordId: person.data.recordId } };
 }
 
 /** What the log keeps when delivery fails: enough to follow up, not the whole message. */
 function failureExcerpt(payload: ContactPayload): string {
-  return `${payload.email} · "${payload.message.slice(0, LOG_EXCERPT_CHARS)}${payload.message.length > LOG_EXCERPT_CHARS ? "…" : ""}"`;
+  const excerpt = singleLine(payload.message).slice(0, LOG_EXCERPT_CHARS);
+  return `${payload.email} · "${excerpt}${payload.message.length > LOG_EXCERPT_CHARS ? "…" : ""}"`;
 }
 
-type Outcome = "sent" | "unavailable" | "invalid" | "busy" | "failed" | "forbidden";
+const OUTCOMES = ["sent", "unavailable", "invalid", "busy", "failed", "forbidden"] as const;
+type Outcome = (typeof OUTCOMES)[number];
+const isOutcome = (value: unknown): value is Outcome => typeof value === "string" && (OUTCOMES as readonly string[]).includes(value);
 
 const OUTCOME_STATUS: Record<Outcome, number> = { sent: 200, unavailable: 503, invalid: 400, busy: 429, failed: 502, forbidden: 403 };
 
@@ -230,36 +241,52 @@ function outcomePage(outcome: Outcome): string {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${heading} | Atla</title>
-<style>body{margin:0;background:#fafafa;color:#222;font:500 16px/1.5 'Libre Franklin',Helvetica,Arial,sans-serif;padding:80px 20px}main{max-width:560px}h1{font:400 40px/1.05 Helvetica,Arial,sans-serif;margin:0 0 20px}p{margin:0 0 16px}a{color:#222}</style>
+<style>body{margin:0;background:#fafafa;color:#222;font:500 16px/1.5 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;padding:80px 20px}main{max-width:560px}h1{font-size:40px;font-weight:400;line-height:1.05;margin:0 0 20px}p{margin:0 0 16px}a{color:#222}</style>
 </head><body><main><h1>${heading}</h1><p>${body}</p><p><a href="/contact">Back to the contact page</a> · <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p></main></body></html>`;
 }
 
 export function registerContactRoute(app: Express) {
+  // Result page for the native (no-JavaScript) form: a GET, so reload never re-submits.
+  app.get(RESULT_PATH, (req, res) => {
+    const outcome = isOutcome(req.query.o) ? req.query.o : "invalid";
+    res.status(OUTCOME_STATUS[outcome]).type("html").send(outcomePage(outcome));
+  });
+
   app.post("/api/contact", async (req, res) => {
     const isNativeForm = Boolean(req.is("application/x-www-form-urlencoded"));
     const answer = (outcome: Outcome, error?: string) => {
-      const status = OUTCOME_STATUS[outcome];
-      if (isNativeForm) return res.status(status).type("html").send(outcomePage(outcome));
-      return outcome === "sent" ? res.json({ ok: true }) : res.status(status).json({ error: error || OUTCOME_COPY[outcome].heading });
+      if (isNativeForm) return res.redirect(303, `${RESULT_PATH}?o=${outcome}`);
+      if (outcome === "sent") return res.json({ ok: true });
+      return res.status(OUTCOME_STATUS[outcome]).json({ error: error || `${OUTCOME_COPY[outcome].heading} ${OUTCOME_COPY[outcome].body}` });
     };
 
-    if (isNativeForm && !isSameSitePost(req)) {
-      return answer("forbidden");
+    if (isNativeForm) {
+      const foreignHost = foreignPostSource(req);
+      if (foreignHost) {
+        console.warn(`Contact form: refused cross-site post from ${foreignHost}`);
+        return answer("forbidden");
+      }
     }
 
     const apiKey = process.env.ATTIO_API_KEY || "";
     if (!apiKey) {
-      return answer("unavailable", "The contact form is not configured yet.");
+      return answer("unavailable");
     }
 
-    const body = req.body && typeof req.body === "object" && !Array.isArray(req.body) ? (req.body as Record<string, unknown>) : null;
+    const body = req.body && typeof req.body === "object" && !Array.isArray(req.body) && !Buffer.isBuffer(req.body) ? (req.body as Record<string, unknown>) : null;
     if (!body) {
+      const shape = Buffer.isBuffer(req.body) ? "Buffer" : Array.isArray(req.body) ? "array" : typeof req.body;
+      console.error(`Contact form: request body not parsed (got ${shape}, content-type ${singleLine(headerValue(req, "content-type")) || "none"})`);
       return answer("invalid", "The request body could not be read.");
     }
 
-    // Honeypot filled in: pretend success so bots learn nothing. Not counted against the sender's quota.
+    const ip = clientIp(req);
+
+    // Honeypot filled in: pretend success so bots learn nothing. Counted like a delivery.
     const honeypot = body[HONEYPOT_FIELD];
     if (typeof honeypot === "string" && honeypot.trim()) {
+      isRateLimited(ip);
+      console.warn(`Contact form: honeypot hit from ${ip}`);
       return answer("sent");
     }
 
@@ -268,15 +295,17 @@ export function registerContactRoute(app: Express) {
       return answer("invalid", parsed.error.issues[0]?.message || "Invalid submission");
     }
 
-    // Only deliveries count: typos and honeypot hits do not burn a real visitor's quota.
-    if (isRateLimited(clientIp(req))) {
-      return answer("busy", "Too many messages from this connection. Try again in a few minutes.");
+    // Only deliveries and honeypot hits count: a typo does not burn a real visitor's quota.
+    if (isRateLimited(ip)) {
+      return answer("busy");
     }
 
     const delivered = await deliverContactToAttio(apiKey, parsed.data);
     if (!delivered.ok) {
-      console.error(`Contact delivery failed (Attio ${delivered.status}: ${delivered.error}) for ${failureExcerpt(parsed.data)}`);
-      return answer("failed", "We could not save your message. Email us instead.");
+      // 4xx bodies from Attio echo submitted values, so only the status is kept for those.
+      const detail = delivered.status === 0 || delivered.status >= 500 ? `: ${singleLine(delivered.error)}` : "";
+      console.error(`Contact delivery failed (Attio ${delivered.status}${detail}) for ${failureExcerpt(parsed.data)}`);
+      return answer("failed");
     }
 
     return answer("sent");
