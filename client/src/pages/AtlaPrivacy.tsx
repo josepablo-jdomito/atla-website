@@ -106,6 +106,12 @@ export default function AtlaPrivacy() {
             </p>
           </Section>
 
+          <Section title="International transfers">
+            <p style={bodyStyle}>
+              Atla & WeLoveDaily, LLC is based in the United States, and the providers named above store and process data there. If you contact us or browse the site from outside the United States, including from Mexico, the rest of Latin America, or the European Union, your information is transferred to and handled in the United States under this policy. Where your local law requires a specific safeguard for that transfer, we rely on the contractual data protection terms of each provider and on your consent given by sending us your inquiry.
+            </p>
+          </Section>
+
           <Section title="Your rights">
             <p style={bodyStyle}>
               Depending on your jurisdiction, you may have rights to request access, correction, deletion, or restriction of personal data. Contact us and we will respond according to the applicable legal framework.
