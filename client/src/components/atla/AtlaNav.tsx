@@ -212,10 +212,13 @@ export function AtlaNav({
   inverted = false,
   commandProjects = [],
   currentSearch = "",
+  showCommandTrigger = true,
 }: {
   inverted?: boolean;
   commandProjects?: AtlaCommandProject[];
   currentSearch?: string;
+  /** Hide the "start here / Cmd K" pill; the palette still opens with the keyboard shortcut. */
+  showCommandTrigger?: boolean;
 }) {
   const isMobile = useIsMobile();
   const palette = tonePalette(isMobile);
@@ -895,87 +898,89 @@ export function AtlaNav({
               <AtlaWordmark />
             </a>
 
-            <button
-              type="button"
-              onClick={openPalette}
-              className="atla-tap-target"
-              style={{
-                width: isMobile ? "min(58vw, 240px)" : "clamp(320px, 38vw, 520px)",
-                minHeight: 48,
-                marginLeft: "auto",
-                flexShrink: 0,
-                border: "none",
-                background: "transparent",
-                padding: 0,
-                cursor: "pointer",
-              }}
-            >
-              <div
+            {showCommandTrigger ? (
+              <button
+                type="button"
+                onClick={openPalette}
+                className="atla-tap-target"
                 style={{
-                  ...SEARCH_INPUT_STYLE,
-                  border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 16%, transparent)",
-                  background: "color-mix(in srgb, var(--atla-text-color, #222222) 10%, transparent)",
-                  color: "var(--atla-text-color, #f5f3ef)",
-                  boxShadow: "inset 0 1px 0 color-mix(in srgb, var(--atla-text-color, #222222) 14%, transparent)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  textAlign: "left",
+                  width: isMobile ? "min(58vw, 240px)" : "clamp(320px, 38vw, 520px)",
+                  minHeight: 48,
+                  marginLeft: "auto",
+                  flexShrink: 0,
+                  border: "none",
+                  background: "transparent",
+                  padding: 0,
+                  cursor: "pointer",
                 }}
-                >
-                <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                  <Search
-                    size={14}
-                    strokeWidth={2}
-                    style={{ color: "var(--atla-text-color, #f5f3ef)", flexShrink: 0 }}
-                    aria-hidden="true"
-                  />
-                  <span style={{ display: "flex", flexDirection: "column", minWidth: 0, lineHeight: 1.1, gap: 2 }}>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        letterSpacing: 0.7,
-                        textTransform: "uppercase",
-                        color: "color-mix(in srgb, var(--atla-text-color, #222222) 76%, transparent)",
-                      }}
-                    >
-                      start here
-                    </span>
-                    <span
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        color: "var(--atla-text-color, #f5f3ef)",
-                        fontSize: 13,
-                        fontWeight: 500,
-                      }}
-                    >
-                      {headerSearchLabel || " i want to."}
+              >
+                <div
+                  style={{
+                    ...SEARCH_INPUT_STYLE,
+                    border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 16%, transparent)",
+                    background: "color-mix(in srgb, var(--atla-text-color, #222222) 10%, transparent)",
+                    color: "var(--atla-text-color, #f5f3ef)",
+                    boxShadow: "inset 0 1px 0 color-mix(in srgb, var(--atla-text-color, #222222) 14%, transparent)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    textAlign: "left",
+                  }}
+                  >
+                  <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                    <Search
+                      size={14}
+                      strokeWidth={2}
+                      style={{ color: "var(--atla-text-color, #f5f3ef)", flexShrink: 0 }}
+                      aria-hidden="true"
+                    />
+                    <span style={{ display: "flex", flexDirection: "column", minWidth: 0, lineHeight: 1.1, gap: 2 }}>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          letterSpacing: 0.7,
+                          textTransform: "uppercase",
+                          color: "color-mix(in srgb, var(--atla-text-color, #222222) 76%, transparent)",
+                        }}
+                      >
+                        start here
+                      </span>
+                      <span
+                        style={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          color: "var(--atla-text-color, #f5f3ef)",
+                          fontSize: 13,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {headerSearchLabel || " i want to."}
+                      </span>
                     </span>
                   </span>
-                </span>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 20%, transparent)",
-                    borderRadius: 999,
-                    padding: "4px 8px",
-                    fontSize: 12,
-                    letterSpacing: 0.2,
-                    color: "var(--atla-text-color, #f5f3ef)",
-                    lineHeight: 1,
-                    background: "color-mix(in srgb, var(--atla-text-color, #222222) 12%, transparent)",
-                  }}
-                >
-                  Cmd K
-                </span>
-              </div>
-            </button>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 20%, transparent)",
+                      borderRadius: 999,
+                      padding: "4px 8px",
+                      fontSize: 12,
+                      letterSpacing: 0.2,
+                      color: "var(--atla-text-color, #f5f3ef)",
+                      lineHeight: 1,
+                      background: "color-mix(in srgb, var(--atla-text-color, #222222) 12%, transparent)",
+                    }}
+                  >
+                    Cmd K
+                  </span>
+                </div>
+              </button>
+            ) : null}
           </div>
         </div>
       </nav>
