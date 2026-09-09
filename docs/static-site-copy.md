@@ -320,6 +320,7 @@ Static labels only. Article content is excluded.
 
 #### Updates
 - `We may update this policy as the site changes. The latest version published on this page will control.`
+- `We will revise this page before introducing new analytics tools, client portals, embedded scheduling tools, or other third-party services that change what data is processed.`
 
 ## Terms of Use
 

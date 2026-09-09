@@ -117,8 +117,7 @@ export default function AtlaPrivacy() {
               We may update this policy as the site changes. The latest version published on this page will control.
             </p>
             <p style={bodyStyle}>
-              If Atla introduces new analytics tools, client portals, embedded scheduling tools, or other third-party
-              services that change what data is processed, this page should be revised before those changes go live.
+              We will revise this page before introducing new analytics tools, client portals, embedded scheduling tools, or other third-party services that change what data is processed.
             </p>
           </Section>
           <section className="sr-only" aria-label="Privacy extended information">
