@@ -395,7 +395,23 @@ function inferVerticalFromProject(project: ProjectPageView): ProjectRelatedLink 
   return { href: "/hospitality-branding", label: "Hospitality branding" };
 }
 
+/** Vimeo honors dnt=1 by not tracking viewers or setting analytics cookies; the privacy policy relies on it. */
+function withVimeoDoNotTrack(embedUrl: string) {
+  try {
+    const parsed = new URL(embedUrl);
+    parsed.searchParams.set("dnt", "1");
+    return parsed.toString();
+  } catch {
+    return embedUrl;
+  }
+}
+
 function toVimeoEmbedUrl(url: string) {
+  const resolved = resolveVimeoEmbedUrl(url);
+  return resolved ? withVimeoDoNotTrack(resolved) : resolved;
+}
+
+function resolveVimeoEmbedUrl(url: string) {
   const value = url.trim().replace(/&amp;/gi, "&");
   const iframeSrc = value.match(/<iframe[^>]+src=["']([^"']+)["']/i)?.[1]?.trim();
   const source = (iframeSrc || value).replace(/^\/\//, "https://");
