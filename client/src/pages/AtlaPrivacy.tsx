@@ -60,40 +60,49 @@ export default function AtlaPrivacy() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
           <p style={bodyStyle}>
-            This site is operated by Atla. This policy explains what information we collect, how we use it, and what browser storage the site uses.
+            This site is operated by Atla & WeLoveDaily, LLC. This policy explains what information we collect, how we use it, which providers process it, and what your browser stores.
           </p>
 
           <Section title="Who we are">
             <p style={bodyStyle}>
-              Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
+              Atla is the branding studio of Atla & WeLoveDaily, LLC, a company registered in Texas and based in Austin. We work across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
             </p>
           </Section>
 
           <Section title="What we collect">
             <p style={bodyStyle}>
-              The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter.
+              If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, and we keep your IP address in memory for up to ten minutes to limit repeated submissions.
+            </p>
+            <p style={bodyStyle}>
+              The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites. The site does not run advertising pixels, except on the waitlist page described below.
+            </p>
+            <p style={bodyStyle}>
+              The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies.
             </p>
           </Section>
 
           <Section title="Cookies and storage">
             <p style={bodyStyle}>
-              The site uses functional browser storage to remember your theme preference between light and dark mode. This is stored locally in your browser and is used only to keep the interface consistent across visits.
+              The site stores a few preferences in your browser's local storage: your light or dark theme, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.
             </p>
             <p style={bodyStyle}>
-              If we add analytics, marketing tags, embedded third-party tracking, or optional cookies later, this policy and the consent experience should be updated before those tools are activated.
+              Video case studies embed the Vimeo player with Do Not Track enabled. Vimeo may still process technical request data and set the cookies it needs to play the video. The /waitlist page uses the analytics and advertising cookies described above.
+            </p>
+            <p style={bodyStyle}>
+              We will update this page before activating any additional analytics, marketing tags, or optional cookies.
             </p>
           </Section>
 
           <Section title="How we use information">
             <p style={bodyStyle}>
-              We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities.
+              We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep inquiry data until you ask us to delete it, unless a legal obligation requires us to keep it longer. Access is limited to the people who run the studio.
             </p>
           </Section>
 
           {/* Legal copy. Changes here are drafted for JP and reviewed before merge. */}
           <Section title="Third parties">
             <p style={bodyStyle}>
-              The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up.
+              The site is hosted on Vercel, which also provides the analytics described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.
             </p>
           </Section>
 
@@ -115,9 +124,7 @@ export default function AtlaPrivacy() {
           <section className="sr-only" aria-label="Privacy extended information">
             <h2>Additional privacy clarifications</h2>
             <p>
-              We retain inquiry communications only as long as needed to manage project discussions, legal obligations,
-              and business records. Access is limited to people involved in studio operations. If an inquiry does not
-              proceed, data is periodically reviewed and removed based on operational necessity.
+              We keep inquiry communications until the sender asks us to delete them, unless a legal obligation requires keeping them longer. Access is limited to people involved in studio operations.
             </p>
             <p>
               Requests related to data access, correction, or deletion can be sent to {CONTACT_EMAIL}. When required,
