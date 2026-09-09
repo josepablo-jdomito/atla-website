@@ -2,6 +2,7 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState, type CSSPropert
 import { FileText, Grid3X3, List, Mail, MessageCircleQuestion, Palette, RotateCcw, Search, Send, Share2 } from "lucide-react";
 import { AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
+import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CONTACT_EMAIL, SITE_ORIGIN } from "@shared/siteSeo";
 
@@ -796,6 +797,11 @@ export function AtlaNav({
     const copied = await copyToClipboard(commandPackage(composerMode, composerText));
     rememberAction(composerMode === "brief" ? "write-brief" : "ask-question");
     setFeedback(copied ? `${composerMode === "brief" ? "Brief" : "Question"} package copied` : composerText.trim());
+    // Only the brief counts as taking the template away; the ask composer is a
+    // question, not a brief.
+    if (composerMode === "brief" && copied) {
+      trackEvent("brief_template_download", { cta_type: "copy", page: "nav-composer" });
+    }
   };
 
   const shareComposerPackage = async (channel: "email" | "slack") => {
@@ -808,12 +814,18 @@ export function AtlaNav({
       openMailDraft(`Atla ${label}`, packageText);
       setFeedback(`${label} email draft opened`);
       rememberAction("share-email");
+      if (composerMode === "brief") {
+        trackEvent("brief_template_download", { cta_type: "email", page: "nav-composer" });
+      }
       return;
     }
 
     const copied = await copyToClipboard(packageText);
     setFeedback(copied ? `${label} copied for Slack` : packageText);
     rememberAction("share-slack");
+    if (composerMode === "brief" && copied) {
+      trackEvent("brief_template_download", { cta_type: "slack", page: "nav-composer" });
+    }
 
     if (typeof window !== "undefined") {
       window.location.href = SLACK_DEEP_LINK;

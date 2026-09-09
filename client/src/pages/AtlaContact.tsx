@@ -3,6 +3,7 @@ import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CONTACT_EMAIL, formatMetaTitle, START_URL } from "@shared/siteSeo";
 
@@ -108,6 +109,7 @@ function ContactForm() {
       }
       form.reset();
       setStatus({ state: "sent" });
+      trackEvent("contact_form_submit", { page: "contact" });
     } catch {
       setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
     }
