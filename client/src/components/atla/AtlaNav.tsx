@@ -798,9 +798,11 @@ export function AtlaNav({
     rememberAction(composerMode === "brief" ? "write-brief" : "ask-question");
     setFeedback(copied ? `${composerMode === "brief" ? "Brief" : "Question"} package copied` : composerText.trim());
     // Only the brief counts as taking the template away; the ask composer is a
-    // question, not a brief.
-    if (composerMode === "brief" && copied) {
-      trackEvent("brief_template_download", { cta_type: "copy", page: "nav-composer" });
+    // question, not a brief. A failed clipboard write still delivers the brief,
+    // because the feedback falls back to the raw text for manual copying, so
+    // the event fires either way and carries whether the write landed.
+    if (composerMode === "brief") {
+      trackEvent("brief_template_download", { cta_type: "copy", page: "nav-composer", clipboard: copied });
     }
   };
 
@@ -823,8 +825,8 @@ export function AtlaNav({
     const copied = await copyToClipboard(packageText);
     setFeedback(copied ? `${label} copied for Slack` : packageText);
     rememberAction("share-slack");
-    if (composerMode === "brief" && copied) {
-      trackEvent("brief_template_download", { cta_type: "slack", page: "nav-composer" });
+    if (composerMode === "brief") {
+      trackEvent("brief_template_download", { cta_type: "slack", page: "nav-composer", clipboard: copied });
     }
 
     if (typeof window !== "undefined") {
