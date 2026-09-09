@@ -173,6 +173,10 @@ function ContactForm() {
             </p>
           ) : null}
 
+          <p style={{ ...bodyStyle, fontSize: 13, color: "#6f6f6f", maxWidth: 520 }}>
+            What you send here goes to our CRM so we can answer your inquiry, and we keep it until you ask us to delete
+            it. See the <a href="/privacy" style={{ color: "#222" }}>privacy policy</a>.
+          </p>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
             <button
               type="submit"

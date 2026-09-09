@@ -270,6 +270,7 @@ Static labels only. Article content is excluded.
 - `Or write to us directly.`
 - `The strongest starting point is a straightforward note: what the business is, what feels misaligned right now, and what has to happen next.`
 - Labels: `Name`, `Email`, `Company or website (optional)`, `What is the business, what feels misaligned, and what has to happen next?`
+- Notice: `What you send here goes to our CRM so we can answer your inquiry, and we keep it until you ask us to delete it. See the privacy policy.` (privacy policy links to /privacy)
 - `Send message` / `Sending…` / `or email josepablo@atla.design`
 - Success: `Received. We read every note directly and reply with the next recommended step.` / `If it is urgent, write to josepablo@atla.design.`
 - Offline: `The form is offline right now. Send your note to` + linked email + ` and we will pick it up there.`
