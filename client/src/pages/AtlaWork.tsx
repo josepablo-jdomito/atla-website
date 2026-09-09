@@ -5,13 +5,11 @@ import {
   HOME_META_DESCRIPTION,
   ORGANIZATION_SCHEMA,
   SITE_ORIGIN,
-  START_URL,
   formatMetaTitle,
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
-import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -908,7 +906,7 @@ export default function AtlaWork() {
         structuredData={structuredData}
       />
       <div className="atla-dark-surface">
-      <AtlaNav commandProjects={projects} currentSearch={searchQuery} />
+      <AtlaNav commandProjects={projects} currentSearch={searchQuery} showCommandTrigger={false} />
       <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
         <div
           className="atla-enter"
@@ -923,33 +921,7 @@ export default function AtlaWork() {
             gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
-          <header className="atla-home-hero" style={{ borderBottom: `1px solid ${borderColor}` }}>
-            <h1 className="atla-home-hero__title" style={{ color: primaryTextColor }}>
-              Strategy-led branding for companies across the US and Latin America.
-            </h1>
-            <div className="atla-home-hero__aside">
-              <p style={{ color: mutedTextColor }}>
-                Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology
-                teams. Selected work is below.
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                <a
-                  href={START_URL}
-                  className="atla-tap-target"
-                  style={{ ...ATLA_PILL, background: primaryTextColor, color: surfaceColor }}
-                >
-                  Start your project
-                </a>
-                <a
-                  href="/contact"
-                  className="atla-tap-target"
-                  style={{ ...ATLA_PILL, border: `1px solid ${borderColor}`, color: primaryTextColor }}
-                >
-                  Contact
-                </a>
-              </div>
-            </div>
-          </header>
+          <h1 className="sr-only">Selected Atla branding and digital work</h1>
           <div
             style={{
               display: "grid",

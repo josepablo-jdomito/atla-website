@@ -45,11 +45,8 @@ Excluded on purpose:
 
 ## Homepage
 
-### Hero
-- `Strategy-led branding for companies across the US and Latin America.`
-- `Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology teams. Selected work is below.`
-- `Start your project` (links to start.atla.design)
-- `Contact`
+### Screen-reader title
+- `Selected Atla branding and digital work`
 
 ### Fallback center title
 - `Project Name`
