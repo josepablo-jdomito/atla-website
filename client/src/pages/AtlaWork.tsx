@@ -921,7 +921,6 @@ export default function AtlaWork() {
             gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
-          <h1 className="sr-only">Selected Atla branding and digital work</h1>
           <div
             style={{
               display: "grid",
