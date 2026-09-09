@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from "react
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
-  formatMetaTitle,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
+  HOME_META_DESCRIPTION,
+  ORGANIZATION_SCHEMA,
   SITE_ORIGIN,
+  START_URL,
+  formatMetaTitle,
 } from "@shared/siteSeo";
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { AtlaNav } from "@/components/atla/AtlaNav";
+import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -62,6 +65,8 @@ const LF_SMALL: React.CSSProperties = {
   textTransform: "uppercase",
   margin: 0,
 };
+
+
 
 const FILTERS = {
   region: ["All", "America", "Europe", "Asia", "Middle East"],
@@ -495,6 +500,10 @@ export default function AtlaWork() {
   });
 
   const projects = useMemo(() => normalizeProjects(data), [data]);
+  // The atla:command listener below is registered once; read projects through a ref
+  // so a palette selection made after the query resolves sees the loaded list.
+  const projectsRef = useRef(projects);
+  projectsRef.current = projects;
   const industryOptions = useMemo(
     () => buildFacetOptions(projects.map((project) => project.industry), INDUSTRY_BASE_OPTIONS),
     [projects],
@@ -631,13 +640,13 @@ export default function AtlaWork() {
     if (view === "Masonry") {
       return masonryPhotoPool
         .slice(0, 2)
-        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 960 : 1600, quality: 90 }) || item.imageSrc);
+        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 90 }) || item.imageSrc);
     }
 
     if (view === "Timeline") {
       return timelineProjects
         .slice(0, 2)
-        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 90 }) || project.coverImage);
+        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 90 }) || project.coverImage);
     }
 
     return filteredProjects
@@ -785,7 +794,7 @@ export default function AtlaWork() {
       }
 
       if (type === "focus-project" && typeof value === "string") {
-        const projectMatch = projects.find((project) => project.slug === value);
+        const projectMatch = projectsRef.current.find((project) => project.slug === value);
         if (!projectMatch) return;
         setRegion("All");
         setIndustry("All");
@@ -852,37 +861,31 @@ export default function AtlaWork() {
     ? formatMetaTitle("Atla", "Strategy-Led Branding Studio")
     : formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla");
   const pageDescription = isRootRoute
-    ? "Atla is a strategy-led branding studio for companies across the US and Latin America."
+    ? HOME_META_DESCRIPTION
     : "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.";
   const canonicalPath = "/";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
   const isListView = view === "List";
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: ORGANIZATION_NAME,
-    url: SITE_ORIGIN,
-    logo: ORGANIZATION_LOGO_URL,
-    sameAs: [
-      "https://www.instagram.com/atla.studio",
-      "https://www.behance.net/atla",
-      "https://www.linkedin.com",
+  // Memoized so SeoHead's effect (which rewrites head tags) does not re-run on every masonry batch.
+  const structuredData = useMemo(
+    () => [
+      ORGANIZATION_SCHEMA,
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "Atla selected work",
+        itemListOrder: "https://schema.org/ItemListUnordered",
+        numberOfItems: filteredProjects.length,
+        itemListElement: filteredProjects.slice(0, 64).map((project, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: project.title,
+          url: `${SITE_ORIGIN}/projects/${project.slug}`,
+        })),
+      },
     ],
-    areaServed: ["United States", "Latin America"],
-  };
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Atla selected work",
-    itemListOrder: "https://schema.org/ItemListUnordered",
-    numberOfItems: filteredProjects.length,
-    itemListElement: filteredProjects.slice(0, 64).map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: project.title,
-      url: `${SITE_ORIGIN}/projects/${project.slug}`,
-    })),
-  };
+    [filteredProjects],
+  );
 
   return (
     <div
@@ -902,9 +905,10 @@ export default function AtlaWork() {
         robots={robots}
         image={filteredProjects[0]?.coverImage || undefined}
         preloadImages={lcpPreloadImages}
-        structuredData={[organizationSchema, itemListSchema]}
+        structuredData={structuredData}
       />
       <div className="atla-dark-surface">
+      <AtlaNav commandProjects={projects} currentSearch={searchQuery} />
       <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
         <div
           className="atla-enter"
@@ -919,21 +923,33 @@ export default function AtlaWork() {
             gap: isMobile ? 20 : isListView ? 112 : 12,
           }}
         >
-          <h1
-            style={{
-              position: "absolute",
-              width: 1,
-              height: 1,
-              padding: 0,
-              margin: -1,
-              overflow: "hidden",
-              clip: "rect(0, 0, 0, 0)",
-              whiteSpace: "nowrap",
-              border: 0,
-            }}
-          >
-            Selected Atla branding and digital work
-          </h1>
+          <header className="atla-home-hero" style={{ borderBottom: `1px solid ${borderColor}` }}>
+            <h1 className="atla-home-hero__title" style={{ color: primaryTextColor }}>
+              Strategy-led branding for companies across the US and Latin America.
+            </h1>
+            <div className="atla-home-hero__aside">
+              <p style={{ color: mutedTextColor }}>
+                Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology
+                teams. Selected work is below.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                <a
+                  href={START_URL}
+                  className="atla-tap-target"
+                  style={{ ...ATLA_PILL, background: primaryTextColor, color: surfaceColor }}
+                >
+                  Start your project
+                </a>
+                <a
+                  href="/contact"
+                  className="atla-tap-target"
+                  style={{ ...ATLA_PILL, border: `1px solid ${borderColor}`, color: primaryTextColor }}
+                >
+                  Contact
+                </a>
+              </div>
+            </div>
+          </header>
           <div
             style={{
               display: "grid",

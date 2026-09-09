@@ -1,22 +1,18 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { AtlaSymbol, AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const CITIES = [
   { label: "Austin, US", timeZone: "America/Chicago" },
   { label: "CDMX, MX", timeZone: "America/Mexico_City" },
-  { label: "Caracas, VZ", timeZone: "America/Caracas" },
+  { label: "Caracas, VE", timeZone: "America/Caracas" },
   { label: "Lima, PE", timeZone: "America/Lima" },
   { label: "Tijuana, MX", timeZone: "America/Tijuana" },
 ] as const;
 
 const NAV_LINKS = ["Work", "About", "Services", "Journal", "Contact"] as const;
-const SOCIAL_LINKS = [
-  { label: "Instagram", href: "https://www.instagram.com/atla.studio" },
-  { label: "Behance", href: "https://www.behance.net/atla" },
-  { label: "Linkedin", href: "https://www.linkedin.com" },
-  { label: "Facebook", href: "https://www.facebook.com" },
-] as const;
+const SOCIAL_LINKS = SOCIAL_PROFILES;
 
 function getCityTimes() {
   return CITIES.map((city) => {

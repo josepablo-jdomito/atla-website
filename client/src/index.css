@@ -299,6 +299,60 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   transform-origin: center center;
 }
 
+/* Home hero: layout lives in CSS so the prerendered HTML is already correct at every width. */
+.atla-home-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 20px;
+  align-items: end;
+  padding: 28px 0 32px;
+  margin-bottom: 20px;
+}
+
+.atla-home-hero__title {
+  font-family: 'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.02;
+  letter-spacing: -0.5px;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.atla-home-hero__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.atla-home-hero__aside p {
+  font-family: 'Libre Franklin', Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  margin: 0;
+  max-width: 44ch;
+}
+
+@media (min-width: 768px) {
+  .atla-home-hero {
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    column-gap: 40px;
+    row-gap: 0;
+    padding: 56px 0 64px;
+    margin-bottom: 28px;
+  }
+
+  .atla-home-hero__title {
+    font-size: clamp(44px, 4.6vw, 72px);
+  }
+
+  .atla-home-hero__aside {
+    gap: 22px;
+  }
+}
+
 .atla-card {
   position: relative;
   min-height: 48px;

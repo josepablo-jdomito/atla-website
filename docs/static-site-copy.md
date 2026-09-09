@@ -7,45 +7,49 @@ Excluded on purpose:
 - Sanity-driven project content
 - Sanity-driven journal/article content
 - Dynamic categories, article titles, excerpts, dates, and related content
+- Screen-reader-only SEO prose (`sr-only` sections)
 
 ## Global / Meta
 
 ### Site title
-- `Atla — Design Studio`
+- `Atla — Branding Studio`
 
 ### Global meta description
-- `Atla is a design studio specializing in brand identity, visual communication, and digital experiences for ambitious companies across the US and Latin America.`
+- `Atla is a strategy-led branding studio for ambitious companies across the US and Latin America.`
 
 ### Global OG title
-- `Atla — Design Studio`
+- `Atla — Branding Studio`
 
 ### Global OG description
-- `Brand identity, visual communication, and digital experiences for ambitious companies.`
+- `Strategy, identity, and creative direction for companies that take their brand seriously.`
 
 ## Navigation
 
-### Desktop nav
-- `Work`
-- `About`
-- `Services`
-- `Journal`
-- `Contact`
+### Header (command center trigger)
+- `start here`
+- `i want to.`
+- `Cmd K`
 
-### Mobile menu
-- `Menu`
-- `Close`
-- `Work`
-- `About`
-- `Services`
-- `Careers`
-- `Journal`
-- `Contact`
-- `Instagram`
-- `Behance`
-- `Linkedin`
-- `Facebook`
+### Command center actions
+- `Search archive`
+- `Write a brief`
+- `Ask a question`
+- `Share site via email`
+- `Share site via Slack`
+- `Reset archive state`
+- `Switch to Grid view`
+- `Switch to List view`
+- `Random background`
+- `System background`
+- `Copy contact email`
 
 ## Homepage
+
+### Hero
+- `Strategy-led branding for companies across the US and Latin America.`
+- `Positioning, identity, and digital systems for hospitality, consumer, wellness, and technology teams. Selected work is below.`
+- `Start your project` (links to start.atla.design)
+- `Contact`
 
 ### Fallback center title
 - `Project Name`
@@ -250,37 +254,76 @@ Static labels only. Article content is excluded.
 - `Source:`
 - `Author:`
 
+## Contact Page
+
+### Hero
+- `Contact`
+- `Start the conversation before the project gets noisy.`
+- `We work with teams that need clarity, not decoration. If you are launching, repositioning, or rebuilding a brand system, we can help shape the strategy and the execution together.`
+
+### Guided start
+- `Not sure what you need yet?`
+- `Start with the guided path. It tells you whether the right next move is a Branding Analysis, a full identity engagement, or a narrower decision first.`
+- `Pick where to start` (links to start.atla.design)
+
+### Form
+- `Or write to us directly.`
+- `The strongest starting point is a straightforward note: what the business is, what feels misaligned right now, and what has to happen next.`
+- Labels: `Name`, `Email`, `Company or website (optional)`, `What is the business, what feels misaligned, and what has to happen next?`
+- Notice: `What you send here goes to our CRM so we can answer your inquiry, and we keep it until you ask us to delete it. See the privacy policy.` (privacy policy links to /privacy)
+- `Send message` / `Sending…` / `or email josepablo@atla.design`
+- Success: `Received. We read every note directly and reply with the next recommended step.` / `If it is urgent, write to josepablo@atla.design.`
+- Offline: `The form is offline right now. Send your note to` + linked email + ` and we will pick it up there.`
+- Client errors: `Something went wrong. Email us instead.` / `We could not reach the server. Email us instead.`
+- Server field messages (shown without the email): `Name is required` / `Enter a valid email` / `Tell us a little more` / `The request body could not be read.`
+- Server failure messages (shown with the email): `Too many messages from this connection. Try again in a few minutes, or email us.` / `We could not save your message. Email it to josepablo@atla.design instead.`
+- No-JavaScript result page (`GET /api/contact/result`), heading / body:
+  - `Received.` / `We read every note directly and reply with the next recommended step.`
+  - `The form is offline right now.` / `Send your note to josepablo@atla.design and we will pick it up there.`
+  - `Something in the form needs a second look.` / `Go back, check the fields, and send it again.`
+  - `Too many messages from this connection.` / `Try again in a few minutes, or email us.`
+  - `We could not save your message.` / `Email it to josepablo@atla.design instead.`
+  - `This form only accepts submissions from atla.design.` / `Open the contact page and send it from there.`
+  - `Back to the contact page`
+
 ## Privacy Policy
 
 ### Heading
 - `Privacy Policy`
 
 ### Intro
-- `This site is operated by Atla. This policy explains what information we collect, how we use it, and what browser storage the site uses.`
+- `This site is operated by Atla & WeLoveDaily, LLC. This policy explains what information we collect, how we use it, which providers process it, and what your browser stores.`
 
 ### Sections
 
 #### Who we are
-- `Atla is a design studio working across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact hello@atla.studio.`
+- `Atla is the branding studio of Atla & WeLoveDaily, LLC, a company registered in Texas and based in Austin. We work across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact josepablo@atla.design.`
 
 #### What we collect
-- `The public site does not currently run advertising pixels or non-essential analytics scripts. If you contact us by email, we receive whatever information you include in your message.`
+- `If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, and we keep your IP address in memory for up to ten minutes to limit repeated submissions.`
+- `The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites. The site does not run advertising pixels, except on the waitlist page described below.`
+- `The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies.`
 
 #### Cookies and storage
-- `The site uses functional browser storage to remember your theme preference between light and dark mode. This is stored locally in your browser and is used only to keep the interface consistent across visits.`
-- `If we add analytics, marketing tags, embedded third-party tracking, or optional cookies later, this policy and the consent experience should be updated before those tools are activated.`
+- `The site stores a few preferences in your browser's local storage: your light or dark theme, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.`
+- `Video case studies embed the Vimeo player with Do Not Track enabled. Vimeo may still process technical request data and set the cookies it needs to play the video. The /waitlist page uses the analytics and advertising cookies described above.`
+- `We will update this page before activating any additional analytics, marketing tags, or optional cookies.`
 
 #### How we use information
-- `We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities.`
+- `We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep inquiry data until you ask us to delete it, unless a legal obligation requires us to keep it longer. Access is limited to the people who run the studio.`
 
 #### Third parties
-- `The site is hosted on Vercel and the journal content source is Sanity. Those providers may process technical request data required to operate the service, such as IP address, device metadata, and request logs.`
+- `The site is hosted on Vercel, which also provides the analytics described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.`
+
+#### International transfers
+- `Atla & WeLoveDaily, LLC is based in the United States, and the providers named above store and process data there. If you contact us or browse the site from outside the United States, including from Mexico, the rest of Latin America, or the European Union, your information is transferred to and handled in the United States under this policy. Where your local law requires a specific safeguard for that transfer, we rely on the contractual data protection terms of each provider and on your consent given by sending us your inquiry.`
 
 #### Your rights
 - `Depending on your jurisdiction, you may have rights to request access, correction, deletion, or restriction of personal data. Contact us and we will respond according to the applicable legal framework.`
 
 #### Updates
 - `We may update this policy as the site changes. The latest version published on this page will control.`
+- `We will revise this page before introducing new analytics tools, client portals, embedded scheduling tools, or other third-party services that change what data is processed.`
 
 ## Terms of Use
 
@@ -308,7 +351,7 @@ Static labels only. Article content is excluded.
 - `To the extent permitted by law, Atla disclaims liability for damages arising from use of or inability to use the site, including indirect, incidental, or consequential losses.`
 
 #### Contact
-- `For questions about these terms, contact hello@atla.studio.`
+- `For questions about these terms, contact josepablo@atla.design.`
 
 ## Footer
 
@@ -321,7 +364,6 @@ Static labels only. Article content is excluded.
 - `Work`
 - `About`
 - `Services`
-- `Careers`
 - `Journal`
 - `Contact`
 
@@ -329,12 +371,11 @@ Static labels only. Article content is excluded.
 - `Instagram`
 - `Behance`
 - `Linkedin`
-- `Facebook`
 
 ### Offices
 - `Austin, US`
 - `CDMX, MX`
-- `Caracas, VZ`
+- `Caracas, VE`
 - `Lima, PE`
 - `Tijuana, MX`
 

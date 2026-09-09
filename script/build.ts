@@ -6,14 +6,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import {
-  DEFAULT_OG_IMAGE_URL,
-  formatMetaTitle,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
-  SITE_NAME,
-  SITE_ORIGIN,
-} from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -441,6 +434,22 @@ async function writeFontLoaderScript() {
   );
 }
 
+const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+/** Preload entries for every <img loading="eager"> in rendered markup, in document order. */
+function eagerImagePreloads(html: string) {
+  const entries: Array<{ href: string; srcSet?: string; sizes?: string }> = [];
+  for (const tag of html.match(/<img\b[^>]*\bloading="eager"[^>]*>/g) ?? []) {
+    const attr = (name: string) => {
+      const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
+      return match ? unescapeAttr(match[1]) : undefined;
+    };
+    const href = attr("src");
+    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes") });
+  }
+  return entries;
+}
+
 function replaceHead(template: string, headMarkup: string) {
   return template
     .replace(/<title>[\s\S]*?<\/title>/, "")
@@ -562,24 +571,15 @@ async function prerenderRoutes() {
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
   const workFeaturedProject = projects[0];
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
-  const workVisibleProjects = projects.slice(0, 4);
-  const workPreloadImages = buildImagePreloadEntries(
-    workVisibleProjects.map((project) => ({
-      src: resolveProjectHeroImage(project),
-      widths: [320, 480, 640],
-      quality: 82,
-      sizes: "(max-width: 767px) calc(100vw - 40px), 20vw",
-    })),
-  );
 
   const staticRoutes = [
     {
       pathname: "/",
       title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
-      description: "Atla is a strategy-led branding studio for teams across the US and Latin America.",
+      description: HOME_META_DESCRIPTION,
       image: workFeaturedImage,
-      preloadImages: workPreloadImages,
       includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
     },
     {
       pathname: "/about",
@@ -592,6 +592,7 @@ async function prerenderRoutes() {
         { href: "/figmaAssets/photo-2.jpg" },
       ],
       includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
     },
     {
       pathname: "/contact",
@@ -608,7 +609,7 @@ async function prerenderRoutes() {
         mainEntity: {
           "@type": "Organization",
           name: ORGANIZATION_NAME,
-          email: "hello@atla.studio",
+          email: CONTACT_EMAIL,
           url: SITE_ORIGIN,
         },
       },
@@ -669,7 +670,7 @@ async function prerenderRoutes() {
     {
       pathname: "/saas-branding",
       title: formatMetaTitle("SaaS Branding Agency", "Brand Identity for Software Companies"),
-      description: "Brand strategy and identity for SaaS teams. Positioning and digital systems built for clear differentiation.",
+      description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
@@ -732,12 +733,14 @@ async function prerenderRoutes() {
   ];
 
   for (const route of staticRoutes) {
-    const html = await injectPrerenderedApp(
-      replaceHead(template, createHeadMarkup(route)),
+    const body = await injectPrerenderedApp(
+      template,
       route.pathname,
       getStaticRoutePrerenderData(route.pathname, { projects, articles, categories }),
     );
-    await writeRoutePage(route.pathname, html);
+    // The home preloads exactly the images its markup loads eagerly, so the hints always match a real request.
+    const preloadImages = route.pathname === "/" ? eagerImagePreloads(body) : route.preloadImages;
+    await writeRoutePage(route.pathname, replaceHead(body, createHeadMarkup({ ...route, preloadImages })));
   }
 
   for (const category of categories) {
