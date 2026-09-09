@@ -25,6 +25,10 @@
         font-display: swap;
       }
     </style>
+    <!-- GA4. Loader only: the CSP in vercel.json has no 'unsafe-inline' for
+         script-src, so the bootstrap lives in client/src/lib/ga.ts instead of
+         an inline block here. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
   </head>
   <body>
     <div id="root"></div>
