@@ -45,9 +45,6 @@ Excluded on purpose:
 
 ## Homepage
 
-### Screen-reader title
-- `Selected Atla branding and digital work`
-
 ### Fallback center title
 - `Project Name`
 
