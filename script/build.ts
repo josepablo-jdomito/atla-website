@@ -1,3 +1,4 @@
+import { execFileSync } from "child_process";
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
@@ -6,7 +7,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, LOVE_ORIGIN, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -85,6 +86,11 @@ const require = createRequire(import.meta.url);
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
   await hydrateBuildEnvFromLocalFile();
+
+  // The brand kit is read out of this repository, so it has to be regenerated
+  // before the client is bundled or the page ships a stale copy of itself.
+  console.log("generating brand kit...");
+  execFileSync("npx", ["tsx", "script/buildBrandKit.ts"], { stdio: "inherit" });
 
   console.log("building client...");
   await viteBuild();
@@ -244,6 +250,7 @@ function createHeadMarkup({
   preloadImages,
   type = "website",
   robots = "index,follow",
+  canonical,
   structuredData,
 }: {
   title: string;
@@ -260,9 +267,11 @@ function createHeadMarkup({
   }>;
   type?: string;
   robots?: string;
+  /** Absolute canonical URL, for routes served from another host. */
+  canonical?: string;
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }) {
-  const url = `${SITE_ORIGIN}${pathname}`;
+  const url = canonical ?? `${SITE_ORIGIN}${pathname}`;
   const imageUrl = image || DEFAULT_OG_IMAGE_URL;
   const tags = [
     `<title>${escapeHtml(title)}</title>`,
@@ -687,6 +696,16 @@ async function prerenderRoutes() {
       description: "How Atla runs branding engagements — from discovery to launch. Strategy, identity, digital, and creative direction working as one system.",
       image: workFeaturedImage,
       includeInSitemap: true,
+    },
+    {
+      pathname: "/why-we-love",
+      title: formatMetaTitle("Why We Love The Brands We Love", "Live Prototype"),
+      description: "A live prototype of the framework behind Why We Love The Brands We Love. Map the five moments, run a cold read on your own touchpoint, and open the kit.",
+      image: workFeaturedImage,
+      // Served at the root of love.atla.design; the www copy 301s there, so the
+      // canonical points at the host that actually owns the page.
+      canonical: `${LOVE_ORIGIN}/`,
+      includeInSitemap: false,
     },
     {
       pathname: "/journal",

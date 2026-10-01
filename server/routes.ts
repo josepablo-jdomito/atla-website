@@ -3,6 +3,10 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
+import { LOVE_HOST, LOVE_ORIGIN } from "../shared/siteSeo.ts";
+import { runBrandRead } from "./brandRead.ts";
+import { brandReadFixture } from "./brandReadFixture.ts";
+import { brandReadConfigured } from "./brandReadLimit.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
   fetchJournalArticlesFromSanity,
@@ -314,6 +318,15 @@ export async function registerRoutes(
   app.get("/api/sitemap.xml", async (req, res) => {
     try {
       const origin = getRequestOrigin(req);
+
+      // love.atla.design is a one-page host: the prototype at its root, nothing else.
+      if (origin === LOVE_ORIGIN) {
+        res.setHeader("Content-Type", "application/xml");
+        res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+        res.send(createSitemapXml(origin, ["/"], [], []));
+        return;
+      }
+
       const projects = isProjectSanityConfigured()
         ? await fetchProjectsFromSanity()
         : await storage.getAllProjects();
@@ -348,6 +361,80 @@ export async function registerRoutes(
       console.error("Failed to generate sitemap:", err);
       res.status(500).send("Failed to generate sitemap");
     }
+  });
+
+  /**
+   * robots.txt for love.atla.design. The static client/public/robots.txt is baked
+   * for www and shared by every host, so vercel.json rewrites this host's
+   * /robots.txt onto this function to point crawlers at the right sitemap.
+   * www keeps serving the static file straight from the build output.
+   */
+  app.get(["/api/robots", "/robots.txt"], (req, res) => {
+    const origin = getRequestOrigin(req);
+    const isLoveHost = origin === LOVE_ORIGIN || req.hostname === LOVE_HOST;
+    const sitemapOrigin = isLoveHost ? LOVE_ORIGIN : "https://www.atla.design";
+
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+    res.send(`User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: ${sitemapOrigin}/api/sitemap.xml\n`);
+  });
+
+  /**
+   * Whether the live read can actually run. The page asks before it offers the
+   * input, so a missing key shows the framework rather than a promise that
+   * breaks when someone presses the button. Leaks nothing but a boolean.
+   */
+  app.get("/api/brand-read/status", (_req, res) => {
+    res.setHeader("Cache-Control", "public, max-age=60");
+    res.json({ configured: brandReadConfigured() || Boolean(brandReadFixture()) });
+  });
+
+  /**
+   * The Mirror on love.atla.design. Takes a brand, returns where its customers
+   * say the love leaks. Answers with a status rather than an error page so the
+   * page can say something true in every case, including the case where the
+   * keys are not configured yet.
+   */
+  app.post("/api/brand-read", async (req, res) => {
+    const input = typeof req.body?.brand === "string" ? req.body.brand : "";
+    if (input.length === 0 || input.length > 120) {
+      res.status(400).json({ status: "failed", reason: "Give me a brand name or a domain." });
+      return;
+    }
+
+    // x-forwarded-for is whatever the client sent plus whatever proxies appended,
+    // so its leftmost entry is attacker controlled and useless as a limit key.
+    // Vercel overwrites x-vercel-forwarded-for itself, so prefer that.
+    const platformIp = req.headers["x-vercel-forwarded-for"];
+    const realIp = req.headers["x-real-ip"];
+    const ip =
+      (typeof platformIp === "string" ? platformIp.split(",")[0].trim() : "") ||
+      (typeof realIp === "string" ? realIp.trim() : "") ||
+      req.ip ||
+      "unknown";
+
+    // Local development only, and only when switched on explicitly.
+    const fixture = brandReadFixture();
+    const outcome = fixture
+      ? ({ status: "ok", result: fixture, cached: false } as const)
+      : await runBrandRead(input, ip);
+
+    const httpStatus =
+      outcome.status === "ok"
+        ? 200
+        : outcome.status === "rate_limited"
+          ? 429
+          : outcome.status === "not_configured"
+            ? 503
+            : 200;
+
+    if (outcome.status === "ok" && outcome.cached) {
+      res.setHeader("Cache-Control", "public, max-age=300");
+    } else {
+      res.setHeader("Cache-Control", "no-store");
+    }
+
+    res.status(httpStatus).json(outcome);
   });
 
   app.get("/api/feed.xml", async (req, res) => {
