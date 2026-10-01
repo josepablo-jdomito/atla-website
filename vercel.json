@@ -38,10 +38,21 @@
   "redirects": [
     {
       "source": "/why-we-love",
-      "missing": [
+      "has": [
         {
           "type": "host",
-          "value": "love.atla.design"
+          "value": "www.atla.design"
+        }
+      ],
+      "destination": "https://love.atla.design/",
+      "permanent": true
+    },
+    {
+      "source": "/why-we-love",
+      "has": [
+        {
+          "type": "host",
+          "value": "atla.design"
         }
       ],
       "destination": "https://love.atla.design/",
@@ -49,10 +60,21 @@
     },
     {
       "source": "/why-we-love/",
-      "missing": [
+      "has": [
         {
           "type": "host",
-          "value": "love.atla.design"
+          "value": "www.atla.design"
+        }
+      ],
+      "destination": "https://love.atla.design/",
+      "permanent": true
+    },
+    {
+      "source": "/why-we-love/",
+      "has": [
+        {
+          "type": "host",
+          "value": "atla.design"
         }
       ],
       "destination": "https://love.atla.design/",

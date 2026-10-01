@@ -11,12 +11,18 @@ one codebase, one deploy, one extra domain.
 | `love.atla.design/` | Rewritten to `/why-we-love`, serving the prerendered page |
 | `love.atla.design/<anything else>` | 301 to `https://www.atla.design/<path>` |
 | `www.atla.design/why-we-love` | 301 to `https://love.atla.design/` |
+| `<preview>.vercel.app/why-we-love` | Serves the page directly, no redirect |
 | `love.atla.design/robots.txt` | Rewritten to the API, which names this host's sitemap |
 | `love.atla.design/api/sitemap.xml` | Returns one URL: the root |
 
 Build assets, `/figmaAssets`, `/images`, `/favicon*`, `/security.txt`,
 `/sitemap.xml` and `/api` are excluded from the catch-all redirect so the page
 can load its own JavaScript and images.
+
+The `/why-we-love` redirect is scoped to the production hosts by name rather
+than to "every host except love", so preview deployments serve the page instead
+of bouncing reviewers to a domain that only exists in production. A new
+production hostname needs its own entry.
 
 The page's canonical URL is `https://love.atla.design/` on every host, baked
 into the prerendered HTML and set again at runtime. It is excluded from the
