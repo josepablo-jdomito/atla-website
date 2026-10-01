@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
+import { LOVE_HOST, LOVE_ORIGIN } from "../shared/siteSeo.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
   fetchJournalArticlesFromSanity,
@@ -314,6 +315,15 @@ export async function registerRoutes(
   app.get("/api/sitemap.xml", async (req, res) => {
     try {
       const origin = getRequestOrigin(req);
+
+      // love.atla.design is a one-page host: the prototype at its root, nothing else.
+      if (origin === LOVE_ORIGIN) {
+        res.setHeader("Content-Type", "application/xml");
+        res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+        res.send(createSitemapXml(origin, ["/"], [], []));
+        return;
+      }
+
       const projects = isProjectSanityConfigured()
         ? await fetchProjectsFromSanity()
         : await storage.getAllProjects();
@@ -332,7 +342,6 @@ export async function registerRoutes(
           "/saas-branding",
           "/brand-strategy",
           "/how-we-work",
-          "/why-we-love",
           "/journal",
           "/privacy",
           "/terms",
@@ -349,6 +358,22 @@ export async function registerRoutes(
       console.error("Failed to generate sitemap:", err);
       res.status(500).send("Failed to generate sitemap");
     }
+  });
+
+  /**
+   * robots.txt for love.atla.design. The static client/public/robots.txt is baked
+   * for www and shared by every host, so vercel.json rewrites this host's
+   * /robots.txt onto this function to point crawlers at the right sitemap.
+   * www keeps serving the static file straight from the build output.
+   */
+  app.get(["/api/robots", "/robots.txt"], (req, res) => {
+    const origin = getRequestOrigin(req);
+    const isLoveHost = origin === LOVE_ORIGIN || req.hostname === LOVE_HOST;
+    const sitemapOrigin = isLoveHost ? LOVE_ORIGIN : "https://www.atla.design";
+
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+    res.send(`User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: ${sitemapOrigin}/api/sitemap.xml\n`);
   });
 
   app.get("/api/feed.xml", async (req, res) => {

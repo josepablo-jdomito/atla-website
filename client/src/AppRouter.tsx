@@ -1,6 +1,7 @@
 import React from "react";
 import type { ComponentType } from "react";
 import { Route, Switch } from "wouter";
+import { isLoveHost } from "@/lib/loveHost";
 
 type RouteComponent = ComponentType<any>;
 
@@ -45,9 +46,13 @@ export function AppRouter({
   AtlaHowWeWork,
   AtlaWhyWeLove,
 }: AppRouterProps) {
+  // On love.atla.design the prototype is the site root; everywhere else it is a
+  // route on the main site and "/" is the work index.
+  const HomeRoute = isLoveHost() ? AtlaWhyWeLove : AtlaWork;
+
   return (
     <Switch>
-      <Route path="/" component={AtlaWork} />
+      <Route path="/" component={HomeRoute} />
       <Route path="/work" component={AtlaWork} />
       <Route path="/about" component={AtlaAbout} />
       <Route path="/contact" component={AtlaContact} />

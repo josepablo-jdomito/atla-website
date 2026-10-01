@@ -5,6 +5,8 @@ type SeoHeadProps = {
   title: string;
   description: string;
   pathname: string;
+  /** Absolute canonical URL, when it is not simply this origin plus pathname. */
+  canonical?: string;
   image?: string;
   preloadImages?: string[];
   type?: "website" | "article";
@@ -58,6 +60,7 @@ export function SeoHead({
   title,
   description,
   pathname,
+  canonical,
   image,
   preloadImages = NO_PRELOADS,
   type = "website",
@@ -66,7 +69,7 @@ export function SeoHead({
 }: SeoHeadProps) {
   useEffect(() => {
     const origin = getOrigin();
-    const canonicalUrl = new URL(pathname, origin).toString();
+    const canonicalUrl = canonical ?? new URL(pathname, origin).toString();
     const imageUrl = new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString();
     const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
@@ -110,7 +113,7 @@ export function SeoHead({
       if (currentScript) currentScript.remove();
       document.head.querySelectorAll("link[data-atla-preload='image']").forEach((node) => node.remove());
     };
-  }, [description, image, pathname, preloadImages, robots, structuredData, title, type]);
+  }, [canonical, description, image, pathname, preloadImages, robots, structuredData, title, type]);
 
   return null;
 }

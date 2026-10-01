@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { ORGANIZATION_NAME, SITE_ORIGIN, formatMetaTitle } from "@shared/siteSeo";
+import { LOVE_ORIGIN, ORGANIZATION_NAME, WHY_WE_LOVE_PATH, formatMetaTitle } from "@shared/siteSeo";
+import { isLoveHost } from "@/lib/loveHost";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
@@ -23,7 +24,6 @@ import {
   eyebrow,
 } from "@/components/whywelove/styles";
 
-const PATHNAME = "/why-we-love";
 const TITLE = "Why We Love The Brands We Love";
 const DESCRIPTION =
   "A live prototype of the framework behind Why We Love The Brands We Love. Map the five moments, run a cold read on your own touchpoint, and open the kit.";
@@ -32,6 +32,10 @@ const MAP_ANCHOR = "moment-map";
 
 export default function AtlaWhyWeLove() {
   const isMobile = useIsMobile();
+  // love.atla.design serves this page at "/". The canonical URL is that one on
+  // every host, so the www copy never competes with it.
+  const pathname = isLoveHost() ? "/" : WHY_WE_LOVE_PATH;
+  const canonicalUrl = `${LOVE_ORIGIN}/`;
 
   const structuredData = [
     {
@@ -39,14 +43,14 @@ export default function AtlaWhyWeLove() {
       "@type": "WebPage",
       name: TITLE,
       description: DESCRIPTION,
-      url: `${SITE_ORIGIN}${PATHNAME}`,
+      url: canonicalUrl,
       publisher: { "@type": "Organization", name: ORGANIZATION_NAME },
     },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: TITLE, item: `${SITE_ORIGIN}${PATHNAME}` },
+        { "@type": "ListItem", position: 1, name: TITLE, item: canonicalUrl },
       ],
     },
   ];
@@ -56,7 +60,8 @@ export default function AtlaWhyWeLove() {
       <SeoHead
         title={formatMetaTitle(TITLE, "Live Prototype")}
         description={DESCRIPTION}
-        pathname={PATHNAME}
+        pathname={pathname}
+        canonical={canonicalUrl}
         structuredData={structuredData}
       />
 

@@ -6,7 +6,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, LOVE_ORIGIN, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -244,6 +244,7 @@ function createHeadMarkup({
   preloadImages,
   type = "website",
   robots = "index,follow",
+  canonical,
   structuredData,
 }: {
   title: string;
@@ -260,9 +261,11 @@ function createHeadMarkup({
   }>;
   type?: string;
   robots?: string;
+  /** Absolute canonical URL, for routes served from another host. */
+  canonical?: string;
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }) {
-  const url = `${SITE_ORIGIN}${pathname}`;
+  const url = canonical ?? `${SITE_ORIGIN}${pathname}`;
   const imageUrl = image || DEFAULT_OG_IMAGE_URL;
   const tags = [
     `<title>${escapeHtml(title)}</title>`,
@@ -693,7 +696,10 @@ async function prerenderRoutes() {
       title: formatMetaTitle("Why We Love The Brands We Love", "Live Prototype"),
       description: "A live prototype of the framework behind Why We Love The Brands We Love. Map the five moments, run a cold read on your own touchpoint, and open the kit.",
       image: workFeaturedImage,
-      includeInSitemap: true,
+      // Served at the root of love.atla.design; the www copy 301s there, so the
+      // canonical points at the host that actually owns the page.
+      canonical: `${LOVE_ORIGIN}/`,
+      includeInSitemap: false,
     },
     {
       pathname: "/journal",
