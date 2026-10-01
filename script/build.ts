@@ -689,6 +689,13 @@ async function prerenderRoutes() {
       includeInSitemap: true,
     },
     {
+      pathname: "/why-we-love",
+      title: formatMetaTitle("Why We Love The Brands We Love", "Live Prototype"),
+      description: "A live prototype of the framework behind Why We Love The Brands We Love. Map the five moments, run a cold read on your own touchpoint, and open the kit.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
       pathname: "/journal",
       title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
       description: "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.",
