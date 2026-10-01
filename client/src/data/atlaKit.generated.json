@@ -1,6 +1,7 @@
 {
   "generatedAt": "2026-10-01",
   "headSha": "de4b67c",
+  "decisionsFrom": "git (origin/main)",
   "files": [
     {
       "path": "readme.md",

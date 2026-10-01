@@ -50,6 +50,23 @@ function git(args: string[]) {
   return execFileSync("git", args, { cwd: ROOT, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 });
 }
 
+/**
+ * The branch to read history from. A deployment checkout is often a shallow,
+ * single-branch clone with no origin/main, so try the refs in order of how
+ * faithful they are and take the first that resolves.
+ */
+function resolveHistoryRef() {
+  for (const ref of ["origin/main", "main", "HEAD"]) {
+    try {
+      git(["rev-parse", "--verify", "--quiet", ref]);
+      return ref;
+    } catch {
+      // Try the next one.
+    }
+  }
+  return null;
+}
+
 /** The real custom properties the site renders with, lifted out of its stylesheet. */
 function extractTokens() {
   const css = read("client/src/index.css");
@@ -141,10 +158,10 @@ const BRAND_PATHS = [
   ".impeccable.md",
 ];
 
-function extractDecisions(limit: number): Decision[] {
+function extractDecisions(limit: number, ref: string): Decision[] {
   const log = git([
     "log",
-    "origin/main",
+    ref,
     `-n${limit * 4}`,
     "--no-merges",
     "--date=short",
@@ -188,11 +205,21 @@ function extractDecisions(limit: number): Decision[] {
     if (decisions.length >= limit) break;
   }
 
-  if (decisions.length === 0) {
-    throw new Error("No brand decisions found in history; the decision extractor is stale.");
-  }
-
   return decisions;
+}
+
+/**
+ * The decisions already generated and committed, used when this checkout has no
+ * history to read. They were produced by a real run against the real log; this
+ * keeps them rather than shipping an empty history.
+ */
+function committedDecisions(): Decision[] {
+  try {
+    const existing = JSON.parse(read("client/src/data/atlaKit.generated.json"));
+    return Array.isArray(existing.decisions) ? existing.decisions : [];
+  } catch {
+    return [];
+  }
 }
 
 const AUTHORED_VOICE = `# Voice
@@ -307,11 +334,36 @@ function buildKit() {
     },
   ];
 
-  const decisions = extractDecisions(8);
+  // Extraction from files is the staleness check, and it throws: those files
+  // exist in every checkout, so a failure there means the kit no longer matches
+  // the site. History is different. A shallow deployment clone legitimately has
+  // none, and that must not fail a deploy, so fall back to what was committed.
+  const ref = resolveHistoryRef();
+  const fresh = ref ? extractDecisions(8, ref) : [];
+  const committed = committedDecisions();
+
+  // A shallow clone resolves HEAD but holds only a commit or two, which is a
+  // thinner record than the one already generated from the full log. Take
+  // whichever source actually has more history.
+  const useFresh = fresh.length >= committed.length && fresh.length > 0;
+  const decisions = useFresh ? fresh : committed;
+  const decisionsFrom = useFresh ? `git (${ref})` : "committed snapshot";
+
+  if (decisions.length === 0) {
+    throw new Error("No decisions from history and none committed; the decision extractor is stale.");
+  }
+
+  let headSha = "unknown";
+  try {
+    headSha = git(["rev-parse", "--short", ref ?? "HEAD"]).trim();
+  } catch {
+    // Leave it unknown rather than fail the build over a label.
+  }
 
   return {
     generatedAt: new Date().toISOString().slice(0, 10),
-    headSha: git(["rev-parse", "--short", "origin/main"]).trim(),
+    headSha,
+    decisionsFrom,
     files,
     decisions,
   };
@@ -321,5 +373,6 @@ const output = path.join(ROOT, "client/src/data/atlaKit.generated.json");
 const kit = buildKit();
 writeFileSync(output, `${JSON.stringify(kit, null, 2)}\n`, "utf8");
 console.log(
-  `[brand-kit] ${kit.files.length} files, ${kit.decisions.length} decisions, from ${kit.headSha}`,
+  `[brand-kit] ${kit.files.length} files, ${kit.decisions.length} decisions ` +
+    `from ${kit.decisionsFrom}, at ${kit.headSha}`,
 );
