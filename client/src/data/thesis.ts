@@ -18,7 +18,8 @@ export type Block =
 export type Section = {
   id: string;
   step: string;
-  heading: Array<{ text: string; italic?: boolean }>;
+  /** Authored lines. Breaks follow meaning, so long headings are split here, not by width. */
+  heading: Array<Array<{ text: string; italic?: boolean }>>;
   blocks: Block[];
 };
 
@@ -27,8 +28,8 @@ export const THESIS: Section[] = [
     id: "belonging",
     step: "01 · The claim",
     heading: [
-      { text: "People" }, { text: "do" }, { text: "not" }, { text: "buy" }, { text: "brands." },
-      { text: "They", italic: true }, { text: "belong", italic: true }, { text: "to", italic: true }, { text: "them.", italic: true },
+      [{ text: "People" }, { text: "do" }, { text: "not" }, { text: "buy" }, { text: "brands." }],
+      [{ text: "They", italic: true }, { text: "belong", italic: true }, { text: "to", italic: true }, { text: "them.", italic: true }],
     ],
     blocks: [
       {
@@ -53,8 +54,8 @@ export const THESIS: Section[] = [
     id: "anthropology",
     step: "02 · The frame",
     heading: [
-      { text: "This" }, { text: "is" }, { text: "anthropology," },
-      { text: "not", italic: true }, { text: "marketing.", italic: true },
+      [{ text: "This" }, { text: "is" }, { text: "anthropology," }],
+      [{ text: "not", italic: true }, { text: "marketing.", italic: true }],
     ],
     blocks: [
       {
@@ -79,8 +80,8 @@ export const THESIS: Section[] = [
     id: "concentration",
     step: "03 · The finding",
     heading: [
-      { text: "Love" }, { text: "does" }, { text: "not" }, { text: "spread." },
-      { text: "It", italic: true }, { text: "concentrates.", italic: true },
+      [{ text: "Love" }, { text: "does" }, { text: "not" }, { text: "spread." }],
+      [{ text: "It", italic: true }, { text: "concentrates.", italic: true }],
     ],
     blocks: [
       {
@@ -109,8 +110,8 @@ export const THESIS: Section[] = [
     id: "anatomy",
     step: "04 · The anatomy",
     heading: [
-      { text: "Loving" }, { text: "a" }, { text: "brand" }, { text: "has" },
-      { text: "an", italic: true }, { text: "anatomy.", italic: true },
+      [{ text: "Loving" }, { text: "a" }, { text: "brand" }, { text: "has" }],
+      [{ text: "an", italic: true }, { text: "anatomy.", italic: true }],
     ],
     blocks: [
       {
@@ -127,8 +128,8 @@ export const THESIS: Section[] = [
     id: "moments",
     step: "05 · Where it lives",
     heading: [
-      { text: "Five" }, { text: "moments." },
-      { text: "Twenty-five", italic: true }, { text: "touchpoints.", italic: true },
+      [{ text: "Five" }, { text: "moments." }],
+      [{ text: "Twenty-five", italic: true }, { text: "touchpoints.", italic: true }],
     ],
     blocks: [
       {
@@ -159,8 +160,8 @@ export const THESIS: Section[] = [
     id: "twenty-five",
     step: "06 · The rule",
     heading: [
-      { text: "Twenty" }, { text: "reasons." },
-      { text: "Five", italic: true }, { text: "without", italic: true }, { text: "compromise.", italic: true },
+      [{ text: "Twenty" }, { text: "reasons." }],
+      [{ text: "Five", italic: true }, { text: "without", italic: true }, { text: "compromise.", italic: true }],
     ],
     blocks: [
       {
@@ -189,7 +190,7 @@ export const THESIS: Section[] = [
     id: "why-it-misses",
     step: "07 · Why the usual work misses",
     heading: [
-      { text: "A" }, { text: "rebrand" }, { text: "repaints" }, { text: "the" }, { text: "average." },
+      [{ text: "A" }, { text: "rebrand" }, { text: "repaints" }, { text: "the" }, { text: "average." }],
     ],
     blocks: [
       {
@@ -211,8 +212,8 @@ export const THESIS: Section[] = [
 /** The single action the page closes on. */
 export const THESIS_CLOSE = {
   heading: [
-    { text: "Every" }, { text: "map" }, { text: "has" }, { text: "a" }, { text: "leak" }, { text: "in" }, { text: "it." },
-    { text: "Most", italic: true }, { text: "brands", italic: true }, { text: "are", italic: true }, { text: "fixing", italic: true }, { text: "the", italic: true }, { text: "wrong", italic: true }, { text: "one.", italic: true },
+    [{ text: "Every" }, { text: "map" }, { text: "has" }, { text: "a" }, { text: "leak" }, { text: "in" }, { text: "it." }],
+    [{ text: "Most", italic: true }, { text: "brands", italic: true }, { text: "are", italic: true }, { text: "fixing", italic: true }, { text: "the", italic: true }, { text: "wrong", italic: true }, { text: "one.", italic: true }],
   ],
   body: "A Brand Read finds which moment, in your customers’ own words, and writes the touchpoints that fill it.",
 };

@@ -66,18 +66,22 @@ export const PAPER_SURFACE_STYLE = `
  * Thickens letters by a hair and roughens their edges, so type looks printed
  * rather than rendered. Built off a darkness mask so it also works on text
  * sitting on the lighter cards.
+ *
+ * Tuned deliberately weak. The display face is a didone, which is mostly
+ * hairline: at any real strength the displacement eats the thin strokes and
+ * the result reads as artifacting rather than as ink on paper.
  */
 export function InkBleedDefs() {
   return (
     <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
       <defs>
         <filter id="wwl-ink-bleed" x="-6%" y="-6%" width="112%" height="112%">
-          <feMorphology operator="dilate" radius="0.35" result="fat" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="noise" />
-          <feDisplacementMap in="fat" in2="noise" scale="1.3" xChannelSelector="R" yChannelSelector="G" result="rough" />
-          <feGaussianBlur in="rough" stdDeviation="0.4" result="soft" />
+          <feMorphology operator="dilate" radius="0.18" result="fat" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.62" numOctaves="1" seed="5" result="noise" />
+          <feDisplacementMap in="fat" in2="noise" scale="0.55" xChannelSelector="R" yChannelSelector="G" result="rough" />
+          <feGaussianBlur in="rough" stdDeviation="0.22" result="soft" />
           <feComponentTransfer in="soft">
-            <feFuncA type="linear" slope="1.5" intercept="-0.18" />
+            <feFuncA type="linear" slope="1.25" intercept="-0.1" />
           </feComponentTransfer>
         </filter>
       </defs>

@@ -6,12 +6,17 @@ import type { CSSProperties } from "react";
  */
 
 /**
- * Headlines, quotes and numbers. Times Now Light is licensed from JHA and is
- * not in the repo; it is picked up with local() when installed, exactly as the
- * site already does for its other trial cuts, and falls back to Times until a
- * web license is cleared and the file ships in client/public/fonts.
+ * Headlines, quotes and numbers.
+ *
+ * Times Now Light is licensed from JHA and is not in the repo; it is picked up
+ * with local() when installed, exactly as the site already does for its other
+ * trial cuts. Until that licence is cleared the page renders in Bodoni Moda,
+ * a true didone with the same high-contrast, fine-hairline character. Falling
+ * back to Times New Roman, as this did before, made the page look like a term
+ * paper rather than a research note.
  */
-export const SERIF = "'Times Now Light', 'Times New Roman', Times, Georgia, serif";
+export const SERIF =
+  "'Times Now Light', 'Bodoni Moda', 'Didot', 'Times New Roman', Times, serif";
 /** Labels, sources and small body. Parabolica Text, same licensing caveat. */
 export const LABEL_FONT = "'Parabolica Text', 'Libre Franklin', Helvetica, sans-serif";
 /** Only for the console and the kit viewer, where the content really is code. */

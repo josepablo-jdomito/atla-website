@@ -6,33 +6,67 @@ import { Headline, StepLabel } from "./primitives";
 /** Long prose reads left-aligned in a narrow column. Centring it past a few lines costs the reader. */
 const MEASURE = "62ch";
 
+type Group = { kind: "quote" | "prose"; blocks: Array<Extract<Block, { text: string }>> | Block[] };
+
+/** Runs of prose stay together in one column; each quote stands alone. */
+function groupBlocks(blocks: Block[]) {
+  const groups: Array<{ kind: "quote" | "prose"; blocks: any[] }> = [];
+  for (const block of blocks) {
+    const kind = block.type === "quote" ? "quote" : "prose";
+    const last = groups[groups.length - 1];
+    if (kind === "quote" || !last || last.kind !== "prose") {
+      groups.push({ kind, blocks: [block] });
+    } else {
+      last.blocks.push(block);
+    }
+  }
+  return groups;
+}
+
 export function ThesisSection({ section, children }: { section: Section; children?: React.ReactNode }) {
   return (
     <section
       id={section.id}
       style={{ display: "flex", flexDirection: "column", gap: 30, alignItems: "center", width: "100%" }}
     >
-      <StepLabel>{section.step}</StepLabel>
-      <Headline lines={[section.heading]} />
-      <div
-        style={{
-          width: "100%",
-          maxWidth: MEASURE,
-          display: "flex",
-          flexDirection: "column",
-          gap: 22,
-        }}
-      >
-        {section.blocks.map((block, index) => (
-          <ThesisBlock key={index} block={block} />
-        ))}
+      <div style={{ width: "100%", maxWidth: MEASURE, display: "flex", flexDirection: "column", gap: 18 }}>
+        <StepLabel>{section.step}</StepLabel>
       </div>
+      <Headline lines={section.heading} />
+      {/* Prose runs at the reading measure. A pull quote is a visual event, so
+          it steps outside that column and takes the full width of the page. */}
+      {groupBlocks(section.blocks).map((group, index) =>
+        group.kind === "quote" ? (
+          <PullQuote key={index} text={group.blocks[0].text} />
+        ) : (
+          <div
+            key={index}
+            style={{
+              width: "100%",
+              maxWidth: MEASURE,
+              display: "flex",
+              flexDirection: "column",
+              gap: 22,
+            }}
+          >
+            {group.blocks.map((block, inner) => (
+              <ThesisBlock key={inner} block={block} />
+            ))}
+          </div>
+        ),
+      )}
       {children}
     </section>
   );
 }
 
 function ThesisBlock({ block }: { block: Block }) {
+  if (block.type === "quote") {
+    return (
+      <PullQuote text={block.text} />
+    );
+  }
+
   if (block.type === "p") {
     return (
       <p
@@ -94,7 +128,7 @@ function ThesisBlock({ block }: { block: Block }) {
     );
   }
 
-  return <PullQuote text={block.text} />;
+  return null;
 }
 
 /** The line the section turns on. Set large, alone, and given room. */
@@ -106,12 +140,16 @@ function PullQuote({ text }: { text: string }) {
       ref={ref}
       className="wwl-bleed"
       style={{
-        margin: "14px 0",
+        margin: "26px 0",
+        width: "100%",
+        maxWidth: 980,
+        marginInline: "auto",
         fontFamily: SERIF,
-        fontWeight: 300,
-        fontSize: "clamp(1.45rem, 3vw, 2.15rem)",
-        lineHeight: 1.18,
-        letterSpacing: "-0.015em",
+        fontWeight: 400,
+        fontOpticalSizing: "auto",
+        fontSize: "clamp(1.55rem, 3.4vw, 2.75rem)",
+        lineHeight: 1.1,
+        letterSpacing: "-0.026em",
         color: INK,
         textAlign: "center",
         textWrap: "balance",

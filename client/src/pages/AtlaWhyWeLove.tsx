@@ -79,7 +79,7 @@ export default function AtlaWhyWeLove() {
         <div
           style={{
             width: "100%",
-            maxWidth: 940,
+            maxWidth: 1180,
             display: "flex",
             flexDirection: "column",
             gap: isMobile ? 88 : 132,
@@ -325,7 +325,7 @@ function Close() {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 28, alignItems: "center" }}>
       <DrawnRule width="64px" />
-      <Headline lines={[THESIS_CLOSE.heading]} />
+      <Headline lines={THESIS_CLOSE.heading} />
       <Body>{THESIS_CLOSE.body}</Body>
 
       <a

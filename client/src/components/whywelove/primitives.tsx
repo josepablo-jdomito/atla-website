@@ -27,19 +27,25 @@ export function Headline({
 
   let wordIndex = 0;
 
+  // Headlines run the full width of the page column, which is wider than the
+  // reading measure. The lines are authored, so they have to fit as written:
+  // inside the prose column they would wrap by width and the meaning of the
+  // break would be lost.
   return (
     <Tag
       ref={ref}
       className="wwl-bleed"
       style={{
         fontFamily: SERIF,
-        fontWeight: 300,
-        fontSize: size === "hero" ? "clamp(1.85rem, 5.4vw, 5.25rem)" : "clamp(1.75rem, 4vw, 3.5rem)",
-        lineHeight: 1,
-        letterSpacing: "-0.015em",
+        fontWeight: 400,
+        fontOpticalSizing: "auto",
+        fontSize: size === "hero" ? "clamp(1.9rem, 5.4vw, 5.2rem)" : "clamp(1.8rem, 4vw, 3.5rem)",
+        lineHeight: size === "hero" ? 0.94 : 1.02,
+        letterSpacing: size === "hero" ? "-0.03em" : "-0.022em",
         color: INK,
-        margin: 0,
+        margin: "0 auto",
         textAlign: "center",
+        width: "100%",
       }}
     >
       {lines.map((line, lineNumber) => (
@@ -76,11 +82,11 @@ export function Body({ children, align = "center" }: { children: ReactNode; alig
     <p
       style={{
         fontFamily: LABEL_FONT,
-        fontSize: "1.0625rem",
-        lineHeight: 1.35,
+        fontSize: "clamp(1.0625rem, 1.5vw, 1.3rem)",
+        lineHeight: 1.45,
         color: INK,
         margin: "0 auto",
-        maxWidth: "47ch",
+        maxWidth: "46ch",
         textAlign: align,
         textWrap: "balance",
       }}
