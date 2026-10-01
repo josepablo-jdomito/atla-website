@@ -4,6 +4,8 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { isLoveHost } from "@/lib/loveHost";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CANVAS_BLOCKS } from "@/data/whyWeLove";
+import { THESIS, THESIS_CLOSE } from "@/data/thesis";
+import { ThesisSection } from "@/components/whywelove/Thesis";
 import { BrandRead } from "@/components/whywelove/BrandRead";
 import { DecisionHistory, KitBrowser } from "@/components/whywelove/KitBrowser";
 import { RingDiagram } from "@/components/whywelove/RingDiagram";
@@ -84,8 +86,15 @@ export default function AtlaWhyWeLove() {
           }}
         >
           <Hook mirrorLive={mirrorLive} />
+
+          {THESIS.map((section) => (
+            <ThesisSection key={section.id} section={section}>
+              {section.id === "anatomy" ? <Canvas /> : null}
+              {section.id === "moments" ? <MomentLine /> : null}
+            </ThesisSection>
+          ))}
+
           <Mirror onUnavailable={handleMirrorUnavailable} />
-          <Framework />
           <Kit />
           <History />
           <Person />
@@ -99,7 +108,7 @@ export default function AtlaWhyWeLove() {
 
 function Hook({ mirrorLive }: { mirrorLive: boolean }) {
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 32, alignItems: "center" }}>
+    <section style={{ display: "flex", flexDirection: "column", gap: 30, alignItems: "center" }}>
       <StepLabel tone="faint">Why We Love the Brands We Love</StepLabel>
 
       <Headline
@@ -113,14 +122,13 @@ function Hook({ mirrorLive }: { mirrorLive: boolean }) {
 
       <Body>
         {mirrorLive
-          ? "Three or four moments carry all of it. Miss them and nothing else you spend saves you. Here is where yours are leaking, in your customers’ own words, before you have spoken to me."
-          : "Three or four moments carry all of it. Miss them and nothing else you spend saves you. This is the instrument that finds them."}
+          ? "An argument about where brand love actually lives, why it is never spread evenly, and what that changes about the work. There is a live read partway down that will find the leak in your own brand, in your customers’ words."
+          : "An argument about where brand love actually lives, why it is never spread evenly, and what that changes about the work."}
       </Body>
     </section>
   );
 }
 
-/** The engine. Everything above it is setup; everything below it is proof. */
 function Mirror({ onUnavailable }: { onUnavailable: () => void }) {
   return (
     <section
@@ -132,24 +140,11 @@ function Mirror({ onUnavailable }: { onUnavailable: () => void }) {
   );
 }
 
-function Framework() {
+/** The emblem, placed inside the section that argues for it. */
+function Canvas() {
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 36, alignItems: "center", width: "100%" }}>
-      <StepLabel>The framework underneath</StepLabel>
-
-      <Headline
-        lines={[
-          [{ text: "Eight" }, { text: "blocks." }, { text: "Five" }, { text: "moments." }],
-          [{ text: "Twenty-five", italic: true }, { text: "touchpoints.", italic: true }],
-        ]}
-      />
-
-      <Body>
-        The read you just ran is one pass of a bigger instrument. This is the rest of it.
-      </Body>
-
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 34, alignItems: "center" }}>
       <RingDiagram />
-
       <div
         style={{
           display: "grid",
@@ -181,7 +176,52 @@ function Framework() {
           </div>
         ))}
       </div>
-    </section>
+    </div>
+  );
+}
+
+/** Five moments, five slots each, so the shape of the map is visible before it is filled. */
+function MomentLine() {
+  const moments = ["Discovery", "First contact", "Purchase", "Use", "Return"];
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+        gap: 2,
+        borderTop: `1.5px solid ${INK}`,
+      }}
+    >
+      {moments.map((moment, index) => (
+        <div key={moment} style={{ display: "flex", flexDirection: "column", gap: 10, padding: "16px 12px 20px 0" }}>
+          <span style={{ ...label, fontSize: 10, color: MUTED }}>
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span
+            style={{
+              fontFamily: SERIF,
+              fontWeight: 300,
+              fontSize: "1.2rem",
+              lineHeight: 1.1,
+              letterSpacing: "-0.015em",
+              color: INK,
+            }}
+          >
+            {moment}
+          </span>
+          <div style={{ display: "flex", gap: 5 }}>
+            {Array.from({ length: 5 }).map((_, slot) => (
+              <span
+                key={slot}
+                style={{ width: 9, height: 9, borderRadius: 999, border: `1.2px solid ${INK}`, opacity: 0.45 }}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -283,14 +323,10 @@ function Person() {
 
 function Close() {
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 30, alignItems: "center" }}>
+    <section style={{ display: "flex", flexDirection: "column", gap: 28, alignItems: "center" }}>
       <DrawnRule width="64px" />
-      <Headline
-        lines={[
-          [{ text: "Every" }, { text: "map" }, { text: "has" }, { text: "a" }, { text: "leak" }, { text: "in" }, { text: "it." }],
-          [{ text: "Most", italic: true }, { text: "brands", italic: true }, { text: "are", italic: true }, { text: "fixing", italic: true }, { text: "the", italic: true }, { text: "wrong", italic: true }, { text: "one.", italic: true }],
-        ]}
-      />
+      <Headline lines={[THESIS_CLOSE.heading]} />
+      <Body>{THESIS_CLOSE.body}</Body>
 
       <a
         href="https://www.atla.design/contact"
