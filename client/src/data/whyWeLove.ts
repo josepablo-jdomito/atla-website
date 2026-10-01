@@ -45,17 +45,20 @@ export const GRADING_RULES = [
   "The copy test: if a competitor could paste it unchanged, it fails.",
 ];
 
-/** The eight elements. */
-// TODO: confirm book wording — these are close paraphrases pending José's one-pass review.
-export const ELEMENTS = [
-  { title: "Small details", line: "Gestures signal care, not budget." },
-  { title: "Disruptive partnerships", line: "Borrow love from outside your category." },
-  { title: "Five moments", line: "Not one relationship. Design the moments." },
-  { title: "Twenty-five touchpoints", line: "Five per moment. No orphans." },
-  { title: "Uncopyable", line: "Something no competitor could have made." },
-  { title: "Consistency", line: "Every time builds belief." },
-  { title: "Clarity", line: "Understood in five seconds." },
-  { title: "Conviction", line: "It compounds over years." },
+/**
+ * The Canvas: the eight blocks of the framework, set on the arcs of the ring
+ * diagram. Short labels are what the diagram carries; the full names are what
+ * the page writes out.
+ */
+export const CANVAS_BLOCKS = [
+  { id: "cult", short: "Cult", name: "Cult", covers: "Rituals, symbols, language, mythology" },
+  { id: "attachment", short: "Attachment", name: "Attachment", covers: "Emotional connection, identity, loyalty" },
+  { id: "culture", short: "Culture", name: "Cultural Influence", covers: "Tribes, movements, social meaning" },
+  { id: "community", short: "Community", name: "Community", covers: "Belonging, connection between users" },
+  { id: "sensory", short: "Sensory", name: "Sensory Experience", covers: "Visuals, materials, atmosphere, pleasure" },
+  { id: "story", short: "Story", name: "Story / Narrative", covers: "Origin, purpose, myths, voice" },
+  { id: "symbol", short: "Symbol", name: "Symbolic Positioning", covers: "Values, aspiration, archetype, promise" },
+  { id: "behavior", short: "Behavior", name: "Consumer Behaviors", covers: "Rituals of use, integration into daily life" },
 ];
 
 export const FUNNEL_STEPS = [
@@ -178,7 +181,7 @@ Two states. Everything we write lands in one of them.
 - Names the thing that is happening, in order, with a date attached.
 - Admits the part that is slow or uncomfortable before being asked.
 - Short sentences. One idea each.
-- Says "your dress", never "your order".
+- Says “your dress”, never “your order”.
 
 Example:
   "Your dress went into cutting this morning. The next three weeks are the
@@ -204,17 +207,12 @@ Example:
 ];
 
 /** The Day-3 message, written by a fresh agent with the kit loaded and nothing else. */
-export const DAY_THREE_MESSAGE = `Your dress is in the slow part now.
-
-Cutting started Tuesday. From here it is three weeks of hand work that
-produces nothing you can see, which is exactly why this stretch feels like
-silence.
-
-So: I will write you on the 14th with the first photo off the table, and
-again when the hem goes in. If something slips, you will hear it from me
-before you have to ask.
-
-Nothing is wrong. It is just quiet.`;
+export const DAY_THREE_MESSAGE = [
+  "Your dress is in the slow part now.",
+  "Cutting started Tuesday. From here it is three weeks of hand work that produces nothing you can see, which is exactly why this stretch feels like silence.",
+  "So: I will write you on the 14th with the first photo off the table, and again when the hem goes in. If something slips, you will hear it from me before you have to ask.",
+  "Nothing is wrong. It is just quiet.",
+];
 
 export const CASE_01 = {
   brand: "A wedding-dress label.",
@@ -233,13 +231,21 @@ export const CASE_01 = {
   verdict: "Same dress. Same price. It was the wait.",
 };
 
-/** Counts from the Case 01 cold-read. 264 posts total. */
-export const CLASSIFICATION = [
-  { momentId: "discovery", label: "Discovery", count: 21 },
-  { momentId: "first-contact", label: "First contact", count: 34 },
-  { momentId: "purchase", label: "Purchase", count: 29 },
-  { momentId: "use", label: "Use", count: 39 },
-  { momentId: "wait", label: "Post-purchase wait", count: 141 },
+/**
+ * The journey the posts were mapped onto. Only the gap carries a count: it is
+ * the one number the read produced, and the page does not invent the rest.
+ */
+export const JOURNEY_STAGES = [
+  { id: "discovery", name: "Discovery", isGap: false },
+  { id: "first-contact", name: "First contact", isGap: false },
+  { id: "purchase", name: "Purchase", isGap: false },
+  { id: "wait", name: "The wait", isGap: true },
+  { id: "delivery", name: "Delivery", isGap: false },
+  { id: "return", name: "Return", isGap: false },
 ];
 
-export const CLASSIFICATION_TOTAL = 264;
+export const POSTS_TOTAL = 264;
+export const POSTS_AT_THE_GAP = 141;
+/** Everything that did not land at the wait. 264 minus 141, not a guess. */
+export const POSTS_ELSEWHERE = POSTS_TOTAL - POSTS_AT_THE_GAP;
+export const POSTS_PER_DOT = 4;

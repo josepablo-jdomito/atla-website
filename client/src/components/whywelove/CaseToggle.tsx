@@ -1,65 +1,63 @@
 import { useState } from "react";
 import { CASE_01 } from "@/data/whyWeLove";
-import { INK, LINE, MONO, MUTED, SANS, SURFACE, body, card } from "./styles";
+import { JourneyChart } from "./JourneyChart";
+import { Body, Headline } from "./primitives";
+import { CARD, EASE, INK, LABEL_FONT, MUTED, SERIF, label } from "./styles";
 
-/** Case 01, one toggle. Same setup both sides; only the kit changes. */
+/**
+ * The payoff. Same setup both sides, one toggle, and the chart that showed the
+ * problem changes state rather than being replaced: the lost dots fill in.
+ */
 export function CaseToggle() {
-  const [withKit, setWithKit] = useState(true);
+  const [withKit, setWithKit] = useState(false);
   const lines = withKit ? CASE_01.with : CASE_01.without;
 
   return (
-    <div style={{ ...card, display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: 0.6, color: MUTED }}>
-          CASE 01
-        </span>
-        <p style={{ ...body, fontSize: 15, color: INK }}>{CASE_01.brand}</p>
-        <p style={{ ...body, fontSize: 15 }}>{CASE_01.setup}</p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 36, alignItems: "center", width: "100%" }}>
+      <Headline
+        lines={[
+          [{ text: "Same" }, { text: "dress." }, { text: "Same" }, { text: "price." }],
+          [{ text: "It", italic: true }, { text: "was", italic: true }, { text: "the", italic: true }, { text: "wait.", italic: true }],
+        ]}
+      />
+
+      <Body>{CASE_01.setup}</Body>
 
       <div
         role="group"
         aria-label="Case 01, with or without the kit"
-        style={{
-          display: "inline-flex",
-          alignSelf: "flex-start",
-          padding: 4,
-          gap: 4,
-          borderRadius: 999,
-          border: `1px solid ${LINE}`,
-          background: "#fafafa",
-        }}
+        style={{ display: "inline-flex", border: `1.5px solid ${INK}`, background: CARD }}
       >
         {[
-          { label: "Without the kit", value: false },
-          { label: "With the kit", value: true },
+          { text: "Without the kit", value: false },
+          { text: "With the kit", value: true },
         ].map((option) => {
           const isActive = option.value === withKit;
           return (
             <button
-              key={option.label}
+              key={option.text}
               type="button"
               aria-pressed={isActive}
               onClick={() => setWithKit(option.value)}
               style={{
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: 0.2,
-                minHeight: 38,
-                padding: "0 16px",
-                borderRadius: 999,
+                ...label,
+                fontSize: 11,
+                minHeight: 46,
+                padding: "0 20px",
                 border: "none",
                 cursor: "pointer",
                 background: isActive ? INK : "transparent",
-                color: isActive ? "#f5f5f5" : MUTED,
+                color: isActive ? CARD : MUTED,
+                transition: `background 220ms ${EASE.arrive}, color 220ms ${EASE.arrive}`,
               }}
             >
-              {option.label}
+              {option.text}
             </button>
           );
         })}
       </div>
+
+      <JourneyChart fixed={withKit} />
 
       <ul
         style={{
@@ -68,30 +66,31 @@ export function CaseToggle() {
           listStyle: "none",
           display: "flex",
           flexDirection: "column",
-          gap: 8,
-          background: SURFACE,
+          gap: 12,
+          maxWidth: 560,
         }}
       >
         {lines.map((line) => (
-          <li key={line} style={{ ...body, fontSize: 15, display: "flex", gap: 10 }}>
-            <span style={{ fontFamily: MONO, fontSize: 12, color: MUTED, paddingTop: 3 }}>—</span>
-            <span>{line}</span>
+          <li
+            key={line}
+            style={{
+              fontFamily: SERIF,
+              fontWeight: 300,
+              fontSize: "clamp(1.15rem, 2.2vw, 1.5rem)",
+              lineHeight: 1.15,
+              letterSpacing: "-0.015em",
+              color: INK,
+              textAlign: "center",
+            }}
+          >
+            {line}
           </li>
         ))}
       </ul>
 
-      <p
-        style={{
-          ...body,
-          fontSize: 17,
-          color: INK,
-          fontWeight: 600,
-          paddingTop: 14,
-          borderTop: `1px solid ${LINE}`,
-        }}
-      >
-        {CASE_01.verdict}
-      </p>
+      <span style={{ fontFamily: LABEL_FONT, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: MUTED }}>
+        {withKit ? "Fix 01 · The Day-3 message" : "The gap, left open"}
+      </span>
     </div>
   );
 }

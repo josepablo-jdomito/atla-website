@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { coldRead, type ColdReadVerdict } from "@/lib/coldRead";
 import { CASE_01_CELL, GRADING_RULES, MOMENTS, TOUCHPOINT_SLOTS } from "@/data/whyWeLove";
-import { INK, LINE, MONO, MUTED, SANS, SURFACE, body, card } from "./styles";
+import { CARD, EASE, INK, LABEL_FONT, LINE, MUTED, SERIF, body, card, label } from "./styles";
 
 type CellKey = `${string}:${number}`;
 
@@ -59,13 +59,22 @@ export function MomentMap() {
                 justifyContent: "center",
               }}
             >
-              <span style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
+              <span style={{ ...label, fontSize: 10, color: MUTED }}>
                 {String(moment.index).padStart(2, "0")}
               </span>
-              <span style={{ fontFamily: SANS, fontSize: 15, fontWeight: 600, color: INK }}>
+              <span
+                style={{
+                  fontFamily: SERIF,
+                  fontWeight: 300,
+                  fontSize: "1.25rem",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.015em",
+                  color: INK,
+                }}
+              >
                 {moment.name}
               </span>
-              <span style={{ fontFamily: SANS, fontSize: 13, color: MUTED, lineHeight: 1.4 }}>
+              <span style={{ fontFamily: LABEL_FONT, fontSize: 12.5, color: MUTED, lineHeight: 1.35 }}>
                 {moment.whatItIs}
               </span>
             </div>
@@ -103,30 +112,26 @@ export function MomentMap() {
                       padding: isMobile ? 8 : 10,
                       textAlign: "left",
                       cursor: isCase ? "default" : "pointer",
-                      borderRadius: 10,
+                      borderRadius: 0,
                       boxSizing: "border-box",
-                      fontFamily: SANS,
+                      fontFamily: LABEL_FONT,
                       fontSize: 12,
                       lineHeight: 1.35,
-                      transition: "border-color 140ms ease, background 140ms ease",
-                      border: isCase
-                        ? `1px solid ${INK}`
-                        : isOpen
-                          ? `1px solid ${INK}`
-                          : `1px dashed ${LINE}`,
-                      background: isCase ? INK : hasDraft ? "rgba(20,20,20,0.04)" : SURFACE,
-                      color: isCase ? "#f5f5f5" : hasDraft ? INK : MUTED,
+                      transition: `border-color 180ms ${EASE.arrive}, background 180ms ${EASE.arrive}`,
+                      border: isCase || isOpen ? `1.5px solid ${INK}` : `1.2px dashed ${LINE}`,
+                      background: isCase ? INK : hasDraft ? CARD : "transparent",
+                      color: isCase ? CARD : hasDraft ? INK : MUTED,
                     }}
                   >
                     {isCase ? (
                       <>
-                        <span style={{ fontFamily: MONO, fontSize: 10, opacity: 0.7 }}>CASE 01</span>
+                        <span style={{ ...label, fontSize: 9, opacity: 0.75 }}>Case 01</span>
                         <br />
                         {isMobile ? "Day-3 message" : CASE_01_CELL.label}
                       </>
                     ) : (
                       <>
-                        <span style={{ fontFamily: MONO, fontSize: 10, opacity: 0.6 }}>{slotLabel}</span>
+                        <span style={{ ...label, fontSize: 9, opacity: 0.6 }}>{slotLabel}</span>
                         <br />
                         {/* On phones a 60px cell cannot hold a sentence, so the draft lives in the panel below. */}
                         {isMobile ? (hasDraft ? "drafted" : "+") : hasDraft ? drafts[key] : "empty"}
@@ -182,7 +187,7 @@ function ColdReadPanel({
     <div style={{ ...card, display: "flex", flexDirection: "column", gap: 14 }}>
       <label
         htmlFor="why-we-love-draft"
-        style={{ fontFamily: SANS, fontSize: 14, fontWeight: 600, color: INK }}
+        style={{ ...label, fontSize: 11 }}
       >
         {momentName}: write the touchpoint you would put here.
       </label>
@@ -196,12 +201,15 @@ function ColdReadPanel({
         }}
         placeholder="A handwritten note in the box, signed by whoever made it"
         style={{
-          fontFamily: SANS,
-          fontSize: 15,
+          fontFamily: SERIF,
+          fontWeight: 300,
+          fontSize: "1.25rem",
+          letterSpacing: "-0.015em",
           padding: "12px 14px",
-          borderRadius: 10,
-          border: `1px solid ${LINE}`,
-          background: "#fafafa",
+          borderRadius: 0,
+          border: "none",
+          borderBottom: `1.5px solid ${INK}`,
+          background: "transparent",
           color: INK,
           outline: "none",
         }}
@@ -212,25 +220,22 @@ function ColdReadPanel({
           type="button"
           onClick={onRun}
           style={{
-            fontFamily: SANS,
-            fontSize: 14,
-            fontWeight: 600,
-            letterSpacing: 0.3,
-            minHeight: 44,
+            ...label,
+            fontSize: 11,
+            minHeight: 46,
             padding: "0 20px",
-            borderRadius: 999,
-            border: `1px solid ${INK}`,
+            border: `1.5px solid ${INK}`,
             background: INK,
-            color: "#f5f5f5",
+            color: CARD,
             cursor: "pointer",
           }}
         >
           Cold-read my draft
         </button>
         {error ? (
-          <span style={{ fontFamily: SANS, fontSize: 13, color: "#9a3412" }}>{error}</span>
+          <span style={{ fontFamily: LABEL_FONT, fontSize: 13, color: INK, fontStyle: "italic" }}>{error}</span>
         ) : (
-          <span style={{ fontFamily: SANS, fontSize: 13, color: MUTED }}>
+          <span style={{ fontFamily: LABEL_FONT, fontSize: 13, color: MUTED }}>
             No context about your brand. Only the rules in moments.md.
           </span>
         )}
@@ -247,9 +252,9 @@ function ColdReadPanel({
             borderTop: `1px solid ${LINE}`,
           }}
         >
-          <VerdictLine label="Understood" text={verdict.understood} />
-          <VerdictLine label="Invented" text={verdict.invented} />
-          <VerdictLine label="Missing" text={verdict.missing} />
+          <VerdictLine tag="Understood" text={verdict.understood} />
+          <VerdictLine tag="Invented" text={verdict.invented} />
+          <VerdictLine tag="Missing" text={verdict.missing} />
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingTop: 4 }}>
             {GRADING_RULES.map((rule, index) => {
@@ -259,14 +264,13 @@ function ColdReadPanel({
                   key={rule}
                   title={rule}
                   style={{
-                    fontFamily: MONO,
-                    fontSize: 10,
-                    letterSpacing: 0.4,
+                    ...label,
+                    fontSize: 9,
                     padding: "5px 9px",
-                    borderRadius: 999,
-                    border: `1px solid ${passed ? "rgba(20,20,20,0.5)" : LINE}`,
-                    color: passed ? INK : MUTED,
-                    background: passed ? "rgba(20,20,20,0.05)" : "transparent",
+                    border: `1.2px solid ${INK}`,
+                    color: passed ? CARD : INK,
+                    background: passed ? INK : "transparent",
+                    opacity: passed ? 1 : 0.4,
                   }}
                 >
                   {passed ? "PASS" : "FAIL"} · rule {index + 1}
@@ -280,21 +284,19 @@ function ColdReadPanel({
   );
 }
 
-function VerdictLine({ label, text }: { label: string; text: string }) {
+function VerdictLine({ tag, text }: { tag: string; text: string }) {
   return (
-    <p style={{ ...body, fontSize: 14, display: "flex", gap: 10, alignItems: "baseline" }}>
+    <p style={{ ...body, fontSize: 14.5, display: "flex", gap: 12, alignItems: "baseline" }}>
       <span
         style={{
-          fontFamily: MONO,
+          ...label,
           fontSize: 10,
-          letterSpacing: 0.6,
-          textTransform: "uppercase",
           color: MUTED,
           minWidth: 74,
           flexShrink: 0,
         }}
       >
-        {label}
+        {tag}
       </span>
       <span>{text}</span>
     </p>

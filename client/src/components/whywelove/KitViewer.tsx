@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { KIT_FILES } from "@/data/whyWeLove";
-import { INK, LINE, MONO, MUTED, SANS, SURFACE, body } from "./styles";
+import { CARD, INK, LABEL_FONT, LINE, MONO, MUTED, label } from "./styles";
 
 /**
  * The kit as a file tree the reader can actually open. Real content, not lorem:
@@ -23,18 +23,15 @@ export function KitViewer() {
     >
       <div
         style={{
-          border: `1px solid ${LINE}`,
-          borderRadius: 12,
-          background: SURFACE,
+          border: `1.5px solid ${INK}`,
+          background: CARD,
           padding: 10,
           display: "flex",
           flexDirection: "column",
           gap: 4,
         }}
       >
-        <span style={{ fontFamily: MONO, fontSize: 11, color: MUTED, padding: "6px 8px" }}>
-          why-we-love/
-        </span>
+        <span style={{ ...label, fontSize: 10, color: MUTED, padding: "6px 8px" }}>why-we-love/</span>
         {KIT_FILES.map((file, index) => {
           const isActive = index === activeIndex;
           return (
@@ -47,18 +44,25 @@ export function KitViewer() {
                 textAlign: "left",
                 cursor: "pointer",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: 0,
                 padding: "9px 10px",
-                background: isActive ? "rgba(20,20,20,0.06)" : "transparent",
+                background: isActive ? INK : "transparent",
                 display: "flex",
                 flexDirection: "column",
                 gap: 3,
               }}
             >
-              <span style={{ fontFamily: MONO, fontSize: 13, color: INK }}>
+              <span style={{ fontFamily: MONO, fontSize: 13, color: isActive ? CARD : INK }}>
                 {index === KIT_FILES.length - 1 ? "└──" : "├──"} {file.name}
               </span>
-              <span style={{ fontFamily: SANS, fontSize: 12, color: MUTED, lineHeight: 1.4 }}>
+              <span
+                style={{
+                  fontFamily: LABEL_FONT,
+                  fontSize: 12,
+                  lineHeight: 1.35,
+                  color: isActive ? "rgba(251,248,241,0.72)" : MUTED,
+                }}
+              >
                 {file.blurb}
               </span>
             </button>
@@ -68,16 +72,15 @@ export function KitViewer() {
 
       <div
         style={{
-          border: `1px solid ${LINE}`,
-          borderRadius: 12,
-          background: SURFACE,
+          border: `1.5px solid ${INK}`,
+          background: CARD,
           overflow: "hidden",
         }}
       >
         <div
           style={{
             padding: "10px 14px",
-            borderBottom: `1px solid ${LINE}`,
+            borderBottom: `1.2px solid ${INK}`,
             fontFamily: MONO,
             fontSize: 12,
             color: MUTED,
@@ -92,7 +95,7 @@ export function KitViewer() {
             fontFamily: MONO,
             fontSize: 12.5,
             lineHeight: 1.7,
-            color: "#2a2a2a",
+            color: "rgba(20,20,20,0.82)",
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
             maxHeight: 460,
@@ -103,13 +106,5 @@ export function KitViewer() {
         </pre>
       </div>
     </div>
-  );
-}
-
-export function KitNote() {
-  return (
-    <p style={{ ...body, fontSize: 14, color: MUTED }}>
-      The deliverable is visible. Proof, not promises.
-    </p>
   );
 }

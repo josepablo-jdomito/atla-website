@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { MONO } from "./styles";
+import { CARD, INK, MONO, MUTED, label } from "./styles";
 
 const LINES = [
   { text: "$ whoami", tone: "cmd" },
-  { text: "atla — brand systems studio", tone: "out" },
+  { text: "why-we-love — a brand-love framework", tone: "out" },
   { text: "", tone: "out" },
   { text: "$ load why-we-love/", tone: "cmd" },
   { text: "✓ moments.md        5 moments · 25 touchpoints", tone: "ok" },
@@ -15,11 +15,16 @@ const LINES = [
   { text: "→ leak found: the wait after purchase (141 of 264)", tone: "hit" },
 ] as const;
 
-const TONE_COLOR: Record<string, string> = {
-  cmd: "#eaeaea",
-  out: "#9b9b9b",
-  ok: "#7fd1a4",
-  hit: "#f0c674",
+/**
+ * Ink on paper, not a glowing terminal: this is a printout of a run, and the
+ * one line that matters is the one left at full strength. Emphasis is weight
+ * and dimming, never color.
+ */
+const TONE_STYLE: Record<string, { color: string; weight: number }> = {
+  cmd: { color: INK, weight: 500 },
+  out: { color: "rgba(20,20,20,0.55)", weight: 400 },
+  ok: { color: "rgba(20,20,20,0.75)", weight: 400 },
+  hit: { color: INK, weight: 600 },
 };
 
 const CHAR_MS = 14;
@@ -72,39 +77,27 @@ export function LiveConsole() {
 
   return (
     <div
-      className="atla-theme-preserve"
-      aria-label="Terminal transcript: loading the why-we-love kit and running a cold read"
+      aria-label="Printout: loading the kit and running a cold read"
       style={{
-        background: "#111111",
-        borderRadius: 14,
-        border: "1px solid rgba(255,255,255,0.10)",
-        overflow: "hidden",
+        width: "100%",
+        maxWidth: 620,
+        background: CARD,
+        border: `1.5px solid ${INK}`,
+        boxShadow: "0 10px 24px rgba(0,0,0,.2)",
+        transform: "rotate(-0.4deg)",
       }}
     >
       <div
         style={{
+          padding: "10px 16px",
+          borderBottom: `1.2px solid ${INK}`,
           display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "10px 14px",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <span style={{ width: 9, height: 9, borderRadius: 999, background: "#3d3d3d" }} />
-        <span style={{ width: 9, height: 9, borderRadius: 999, background: "#3d3d3d" }} />
-        <span style={{ width: 9, height: 9, borderRadius: 999, background: "#3d3d3d" }} />
-        <span
-          style={{
-            fontFamily: MONO,
-            fontSize: 11,
-            letterSpacing: 0.6,
-            textTransform: "uppercase",
-            color: "#7a7a7a",
-            marginLeft: 6,
-          }}
-        >
-          Live prototype
-        </span>
+        <span style={{ ...label, fontSize: 10 }}>Live prototype</span>
+        <span style={{ ...label, fontSize: 10, color: MUTED }}>cold-read</span>
       </div>
 
       <pre
@@ -112,8 +105,8 @@ export function LiveConsole() {
           margin: 0,
           padding: "16px 14px 20px",
           fontFamily: MONO,
-          fontSize: 13,
-          lineHeight: 1.75,
+          fontSize: 12.5,
+          lineHeight: 1.8,
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
           minHeight: 268,
@@ -125,9 +118,16 @@ export function LiveConsole() {
           const shown = Math.min(consumed, line.text.length);
           const isCurrent = !done && consumed <= line.text.length;
           return (
-            <span key={index} style={{ color: TONE_COLOR[line.tone], display: "block" }}>
+            <span
+              key={index}
+              style={{
+                color: TONE_STYLE[line.tone].color,
+                fontWeight: TONE_STYLE[line.tone].weight,
+                display: "block",
+              }}
+            >
               {line.text.slice(0, shown) || "\u00a0"}
-              {isCurrent ? <span style={{ color: "#eaeaea" }}>▌</span> : null}
+              {isCurrent ? <span style={{ color: INK }}>▌</span> : null}
             </span>
           );
         })}
