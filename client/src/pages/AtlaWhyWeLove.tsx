@@ -5,7 +5,7 @@ import { isLoveHost } from "@/lib/loveHost";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CANVAS_BLOCKS } from "@/data/whyWeLove";
 import { BrandRead } from "@/components/whywelove/BrandRead";
-import { KitViewer } from "@/components/whywelove/KitViewer";
+import { DecisionHistory, KitBrowser } from "@/components/whywelove/KitBrowser";
 import { RingDiagram } from "@/components/whywelove/RingDiagram";
 import { InkBleedDefs, PAPER_SURFACE_STYLE } from "@/components/whywelove/Paper";
 import { Body, DrawnRule, Headline, StepLabel } from "@/components/whywelove/primitives";
@@ -87,6 +87,7 @@ export default function AtlaWhyWeLove() {
           <Mirror onUnavailable={handleMirrorUnavailable} />
           <Framework />
           <Kit />
+          <History />
           <Person />
           <Close />
           <Colophon />
@@ -187,15 +188,42 @@ function Framework() {
 function Kit() {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 32, alignItems: "center", width: "100%" }}>
-      <StepLabel>What you get</StepLabel>
+      <StepLabel>The deliverable</StepLabel>
       <Headline
-        lines={[[{ text: "It" }, { text: "ships" }, { text: "as" }, { text: "files,", italic: true }, { text: "not" }, { text: "a" }, { text: "deck." }]]}
+        lines={[
+          [{ text: "We" }, { text: "run" }, { text: "Atla" }, { text: "on" }, { text: "this." }],
+          [{ text: "Here", italic: true }, { text: "is", italic: true }, { text: "the", italic: true }, { text: "whole", italic: true }, { text: "thing.", italic: true }],
+        ]}
       />
       <Body>
-        A Brand Read ends with these, filled in for your brand. Any agent you hire after me can run
-        them and arrive at the same answers.
+        Not a sample. Atla’s own brand kit, generated out of the repository that builds this site.
+        The values are read from the stylesheet it renders with. Open any file.
       </Body>
-      <KitViewer />
+      <KitBrowser />
+    </section>
+  );
+}
+
+/**
+ * The part a PDF cannot do. A brand system is only a source of truth if you can
+ * see what changed and why, including the decisions that were reversed.
+ */
+function History() {
+  return (
+    <section style={{ display: "flex", flexDirection: "column", gap: 30, alignItems: "center", width: "100%" }}>
+      <StepLabel>What changed, and why</StepLabel>
+      <Headline
+        lines={[
+          [{ text: "A" }, { text: "guideline" }, { text: "tells" }, { text: "you" }, { text: "the" }, { text: "answer." }],
+          [{ text: "A", italic: true }, { text: "system", italic: true }, { text: "tells", italic: true }, { text: "you", italic: true }, { text: "why.", italic: true }],
+        ]}
+      />
+      <Body>
+        This is our own commit log, unedited. In September we built a hero for the home page, spent
+        a day refining it, and then removed it. The reasoning for all three is still here, which is
+        the only reason the next person does not rebuild it.
+      </Body>
+      <DecisionHistory />
     </section>
   );
 }

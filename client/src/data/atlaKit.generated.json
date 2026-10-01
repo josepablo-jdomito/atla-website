@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-10-01",
+  "headSha": "de4b67c",
+  "files": [
+    {
+      "path": "readme.md",
+      "blurb": "Where to start, and how to read the rest.",
+      "language": "markdown",
+      "provenance": {
+        "kind": "authored",
+        "from": "script/buildBrandKit.ts"
+      },
+      "content": "# Atla brand kit\n\nThis kit is generated from the repository that builds atla.design. The visual\nvalues are read out of the stylesheet the site ships. The organisation facts are\nread out of the module the site, the sitemap and the structured data all import.\nThe decision history is this repository's own commit log.\n\nThat is the point. A brand system that is generated from the work cannot drift\nfrom the work. When the site changes and the kit does not follow, the build is\nwrong and it says so.\n\n## Where to start\n\nDepending on what you are making:\n\n- **Anything written**: `brand/voice.md`, then `brand/principles.md`.\n- **Anything designed**: `visual/tokens.css`, then `visual/typography.md`.\n- **Anything that names the studio or a service**: `brand/voice.md` for the\n  service names, `brand/organisation.md` for the facts.\n- **A decision you disagree with**: the history. It records what changed and\n  why, including the reversals.\n\n## Provenance\n\nEvery file in this kit is labelled. \"Extracted\" means it was lifted out of a\nfile that builds the live site at the moment this page was built. \"Authored\"\nmeans the studio wrote it and this file is the source of record.\n"
+    },
+    {
+      "path": "brand/principles.md",
+      "blurb": "Who the work is for, and what it has to feel like.",
+      "language": "markdown",
+      "provenance": {
+        "kind": "extracted",
+        "from": ".impeccable.md"
+      },
+      "content": "## Design Context\n\n### Users\nPrimary users are founders, brand leads, and marketing/operations teams evaluating case studies before starting an engagement with Atla. They need to scan quickly, understand quality, and inspect visual execution details without friction.\n\n### Brand Personality\nConfident, editorial, precise.\nThe interface should feel intentional and strategic rather than playful or generic. It should communicate rigor, craft, and clarity.\n\n### Aesthetic Direction\nMinimal editorial system with strong typography and image-first storytelling. Neutral surfaces, high contrast, restrained motion, and clear hierarchy. Interactions should feel premium and practical (fast, legible, and keyboard-friendly), not decorative.\n\n### Design Principles\n1. Reduce friction before adding flourish: discovery and navigation should always be immediate.\n2. Let work lead: photography and project artifacts are the hero; chrome stays quiet.\n3. Keep rhythm consistent: spacing, type scale, and interaction density must be systematic.\n4. Preserve context across actions: users should never feel disoriented when exploring.\n5. Accessibility is baseline: readable contrast, keyboard support, and touch-safe targets.\n"
+    },
+    {
+      "path": "brand/voice.md",
+      "blurb": "The service names, the banned words, the shape of a sentence.",
+      "language": "markdown",
+      "provenance": {
+        "kind": "authored",
+        "from": "script/buildBrandKit.ts"
+      },
+      "content": "# Voice\n\nHow Atla sounds, and the words it will not use.\n\n## Service names\n\nThese are the names. A generic substitute is wrong even when it reads better.\n\n- Fractional Creative Director. A retainer, three months minimum. Not coaching,\n  not a design service. Never \"Brand Director\": that name was retired.\n- Brand Strategy & Positioning\n- Verbal Identity\n- Brand Bible\n- Brand Expressions\n- Web Design\n- Branding Analysis. Never \"Brand Audit\".\n\nNever \"fractional creative team\". Never a service name that is not on this list.\n\n## Never\n\n- No discounts and no coupons, in any Atla business. No exceptions.\n- No clichés: game-changer, authentic story, next level, elevate your brand.\n- No empty corporate: synergies, leverage, robust solutions.\n- No invented services, data, claims, testimonials or case studies.\n- No em dash. A full stop, a comma or a colon instead.\n- No emoji in anything written to be copied.\n\n## Shape\n\n- Founder to founder. Direct, with a point of view.\n- High density, low length. Value per line.\n- Where there are options, two or three, with one recommended out loud.\n- Close on an action, never on a moral.\n- Calls to action are quiet. Never aggressive.\n"
+    },
+    {
+      "path": "brand/organisation.md",
+      "blurb": "The facts the site, the sitemap and the structured data share.",
+      "language": "markdown",
+      "provenance": {
+        "kind": "extracted",
+        "from": "shared/siteSeo.ts"
+      },
+      "content": "# Organisation\n\nExtracted from shared/siteSeo.ts, the single module the site, the sitemap\nand the structured data all read from.\n\n- Name: Atla\n- Site: https://www.atla.design\n- Contact: josepablo@atla.design\n- Guided entry: https://start.atla.design\n\n## Profiles\n\n- Instagram: https://www.instagram.com/atla.studio\n- Behance: https://www.behance.net/atla\n- Linkedin: https://www.linkedin.com/company/atlabrandingagency\n"
+    },
+    {
+      "path": "visual/tokens.css",
+      "blurb": "The values atla.design renders with, right now.",
+      "language": "css",
+      "provenance": {
+        "kind": "extracted",
+        "from": "client/src/index.css"
+      },
+      "content": "/* Extracted from client/src/index.css at build time.\n   These are the values atla.design renders with right now, not a copy. */\n:root {\n  --atlacolormarble-white: rgba(250, 250, 250, 1);\n  --web-desktop-body-normal-font-family: \"Libre Franklin\", Helvetica;\n  --web-desktop-body-normal-font-size: 14px;\n  --web-desktop-body-normal-font-style: normal;\n  --web-desktop-body-normal-font-weight: 500;\n  --web-desktop-body-normal-letter-spacing: 0.2800000000000001px;\n  --web-desktop-body-normal-line-height: 110%;\n  --web-desktop-body-small-font-family: \"Libre Franklin\", Helvetica;\n  --web-desktop-body-small-font-size: 12px;\n  --web-desktop-body-small-font-style: normal;\n  --web-desktop-body-small-font-weight: 600;\n  --web-desktop-body-small-letter-spacing: 0.48px;\n  --web-desktop-body-small-line-height: 120.00000762939453%;\n  --web-desktop-h3-font-family: \"ABC Synt Variable Unlicensed Trial\", Helvetica;\n  --web-desktop-h3-font-size: 64px;\n  --web-desktop-h3-font-style: normal;\n  --web-desktop-h3-font-weight: 400;\n  --web-desktop-h3-letter-spacing: 0px;\n  --web-desktop-h3-line-height: 110%;\n}\n"
+    },
+    {
+      "path": "visual/typography.md",
+      "blurb": "The stacks in use, and the rules around them.",
+      "language": "markdown",
+      "provenance": {
+        "kind": "extracted",
+        "from": "client/src/index.css"
+      },
+      "content": "# Typography\n\nExtracted from client/src/index.css. These are the stacks in use.\n\n- `\"Libre Franklin\", Helvetica`\n- `\"ABC Synt Variable Unlicensed Trial\", Helvetica`\n\n## Rules\n\n- The display face sets headings. The text face sets everything else.\n- Letter-spacing is part of the token, not a per-component decision.\n- Line height is a percentage so it survives a type-scale change.\n"
+    }
+  ],
+  "decisions": [
+    {
+      "sha": "251d5b2",
+      "date": "2026-09-09",
+      "author": "jose-xcode",
+      "subject": "home: remove the hero and the command trigger from the nav",
+      "reasoning": "JP does not want the H1, supporting line, CTAs or the 'start here / Cmd K'\npill on the home. Keep the nav with the wordmark only (the palette still\nopens with the keyboard shortcut), restore the screen-reader-only H1 the\npage had before, drop the hero CSS and the copy inventory lines.",
+      "files": [
+        "client/src/components/atla/AtlaNav.tsx",
+        "client/src/index.css",
+        "client/src/pages/AtlaWork.tsx",
+        "docs/static-site-copy.md"
+      ],
+      "diff": "@@ -213,8 +213,11 @@ export function AtlaNav({\n   commandProjects = [],\n   currentSearch = \"\",\n+  showCommandTrigger = true,\n }: {\n   inverted?: boolean;\n   commandProjects?: AtlaCommandProject[];\n   currentSearch?: string;\n+  /** Hide the \"start here / Cmd K\" pill; the palette still opens with the keyboard shortcut. */\n+  showCommandTrigger?: boolean;\n }) {\n   const isMobile = useIsMobile();\n@@ -896,85 +899,87 @@ export function AtlaNav({\n             </a>\n \n-            <button\n-              type=\"button\"\n-              onClick={openPalette}\n-              className=\"atla-tap-target\"\n-              style={{\n-                width: isMobile ? \"min(58vw, 240px)\" : \"clamp(320px, 38vw, 520px)\",\n-                minHeight: 48,"
+    },
+    {
+      "sha": "68ded91",
+      "date": "2026-09-09",
+      "author": "Claude",
+      "subject": "fix(analytics): count a brief taken away even when the clipboard fails",
+      "reasoning": "The event was gated on the clipboard write succeeding, which undercounts:\nwhen the write fails the composer falls back to showing the raw text for\nmanual copying, so the brief is still delivered. Fire on the action and\ncarry whether the write landed in a clipboard param.",
+      "files": [
+        "client/src/components/atla/AtlaNav.tsx"
+      ],
+      "diff": "@@ -799,7 +799,9 @@ export function AtlaNav({\n     setFeedback(copied ? `${composerMode === \"brief\" ? \"Brief\" : \"Question\"} package copied` : composerText.trim());\n     // Only the brief counts as taking the template away; the ask composer is a\n-    // question, not a brief.\n-    if (composerMode === \"brief\" && copied) {\n-      trackEvent(\"brief_template_download\", { cta_type: \"copy\", page: \"nav-composer\" });\n+    // question, not a brief. A failed clipboard write still delivers the brief,\n+    // because the feedback falls back to the raw text for manual copying, so\n+    // the event fires either way and carries whether the write landed.\n+    if (composerMode === \"brief\") {\n+      trackEvent(\"brief_template_download\", { cta_type: \"copy\", page: \"nav-composer\", clipboard: copied });\n     }\n   };\n@@ -824,6 +826,6 @@ export function AtlaNav({\n     setFeedback(copied ? `${label} copied for Slack` : packageText);\n     rememberAction(\"share-slack\");\n-    if (composerMode === \"brief\" && copied) {\n-      trackEvent(\"brief_template_download\", { cta_type: \"slack\", page: \"nav-composer\" });\n+    if (composerMode === \"brief\") {\n+      trackEvent(\"brief_template_download\", { cta_type: \"slack\", page: \"nav-composer\", clipboard: copied });\n     }"
+    },
+    {
+      "sha": "701158e",
+      "date": "2026-09-09",
+      "author": "Claude",
+      "subject": "feat(analytics): fire the conversion events that had no call site",
+      "reasoning": "contact_form_submit, newsletter_signup and brief_template_download were\ndeclared in the ConversionEvent union and never called by anything, so\nthey were absent from the built bundle and could not fire at all.\n\ncontact_form_submit now fires at the contact form's success point, after\nthe reset and the sent state, so a 400/503/network failure does not\ncount as a submission.\n\nbrief_template_download fires when the nav composer's brief is actually\ntaken away: copied, opened as an email draft, or copied for Slack. The\nask composer is a question rather than a brief and is left out, and the\nclipboard paths only count when the write succeeded. cta_type carries\nwhich route was used.\n\nnewsletter_signup has no call site because the site has no newsletter\nsignup: the only email input in the client is the contact form's, and\nthere is no Substack or subscribe surface anywhere. Wiring it to a link\nclick would report clicks as signups, so it stays uncalled until a real\nsignup exists.",
+      "files": [
+        "client/src/components/atla/AtlaNav.tsx",
+        "client/src/pages/AtlaContact.tsx"
+      ],
+      "diff": "@@ -3,4 +3,5 @@ import { FileText, Grid3X3, List, Mail, MessageCircleQuestion, Palette, RotateCc\n import { AtlaWordmark } from \"@/components/atla/AtlaMarks\";\n import { ProgressiveBlur } from \"@/components/ui/progressive-blur\";\n+import { trackEvent } from \"@/hooks/use-analytics\";\n import { useIsMobile } from \"@/hooks/use-mobile\";\n import { CONTACT_EMAIL, SITE_ORIGIN } from \"@shared/siteSeo\";\n@@ -797,4 +798,9 @@ export function AtlaNav({\n     rememberAction(composerMode === \"brief\" ? \"write-brief\" : \"ask-question\");\n     setFeedback(copied ? `${composerMode === \"brief\" ? \"Brief\" : \"Question\"} package copied` : composerText.trim());\n+    // Only the brief counts as taking the template away; the ask composer is a\n+    // question, not a brief.\n+    if (composerMode === \"brief\" && copied) {\n+      trackEvent(\"brief_template_download\", { cta_type: \"copy\", page: \"nav-composer\" });\n+    }\n   };\n \n@@ -809,4 +815,7 @@ export function AtlaNav({\n       setFeedback(`${label} email draft opened`);\n       rememberAction(\"share-email\");\n+      if (composerMode === \"brief\") {\n+        trackEvent(\"brief_template_download\", { cta_type: \"email\", page: \"nav-composer\" });\n+      }"
+    },
+    {
+      "sha": "5b65e90",
+      "date": "2026-09-08",
+      "author": "jose-xcode",
+      "subject": "refactor: share the Organization JSON-LD between / and /about",
+      "reasoning": "Both pages built the same schema object by hand, so every social or\nservice-area change had to land twice. Define it once next to the\nvalues it is built from.",
+      "files": [
+        "client/src/pages/AtlaAbout.tsx",
+        "client/src/pages/AtlaWork.tsx",
+        "shared/siteSeo.ts"
+      ],
+      "diff": "@@ -16,4 +16,14 @@ export const SOCIAL_PROFILES = [\n   { label: \"Linkedin\", href: \"https://www.linkedin.com/company/atlabrandingagency\" },\n ] as const;\n+/** Organization JSON-LD asserted on / and /about. */\n+export const ORGANIZATION_SCHEMA = {\n+  \"@context\": \"https://schema.org\",\n+  \"@type\": \"Organization\",\n+  name: ORGANIZATION_NAME,\n+  url: SITE_ORIGIN,\n+  logo: ORGANIZATION_LOGO_URL,\n+  sameAs: SOCIAL_PROFILES.map((profile) => profile.href),\n+  areaServed: [\"United States\", \"Latin America\"],\n+} as const;\n /** Home meta description, shared by the prerender route table and the runtime SeoHead. */\n export const HOME_META_DESCRIPTION ="
+    },
+    {
+      "sha": "72c2370",
+      "date": "2026-09-08",
+      "author": "jose-xcode",
+      "subject": "fix(home): finish the hero move to CSS and restore the original preload count",
+      "reasoning": "The type ramp for the hero was split between inline constants and the\nstylesheet; now only the theme colors stay inline. The preload trim from\nfour covers to two was reasoned from the Grid branch, but the home\nrenders Masonry, which loads three (mobile) or eight (desktop) tiles\neagerly, so the trim removed hints for images still fetched at high\npriority. Restore the pre-branch value. The preloaded URLs not matching\nthe masonry srcset (different widths and ordering) predates this branch\nand is left as is.",
+      "files": [
+        "client/src/index.css",
+        "client/src/pages/AtlaWork.tsx",
+        "script/build.ts"
+      ],
+      "diff": "@@ -311,5 +311,10 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {\n \n .atla-home-hero__title {\n+  font-family: 'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif;\n+  font-weight: 400;\n   font-size: 38px;\n+  line-height: 1.02;\n+  letter-spacing: -0.5px;\n+  margin: 0;\n   max-width: 18ch;\n }\n@@ -321,4 +326,14 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {\n }\n \n+.atla-home-hero__aside p {\n+  font-family: 'Libre Franklin', Helvetica, sans-serif;\n+  font-size: 16px;\n+  font-weight: 500;\n+  line-height: 1.5;\n+  letter-spacing: 0.2px;\n+  margin: 0;\n+  max-width: 44ch;"
+    },
+    {
+      "sha": "0fa0e1c",
+      "date": "2026-09-07",
+      "author": "jose-xcode",
+      "subject": "fix(home): lay out the hero with CSS so prerendered HTML matches every viewport",
+      "reasoning": "useIsMobile() starts as true, so the prerendered hero shipped in its\nsingle-column 38px form and re-laid out to two columns on desktop\nhydration: a layout shift on the landing page's largest element. Move\nthe responsive rules to a media query in index.css and keep only the\ntheme-dependent colors inline. Also trim the prerender's preload set\nfrom four project covers to the two the grid actually loads eagerly,\nsince the hero pushes the rest below the fold.",
+      "files": [
+        "client/src/index.css",
+        "client/src/pages/AtlaWork.tsx",
+        "script/build.ts"
+      ],
+      "diff": "@@ -300,4 +300,43 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {\n }\n \n+/* Home hero: layout lives in CSS so the prerendered HTML is already correct at every width. */\n+.atla-home-hero {\n+  display: grid;\n+  grid-template-columns: 1fr;\n+  row-gap: 20px;\n+  align-items: end;\n+  padding: 28px 0 32px;\n+  margin-bottom: 20px;\n+}\n+\n+.atla-home-hero__title {\n+  font-size: 38px;\n+  max-width: 18ch;\n+}\n+\n+.atla-home-hero__aside {\n+  display: flex;\n+  flex-direction: column;\n+  gap: 18px;"
+    },
+    {
+      "sha": "114302c",
+      "date": "2026-09-07",
+      "author": "jose-xcode",
+      "subject": "refactor: centralize contact email, start URL, social profiles and pill CTA style",
+      "reasoning": "The audit fixes had spread the same literals across files: the contact\naddress in five TS/TSX files plus the prerender table, the start URL and\nan identical pill button style in two pages, the social list in the\nfooter and two sameAs blocks, and the home description in two places.\nMove them to shared/siteSeo.ts (next to SITE_ORIGIN) and a small\natlaStyles module so the next change lands once. security.txt and the\ncopy doc remain hand-mirrored because they cannot import.",
+      "files": [
+        "client/src/components/atla/AtlaFooter.tsx",
+        "client/src/components/atla/AtlaNav.tsx",
+        "client/src/components/atla/atlaStyles.ts",
+        "client/src/pages/AtlaAbout.tsx",
+        "client/src/pages/AtlaContact.tsx",
+        "client/src/pages/AtlaPrivacy.tsx",
+        "client/src/pages/AtlaTerms.tsx",
+        "client/src/pages/AtlaWork.tsx",
+        "script/build.ts",
+        "shared/siteSeo.ts"
+      ],
+      "diff": "@@ -2,4 +2,5 @@ import { Fragment, useEffect, useMemo, useState } from \"react\";\n import { AtlaSymbol, AtlaWordmark } from \"@/components/atla/AtlaMarks\";\n import { useIsMobile } from \"@/hooks/use-mobile\";\n+import { SOCIAL_PROFILES } from \"@shared/siteSeo\";\n \n const CITIES = [\n@@ -12,9 +13,5 @@ const CITIES = [\n \n const NAV_LINKS = [\"Work\", \"About\", \"Services\", \"Journal\", \"Contact\"] as const;\n-const SOCIAL_LINKS = [\n-  { label: \"Instagram\", href: \"https://www.instagram.com/atla.studio\" },\n-  { label: \"Behance\", href: \"https://www.behance.net/atla\" },\n-  { label: \"Linkedin\", href: \"https://www.linkedin.com/company/atlabrandingagency\" },\n-] as const;\n+const SOCIAL_LINKS = SOCIAL_PROFILES;\n \n function getCityTimes() {\n@@ -4,9 +4,9 @@ import { AtlaWordmark } from \"@/components/atla/AtlaMarks\";\n import { ProgressiveBlur } from \"@/components/ui/progressive-blur\";\n import { useIsMobile } from \"@/hooks/use-mobile\";\n-import { SITE_ORIGIN } from \"@shared/siteSeo\";\n+import { CONTACT_EMAIL, SITE_ORIGIN } from \"@shared/siteSeo\";"
+    },
+    {
+      "sha": "c6b4c26",
+      "date": "2026-09-07",
+      "author": "jose-xcode",
+      "subject": "fix: point LinkedIn to the Atla company page and drop the placeholder Facebook link",
+      "reasoning": "The footer and the Organization sameAs schema on / and /about linked to\nthe bare linkedin.com and facebook.com homepages. Use the Atla company\npage on LinkedIn (URL supplied by JP on 2026-08-10). No verifiable Atla\nFacebook page exists, so the Facebook entry is removed rather than\npointed at a guess.",
+      "files": [
+        "client/src/components/atla/AtlaFooter.tsx",
+        "client/src/pages/AtlaAbout.tsx",
+        "client/src/pages/AtlaWork.tsx"
+      ],
+      "diff": "@@ -15,6 +15,5 @@ const SOCIAL_LINKS = [\n   { label: \"Instagram\", href: \"https://www.instagram.com/atla.studio\" },\n   { label: \"Behance\", href: \"https://www.behance.net/atla\" },\n-  { label: \"Linkedin\", href: \"https://www.linkedin.com\" },\n-  { label: \"Facebook\", href: \"https://www.facebook.com\" },\n+  { label: \"Linkedin\", href: \"https://www.linkedin.com/company/atlabrandingagency\" },\n ] as const;"
+    }
+  ]
+}

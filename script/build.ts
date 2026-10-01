@@ -1,3 +1,4 @@
+import { execFileSync } from "child_process";
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
@@ -85,6 +86,11 @@ const require = createRequire(import.meta.url);
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
   await hydrateBuildEnvFromLocalFile();
+
+  // The brand kit is read out of this repository, so it has to be regenerated
+  // before the client is bundled or the page ships a stale copy of itself.
+  console.log("generating brand kit...");
+  execFileSync("npx", ["tsx", "script/buildBrandKit.ts"], { stdio: "inherit" });
 
   console.log("building client...");
   await viteBuild();

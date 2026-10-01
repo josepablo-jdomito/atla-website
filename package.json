@@ -9,6 +9,7 @@
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
     "test:brand-read": "tsx script/testBrandRead.ts",
+    "build:brand-kit": "tsx script/buildBrandKit.ts",
     "studio:dev": "npm --prefix studio run dev",
     "studio:build": "npm --prefix studio run build",
     "studio:deploy": "npm --prefix studio run deploy",
