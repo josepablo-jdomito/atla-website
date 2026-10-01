@@ -1,55 +1,11 @@
 /**
- * Content and rules for /why-we-love — the live prototype of the
- * "Why We Love The Brands We Love" framework.
+ * Content for love.atla.design.
  *
- * Everything here is the page's source of truth: the kit files the reader can
- * open, the 5x5 map, the Case 01 record, and the rules the cold-read grades
- * a draft touchpoint against.
+ * The page carries no case study and no example brand: the live read is about
+ * whoever is looking at it. What stays here is the framework itself and the kit
+ * a Brand Read ships.
  */
 
-export type Moment = {
-  id: string;
-  index: number;
-  name: string;
-  whatItIs: string;
-};
-
-export const MOMENTS: Moment[] = [
-  { id: "discovery", index: 1, name: "Discovery", whatItIs: "How they first find you" },
-  { id: "first-contact", index: 2, name: "First contact", whatItIs: "The first real exchange" },
-  { id: "purchase", index: 3, name: "Purchase", whatItIs: "The moment money moves" },
-  { id: "use", index: 4, name: "Use", whatItIs: "Living with the thing" },
-  { id: "return", index: 5, name: "Return", whatItIs: "Coming back, telling others" },
-];
-
-/** Five touchpoint slots per moment. Labels are slots, not prescriptions. */
-export const TOUCHPOINT_SLOTS = ["01", "02", "03", "04", "05"] as const;
-
-/**
- * The only filled cell on the page. The filled map is the paid diagnostic;
- * this row exists so the reader can see what a filled cell looks like.
- */
-export const CASE_01_CELL = {
-  momentId: "return",
-  slot: 2,
-  label: "The Day-3 message",
-  body: "An honest message on day 3 of the wait, then a rhythm of small, specific updates until the dress ships.",
-};
-
-export const GRADING_RULES = [
-  "Unexpected delight beats incremental improvement.",
-  "Aim for high emotion and low certainty moments.",
-  "Define the competent floor first, then go past it on purpose.",
-  "Unnecessary beats better. Specific beats expensive.",
-  "Every choice must look unmistakably intentional.",
-  "The copy test: if a competitor could paste it unchanged, it fails.",
-];
-
-/**
- * The Canvas: the eight blocks of the framework, set on the arcs of the ring
- * diagram. Short labels are what the diagram carries; the full names are what
- * the page writes out.
- */
 export const CANVAS_BLOCKS = [
   { id: "cult", short: "Cult", name: "Cult", covers: "Rituals, symbols, language, mythology" },
   { id: "attachment", short: "Attachment", name: "Attachment", covers: "Emotional connection, identity, loyalty" },
@@ -59,16 +15,6 @@ export const CANVAS_BLOCKS = [
   { id: "story", short: "Story", name: "Story / Narrative", covers: "Origin, purpose, myths, voice" },
   { id: "symbol", short: "Symbol", name: "Symbolic Positioning", covers: "Values, aspiration, archetype, promise" },
   { id: "behavior", short: "Behavior", name: "Consumer Behaviors", covers: "Rituals of use, integration into daily life" },
-];
-
-export const FUNNEL_STEPS = [
-  "Content (Instagram / LinkedIn)",
-  "This page (live prototype)",
-  "Comment LOVED",
-  "DM in under 60 seconds (ManyChat)",
-  "Beehiiv: book pre-launch list and the worksheet",
-  "3 emails: Case 01, the 8, invitation",
-  "Brand Read call",
 ];
 
 export type KitFile = {
@@ -205,47 +151,3 @@ Example:
 - If a competitor could send it unchanged, rewrite it.`,
   },
 ];
-
-/** The Day-3 message, written by a fresh agent with the kit loaded and nothing else. */
-export const DAY_THREE_MESSAGE = [
-  "Your dress is in the slow part now.",
-  "Cutting started Tuesday. From here it is three weeks of hand work that produces nothing you can see, which is exactly why this stretch feels like silence.",
-  "So: I will write you on the 14th with the first photo off the table, and again when the hem goes in. If something slips, you will hear it from me before you have to ask.",
-  "Nothing is wrong. It is just quiet.",
-];
-
-export const CASE_01 = {
-  brand: "A wedding-dress label.",
-  setup:
-    "Brides loved the dress. They loved the fitting. Then they went quiet for weeks while it was made.",
-  without: [
-    "The brand kept polishing moment 3, the purchase.",
-    "More discounts. Better packaging. A smoother checkout.",
-    "The complaints did not move.",
-  ],
-  with: [
-    "The cold-read found the leak next door to moment 5: the post-purchase wait.",
-    "141 of 264 posts named it.",
-    "The fix was one honest message on day 3, then a rhythm of small, specific updates.",
-  ],
-  verdict: "Same dress. Same price. It was the wait.",
-};
-
-/**
- * The journey the posts were mapped onto. Only the gap carries a count: it is
- * the one number the read produced, and the page does not invent the rest.
- */
-export const JOURNEY_STAGES = [
-  { id: "discovery", name: "Discovery", isGap: false },
-  { id: "first-contact", name: "First contact", isGap: false },
-  { id: "purchase", name: "Purchase", isGap: false },
-  { id: "wait", name: "The wait", isGap: true },
-  { id: "delivery", name: "Delivery", isGap: false },
-  { id: "return", name: "Return", isGap: false },
-];
-
-export const POSTS_TOTAL = 264;
-export const POSTS_AT_THE_GAP = 141;
-/** Everything that did not land at the wait. 264 minus 141, not a guess. */
-export const POSTS_ELSEWHERE = POSTS_TOTAL - POSTS_AT_THE_GAP;
-export const POSTS_PER_DOT = 4;

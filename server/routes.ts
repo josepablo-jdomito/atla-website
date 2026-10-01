@@ -4,6 +4,8 @@ import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import { LOVE_HOST, LOVE_ORIGIN } from "../shared/siteSeo.ts";
+import { runBrandRead } from "./brandRead.ts";
+import { brandReadFixture } from "./brandReadFixture.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
   fetchJournalArticlesFromSanity,
@@ -374,6 +376,47 @@ export async function registerRoutes(
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
     res.send(`User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: ${sitemapOrigin}/api/sitemap.xml\n`);
+  });
+
+  /**
+   * The Mirror on love.atla.design. Takes a brand, returns where its customers
+   * say the love leaks. Answers with a status rather than an error page so the
+   * page can say something true in every case, including the case where the
+   * keys are not configured yet.
+   */
+  app.post("/api/brand-read", async (req, res) => {
+    const input = typeof req.body?.brand === "string" ? req.body.brand : "";
+    if (input.length === 0 || input.length > 120) {
+      res.status(400).json({ status: "failed", reason: "Give me a brand name or a domain." });
+      return;
+    }
+
+    const forwarded = req.headers["x-forwarded-for"];
+    const ip =
+      (typeof forwarded === "string" ? forwarded.split(",")[0].trim() : "") || req.ip || "unknown";
+
+    // Local development only, and only when switched on explicitly.
+    const fixture = brandReadFixture();
+    const outcome = fixture
+      ? ({ status: "ok", result: fixture, cached: false } as const)
+      : await runBrandRead(input, ip);
+
+    const httpStatus =
+      outcome.status === "ok"
+        ? 200
+        : outcome.status === "rate_limited"
+          ? 429
+          : outcome.status === "not_configured"
+            ? 503
+            : 200;
+
+    if (outcome.status === "ok" && outcome.cached) {
+      res.setHeader("Cache-Control", "public, max-age=300");
+    } else {
+      res.setHeader("Cache-Control", "no-store");
+    }
+
+    res.status(httpStatus).json(outcome);
   });
 
   app.get("/api/feed.xml", async (req, res) => {
