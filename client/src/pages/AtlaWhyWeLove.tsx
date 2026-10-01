@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useCallback, useState } from "react";
 import { LOVE_ORIGIN, ORGANIZATION_NAME, WHY_WE_LOVE_PATH, formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { isLoveHost } from "@/lib/loveHost";
@@ -28,6 +28,8 @@ const PAGE_STYLE = `
 
 export default function AtlaWhyWeLove() {
   const isMobile = useIsMobile();
+  const [mirrorLive, setMirrorLive] = useState(true);
+  const handleMirrorUnavailable = useCallback(() => setMirrorLive(false), []);
   // love.atla.design serves this page at "/". The canonical is that one on every
   // host, so the www copy never competes with it.
   const pathname = isLoveHost() ? "/" : WHY_WE_LOVE_PATH;
@@ -81,10 +83,11 @@ export default function AtlaWhyWeLove() {
             gap: isMobile ? 88 : 132,
           }}
         >
-          <Hook />
-          <Mirror />
+          <Hook mirrorLive={mirrorLive} />
+          <Mirror onUnavailable={handleMirrorUnavailable} />
           <Framework />
           <Kit />
+          <Person />
           <Close />
           <Colophon />
         </div>
@@ -93,7 +96,7 @@ export default function AtlaWhyWeLove() {
   );
 }
 
-function Hook() {
+function Hook({ mirrorLive }: { mirrorLive: boolean }) {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 32, alignItems: "center" }}>
       <StepLabel tone="faint">Why We Love the Brands We Love</StepLabel>
@@ -108,21 +111,22 @@ function Hook() {
       />
 
       <Body>
-        Three or four moments carry all of it. Miss them and nothing else you spend saves you.
-        Here is where yours are leaking, in your customers’ own words, before you have spoken to me.
+        {mirrorLive
+          ? "Three or four moments carry all of it. Miss them and nothing else you spend saves you. Here is where yours are leaking, in your customers’ own words, before you have spoken to me."
+          : "Three or four moments carry all of it. Miss them and nothing else you spend saves you. This is the instrument that finds them."}
       </Body>
     </section>
   );
 }
 
 /** The engine. Everything above it is setup; everything below it is proof. */
-function Mirror() {
+function Mirror({ onUnavailable }: { onUnavailable: () => void }) {
   return (
     <section
       id={MAP_ANCHOR}
       style={{ display: "flex", flexDirection: "column", gap: 34, alignItems: "center", width: "100%" }}
     >
-      <BrandRead />
+      <BrandRead onUnavailable={onUnavailable} />
     </section>
   );
 }
@@ -192,6 +196,59 @@ function Kit() {
         them and arrive at the same answers.
       </Body>
       <KitViewer />
+    </section>
+  );
+}
+
+/**
+ * The guide's stated goal is that a reader comes away wanting this person, which
+ * needs the person on the page.
+ *
+ * DRAFT: written in José's voice and not yet approved by him. It makes no claim
+ * about his history, his clients or his results, only an argument about the
+ * work, so there is nothing here to verify. It still needs his one pass before
+ * this page is public. A portrait or an audio line slots in beside it when he
+ * sends one; until then the section is type alone rather than a placeholder.
+ */
+function Person() {
+  const lines = [
+    "Most brand work I am asked to do is a repaint.",
+    "New logo, new palette, the same three moments quietly failing.",
+    "So I stopped selling repaints.",
+    "What I do instead is find the moments. Usually three. Sometimes four.",
+    "They are rarely the ones the founder expected, and they are usually cheaper to fix than the rebrand that was budgeted for.",
+    "The read at the top of this page is the first hour of that work, run in public, on whoever is reading.",
+    "If it found something that stung, that is the job working.",
+  ];
+
+  return (
+    <section style={{ display: "flex", flexDirection: "column", gap: 26, alignItems: "center", width: "100%" }}>
+      <StepLabel>Who runs it</StepLabel>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 640 }}>
+        {lines.map((line) => (
+          <p
+            key={line}
+            style={{
+              margin: 0,
+              fontFamily: SERIF,
+              fontWeight: 300,
+              fontSize: "clamp(1.15rem, 2.2vw, 1.6rem)",
+              lineHeight: 1.26,
+              letterSpacing: "-0.015em",
+              color: INK,
+              textAlign: "center",
+              textWrap: "balance",
+            }}
+          >
+            {line}
+          </p>
+        ))}
+      </div>
+
+      <span style={{ ...label, fontSize: 11, color: MUTED }}>
+        Jos\u00e9 Pablo Dom\u00ednguez · founder, Atla
+      </span>
     </section>
   );
 }

@@ -41,8 +41,9 @@ const STEPS = [
   "counting where the love leaks",
 ];
 
-export function BrandRead() {
+export function BrandRead({ onUnavailable }: { onUnavailable?: () => void } = {}) {
   const isMobile = useIsMobile();
+  const [configured, setConfigured] = useState<boolean | null>(null);
   const [brand, setBrand] = useState("");
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState(0);
@@ -52,6 +53,28 @@ export function BrandRead() {
   useEffect(() => () => {
     if (timer.current) window.clearInterval(timer.current);
   }, []);
+
+  // Ask before offering. A page that invites you to run a read and then cannot
+  // is worse than a page that does not offer one.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/brand-read/status")
+      .then((response) => response.json())
+      .then((payload: { configured?: boolean }) => {
+        if (cancelled) return;
+        const ready = Boolean(payload?.configured);
+        setConfigured(ready);
+        if (!ready) onUnavailable?.();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setConfigured(false);
+        onUnavailable?.();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [onUnavailable]);
 
   const run = async () => {
     const trimmed = brand.trim();
@@ -80,6 +103,9 @@ export function BrandRead() {
       setRunning(false);
     }
   };
+
+  // Nothing at all until we know, and nothing ever if the read cannot run.
+  if (configured !== true) return null;
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 28, alignItems: "center" }}>

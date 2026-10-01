@@ -19,10 +19,35 @@ Two rules the server exists to protect:
 2. **The free read stops at the leak.** The twenty-five touchpoints, the fixes
    and the filled kit are what a Brand Read is for.
 
+### Hardening
+
+The corpus is public writing, so it is treated as hostile input end to end:
+
+- `isCorpusUrl` matches the parsed hostname against an allowlist and requires
+  https, so a planted page at `evil.example/trustpilot.com` cannot enter the
+  corpus. A substring test let that through.
+- `sanitizeCorpus` strips control characters and any tag that would let planted
+  text pose as our own scaffolding, and the corpus is delimited and declared as
+  data in the prompt. Text that tries to instruct the model stays in the corpus
+  as a post to classify.
+- `sanitizeOutbound` strips links and markup from everything the page renders
+  and caps its length, because the model's output is shaped by text strangers
+  wrote.
+- `keepOnlyRealQuotes` runs before sanitising, so cleaning a string can never
+  turn a fabricated quote into one that matches.
+
+`npm run test:brand-read` covers all of it, plus input validation. No keys, no
+network, no database needed.
+
 It needs `FIRECRAWL_API_KEY` and `ANTHROPIC_API_KEY` in the environment. Without
 both, the endpoint answers 503 and the page says the live read is not switched
-on yet. Reads are cached per brand for 24 hours and rate limited to five per
-hour per IP, because each uncached read spends real money.
+on yet. Reads are cached per brand for 24 hours and rate limited to five per hour per
+caller, because each uncached read spends real money. The ledger is a Postgres
+table keyed by a salted hash of the address when `DATABASE_URL` is set, so the
+limit holds across serverless instances; without a database it falls back to
+in-memory, which only limits per instance. The caller is identified from
+`x-vercel-forwarded-for`, which the platform sets, rather than the
+client-supplied `x-forwarded-for`.
 
 For local work, `BRAND_READ_FIXTURE=1 npm run dev` serves a fixture instead of
 calling anything. It is refused in production regardless of the flag.

@@ -6,6 +6,7 @@ import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import { LOVE_HOST, LOVE_ORIGIN } from "../shared/siteSeo.ts";
 import { runBrandRead } from "./brandRead.ts";
 import { brandReadFixture } from "./brandReadFixture.ts";
+import { brandReadConfigured } from "./brandReadLimit.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
   fetchJournalArticlesFromSanity,
@@ -379,6 +380,16 @@ export async function registerRoutes(
   });
 
   /**
+   * Whether the live read can actually run. The page asks before it offers the
+   * input, so a missing key shows the framework rather than a promise that
+   * breaks when someone presses the button. Leaks nothing but a boolean.
+   */
+  app.get("/api/brand-read/status", (_req, res) => {
+    res.setHeader("Cache-Control", "public, max-age=60");
+    res.json({ configured: brandReadConfigured() || Boolean(brandReadFixture()) });
+  });
+
+  /**
    * The Mirror on love.atla.design. Takes a brand, returns where its customers
    * say the love leaks. Answers with a status rather than an error page so the
    * page can say something true in every case, including the case where the
@@ -391,9 +402,16 @@ export async function registerRoutes(
       return;
     }
 
-    const forwarded = req.headers["x-forwarded-for"];
+    // x-forwarded-for is whatever the client sent plus whatever proxies appended,
+    // so its leftmost entry is attacker controlled and useless as a limit key.
+    // Vercel overwrites x-vercel-forwarded-for itself, so prefer that.
+    const platformIp = req.headers["x-vercel-forwarded-for"];
+    const realIp = req.headers["x-real-ip"];
     const ip =
-      (typeof forwarded === "string" ? forwarded.split(",")[0].trim() : "") || req.ip || "unknown";
+      (typeof platformIp === "string" ? platformIp.split(",")[0].trim() : "") ||
+      (typeof realIp === "string" ? realIp.trim() : "") ||
+      req.ip ||
+      "unknown";
 
     // Local development only, and only when switched on explicitly.
     const fixture = brandReadFixture();
