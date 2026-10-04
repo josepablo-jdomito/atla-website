@@ -512,10 +512,18 @@ async function injectPrerenderedApp(
 
   await writeHydrationScript(pathname, dehydratedState);
 
-  return template.replace(
-    '<div id="root"></div>',
-    `<div id="root">${appHtml}</div>\n    <script defer src="${publicPath}"></script>`,
-  );
+  // Deferred classic and module scripts run in document order. The hydration
+  // script must precede the app bundle, or main.tsx renders with an empty query
+  // cache, wipes the prerendered markup and refetches (CLS ~0.8 on the home).
+  const hydrationTag = `<script defer src="${publicPath}"></script>`;
+  const withRoot = template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+  const moduleTag = withRoot.match(/<script type="module"[^>]*>/);
+
+  if (!moduleTag) {
+    throw new Error(`[build] App bundle <script type="module"> not found while prerendering ${pathname}`);
+  }
+
+  return withRoot.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
 }
 
 function articlePublishedIso(dateLabel: string) {
