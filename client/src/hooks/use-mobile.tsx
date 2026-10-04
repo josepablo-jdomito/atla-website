@@ -3,7 +3,11 @@ import * as React from "react"
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean>(true)
+  // Prerender has no window and renders mobile. In the browser, read the real
+  // width up front so the first client commit already has the right layout.
+  const [isMobile, setIsMobile] = React.useState<boolean>(() =>
+    typeof window === "undefined" ? true : window.innerWidth < MOBILE_BREAKPOINT,
+  )
 
   React.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)

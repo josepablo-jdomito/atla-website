@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useLayoutEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -25,11 +25,24 @@ const AtlaHowWeWork = lazy(() => import("@/pages/AtlaHowWeWork"));
 const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
 const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));
 
+// The prerendered markup is the mobile layout. On desktop, index.html hides
+// #root[data-prerender-gate] so that markup never paints; this lifts the gate
+// in the same frame the real page commits. It sits inside the route's Suspense
+// boundary, so it does not fire while the lazy page chunk is still loading.
+function PrerenderReveal() {
+  useLayoutEffect(() => {
+    document.getElementById("root")?.removeAttribute("data-prerender-gate");
+  }, []);
+
+  return null;
+}
+
 function Router() {
   usePageAnalytics();
 
   return (
     <Suspense fallback={null}>
+      <PrerenderReveal />
       <AppRouter
         NotFound={NotFound}
         ProjectsAdmin={ProjectsAdmin}
