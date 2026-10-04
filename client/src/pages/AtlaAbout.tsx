@@ -67,6 +67,8 @@ const SERVICES = [
 ];
 
 const CLIENTS = [
+  { name: "Persona", sphere: "Personalized Nutrition" },
+  { name: "Anything", sphere: "AI Software" },
   { name: "Techo-Bloc", sphere: "Building Materials" },
   { name: "Aimee Kestenberg", sphere: "Fashion & Accessories" },
   { name: "FCP Euro", sphere: "Automotive" },
