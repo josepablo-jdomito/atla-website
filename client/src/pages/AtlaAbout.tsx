@@ -67,16 +67,14 @@ const SERVICES = [
 ];
 
 const CLIENTS = [
-  { name: "Persona", sphere: "Personalized Nutrition" },
-  { name: "Anything", sphere: "AI Software" },
-  { name: "Techo-Bloc", sphere: "Building Materials" },
   { name: "Aimee Kestenberg", sphere: "Fashion & Accessories" },
-  { name: "FCP Euro", sphere: "Automotive" },
+  { name: "PrettyBoy", sphere: "Men's Skincare" },
   { name: "Temakase", sphere: "Hospitality" },
-  { name: "The Bridge", sphere: "Hospitality" },
-  { name: "Ando", sphere: "Consumer Goods" },
-  { name: "Conscious Care Co.", sphere: "Wellness" },
-  { name: "TATO Matcha", sphere: "Food & Beverage" },
+  { name: "Acre", sphere: "Hospitality" },
+  { name: "Pax & Beneficia", sphere: "Specialty Coffee" },
+  { name: "Persona", sphere: "Personalized Nutrition" },
+  { name: "Brick", sphere: "Wellness" },
+  { name: "Anything", sphere: "AI Software" },
 ];
 
 export default function AtlaAbout() {
