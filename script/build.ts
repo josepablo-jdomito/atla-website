@@ -516,7 +516,11 @@ async function injectPrerenderedApp(
   // script must precede the app bundle, or main.tsx renders with an empty query
   // cache, wipes the prerendered markup and refetches (CLS ~0.8 on the home).
   const hydrationTag = `<script defer src="${publicPath}"></script>`;
-  const withRoot = template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+  // data-prerender-gate: see the #root rule in client/index.html.
+  const withRoot = template.replace(
+    '<div id="root"></div>',
+    `<div id="root" data-prerender-gate>${appHtml}</div>`,
+  );
   const moduleTag = withRoot.match(/<script type="module"[^>]*>/);
 
   if (!moduleTag) {

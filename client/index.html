@@ -24,6 +24,18 @@
         font-weight: 500;
         font-display: swap;
       }
+      /* Prerendered markup is the mobile layout. On wider screens keep it
+         unpainted until React commits the real layout (App.tsx PrerenderReveal).
+         The animation is the failsafe if the bundle never runs. */
+      @media (min-width: 768px) {
+        #root[data-prerender-gate] {
+          visibility: hidden;
+          animation: atla-prerender-reveal 0s linear 3s forwards;
+        }
+      }
+      @keyframes atla-prerender-reveal {
+        to { visibility: visible; }
+      }
     </style>
     <!-- GA4. Loader only: the CSP in vercel.json has no 'unsafe-inline' for
          script-src, so the bootstrap lives in client/src/lib/ga.ts instead of
