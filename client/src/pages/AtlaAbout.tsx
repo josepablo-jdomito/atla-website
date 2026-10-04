@@ -1,6 +1,5 @@
 import { AtlaNav } from "@/components/atla/AtlaNav";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
-import { AtlaSymbol } from "@/components/atla/AtlaMarks";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
@@ -12,16 +11,6 @@ const LF_REG18: React.CSSProperties = {
   fontWeight: 400,
   lineHeight: "1.1",
   color: "#222",
-  margin: 0,
-};
-const LF_SB12: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  color: "#6f6f6f",
-  textTransform: "uppercase",
   margin: 0,
 };
 const RM14: React.CSSProperties = {
@@ -56,13 +45,13 @@ function SectionTitle({ children, mobile = false }: { children: React.ReactNode;
 }
 
 const TEAM = [
-  { name: "José Pablo Domínguez", role: "( Founder & Creative Director )", src: "/figmaAssets/photo-1.jpg" },
-  { name: "Paola Díaz", role: "( COO )", src: "/figmaAssets/photo-2.jpg" },
-  { name: "Levi Ramírez", role: "( Head of Growth )", src: "/figmaAssets/photo-3.jpg" },
-  { name: "Mariela Alata", role: "( Project Manager )", src: "/figmaAssets/photo-4.jpg" },
-  { name: "Tais Kahatt", role: "( Art Director )", src: "/figmaAssets/photo-4.jpg" },
-  { name: "Adriana Méndez", role: "( Brand Designer )", src: "/figmaAssets/photo-4.jpg" },
-  { name: "José Aceves Covarrubias", role: "( Brand Designer )", src: "/figmaAssets/photo-3.jpg" },
+  { name: "José Pablo Domínguez", role: "Founder & Creative Director" },
+  { name: "Paola Díaz", role: "COO" },
+  { name: "Levi Ramírez", role: "Head of Growth" },
+  { name: "Mariela Alata", role: "Project Manager" },
+  { name: "Tais Kahatt", role: "Art Director" },
+  { name: "Adriana Méndez", role: "Brand Designer" },
+  { name: "José Aceves Covarrubias", role: "Brand Designer" },
 ];
 
 const SERVICES = [
@@ -78,14 +67,14 @@ const SERVICES = [
 ];
 
 const CLIENTS = [
-  { name: "Aurel Studios", sphere: "Fashion" },
-  { name: "Lior Atelier", sphere: "Film & Production" },
-  { name: "Onera Creative", sphere: "Industrial" },
-  { name: "Klyra House", sphere: "Visual Direction" },
-  { name: "Veer Studio", sphere: "Architecture" },
-  { name: "Lumae Systems", sphere: "Design Engineering" },
-  { name: "Aerith Agency", sphere: "Creative Consulting" },
-  { name: "Orza Objects", sphere: "3D Visualization" },
+  { name: "Techo-Bloc", sphere: "Building Materials" },
+  { name: "Aimee Kestenberg", sphere: "Fashion & Accessories" },
+  { name: "FCP Euro", sphere: "Automotive" },
+  { name: "Temakase", sphere: "Hospitality" },
+  { name: "The Bridge", sphere: "Hospitality" },
+  { name: "Ando", sphere: "Consumer Goods" },
+  { name: "Conscious Care Co.", sphere: "Wellness" },
+  { name: "TATO Matcha", sphere: "Food & Beverage" },
 ];
 
 export default function AtlaAbout() {
@@ -250,67 +239,15 @@ export default function AtlaAbout() {
 
         <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", justifyContent: "space-between", gap: isMobile ? 24 : 0, width: "100%" }}>
           <SectionTitle mobile={isMobile}>Team</SectionTitle>
-          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 36 }}>
-            {isMobile ? TEAM.map((member, idx) => (
-              <div key={member.name} style={{ width: "100%", maxWidth: 300, marginLeft: idx % 2 === 0 ? 0 : "auto", display: "flex", flexDirection: "column", gap: 16 }}>
-                <div style={{ height: 400, position: "relative", width: "100%", overflow: "clip" }}>
-                  {(() => {
-                    const dimensions = getImageDimensions(member.src);
-                    return (
-                  <img
-                    src={member.src}
-                    alt={member.name}
-                    width={dimensions?.width}
-                    height={dimensions?.height}
-                    loading={idx < 2 ? "eager" : "lazy"}
-                    fetchPriority={idx < 2 ? "high" : undefined}
-                    decoding="async"
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
-                  />
-                    );
-                  })()}
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
+            {TEAM.map((member) => (
+              <div key={member.name} style={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
+                <div style={{ flex: "1 0 0" }}>
+                  <p style={RM14}>{member.name}</p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: idx % 2 === 0 ? "flex-start" : "flex-end" }}>
-                  <p style={{ ...LF_REG18, textAlign: idx % 2 === 0 ? "left" : "right", whiteSpace: "normal" }}>{member.name}</p>
-                  <p style={LF_SB12}>{member.role}</p>
+                <div style={{ flex: "1 0 0" }}>
+                  <p style={RM14_GRAY}>{member.role}</p>
                 </div>
-              </div>
-            )) : Array.from({ length: Math.ceil(TEAM.length / 2) }, (_, rowIdx) => (
-              <div key={rowIdx} style={{ display: "flex", gap: 24, alignItems: "center" }}>
-                {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).map((member, idx) => (
-                  <div key={idx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, overflow: "hidden" }}>
-                    <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", overflow: "clip" }}>
-                      {(() => {
-                        const dimensions = getImageDimensions(member.src);
-                        return (
-                      <img
-                        src={member.src}
-                        alt={member.name}
-                        width={dimensions?.width}
-                        height={dimensions?.height}
-                        loading={rowIdx === 0 ? "eager" : "lazy"}
-                        fetchPriority={rowIdx === 0 ? "high" : undefined}
-                        decoding="async"
-                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
-                      />
-                        );
-                      })()}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                      <p style={{ ...LF_REG18, textAlign: "center", whiteSpace: "nowrap" }}>{member.name}</p>
-                      <p style={LF_SB12}>{member.role}</p>
-                    </div>
-                  </div>
-                ))}
-                {TEAM.slice(rowIdx * 2, rowIdx * 2 + 2).length < 2 && (
-                  <div style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16 }}>
-                    <div style={{ aspectRatio: "295.5 / 394", position: "relative", width: "100%", backgroundColor: "#fafafa", overflow: "clip", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <div style={{ color: "#222", width: 36, height: 64 }}>
-                        <AtlaSymbol />
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>
