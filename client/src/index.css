@@ -295,10 +295,6 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   transform: scaleX(1);
 }
 
-.atla-logo {
-  transform-origin: center center;
-}
-
 .atla-card {
   position: relative;
   min-height: 48px;
@@ -438,7 +434,6 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   .atla-enter,
   .atla-link,
   .atla-link::after,
-  .atla-logo,
   .atla-card,
   .atla-card::before,
   .atla-home-card-shell,
