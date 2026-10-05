@@ -182,7 +182,7 @@ export default function AtlaAbout() {
                 infrastructure. Strategy, design, and expression. All connected. All intentional. Our team is
                 small by design. Senior creatives. Direct access. No account managers filtering the work. Every
                 project runs through the same standard: clarity in positioning, precision in craft, coherence
-                across every surface it touches. Based between Mexico City and Austin, we work with companies
+                across every surface it touches. A global team across Austin, Mexico City, Barcelona, Lima and Caracas, we work with companies
                 across the US and Latin America, from hospitality and CPG to wellness, SaaS, and lifestyle
                 brands ready to be taken seriously.
               </p>

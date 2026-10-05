@@ -1136,7 +1136,7 @@ export default function AtlaWork() {
               archive useful both for inspiration and for practical vendor evaluation.
             </p>
             <p>
-              Atla operates between Mexico City and Austin with clients across the United States and Latin America.
+              Atla is a global team across Austin, Mexico City, Barcelona, Lima and Caracas, with clients across the United States and Latin America.
               Typical engagements begin when a team needs stronger positioning, better identity coherence, or clearer
               digital execution before a launch. The archive reflects a consistent standard: strategic clarity,
               recognizable craft, and systems that remain reliable after launch.
