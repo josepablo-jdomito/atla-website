@@ -132,7 +132,7 @@ export default function AtlaHowWeWork() {
           <strong>Senior-led small teams.</strong> No handoff chain. The team in kickoff is the team executing.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Focused operation.</strong> Atla operates between Mexico City and Austin with a core team and vetted
+          <strong>Focused operation.</strong> Atla is a global team across Austin, Mexico City, Barcelona, Lima and Caracas, with a core team and vetted
           specialist collaborators.
         </LongformParagraph>
         <LongformParagraph>
