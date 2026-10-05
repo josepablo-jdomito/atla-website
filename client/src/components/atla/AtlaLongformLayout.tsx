@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { formatMetaTitle, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { AtlaHeader } from "@/components/atla/AtlaHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export type FaqItem = {
@@ -103,6 +104,7 @@ export function AtlaLongformLayout({
         image={image}
         structuredData={structuredData}
       />
+      <AtlaHeader />
       <div className="atla-dark-surface">
         <main
           className="atla-enter"
