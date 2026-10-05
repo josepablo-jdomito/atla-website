@@ -1122,11 +1122,6 @@ export default function AtlaWork() {
 
           <div id="atla-work-results" style={{ width: "100%", maxWidth: "none", margin: 0 }}>
           <section className="sr-only" aria-label="Work archive context">
-            <h1>
-              {isRootRoute
-                ? "Atla, a strategy-led branding studio"
-                : "Selected branding, packaging, and digital work by Atla"}
-            </h1>
             <h2>About the Atla work archive</h2>
             <p>
               This work archive presents selected branding, identity, packaging, and digital projects developed by
