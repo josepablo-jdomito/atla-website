@@ -1,3 +1,4 @@
+import { AtlaHeader } from "@/components/atla/AtlaHeader";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
@@ -1106,6 +1107,7 @@ export default function AtlaProject() {
           }}
         />
       ) : null}
+      <AtlaHeader />
       <main style={{ width: "100%", maxWidth: "100vw", overflowX: "hidden", position: "relative" }}>
           <section
             style={{

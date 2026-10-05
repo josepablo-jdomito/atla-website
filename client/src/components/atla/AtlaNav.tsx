@@ -1,3 +1,4 @@
+import { AtlaHeader } from "@/components/atla/AtlaHeader";
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FileText, Grid3X3, List, Mail, MessageCircleQuestion, Palette, RotateCcw, Search, Send, Share2 } from "lucide-react";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
@@ -754,16 +755,6 @@ export function AtlaNav({
     if (typeof window === "undefined") return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        if (isCommandOpen) {
-          closePalette();
-        } else {
-          openPalette();
-        }
-        return;
-      }
-
       if (event.key === "Escape" && isCommandOpen) {
         event.preventDefault();
         closePalette();
@@ -840,135 +831,7 @@ export function AtlaNav({
 
   return (
     <>
-      {/* The bar holds only the command trigger; with it off (home) there is no bar. */}
-      {showCommandTrigger ? (
-        <>
-          <div aria-hidden="true" style={{ height: navHeight }} />
-          <nav
-            data-testid="atla-nav"
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 40,
-              pointerEvents: "none",
-              padding: 0,
-            }}
-          >
-            <div
-              style={{
-                width: "100%",
-                pointerEvents: "auto",
-                borderRadius: 0,
-                border: isScrolled
-                  ? "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 14%, transparent)"
-                  : "none",
-                background: isScrolled
-                  ? "linear-gradient(130deg, color-mix(in srgb, var(--atla-surface-color, #050505) 84%, white 16%) 0%, color-mix(in srgb, var(--atla-surface-color, #050505) 88%, white 12%) 58%, color-mix(in srgb, var(--atla-surface-color, #050505) 90%, white 10%) 100%)"
-                  : "var(--atla-surface-color, #050505)",
-                backdropFilter: isScrolled ? "saturate(145%) blur(14px)" : "none",
-                WebkitBackdropFilter: isScrolled ? "saturate(145%) blur(14px)" : "none",
-                boxShadow: isScrolled
-                  ? "0 10px 28px rgba(0,0,0,0.18), inset 0 1px 0 color-mix(in srgb, var(--atla-text-color, #222222) 18%, transparent)"
-                  : "0 1px 0 color-mix(in srgb, var(--atla-text-color, #222222) 10%, transparent)",
-                padding: isMobile ? "14px 10px" : "14px 12px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: isMobile ? 8 : 14,
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={openPalette}
-                  className="atla-tap-target"
-                  style={{
-                    width: isMobile ? "min(58vw, 240px)" : "clamp(320px, 38vw, 520px)",
-                    minHeight: 48,
-                    marginLeft: "auto",
-                    flexShrink: 0,
-                    border: "none",
-                    background: "transparent",
-                    padding: 0,
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    style={{
-                      ...SEARCH_INPUT_STYLE,
-                      border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 16%, transparent)",
-                      background: "color-mix(in srgb, var(--atla-text-color, #222222) 10%, transparent)",
-                      color: "var(--atla-text-color, #f5f3ef)",
-                      boxShadow: "inset 0 1px 0 color-mix(in srgb, var(--atla-text-color, #222222) 14%, transparent)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 12,
-                      textAlign: "left",
-                    }}
-                    >
-                    <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <Search
-                        size={14}
-                        strokeWidth={2}
-                        style={{ color: "var(--atla-text-color, #f5f3ef)", flexShrink: 0 }}
-                        aria-hidden="true"
-                      />
-                      <span style={{ display: "flex", flexDirection: "column", minWidth: 0, lineHeight: 1.1, gap: 2 }}>
-                        <span
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            letterSpacing: 0.7,
-                            textTransform: "uppercase",
-                            color: "color-mix(in srgb, var(--atla-text-color, #222222) 76%, transparent)",
-                          }}
-                        >
-                          start here
-                        </span>
-                        <span
-                          style={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            color: "var(--atla-text-color, #f5f3ef)",
-                            fontSize: 13,
-                            fontWeight: 500,
-                          }}
-                        >
-                          {headerSearchLabel || " i want to."}
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        border: "1px solid color-mix(in srgb, var(--atla-text-color, #222222) 20%, transparent)",
-                        borderRadius: 999,
-                        padding: "4px 8px",
-                        fontSize: 12,
-                        letterSpacing: 0.2,
-                        color: "var(--atla-text-color, #f5f3ef)",
-                        lineHeight: 1,
-                        background: "color-mix(in srgb, var(--atla-text-color, #222222) 12%, transparent)",
-                      }}
-                    >
-                      Cmd K
-                    </span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </nav>
-        </>
-      ) : null}
+      <AtlaHeader inverted={inverted} />
 
       {isCommandOpen ? (
         <div

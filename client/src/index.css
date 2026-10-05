@@ -539,3 +539,34 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+.atla-header-link,
+.atla-footer-link {
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: color 160ms ease;
+}
+
+.atla-header-link:hover,
+.atla-header-link[aria-current="page"],
+.atla-footer-link:hover {
+  text-decoration: underline !important;
+}
+
+.atla-header-link:hover {
+  color: inherit !important;
+}
+
+.atla-header-cta {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease;
+}
+
+.atla-header-cta:hover {
+  transform: translateY(-1px);
+  opacity: 0.88;
+}
+
+.atla-footer ::selection {
+  background: #1c1f27;
+  color: #f6c428;
+}

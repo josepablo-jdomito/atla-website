@@ -1,324 +1,232 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { AtlaSymbol, AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SOCIAL_PROFILES } from "@shared/siteSeo";
 
+const INK = "#1c1f27";
+const SURFACE = "#f6c428";
+const RULE = "rgba(28,31,39,0.55)";
+const SOFT = "rgba(28,31,39,0.68)";
+
 const CITIES = [
-  { label: "Austin, US", timeZone: "America/Chicago" },
-  { label: "CDMX, MX", timeZone: "America/Mexico_City" },
-  { label: "Caracas, VE", timeZone: "America/Caracas" },
-  { label: "Lima, PE", timeZone: "America/Lima" },
-  { label: "Tijuana, MX", timeZone: "America/Tijuana" },
+  { label: "Austin", timeZone: "America/Chicago" },
+  { label: "Mexico City", timeZone: "America/Mexico_City" },
+  { label: "Barcelona", timeZone: "Europe/Madrid" },
+  { label: "Lima", timeZone: "America/Lima" },
+  { label: "Caracas", timeZone: "America/Caracas" },
 ] as const;
 
-const NAV_LINKS = ["Work", "About", "Services", "Journal", "Contact"] as const;
-const SOCIAL_LINKS = SOCIAL_PROFILES;
+const STUDIO_LINKS = [
+  { label: "Work", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Journal", href: "/journal" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
 function getCityTimes() {
-  return CITIES.map((city) => {
-    const time = new Intl.DateTimeFormat("en-GB", {
+  return CITIES.map((city) => ({
+    ...city,
+    time: new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
       hour12: false,
       timeZone: city.timeZone,
-    }).format(new Date());
-
-    return { ...city, time };
-  });
+    }).format(new Date()),
+  }));
 }
+
+const LABEL: React.CSSProperties = {
+  margin: "0 0 12px",
+  fontFamily: "'Roboto Mono', monospace",
+  fontSize: 12,
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
+  color: SOFT,
+};
+
+const LINK: React.CSSProperties = {
+  color: INK,
+  textDecoration: "none",
+  fontSize: 16,
+  lineHeight: 1.9,
+};
 
 export function AtlaFooter() {
   const isMobile = useIsMobile();
   const [cityTimes, setCityTimes] = useState(getCityTimes);
   const year = useMemo(() => new Date().getFullYear(), []);
-  const desktopRows = useMemo(
-    () => Math.max(NAV_LINKS.length, SOCIAL_LINKS.length, CITIES.length),
-    [],
-  );
 
   useEffect(() => {
-    const timer = window.setInterval(() => setCityTimes(getCityTimes()), 1000);
+    const timer = window.setInterval(() => setCityTimes(getCityTimes()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
 
   return (
     <footer
+      className="atla-footer"
       style={{
         width: "100%",
-        background: "#f6c428",
-        color: "#1c1f27",
-        borderTop: "1px solid rgba(28,31,39,0.14)",
+        background: SURFACE,
+        color: INK,
+        fontFamily: "'Libre Franklin', Helvetica, sans-serif",
       }}
     >
       <div
         style={{
-          width: "100%",
           maxWidth: 1720,
           margin: "0 auto",
-          padding: isMobile ? "20px 6px 12px" : "20px 8px 12px",
-          display: "grid",
-          gap: isMobile ? 12 : 12,
+          padding: isMobile ? "56px 12px 16px" : "96px 20px 20px",
         }}
       >
         <div
           style={{
-            width: isMobile ? 280 : 560,
-            maxWidth: "100%",
-            justifySelf: "start",
-            alignSelf: "start",
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "flex-start" : "flex-end",
+            justifyContent: "space-between",
+            gap: isMobile ? 28 : 40,
+            paddingBottom: isMobile ? 40 : 72,
           }}
         >
-          <AtlaWordmark color="#1c1f27" style={{ width: "100%", height: "auto" }} />
+          <p
+            style={{
+              margin: 0,
+              maxWidth: 820,
+              fontSize: isMobile ? 40 : "clamp(56px, 6vw, 92px)",
+              lineHeight: 1,
+              fontWeight: 500,
+              letterSpacing: "-0.035em",
+              textWrap: "balance",
+            }}
+          >
+            When your brand has to change, start here.
+          </p>
+          <a
+            href="/contact"
+            className="atla-footer-cta"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              flexShrink: 0,
+              minHeight: 52,
+              padding: "0 24px",
+              borderRadius: 999,
+              background: INK,
+              color: SURFACE,
+              fontSize: 16,
+              fontWeight: 500,
+              letterSpacing: "-0.01em",
+              textDecoration: "none",
+            }}
+          >
+            Start a project
+            <ArrowUpRight size={18} strokeWidth={1.75} aria-hidden="true" />
+          </a>
         </div>
 
         <div
           style={{
+            borderTop: `1px solid ${RULE}`,
+            paddingTop: 28,
             display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) minmax(360px, 0.9fr)",
-            gap: isMobile ? 16 : 28,
-            alignItems: "start",
+            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr)",
+            columnGap: isMobile ? 16 : 32,
+            rowGap: 32,
           }}
         >
-          {isMobile ? (
-            <div style={{ display: "grid", gap: 12 }}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                  columnGap: 14,
-                  rowGap: 8,
-                }}
-              >
-                <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Atla</p>
-                <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Socials</p>
-                <div style={{ display: "grid", gap: 5 }}>
-                  {NAV_LINKS.map((item) => (
-                    <a
-                      key={item}
-                      href={item === "Work" ? "/" : `/${item.toLowerCase()}`}
-                      className="atla-link"
-                      style={{
-                        color: "#1c1f27",
-                        textDecoration: "none",
-                        fontSize: 17,
-                        lineHeight: 1.08,
-                        fontWeight: 600,
-                        padding: "2px 0",
-                        minHeight: "unset",
-                        minWidth: "unset",
-                      }}
-                    >
-                      {item}
-                    </a>
-                  ))}
-                </div>
-                <div style={{ display: "grid", gap: 5 }}>
-                  {SOCIAL_LINKS.map((item) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="atla-link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        color: "#1c1f27",
-                        textDecoration: "none",
-                        fontSize: 17,
-                        lineHeight: 1.08,
-                        fontWeight: 600,
-                        padding: "2px 0",
-                        minHeight: "unset",
-                        minWidth: "unset",
-                      }}
-                    >
-                      {item.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <div style={{ display: "grid", gap: 4 }}>
-                <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>(home) Offices</p>
-                {cityTimes.map((city) => (
-                  <p key={city.label} style={{ margin: 0, fontSize: 16, lineHeight: 1.3, fontWeight: 600 }}>
-                    {city.label} · {city.time}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(100px, 0.48fr) minmax(140px, 0.72fr) minmax(270px, 1fr)",
-                columnGap: 20,
-                rowGap: 6,
-                maxWidth: 920,
-              }}
-            >
-              <p style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Atla</p>
-              <p style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Socials</p>
-              <p style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>(home) Offices</p>
+          <nav aria-label="Studio">
+            <p style={LABEL}>Studio</p>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {STUDIO_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="atla-footer-link" style={LINK}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-              {Array.from({ length: desktopRows }).map((_, index) => {
-                const nav = NAV_LINKS[index];
-                const social = SOCIAL_LINKS[index];
-                const city = cityTimes[index];
+          <div>
+            <p style={LABEL}>Follow</p>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {SOCIAL_PROFILES.map((social) => (
+                <li key={social.href}>
+                  <a href={social.href} target="_blank" rel="noreferrer" className="atla-footer-link" style={LINK}>
+                    {social.label === "Linkedin" ? "LinkedIn" : social.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-                return (
-                  <Fragment key={`footer-row-${index}`}>
-                    <div>
-                      {nav ? (
-                        <a
-                          href={nav === "Work" ? "/" : `/${nav.toLowerCase()}`}
-                          className="atla-link"
-                          style={{
-                            color: "#1c1f27",
-                            textDecoration: "none",
-                            fontSize: 16,
-                            lineHeight: 1.08,
-                            fontWeight: 600,
-                            padding: "2px 0",
-                            minHeight: "unset",
-                            minWidth: "unset",
-                          }}
-                        >
-                          {nav}
-                        </a>
-                      ) : (
-                        <span style={{ display: "block", height: 20 }} aria-hidden />
-                      )}
-                    </div>
-                    <div>
-                      {social ? (
-                        <a
-                          href={social.href}
-                          className="atla-link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            color: "#1c1f27",
-                            textDecoration: "none",
-                            fontSize: 16,
-                            lineHeight: 1.08,
-                            fontWeight: 600,
-                            padding: "2px 0",
-                            minHeight: "unset",
-                            minWidth: "unset",
-                          }}
-                        >
-                          {social.label}
-                        </a>
-                      ) : (
-                        <span style={{ display: "block", height: 20 }} aria-hidden />
-                      )}
-                    </div>
-                    <div>
-                      {city ? (
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "auto 88px",
-                            alignItems: "baseline",
-                            gap: 8,
-                          }}
-                        >
-                          <p style={{ margin: 0, fontSize: 16, lineHeight: 1.12, fontWeight: 700 }}>{city.label}</p>
-                          <p style={{ margin: 0, fontSize: 16, lineHeight: 1.12, fontWeight: 600, textAlign: "right" }}>
-                            {city.time}
-                          </p>
-                        </div>
-                      ) : (
-                        <span style={{ display: "block", height: 20 }} aria-hidden />
-                      )}
-                    </div>
-                  </Fragment>
-                );
-              })}
-            </div>
-          )}
+          <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
+            <p style={LABEL}>Offices</p>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {cityTimes.map((city) => (
+                <li
+                  key={city.label}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 16,
+                    maxWidth: 240,
+                    fontSize: 16,
+                    lineHeight: 1.9,
+                  }}
+                >
+                  <span>{city.label}</span>
+                  <span style={{ fontVariantNumeric: "tabular-nums", color: SOFT }}>{city.time}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {!isMobile ? (
-            <div
-              style={{
-                justifySelf: "end",
-                width: "100%",
-                maxWidth: 1240,
-                aspectRatio: "1 / 1",
-                alignSelf: "end",
-              }}
-            >
-              <AtlaSymbol color="#1c1f27" />
+            <div style={{ justifySelf: "end", alignSelf: "start", width: "min(100%, 260px)", aspectRatio: "1 / 1" }}>
+              <AtlaSymbol color={INK} />
             </div>
           ) : null}
         </div>
 
+        <div style={{ marginTop: isMobile ? 48 : 80 }}>
+          <AtlaWordmark color={INK} style={{ width: "100%", height: "auto" }} />
+        </div>
+
         <div
           style={{
-            marginTop: isMobile ? 6 : 2,
-            borderTop: "1px solid rgba(28,31,39,0.55)",
-            paddingTop: 10,
+            marginTop: isMobile ? 16 : 20,
+            borderTop: `1px solid ${RULE}`,
+            paddingTop: 14,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 12,
             flexWrap: "wrap",
+            gap: 12,
+            fontSize: 13,
+            color: SOFT,
           }}
         >
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            style={{
-              border: "none",
-              background: "none",
-              color: "#1c1f27",
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: 0.24,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            BACK TO TOP ↑
-          </button>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              justifyContent: "flex-end",
-              gap: isMobile ? 10 : 18,
-            }}
-          >
-            <a
-              href="/privacy"
-              className="atla-link"
-              style={{
-                color: "#1c1f27",
-                textDecoration: "none",
-                fontSize: 15,
-                fontWeight: 700,
-                letterSpacing: 0.24,
-              }}
-            >
-              PRIVACY
+          <span>© {year} Atla. All rights reserved.</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <a href="/privacy" className="atla-footer-link" style={{ ...LINK, fontSize: 13, lineHeight: 1.4, color: SOFT }}>
+              Privacy
             </a>
-            <a
-              href="/terms"
-              className="atla-link"
-              style={{
-                color: "#1c1f27",
-                textDecoration: "none",
-                fontSize: 15,
-                fontWeight: 700,
-                letterSpacing: 0.24,
-              }}
-            >
-              TERMS
+            <a href="/terms" className="atla-footer-link" style={{ ...LINK, fontSize: 13, lineHeight: 1.4, color: SOFT }}>
+              Terms
             </a>
-            <p style={{ margin: 0, fontSize: 15, fontWeight: 700, letterSpacing: 0.24 }}>
-              {year} ATLA® ALL RIGHTS RESERVED.
-            </p>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="atla-footer-link"
+              style={{ border: "none", background: "none", padding: 0, cursor: "pointer", color: SOFT, fontSize: 13, fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 4 }}
+            >
+              Back to top
+              <ArrowUp size={13} strokeWidth={1.75} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>
