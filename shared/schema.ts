@@ -70,3 +70,16 @@ export type ProjectMediaAsset =
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
 export type Project = typeof projects.$inferSelect;
+
+/**
+ * Rate-limit ledger for the live brand read. One row per read attempt.
+ *
+ * The client address is stored only as a salted hash: enough to count what one
+ * caller has spent in the last hour, never enough to identify them. Rows older
+ * than the window are pruned on write.
+ */
+export const brandReadHits = pgTable("brand_read_hits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  callerHash: text("caller_hash").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});

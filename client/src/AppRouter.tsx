@@ -1,6 +1,7 @@
 import React from "react";
 import type { ComponentType } from "react";
 import { Route, Switch } from "wouter";
+import { isLoveHost } from "@/lib/loveHost";
 
 type RouteComponent = ComponentType<any>;
 
@@ -22,6 +23,7 @@ type AppRouterProps = {
   AtlaSaasBranding: RouteComponent;
   AtlaBrandStrategy: RouteComponent;
   AtlaHowWeWork: RouteComponent;
+  AtlaWhyWeLove: RouteComponent;
 };
 
 export function AppRouter({
@@ -42,10 +44,15 @@ export function AppRouter({
   AtlaSaasBranding,
   AtlaBrandStrategy,
   AtlaHowWeWork,
+  AtlaWhyWeLove,
 }: AppRouterProps) {
+  // On love.atla.design the prototype is the site root; everywhere else it is a
+  // route on the main site and "/" is the work index.
+  const HomeRoute = isLoveHost() ? AtlaWhyWeLove : AtlaWork;
+
   return (
     <Switch>
-      <Route path="/" component={AtlaWork} />
+      <Route path="/" component={HomeRoute} />
       <Route path="/work" component={AtlaWork} />
       <Route path="/about" component={AtlaAbout} />
       <Route path="/contact" component={AtlaContact} />
@@ -56,6 +63,7 @@ export function AppRouter({
       <Route path="/saas-branding" component={AtlaSaasBranding} />
       <Route path="/brand-strategy" component={AtlaBrandStrategy} />
       <Route path="/how-we-work" component={AtlaHowWeWork} />
+      <Route path="/why-we-love" component={AtlaWhyWeLove} />
       <Route path="/projects/:slug" component={AtlaProject} />
       <Route path="/journal" component={AtlaJournal} />
       <Route path="/journal/category/:slug" component={AtlaJournal} />

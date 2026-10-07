@@ -8,6 +8,8 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
+    "test:brand-read": "tsx script/testBrandRead.ts",
+    "build:brand-kit": "tsx script/buildBrandKit.ts",
     "studio:dev": "npm --prefix studio run dev",
     "studio:build": "npm --prefix studio run build",
     "studio:deploy": "npm --prefix studio run deploy",
@@ -20,6 +22,7 @@
     "migrate:service-pages:sanity": "node script/migrateServicePages.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@octokit/rest": "^21.1.1",

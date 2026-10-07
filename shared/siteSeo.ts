@@ -5,6 +5,16 @@ export const ORGANIZATION_LOGO_URL = `${SITE_ORIGIN}/figmaAssets/logo.svg`;
 export const DEFAULT_OG_IMAGE_URL = `${SITE_ORIGIN}/figmaAssets/about-hero.jpg`;
 export const MAX_META_TITLE_LENGTH = 60;
 
+/**
+ * The "Why We Love The Brands We Love" live prototype lives on its own host.
+ * It is built as /why-we-love and served at the root of love.atla.design:
+ * vercel.json rewrites that host's root onto the route, redirects the www copy
+ * here, and sends every other path on this host back to the main site.
+ */
+export const LOVE_HOST = "love.atla.design";
+export const LOVE_ORIGIN = `https://${LOVE_HOST}`;
+export const WHY_WE_LOVE_PATH = "/why-we-love";
+
 /** Public studio inbox. Also mirrored by hand in client/public/security.txt. */
 export const CONTACT_EMAIL = "josepablo@atla.design";
 /** Guided entry point (Branding Analysis router) hosted on the start subdomain. */
