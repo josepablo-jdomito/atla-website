@@ -21,6 +21,7 @@ const STUDIO_LINKS = [
   { label: "Work", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Programs", href: "/programs" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/contact" },
 ] as const;
