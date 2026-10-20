@@ -930,16 +930,22 @@ export default function AtlaProject() {
   const galleryStream: ProjectMediaMosaicItem[] = fullscreenImages
     .map((src, sourceIndex) => ({ type: "image" as const, src, sourceIndex }))
     .filter(({ src, sourceIndex }) => !(sourceIndex === 0 && src === project.heroImage));
-  const narrativePool = project.bodySections.filter(Boolean);
   const introText = project.intro || project.bodySections[0] || "Case study documentation and execution details.";
-  const brandNarrative = narrativePool[0] || introText;
-  const challengeNarrative = narrativePool[1] || narrativePool[0] || introText;
-  const resultNarrative = narrativePool[2] || narrativePool[narrativePool.length - 1] || introText;
-  const projectNarratives = [
-    { label: "( The Brand )", text: brandNarrative },
-    { label: "( The Challenge )", text: challengeNarrative },
-    { label: "( The Result )", text: resultNarrative },
-  ];
+  // The Brand / The Challenge / The Result come from the case-study body (Sanity `caseStudy`).
+  // Each block gets its own paragraph; nothing falls back to the description, which is already
+  // shown once above. With an empty body the three blocks are hidden instead of repeating it.
+  const normalizeNarrative = (text: string) => text.replace(/\s+/g, " ").trim().toLowerCase();
+  const introKey = normalizeNarrative(introText);
+  const seenNarratives = new Set<string>([introKey]);
+  const narrativePool = project.bodySections.filter((section) => {
+    const key = normalizeNarrative(section);
+    if (!key || seenNarratives.has(key)) return false;
+    seenNarratives.add(key);
+    return true;
+  });
+  const projectNarratives = ["( The Brand )", "( The Challenge )", "( The Result )"]
+    .map((label, index) => ({ label, text: narrativePool[index] }))
+    .filter((item): item is { label: string; text: string } => Boolean(item.text));
   const serviceLabel = project.services.length > 0
     ? project.services.join(isMobile ? ", " : " · ")
     : "Brand Identity";
@@ -1254,14 +1260,16 @@ export default function AtlaProject() {
                   }),
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 36 }}>
-                {projectNarratives.map((item) => (
-                  <article key={item.label} style={{ display: "flex", flexDirection: "column", gap: isMobile ? 6 : 8 }}>
-                    <p style={{ ...LABEL, color: primaryTextColor, paddingBottom: isMobile ? 8 : 12 }}>{item.label}</p>
-                    <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>{item.text}</p>
-                  </article>
-                ))}
-              </div>
+              {projectNarratives.length > 0 ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 36 }}>
+                  {projectNarratives.map((item) => (
+                    <article key={item.label} style={{ display: "flex", flexDirection: "column", gap: isMobile ? 6 : 8 }}>
+                      <p style={{ ...LABEL, color: primaryTextColor, paddingBottom: isMobile ? 8 : 12 }}>{item.label}</p>
+                      <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>{item.text}</p>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
 
               {project.credits.length > 0 ? (
                 <div
