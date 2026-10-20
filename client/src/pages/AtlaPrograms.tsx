@@ -40,7 +40,7 @@ const DIAGNOSTIC_ITEMS: NumberedItem[] = [
   {
     title: "What your customers say",
     description:
-      "More than 500 public reviews and conversations about your brand and two competitors, read at scale and coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend.",
+      "Every public review and conversation we can reach about your brand and two competitors, coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend. Where the public record is thin, we tell you.",
   },
   {
     title: "What your team says",
@@ -87,7 +87,7 @@ const PROOF: NumberedItem[] = [
   },
   {
     title: "Anything",
-    description: "The vibe-coding company now valued at $100M.",
+    description: "The vibe-coding company valued at $100M.",
     href: "/projects/anything-ai",
   },
 ];
@@ -345,7 +345,7 @@ export default function AtlaPrograms() {
               </p>
               <p style={LF_REG18}>
                 The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to
-                the Atla Brand Program if you continue.
+                the Atla Brand Program if you continue within 60 days.
               </p>
             </Lead>
           </SectionRow>
@@ -363,8 +363,8 @@ export default function AtlaPrograms() {
           <SectionRow title="Steward" mobile={isMobile}>
             <Lead mobile={isMobile}>
               <p style={LF_REG18}>
-                Brand Stewardship. A monthly engagement after launch. The same senior team reviews new work, extends the
-                system as the company grows, and keeps every team and partner using the brand the same way.
+                Brand Stewardship. A monthly engagement after launch. We review new work, extend the system as the company
+                grows, and help every team and partner use the brand the same way.
               </p>
             </Lead>
           </SectionRow>
