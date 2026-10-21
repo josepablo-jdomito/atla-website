@@ -1,0 +1,652 @@
+{
+  "slug": "bevel",
+  "brand": "Bevel",
+  "title": "Bevel Branding Analysis",
+  "description": "A short branding analysis of Bevel, prepared by Atla.",
+  "date": "October 2026",
+  "mailSubject": "Bevel branding analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Bevel",
+          "Branding Analysis"
+        ],
+        [
+          "Bevel",
+          "Branding",
+          "Analysis"
+        ]
+      ],
+      "kicker": "Prepared for Bevel by Atla · October 2026",
+      "readTime": "4 minute read"
+    },
+    {
+      "type": "stats",
+      "id": "what-works",
+      "label": "What works",
+      "title": [
+        [
+          "Bevel has earned",
+          "its members."
+        ],
+        [
+          "Bevel has",
+          "earned its",
+          "members."
+        ]
+      ],
+      "stats": [
+        {
+          "value": "2.5M",
+          "text": "members on Bevel."
+        },
+        {
+          "value": "4.8",
+          "text": "out of 5, across 49.1K ratings."
+        },
+        {
+          "value": "80%+",
+          "text": "of members still active after 90 days."
+        }
+      ],
+      "note": "Members and ratings: bevel.health, viewed Oct 21, 2026. Retention: Athletech News, Oct 31, 2025."
+    },
+    {
+      "type": "table",
+      "id": "taste",
+      "label": "Taste",
+      "title": [
+        [
+          "Taste matters",
+          "more than ever."
+        ],
+        [
+          "Taste matters",
+          "more than",
+          "ever."
+        ]
+      ],
+      "lead": "Bevel has about as many members as Whoop has paying members. Whoop has 18 times the Instagram following.",
+      "head": [
+        "Brand",
+        "Members",
+        "Instagram followers"
+      ],
+      "rows": [
+        [
+          "Bevel",
+          "2.5M",
+          "129K"
+        ],
+        [
+          "Whoop",
+          "2.5M",
+          "2.3M"
+        ],
+        [
+          "Oura",
+          "5.5M rings sold",
+          "1.2M"
+        ]
+      ],
+      "highlight": 0,
+      "note": "Bevel: bevel.health, Oct 21, 2026, includes free users. Whoop: Yahoo Finance, Mar 31, 2026, paying members. Oura: company release, Sep 22, 2025. Followers: Instagram via vidIQ, Oct 21, 2026."
+    },
+    {
+      "type": "map",
+      "id": "positioning",
+      "label": "Positioning",
+      "title": [
+        [
+          "Where Bevel sits."
+        ],
+        [
+          "Where Bevel",
+          "sits."
+        ]
+      ],
+      "lead": "How each brand presents itself, and how much taste it shows doing it.",
+      "axes": {
+        "top": "Product-led",
+        "bottom": "Lifestyle-led",
+        "left": "Generic",
+        "right": "Taste curator"
+      },
+      "logos": [
+        {
+          "src": "logo-strava.png",
+          "alt": "Strava",
+          "x": 0.902,
+          "y": 0.15,
+          "w": 74
+        },
+        {
+          "src": "logo-withings.png",
+          "alt": "Withings",
+          "x": 0.1,
+          "y": 0.236,
+          "w": 97
+        },
+        {
+          "src": "logo-garmin.png",
+          "alt": "Garmin",
+          "x": 0.217,
+          "y": 0.285,
+          "w": 93
+        },
+        {
+          "src": "logo-function.png",
+          "alt": "Function Health",
+          "x": 0.619,
+          "y": 0.295,
+          "w": 186
+        },
+        {
+          "src": "logo-applewatch.png",
+          "alt": "Apple Watch",
+          "x": 0.846,
+          "y": 0.351,
+          "w": 75
+        },
+        {
+          "src": "logo-hume.png",
+          "alt": "Hume Health",
+          "x": 0.393,
+          "y": 0.661,
+          "w": 159
+        },
+        {
+          "src": "logo-heart.png",
+          "alt": "Google Health",
+          "x": 0.288,
+          "y": 0.758,
+          "w": 48
+        },
+        {
+          "src": "logo-oura.png",
+          "alt": "Oura",
+          "x": 0.735,
+          "y": 0.789,
+          "w": 93
+        },
+        {
+          "src": "logo-whoop.png",
+          "alt": "Whoop",
+          "x": 0.737,
+          "y": 0.853,
+          "w": 93
+        },
+        {
+          "src": "logo-bevel.png",
+          "alt": "Bevel",
+          "x": 0.342,
+          "y": 0.134,
+          "w": 115,
+          "focus": true
+        }
+      ],
+      "description": "Bevel sits on the product-led, generic side. Strava, Apple Watch and Function Health sit on the taste curator side. Whoop and Oura lead with lifestyle.",
+      "note": "Atla’s editorial read of how each brand presents itself in public, not a rating of product quality."
+    },
+    {
+      "type": "gallery",
+      "id": "brand-today",
+      "label": "The brand today",
+      "title": [
+        [
+          "The brand today."
+        ],
+        [
+          "The brand",
+          "today."
+        ]
+      ],
+      "items": [
+        {
+          "src": "bevel.jpg",
+          "name": "Bevel",
+          "quote": "Your Connected Health Coach",
+          "alt": "First screen of the Bevel homepage."
+        },
+        {
+          "src": "whoop.jpg",
+          "name": "Whoop",
+          "quote": "The wearable designed for lasting progress",
+          "alt": "First screen of the Whoop homepage."
+        },
+        {
+          "src": "oura.jpg",
+          "name": "Oura",
+          "quote": "Wear your best life",
+          "alt": "First screen of the Oura homepage."
+        }
+      ],
+      "statement": "Bevel leads with its interface. Whoop and Oura lead with an object and a mood.",
+      "note": "Homepage first screens, viewed Oct 21, 2026, with cookie banners closed."
+    },
+    {
+      "type": "cult",
+      "id": "cult-rating",
+      "label": "Cult rating",
+      "title": [
+        [
+          "Whoop and Oura own a position.",
+          "Bevel doesn’t yet."
+        ],
+        [
+          "Whoop and",
+          "Oura own a",
+          "position.",
+          "Bevel doesn’t",
+          "yet."
+        ]
+      ],
+      "lead": "Instagram followers per member, a rough sign of how strongly people identify with a brand. Whoop and Oura stand for something their members want to be part of.",
+      "ends": [
+        "Few members follow",
+        "Most members follow"
+      ],
+      "zone": {
+        "from": 50,
+        "label": "Followed by most members"
+      },
+      "points": [
+        {
+          "name": "Whoop",
+          "src": "logo-whoop.png",
+          "w": 92,
+          "value": 92,
+          "label": "92%"
+        },
+        {
+          "name": "Oura",
+          "src": "logo-oura.png",
+          "w": 80,
+          "value": 22,
+          "label": "22%",
+          "lift": 1
+        },
+        {
+          "name": "Bevel",
+          "src": "logo-bevel.png",
+          "w": 96,
+          "value": 5,
+          "label": "5%",
+          "focus": true
+        }
+      ],
+      "note": "Directional, because each company counts members differently: Whoop 2.3M followers / 2.5M paying members, Oura 1.2M / 5.5M rings sold, Bevel 129K / 2.5M members including free users."
+    },
+    {
+      "type": "statement",
+      "id": "diagnosis",
+      "label": "Diagnosis",
+      "title": [
+        [
+          "2.5 million people have joined Bevel."
+        ],
+        [
+          "2.5 million",
+          "people have",
+          "joined Bevel."
+        ]
+      ],
+      "second": [
+        [
+          "They don’t show it."
+        ],
+        [
+          "They don’t",
+          "show it."
+        ]
+      ],
+      "note": "2.5M members, including free users. 129K Instagram followers."
+    },
+    {
+      "type": "threats",
+      "id": "whats-at-stake",
+      "shared": "threats"
+    },
+    {
+      "type": "stats",
+      "id": "proof",
+      "label": "Proof",
+      "title": [
+        [
+          "Private data, made public."
+        ],
+        [
+          "Private data,",
+          "made public."
+        ]
+      ],
+      "stats": [
+        {
+          "value": "14 billion",
+          "text": "kudos given on Strava in 2025, on workouts people chose to share."
+        },
+        {
+          "value": "200 million",
+          "text": "people engaged with Spotify Wrapped in its first 24 hours, 2025."
+        }
+      ],
+      "statement": "Both turned what they know about their users into something those users identify with. Bevel has the same raw material.",
+      "note": "Strava Year in Sport, Dec 3, 2025. TechCrunch, Dec 4, 2025."
+    },
+    {
+      "type": "journey",
+      "id": "where-atla-takes-bevel",
+      "label": "Where Atla takes Bevel",
+      "title": [
+        [
+          "From a product people love",
+          "to a brand people can name."
+        ],
+        [
+          "From a product",
+          "people love",
+          "to a brand",
+          "people can name."
+        ]
+      ],
+      "lead": "Work with Atla and we take Bevel to the position its strongest competitors hold: one idea people can name and repeat.",
+      "rows": [
+        [
+          "What it stands for",
+          "A health coach that works with any wearable.",
+          "One idea about health that only Bevel holds."
+        ],
+        [
+          "Where it sits",
+          "Product-led, generic brand.",
+          "Product-led, taste curator. Next to Strava and Apple Watch."
+        ],
+        [
+          "How it looks",
+          "An interface and a dashboard.",
+          "A look people recognize before they read the name."
+        ],
+        [
+          "How it sounds",
+          "A coach that sounds like any AI.",
+          "Bevel Intelligence, in Bevel’s voice."
+        ]
+      ],
+      "head": [
+        "",
+        "Today",
+        "With Atla"
+      ],
+      "axes": {
+        "top": "Product-led",
+        "bottom": "Lifestyle-led",
+        "left": "Generic",
+        "right": "Taste curator"
+      },
+      "logos": [
+        {
+          "src": "logo-strava.png",
+          "alt": "Strava",
+          "x": 0.902,
+          "y": 0.15,
+          "w": 74
+        },
+        {
+          "src": "logo-withings.png",
+          "alt": "Withings",
+          "x": 0.1,
+          "y": 0.236,
+          "w": 97
+        },
+        {
+          "src": "logo-garmin.png",
+          "alt": "Garmin",
+          "x": 0.217,
+          "y": 0.285,
+          "w": 93
+        },
+        {
+          "src": "logo-function.png",
+          "alt": "Function Health",
+          "x": 0.619,
+          "y": 0.295,
+          "w": 186
+        },
+        {
+          "src": "logo-applewatch.png",
+          "alt": "Apple Watch",
+          "x": 0.846,
+          "y": 0.351,
+          "w": 75
+        },
+        {
+          "src": "logo-hume.png",
+          "alt": "Hume Health",
+          "x": 0.393,
+          "y": 0.661,
+          "w": 159
+        },
+        {
+          "src": "logo-heart.png",
+          "alt": "Google Health",
+          "x": 0.288,
+          "y": 0.758,
+          "w": 48
+        },
+        {
+          "src": "logo-oura.png",
+          "alt": "Oura",
+          "x": 0.735,
+          "y": 0.789,
+          "w": 93
+        },
+        {
+          "src": "logo-whoop.png",
+          "alt": "Whoop",
+          "x": 0.737,
+          "y": 0.853,
+          "w": 93
+        }
+      ],
+      "from": {
+        "x": 0.342,
+        "y": 0.134
+      },
+      "to": {
+        "x": 0.71,
+        "y": 0.12
+      },
+      "focus": {
+        "src": "logo-bevel.png",
+        "alt": "Bevel",
+        "w": 115
+      },
+      "description": "Bevel moves from the generic side of the map to the taste curator side, next to Strava and Apple Watch.",
+      "note": "Target position is Atla’s editorial read, on the same map as section 03."
+    },
+    {
+      "type": "columns",
+      "id": "what-we-would-build",
+      "label": "What we would build",
+      "title": [
+        [
+          "What we would build."
+        ],
+        [
+          "What we",
+          "would build."
+        ]
+      ],
+      "span": "One agentic brand system",
+      "columns": [
+        {
+          "label": "Positioning",
+          "head": [
+            [
+              "A position",
+              "Bevel can own."
+            ],
+            [
+              "A position Bevel can own."
+            ]
+          ],
+          "body": "Where Bevel stands next to Whoop, Oura and the coaches built into devices, written as one idea the whole company can use."
+        },
+        {
+          "label": "Identity",
+          "head": [
+            [
+              "A look only",
+              "Bevel has."
+            ],
+            [
+              "A look only Bevel has."
+            ]
+          ],
+          "body": "A sharper system around the B mark, a visual language for Strain, Sleep and Recovery, and photography of people instead of phone screens."
+        },
+        {
+          "label": "Product",
+          "head": [
+            [
+              "Bevel Intelligence,",
+              "in Bevel’s voice."
+            ],
+            [
+              "Bevel Intelligence, in Bevel’s voice."
+            ]
+          ],
+          "body": "Bevel Intelligence answers members’ questions. We write the voice it answers in and the rules it follows."
+        },
+        {
+          "label": "Team",
+          "head": [
+            [
+              "Brand files your",
+              "team’s AI can read."
+            ],
+            [
+              "Brand files your team’s AI can read."
+            ]
+          ],
+          "body": "Assistants for app copy, emails, social and creator briefs, and a brand check before anything ships."
+        }
+      ]
+    },
+    {
+      "type": "system",
+      "id": "system",
+      "label": "The system",
+      "title": [
+        [
+          "One set of brand rules",
+          "for your team and your AI."
+        ],
+        [
+          "One set of",
+          "brand rules",
+          "for your team",
+          "and your AI."
+        ]
+      ],
+      "lead": "We write the rules during the project. After that, your team, Bevel Intelligence, Claude and ChatGPT all work from the same files.",
+      "inputs": [
+        "Strategy",
+        "Positioning",
+        "Voice",
+        "Visual identity",
+        "Art direction",
+        "Product rules"
+      ],
+      "core": "Bevel brand system",
+      "coreSub": "your team · Bevel Intelligence · Claude · ChatGPT",
+      "outputs": [
+        "App copy",
+        "Coach answers",
+        "Emails",
+        "Creator briefs",
+        "Release videos",
+        "Social"
+      ]
+    },
+    {
+      "type": "globe",
+      "id": "imagine",
+      "label": "Imagine",
+      "title": [
+        [
+          "Imagine the",
+          "possibilities."
+        ]
+      ],
+      "photos": [
+        {
+          "src": "reel1.jpg",
+          "x": 432,
+          "y": 245,
+          "w": 96
+        },
+        {
+          "src": "reel2.jpg",
+          "x": 1396,
+          "y": 137,
+          "w": 88
+        },
+        {
+          "src": "reel3.jpg",
+          "x": 85,
+          "y": 202,
+          "w": 110
+        },
+        {
+          "src": "reel4.jpg",
+          "x": 1650,
+          "y": 316,
+          "w": 100
+        },
+        {
+          "src": "reel5.jpg",
+          "x": 295,
+          "y": 846,
+          "w": 100
+        },
+        {
+          "src": "reel6.jpg",
+          "x": 1238,
+          "y": 797,
+          "w": 104
+        },
+        {
+          "src": "reel7.jpg",
+          "x": 1090,
+          "y": 339,
+          "w": 80
+        },
+        {
+          "src": "reel8.jpg",
+          "x": 673,
+          "y": 820,
+          "w": 84
+        }
+      ],
+      "note": "Covers from @bevel.health reels, Jul to Oct 2026."
+    },
+    {
+      "type": "process",
+      "id": "next",
+      "shared": "process"
+    }
+  ],
+  "gate": {
+    "text": "Please enter your name and email to access the Bevel Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell it or use it for ads."
+  },
+  "questionnaire": true
+}

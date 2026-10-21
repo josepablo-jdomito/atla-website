@@ -56,6 +56,12 @@ const contactSchema = z.object({
     .pipe(z.string().email("Enter a valid email").max(200)),
   company: z.string().transform(singleLine).pipe(z.string().max(160)).optional().default(""),
   message: z.string().transform(multiLine).pipe(z.string().min(10, "Tell us a little more").max(4000)),
+  // Where the form lives, e.g. "atla.design/audit/bevel". Only names the Attio note.
+  source: z
+    .string()
+    .transform(singleLine)
+    .pipe(z.string().regex(/^atla\.design\/[a-z0-9/_-]{1,60}$/))
+    .optional(),
 });
 
 export type ContactPayload = z.infer<typeof contactSchema>;
@@ -202,7 +208,7 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
     data: {
       parent_object: "people",
       parent_record_id: person.data.recordId,
-      title: "Website inquiry (atla.design/contact)",
+      title: `Website inquiry (${payload.source ?? "atla.design/contact"})`,
       format: "plaintext",
       content: lines.join("\n"),
     },
@@ -296,7 +302,8 @@ export function registerContactRoute(app: Express) {
     }
 
     // Only deliveries and honeypot hits count: a typo does not burn a real visitor's quota.
-    if (isRateLimited(ip)) {
+    // Keyed on address and email, so several people behind one office network don't block each other.
+    if (isRateLimited(`${ip}|${parsed.data.email}`)) {
       return answer("busy");
     }
 
