@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "audits"
 OUT = ROOT / "client" / "public" / "audit"
 FONT_PATH = os.environ.get("ABC_SYNT_PATH", str(Path.home() / "Library/Fonts/ABCSyntVariableVF-Trial.ttf"))
-SITE = "https://atla.design"
+SITE = "https://www.atla.design"
 
 BEVEL_MARK = (
     '<svg class="mark-svg" viewBox="0 0 50 41" aria-hidden="true">'
@@ -52,6 +52,7 @@ class Outliner:
         asc, desc = tt["hhea"].ascent, tt["hhea"].descent
         # Line box = 1em, like line-height: 1. Baseline sits where the browser would put it.
         self.baseline = (self.upem - (asc - desc)) / 2 + asc
+        self.used = {}  # glyph id -> outline path, drawn once per page in defs()
 
     def _shape(self, line):
         buf = hb.Buffer()
@@ -65,22 +66,28 @@ class Outliner:
         shaped = [self._shape(l) for l in lines]
         widths = [sum(p.x_advance for p in b.glyph_positions) for b in shaped]
         width = max(widths)
-        paths = []
+        uses = []
         for i, buf in enumerate(shaped):
             x, y0 = 0, i * self.upem + self.baseline
             for info, pos in zip(buf.glyph_infos, buf.glyph_positions):
-                pen = SVGPathPen(self.glyphs)
-                self.glyphs[self.order[info.codepoint]].draw(
-                    TransformPen(pen, (1, 0, 0, -1, x + pos.x_offset, y0 - pos.y_offset))
-                )
-                if pen.getCommands():
-                    paths.append(pen.getCommands())
+                gid = info.codepoint
+                if gid not in self.used:
+                    pen = SVGPathPen(self.glyphs)
+                    self.glyphs[self.order[gid]].draw(TransformPen(pen, (1, 0, 0, -1, 0, 0)))
+                    self.used[gid] = pen.getCommands()
+                if self.used[gid]:
+                    uses.append(f'<use href="#g{gid}" x="{x + pos.x_offset}" y="{y0 - pos.y_offset:.0f}"/>')
                 x += pos.x_advance
         h = len(lines) * self.upem
         return (
             f'<svg class="{cls}" viewBox="0 0 {width} {h}" style="--n:{len(lines)};--w:{width / self.upem:.3f}"'
-            f' aria-hidden="true" focusable="false"><path d="{" ".join(paths)}"/></svg>'
+            f' aria-hidden="true" focusable="false">{"".join(uses)}</svg>'
         )
+
+    def defs(self):
+        """Every glyph used on the page, once. Titles reference them with <use>."""
+        paths = "".join(f'<path id="g{gid}" d="{d}"/>' for gid, d in self.used.items() if d)
+        return f'<svg class="glyphs" aria-hidden="true" focusable="false"><defs>{paths}</defs></svg>'
 
 
 def esc(s):
@@ -333,6 +340,7 @@ def r_process(o, s, d, n):
         + f'<ol class="steps reveal" data-reveal>{steps}</ol>'
         + f'<p class="contact">{esc(d["author"])}, {esc(d["authorRole"])}<br>'
         + f'<a href="{mail}" data-track="email">{esc(d["email"])}</a></p>'
+        + (f'<p class="note">{esc(d["privacy"])}</p>' if d.get("privacy") else "")
     )
 
 
@@ -348,6 +356,11 @@ RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
     "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
 }
+
+
+def with_glyphs(o, html_text):
+    """Titles are drawn while the page is built; their glyphs go in once, at the top of <body>."""
+    return html_text.replace("__GLYPHS__", o.defs(), 1)
 
 
 def gate(d):
@@ -369,6 +382,7 @@ def gate(d):
 
 
 def page(o, d):
+    o.used = {}
     sections = []
     n = 0
     for s in d["sections"]:
@@ -381,7 +395,7 @@ def page(o, d):
         )
     url = f'{SITE}/audit/{d["slug"]}'
     mail = f'mailto:{d["email"]}?subject={esc(d["mailSubject"]).replace(" ", "%20")}'
-    return f"""<!doctype html>
+    return with_glyphs(o, f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -407,6 +421,7 @@ def page(o, d):
 <script defer src="/audit/audit.js"></script>
 </head>
 <body data-audit="{esc(d["slug"])}" data-brand="{esc(d["brand"])}">
+__GLYPHS__
 <header class="bar">
   <span class="bar-title">{esc(d["title"])}</span>
   <a class="bar-reply" href="{mail}" data-track="bar-reply">Reply</a>
@@ -418,7 +433,7 @@ def page(o, d):
 </main>
 </body>
 </html>
-"""
+""")
 
 
 def og_image(d, path):
@@ -461,6 +476,7 @@ PAIR_ART = {
 
 
 def questionnaire_page(o, d):
+    o.used = {}
     q = d["questionnaire_copy"]
     steps = []
     for k, st in enumerate(q["steps"]):
@@ -502,9 +518,10 @@ def questionnaire_page(o, d):
         f'<h2 class="q-q">{esc(q["contactQ"])}</h2>'
         '<label class="f">Name<input name="name" type="text" autocomplete="name" maxlength="120" required></label>'
         '<label class="f">Email<input name="email" type="email" autocomplete="email" maxlength="200" required></label>'
-        '<input class="hp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"></section>'
+        '<input class="hp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">'
+        f'<p class="gate-p q-privacy">{esc(q["privacy"])}</p></section>'
     )
-    return f"""<!doctype html>
+    return with_glyphs(o, f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -521,6 +538,7 @@ def questionnaire_page(o, d):
 <script defer src="/audit/questionnaire.js"></script>
 </head>
 <body data-audit="{esc(d["slug"])}" data-brand="{esc(d["brand"])}" class="qbody">
+__GLYPHS__
 <header class="bar">
   <a class="bar-title" href="/audit/{esc(d["slug"])}">{esc(d["title"])}</a>
   <span class="bar-title q-count" aria-live="polite"></span>
@@ -543,7 +561,7 @@ def questionnaire_page(o, d):
 </main>
 </body>
 </html>
-"""
+""")
 
 
 def build(slug, o):

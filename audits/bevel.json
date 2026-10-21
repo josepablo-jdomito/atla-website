@@ -63,10 +63,10 @@
         },
         {
           "value": "80%+",
-          "text": "of members still active after 90 days."
+          "text": "90-day retention, as reported by Bevel in October 2025."
         }
       ],
-      "note": "Members and ratings: bevel.health, viewed Oct 21, 2026. Retention: Athletech News, Oct 31, 2025."
+      "note": "Members and ratings: bevel.health, viewed Oct 21, 2026. Retention: company-reported, via Athletech News, Oct 31, 2025."
     },
     {
       "type": "table",
@@ -258,14 +258,14 @@
           "yet."
         ]
       ],
-      "lead": "Instagram followers per member, a rough sign of how strongly people identify with a brand. Whoop and Oura stand for something their members want to be part of.",
+      "lead": "Instagram followers per member, a rough sign of how strongly people identify with a brand.",
       "ends": [
-        "Few members follow",
-        "Most members follow"
+        "Fewer followers per member",
+        "More followers per member"
       ],
       "zone": {
         "from": 50,
-        "label": "Followed by most members"
+        "label": "One follower for every two members or more"
       },
       "points": [
         {
@@ -348,7 +348,7 @@
         }
       ],
       "statement": "Both turned what they know about their users into something those users identify with. Bevel has the same raw material.",
-      "note": "Strava Year in Sport, Dec 3, 2025. TechCrunch, Dec 4, 2025."
+      "note": "Strava Year in Sport, Dec 4, 2025. TechCrunch, Dec 4, 2025."
     },
     {
       "type": "chapter",
@@ -397,7 +397,7 @@
         ],
         [
           "How it sounds",
-          "A coach that sounds like any AI.",
+          "Clear answers, in a voice that isn’t yet Bevel’s.",
           "Bevel Intelligence, in Bevel’s voice."
         ]
       ],
@@ -516,7 +516,8 @@
               "Bevel can own."
             ],
             [
-              "A position Bevel can own."
+              "A position",
+              "Bevel can own."
             ]
           ],
           "body": "Where Bevel stands next to Whoop, Oura and the coaches built into devices, written as one idea the whole company can use."
@@ -525,14 +526,15 @@
           "label": "Identity",
           "head": [
             [
-              "A look only",
-              "Bevel has."
+              "A look people",
+              "know as Bevel."
             ],
             [
-              "A look only Bevel has."
+              "A look people",
+              "know as Bevel."
             ]
           ],
-          "body": "A sharper system around the B mark, a visual language for Strain, Sleep and Recovery, and photography of people instead of phone screens."
+          "body": "A sharper system around the B mark, a visual language for Bevel’s scores, and photography of people instead of phone screens."
         },
         {
           "label": "Product",
@@ -542,7 +544,8 @@
               "in Bevel’s voice."
             ],
             [
-              "Bevel Intelligence, in Bevel’s voice."
+              "Bevel Intelligence,",
+              "in Bevel’s voice."
             ]
           ],
           "body": "Bevel Intelligence answers members’ questions. We write the voice it answers in and the rules it follows."
@@ -555,7 +558,8 @@
               "team’s AI can read."
             ],
             [
-              "Brand files your team’s AI can read."
+              "Brand files your",
+              "team’s AI can read."
             ]
           ],
           "body": "Assistants for app copy, emails, social and creator briefs, and a brand check before anything ships."
@@ -670,7 +674,8 @@
   "gate": {
     "text": "Please enter your name and email to access the Bevel Branding Analysis.",
     "button": "View the analysis",
-    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell it or use it for ads."
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
   },
-  "questionnaire": true
+  "questionnaire": true,
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads."
 }

@@ -19,7 +19,8 @@
             "and takes your place."
           ],
           [
-            "A competitor rebrands and takes your place."
+            "A competitor rebrands",
+            "and takes your place."
           ]
         ],
         "body": "A rival with a sharper brand can launch tomorrow and claim the spot you thought was yours. Markets remember the brand they can describe in one sentence, and it doesn’t have to be the one with the better product."
@@ -31,7 +32,8 @@
             "on price."
           ],
           [
-            "You end up competing on price."
+            "You end up competing",
+            "on price."
           ]
         ],
         "body": "When people can’t tell brands apart, they compare features and price. Without a clear position, every discount becomes your argument."
@@ -43,7 +45,8 @@
             "explain you."
           ],
           [
-            "Your fans can’t explain you."
+            "Your fans can’t",
+            "explain you."
           ]
         ],
         "body": "People recommend what they can put into words. If your best customers can’t say what you stand for, word of mouth stays small."
@@ -55,10 +58,11 @@
             "your category."
           ],
           [
-            "Someone else names your category."
+            "Someone else names",
+            "your category."
           ]
         ],
-        "body": "If you don’t say what you stand for, a competitor will say it for you, and you’ll spend years answering to their version."
+        "body": "If you don’t say what you stand for, a competitor will say it for you, and you’ll spend years correcting their version."
       }
     ]
   },
@@ -281,6 +285,7 @@
     "submit": "Send answers",
     "done": "Thank you. We’ll start on the territories and reach out to set up the presentation.",
     "back": "Back",
-    "next": "Next"
+    "next": "Next",
+    "privacy": "We save your name, email and answers in our CRM to prepare the territories, and we measure which steps are completed. We never sell them or use them for ads."
   }
 }

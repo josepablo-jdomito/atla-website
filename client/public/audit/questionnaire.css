@@ -70,3 +70,4 @@
 .q-done .q-q{max-width:28ch}
 
 @media (prefers-reduced-motion:reduce){.qs{animation:none}}
+.q-privacy{margin-top:28px;max-width:460px}
