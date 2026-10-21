@@ -81,11 +81,11 @@
       "label": "The shift",
       "title": [
         [
-          "Cycling became something",
+          "Riding became something",
           "people wear, post and belong to."
         ],
         [
-          "Cycling became",
+          "Riding became",
           "something",
           "people wear,",
           "post and",
@@ -95,7 +95,7 @@
       "stats": [
         {
           "value": "180M",
-          "text": "Strava users in 2025, up from 50 million in 2020."
+          "text": "people on Strava in 2025, up from 50 million in 2020."
         },
         {
           "value": "250K+",
@@ -106,7 +106,7 @@
           "text": "projected premium bicycle market by 2034, up from $11.6 billion in 2024."
         }
       ],
-      "note": "Strava: Feb 11, 2020 and Dec 3, 2025. Ironman: Triathlon Today, Dec 17, 2025. Premium bicycles: Global Market Insights."
+      "note": "Strava press releases, Feb 11, 2020 and Dec 3, 2025. Ironman: Triathlon Today, Dec 17, 2025. Premium bicycles: Global Market Insights."
     },
     {
       "type": "table",
@@ -256,24 +256,24 @@
         {
           "src": "parktool.jpg",
           "name": "Park Tool",
-          "quote": "Tools. Fix It.",
+          "quote": "Tools / Fix It",
           "alt": "First screen of the Park Tool homepage."
         },
         {
           "src": "specialized.jpg",
           "name": "Specialized",
-          "quote": "The Art of Arrival",
+          "quote": "Where Super Meets Natural",
           "alt": "First screen of the Specialized homepage."
         },
         {
           "src": "rapha.jpg",
           "name": "Rapha",
-          "quote": "Against Better Judgement",
+          "quote": "Afterglow",
           "alt": "First screen of the Rapha homepage."
         }
       ],
-      "statement": "Specialized and Rapha open on a person. Park Tool opens on its tools, with the same two words it used in 2016.",
-      "note": "Homepage first screens, viewed Oct 6 and 7, 2026, with pop-ups closed. Park Tool homepage on Dec 2, 2016 via the Wayback Machine."
+      "statement": "Specialized and Rapha open on a person. Park Tool opens on its tools and two choices, Tools and Fix It, the same two words it used in 2016.",
+      "note": "Homepage first screens. Park Tool viewed Oct 7 and Oct 21, 2026; Specialized and Rapha Oct 21, 2026, with cookie banners cropped out. Park Tool homepage on Dec 2, 2016 via the Wayback Machine."
     },
     {
       "type": "columns",
@@ -319,7 +319,7 @@
               "industry trusts."
             ]
           ],
-          "body": "Shimano, SRAM and Race Face bring their new parts to Park Tool. Eric Hawkins called the company “Switzerland” in 2015."
+          "body": "In 2015, Eric Hawkins said Shimano, SRAM and Race Face all bring their new parts to Park Tool, and described the company as “a Switzerland.”"
         },
         {
           "label": "The teacher",
@@ -333,7 +333,7 @@
               "learn."
             ]
           ],
-          "body": "Calvin Jones taught a generation of riders for 28 years. The Big Blue Book is in its fourth edition, with nearly 200 Repair Help guides and 158 million YouTube views."
+          "body": "Calvin Jones taught a generation of riders for 28 years. The Big Blue Book is in its fourth edition, alongside the Repair Help library and 158 million YouTube views."
         },
         {
           "label": "The origin",
@@ -350,7 +350,7 @@
           "body": "Howard Hawkins and Art Engstrom built a repair stand in the back of their St. Paul bike shop. Park Tool was founded in 1963, and Eric Hawkins, Howard’s son, runs it today."
         }
       ],
-      "note": "Bikerumor interview with Eric Hawkins, Jun 22, 2015. Trademark: parktool.com. Calvin Jones: Park Tool News, Jan 6, 2026. Guides and the Big Blue Book: Bicycle Retailer, Jan 6, 2026. Origin: Park Tool company history; Wikipedia. Logos, trademarks and screenshots on this page belong to their owners."
+      "note": "Red to blue, the standard and “a Switzerland”: Bikerumor interview with Eric Hawkins, Jun 22, 2015. Trademark: parktool.com. Calvin Jones: Park Tool News, Jan 6, 2026. Origin: Park Tool company history; Wikipedia. Logos, trademarks and screenshots on this page belong to their owners."
     },
     {
       "type": "statement",
@@ -374,7 +374,7 @@
           "158K follow it."
         ]
       ],
-      "note": "YouTube subscribers against Instagram followers, Oct 21, 2026. For comparison: Specialized has 380K on YouTube and 1.8M on Instagram; Rapha Films has 138K, against 749.4K for Rapha on Instagram."
+      "note": "YouTube subscribers (youtube.com/@parktool) against Instagram followers (@parktoolblue), Oct 21, 2026. Different platforms, same audience. For comparison: Specialized has 380K on YouTube and 1.8M on Instagram; Rapha Films has 138K, against 749.4K for Rapha on Instagram."
     },
     {
       "type": "threats",
@@ -409,7 +409,7 @@
           "people show."
         ]
       ],
-      "lead": "Work with Atla and Park Tool moves to where Silca sits on point of view, at a scale only Park Tool has: the tool brand riders trust, and are proud to show.",
+      "lead": "Our proposal: move Park Tool toward where Silca sits on point of view, at a scale only Park Tool has. The tool brand riders trust, and are proud to show.",
       "head": [
         "",
         "Today",
@@ -418,7 +418,7 @@
       "rows": [
         [
           "What it stands for",
-          "“Tools. Fix It.”",
+          "No line of its own. Two choices: Tools, Fix It.",
           "One idea riders repeat at the shop and at home."
         ],
         [
@@ -433,7 +433,7 @@
         ],
         [
           "What it teaches",
-          "Nearly 200 guides, one level down the menu.",
+          "The Repair Help library, presented as support.",
           "The teaching at the front, as the brand’s best story."
         ]
       ],
