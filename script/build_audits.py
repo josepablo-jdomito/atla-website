@@ -148,7 +148,7 @@ def r_map(o, s, d, n):
         f = " focus" if l.get("focus") else ""
         logos += (
             f'<span class="pt{f}" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]};--i:{i}">'
-            f'<img src="img/{l["src"]}" alt="{esc(l["alt"])}" title="{esc(l["alt"])}" loading="lazy"></span>'
+            f'<img src="/audit/{d["slug"]}/img/{l["src"]}" alt="{esc(l["alt"])}" title="{esc(l["alt"])}" loading="lazy"></span>'
         )
     return (
         '<div class="split">'
@@ -164,7 +164,7 @@ def r_map(o, s, d, n):
 
 def r_gallery(o, s, d, n):
     figs = "".join(
-        f'<figure><img src="img/{it["src"]}" alt="{esc(it["alt"])}" loading="lazy" width="800" height="470">'
+        f'<figure><img src="/audit/{d["slug"]}/img/{it["src"]}" alt="{esc(it["alt"])}" loading="lazy" width="800" height="470">'
         f'<figcaption>{esc(it["name"])}<span>“{esc(it["quote"])}”</span></figcaption></figure>'
         for it in s["items"]
     )
@@ -177,7 +177,7 @@ def r_cult(o, s, d, n):
         f = " focus" if p.get("focus") else ""
         pts += (
             f'<li class="cp{f}" style="--v:{p["value"]};--i:{i};--lift:{p.get("lift", 0)}">'
-            f'<img src="img/{p["src"]}" alt="" style="--lw:{p["w"]}"><span class="cv">{esc(p["name"])} {esc(p["label"])}</span></li>'
+            f'<img src="/audit/{d["slug"]}/img/{p["src"]}" alt="" style="--lw:{p["w"]}"><span class="cv">{esc(p["name"])} {esc(p["label"])}</span></li>'
         )
     z = s["zone"]
     return (
@@ -248,13 +248,14 @@ def r_system(o, s, d, n):
 def r_globe(o, s, d, n):
     rings = "".join(f'<ellipse cx="960" cy="540" rx="960" ry="{r}"/>' for r in (75, 190, 320, 460, 630))
     photos = "".join(
-        f'<img class="ph" src="img/{p["src"]}" alt="" loading="lazy" style="--x:{p["x"]};--y:{p["y"] - 60};--pw:{p["w"]};--i:{i}">'
+        f'<img class="ph" src="/audit/{d["slug"]}/img/{p["src"]}" alt="" loading="lazy" style="--x:{p["x"]};--y:{p["y"] - 60};--pw:{p["w"]};--i:{i}">'
         for i, p in enumerate(sorted(s["photos"], key=lambda p: abs(p["x"] + p["w"] / 2 - 960) + abs(p["y"] - 540)))
     )
     a, b = s["title"][0]
     mark = MARKS.get(d["slug"], "")
+    label = f'Part {esc(s["part"])}' if s.get("part") else f"{n:02d}"
     return (
-        f'<p class="label"><span class="idx">{n:02d}</span>{esc(s["label"])}</p>'
+        f'<p class="label"><span class="idx">{label}</span>{esc(s["label"])}</p>'
         + '<div class="globe reveal" data-reveal>'
         + f'<svg class="rings" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">{rings}<line x1="0" y1="540" x2="1920" y2="540"/></svg>'
         + photos
@@ -289,7 +290,7 @@ def r_threats(o, s, d, n):
 def r_journey(o, s, d, n):
     a, f, t, fo = s["axes"], s["from"], s["to"], s["focus"]
     logos = "".join(
-        f'<span class="pt static" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]}"><img src="img/{l["src"]}" alt="" loading="lazy"></span>'
+        f'<span class="pt static" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]}"><img src="/audit/{d["slug"]}/img/{l["src"]}" alt="" loading="lazy"></span>'
         for l in s["logos"]
     )
     rows = "".join(
@@ -306,8 +307,8 @@ def r_journey(o, s, d, n):
         + f'<p class="sr">{esc(s["description"])}</p>'
         + f'<div class="plot"><i class="vx"></i><i class="hx"></i>{logos}'
         + f'<svg class="path" viewBox="0 0 840 760" preserveAspectRatio="none" aria-hidden="true"><line x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" pathLength="1"/></svg>'
-        + f'<span class="ghost" style="--x:{f["x"]};--y:{f["y"]};--lw:{fo["w"]}"><img src="img/{fo["src"]}" alt=""><em>Today</em></span>'
-        + f'<span class="pt mover" style="--x:{t["x"]};--y:{t["y"]};--fx:{f["x"]};--fy:{f["y"]};--lw:{fo["w"]}"><img src="img/{fo["src"]}" alt="{esc(fo["alt"])}"><em>With Atla</em></span>'
+        + f'<span class="ghost" style="--x:{f["x"]};--y:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt=""><em>Today</em></span>'
+        + f'<span class="pt mover" style="--x:{t["x"]};--y:{t["y"]};--fx:{f["x"]};--fy:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt="{esc(fo["alt"])}"><em>With Atla</em></span>'
         + f'<span class="ax top">{esc(a["top"])}</span><span class="ax bottom">{esc(a["bottom"])}</span>'
         + f'<span class="ax left">{esc(a["left"])}</span><span class="ax right">{esc(a["right"])}</span></div>'
         + "</figure></div>"
@@ -320,7 +321,7 @@ def r_process(o, s, d, n):
         f'<li class="step{" here" if st.get("here") else ""}" style="--i:{k}">'
         f'<span class="node" aria-hidden="true"></span>'
         f'<p class="step-n">{k + 1:02d}' + (' <em>You are here</em>' if st.get("here") else "") + "</p>"
-        + (f'<h3><a href="questionnaire/" data-track="questionnaire">{esc(st["name"])} <span aria-hidden="true">→</span></a></h3>'
+        + (f'<h3><a href="/audit/{d["slug"]}/questionnaire/" data-track="questionnaire">{esc(st["name"])} <span aria-hidden="true">→</span></a></h3>'
            if st.get("link") and d.get("questionnaire") else f'<h3>{esc(st["name"])}</h3>')
         + f'<p>{esc(st["body"])}</p><span class="tag">{esc(st["tag"])}</span></li>'
         for k, st in enumerate(s["steps"])
@@ -335,9 +336,17 @@ def r_process(o, s, d, n):
     )
 
 
+def r_chapter(o, s, d, n):
+    return (
+        f'<p class="label"><span class="idx">Part {esc(s["part"])}</span></p>'
+        + title(o, s["title"], cls="t t-xl", tid=f'{s["id"]}-t')
+        + f'<p class="lead">{esc(s["sub"])}</p>'
+    )
+
+
 RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
-    "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
+    "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
 }
 
 
@@ -363,7 +372,7 @@ def page(o, d):
     sections = []
     n = 0
     for s in d["sections"]:
-        if s["type"] != "cover":
+        if s["type"] not in ("cover", "chapter") and not s.get("part"):
             n += 1
         body = RENDER[s["type"]](o, s, d, n)
         sections.append(
@@ -513,7 +522,7 @@ def questionnaire_page(o, d):
 </head>
 <body data-audit="{esc(d["slug"])}" data-brand="{esc(d["brand"])}" class="qbody">
 <header class="bar">
-  <a class="bar-title" href="../">{esc(d["title"])}</a>
+  <a class="bar-title" href="/audit/{esc(d["slug"])}">{esc(d["title"])}</a>
   <span class="bar-title q-count" aria-live="polite"></span>
   <span class="progress" aria-hidden="true"><i></i></span>
 </header>

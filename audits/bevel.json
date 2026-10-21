@@ -27,6 +27,17 @@
       "readTime": "4 minute read"
     },
     {
+      "type": "chapter",
+      "id": "part-01",
+      "part": "01",
+      "title": [
+        [
+          "The audit."
+        ]
+      ],
+      "sub": "Where Bevel stands today, next to Whoop and Oura."
+    },
+    {
       "type": "stats",
       "id": "what-works",
       "label": "What works",
@@ -340,6 +351,18 @@
       "note": "Strava Year in Sport, Dec 3, 2025. TechCrunch, Dec 4, 2025."
     },
     {
+      "type": "chapter",
+      "id": "part-02",
+      "part": "02",
+      "title": [
+        [
+          "How to",
+          "achieve it."
+        ]
+      ],
+      "sub": "The position Bevel can own, and what we would build to get there."
+    },
+    {
       "type": "journey",
       "id": "where-atla-takes-bevel",
       "label": "Where Atla takes Bevel",
@@ -635,7 +658,8 @@
           "w": 84
         }
       ],
-      "note": "Covers from @bevel.health reels, Jul to Oct 2026."
+      "note": "Covers from @bevel.health reels, Jul to Oct 2026.",
+      "part": "03"
     },
     {
       "type": "process",
