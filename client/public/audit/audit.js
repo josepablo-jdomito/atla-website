@@ -23,7 +23,7 @@
 
   // Carry the link code into the questionnaire so its answers are tied to the same person.
   if (recipient !== "direct") {
-    document.querySelectorAll('a[href^="questionnaire/"]').forEach(function (a) { a.search = "?r=" + recipient; });
+    document.querySelectorAll('a[href*="/questionnaire/"]').forEach(function (a) { a.search = "?r=" + recipient; });
   }
 
   // Only the live site counts. Local and Vercel preview visits are never sent.
@@ -117,9 +117,18 @@
   progress();
 
   if (!("IntersectionObserver" in window)) {
-    document.querySelectorAll("[data-reveal]").forEach(function (el) { el.classList.add("in"); });
+    document.querySelectorAll("[data-reveal], .s-chapter").forEach(function (el) { el.classList.add("in"); });
     return;
   }
+
+  // The top bar turns dark while it sits over the cover or a part divider.
+  var barEl = document.querySelector(".bar");
+  var darkOn = new Set();
+  var darkWatch = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { e.isIntersecting ? darkOn.add(e.target) : darkOn.delete(e.target); });
+    if (barEl) barEl.classList.toggle("on-dark", darkOn.size > 0);
+  }, { rootMargin: "0px 0px -90% 0px" });
+  document.querySelectorAll(".s-cover, .s-chapter").forEach(function (el) { darkWatch.observe(el); });
 
   // Figures animate once, the first time they are well inside the screen.
   var reveal = new IntersectionObserver(function (entries) {
@@ -129,7 +138,7 @@
       reveal.unobserve(e.target);
     });
   }, { threshold: 0.35 });
-  document.querySelectorAll("[data-reveal]").forEach(function (el) { reveal.observe(el); });
+  document.querySelectorAll("[data-reveal], .s-chapter").forEach(function (el) { reveal.observe(el); });
 
   // The diagram's moving dots run only while the diagram is on screen.
   var flow = document.querySelector(".flow");
