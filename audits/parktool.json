@@ -1,0 +1,703 @@
+{
+  "slug": "parktool",
+  "brand": "Park Tool",
+  "title": "Park Tool Branding Analysis",
+  "description": "A short branding analysis of Park Tool, prepared by Atla.",
+  "date": "October 2026",
+  "mailSubject": "Park Tool branding analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to access the Park Tool Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "questionnaire": true,
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Park Tool",
+          "Branding Analysis"
+        ],
+        [
+          "Park Tool",
+          "Branding",
+          "Analysis"
+        ]
+      ],
+      "kicker": "Prepared for Park Tool by Atla · October 2026",
+      "readTime": "4 minute read"
+    },
+    {
+      "type": "chapter",
+      "id": "part-01",
+      "part": "01",
+      "title": [
+        [
+          "The audit."
+        ]
+      ],
+      "sub": "Where Park Tool stands today, next to the brands riders are proud of."
+    },
+    {
+      "type": "stats",
+      "id": "what-works",
+      "label": "What works",
+      "title": [
+        [
+          "Riders already learn",
+          "from Park Tool."
+        ],
+        [
+          "Riders already",
+          "learn from",
+          "Park Tool."
+        ]
+      ],
+      "stats": [
+        {
+          "value": "956K",
+          "text": "YouTube subscribers."
+        },
+        {
+          "value": "158M",
+          "text": "YouTube views."
+        },
+        {
+          "value": "70+",
+          "text": "countries, with more than 500 products."
+        }
+      ],
+      "note": "YouTube subscribers: youtube.com/@parktool, Oct 21, 2026. Views: Social Blade, Oct 6, 2026. Products and countries: Park Tool, About Us."
+    },
+    {
+      "type": "stats",
+      "id": "the-shift",
+      "label": "The shift",
+      "title": [
+        [
+          "Cycling became something",
+          "people wear, post and belong to."
+        ],
+        [
+          "Cycling became",
+          "something",
+          "people wear,",
+          "post and",
+          "belong to."
+        ]
+      ],
+      "stats": [
+        {
+          "value": "180M",
+          "text": "Strava users in 2025, up from 50 million in 2020."
+        },
+        {
+          "value": "250K+",
+          "text": "Ironman and Ironman 70.3 registrations in 2025, a record year."
+        },
+        {
+          "value": "$25.3B",
+          "text": "projected premium bicycle market by 2034, up from $11.6 billion in 2024."
+        }
+      ],
+      "note": "Strava: Feb 11, 2020 and Dec 3, 2025. Ironman: Triathlon Today, Dec 17, 2025. Premium bicycles: Global Market Insights."
+    },
+    {
+      "type": "table",
+      "id": "pride",
+      "label": "Pride",
+      "title": [
+        [
+          "Riders show off",
+          "Specialized and Rapha."
+        ],
+        [
+          "Riders",
+          "show off",
+          "Specialized",
+          "and Rapha."
+        ]
+      ],
+      "lead": "Park Tool leads the tool brands, two to ten times over. The bike and apparel brands riders show off are 4.7 to 11 times bigger again. Different categories, same rider, same feed.",
+      "head": [
+        "Brand",
+        "Category",
+        "Instagram followers"
+      ],
+      "rows": [
+        [
+          "Specialized",
+          "Bikes",
+          "1.8M"
+        ],
+        [
+          "Rapha",
+          "Apparel",
+          "749.4K"
+        ],
+        [
+          "Park Tool",
+          "Tools",
+          "158.3K"
+        ],
+        [
+          "Silca",
+          "Tools",
+          "71.9K"
+        ],
+        [
+          "Feedback Sports",
+          "Tools",
+          "16.8K"
+        ],
+        [
+          "Pedro’s",
+          "Tools",
+          "15.2K"
+        ]
+      ],
+      "highlight": 2,
+      "note": "Instagram followers via vidIQ, Oct 21, 2026: @iamspecialized, @rapha, @parktoolblue, @silca_velo, @feedbacksports, @pedrosbikecare."
+    },
+    {
+      "type": "map",
+      "id": "positioning",
+      "label": "Positioning",
+      "title": [
+        [
+          "Where Park Tool sits."
+        ],
+        [
+          "Where Park",
+          "Tool sits."
+        ]
+      ],
+      "lead": "How each brand presents itself, and how much of a point of view it shows.",
+      "axes": {
+        "top": "Product-led",
+        "bottom": "Lifestyle-led",
+        "left": "Catalog voice",
+        "right": "Point of view"
+      },
+      "logos": [
+        {
+          "src": "logo-pedros.jpg",
+          "alt": "Pedro’s",
+          "x": 0.18,
+          "y": 0.62,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-feedback.jpg",
+          "alt": "Feedback Sports",
+          "x": 0.38,
+          "y": 0.4,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-silca.jpg",
+          "alt": "Silca",
+          "x": 0.82,
+          "y": 0.2,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-specialized.jpg",
+          "alt": "Specialized",
+          "x": 0.72,
+          "y": 0.6,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-rapha.jpg",
+          "alt": "Rapha",
+          "x": 0.88,
+          "y": 0.82,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-parktool.jpg",
+          "alt": "Park Tool",
+          "x": 0.3,
+          "y": 0.22,
+          "w": 96,
+          "round": true,
+          "focus": true
+        }
+      ],
+      "description": "Park Tool sits on the product-led, catalog side. Silca sits on the product-led side with a strong point of view. Specialized and Rapha lead with lifestyle.",
+      "note": "Atla’s editorial read of how each brand presents itself in public, not a rating of product quality."
+    },
+    {
+      "type": "gallery",
+      "id": "brand-today",
+      "label": "The brand today",
+      "title": [
+        [
+          "The brand today."
+        ],
+        [
+          "The brand",
+          "today."
+        ]
+      ],
+      "items": [
+        {
+          "src": "parktool.jpg",
+          "name": "Park Tool",
+          "quote": "Tools. Fix It.",
+          "alt": "First screen of the Park Tool homepage."
+        },
+        {
+          "src": "specialized.jpg",
+          "name": "Specialized",
+          "quote": "The Art of Arrival",
+          "alt": "First screen of the Specialized homepage."
+        },
+        {
+          "src": "rapha.jpg",
+          "name": "Rapha",
+          "quote": "Against Better Judgement",
+          "alt": "First screen of the Rapha homepage."
+        }
+      ],
+      "statement": "Specialized and Rapha open on a person. Park Tool opens on its tools, with the same two words it used in 2016.",
+      "note": "Homepage first screens, viewed Oct 6 and 7, 2026, with pop-ups closed. Park Tool homepage on Dec 2, 2016 via the Wayback Machine."
+    },
+    {
+      "type": "columns",
+      "id": "already-here",
+      "label": "Already here",
+      "title": [
+        [
+          "Park Tool already has what",
+          "a proud brand is built on."
+        ],
+        [
+          "Park Tool",
+          "already has",
+          "what a proud",
+          "brand is",
+          "built on."
+        ]
+      ],
+      "columns": [
+        {
+          "label": "The blue",
+          "head": [
+            [
+              "A color with",
+              "a story."
+            ],
+            [
+              "A color with",
+              "a story."
+            ]
+          ],
+          "body": "The tools were red when Park Tool made them for Schwinn dealers. When Park Tool began selling to every shop, it switched to blue, and the blue is now a registered trademark."
+        },
+        {
+          "label": "The standard",
+          "head": [
+            [
+              "The brand the",
+              "industry trusts."
+            ],
+            [
+              "The brand the",
+              "industry trusts."
+            ]
+          ],
+          "body": "Shimano, SRAM and Race Face bring their new parts to Park Tool. Eric Hawkins called the company “Switzerland” in 2015."
+        },
+        {
+          "label": "The teacher",
+          "head": [
+            [
+              "Where riders",
+              "learn."
+            ],
+            [
+              "Where riders",
+              "learn."
+            ]
+          ],
+          "body": "Calvin Jones taught a generation of riders for 28 years. The Big Blue Book is in its fourth edition, with nearly 200 Repair Help guides and 158 million YouTube views."
+        },
+        {
+          "label": "The origin",
+          "head": [
+            [
+              "A stand from",
+              "a St. Paul shop."
+            ],
+            [
+              "A stand from",
+              "a St. Paul shop."
+            ]
+          ],
+          "body": "Howard Hawkins and Art Engstrom built a repair stand in the back of their St. Paul bike shop. Park Tool was founded in 1963, and Eric Hawkins, Howard’s son, runs it today."
+        }
+      ],
+      "note": "Bikerumor interview with Eric Hawkins, Jun 22, 2015. Trademark: parktool.com. Calvin Jones: Park Tool News, Jan 6, 2026. Guides and the Big Blue Book: Bicycle Retailer, Jan 6, 2026. Origin: Park Tool company history; Wikipedia. Logos, trademarks and screenshots on this page belong to their owners."
+    },
+    {
+      "type": "statement",
+      "id": "diagnosis",
+      "label": "Diagnosis",
+      "title": [
+        [
+          "956K subscribe to learn from Park Tool."
+        ],
+        [
+          "956K subscribe",
+          "to learn from",
+          "Park Tool."
+        ]
+      ],
+      "second": [
+        [
+          "158K follow it."
+        ],
+        [
+          "158K follow it."
+        ]
+      ],
+      "note": "YouTube subscribers against Instagram followers, Oct 21, 2026. For comparison: Specialized has 380K on YouTube and 1.8M on Instagram; Rapha Films has 138K, against 749.4K for Rapha on Instagram."
+    },
+    {
+      "type": "threats",
+      "id": "whats-at-stake",
+      "shared": "threats"
+    },
+    {
+      "type": "chapter",
+      "id": "part-02",
+      "part": "02",
+      "title": [
+        [
+          "How to",
+          "achieve it."
+        ]
+      ],
+      "sub": "Calvin Jones retired in January after 28 years. The teaching that built the brand needs a voice of its own, and this is the moment to decide what it says."
+    },
+    {
+      "type": "journey",
+      "id": "where-atla-takes-park-tool",
+      "label": "Where Atla takes Park Tool",
+      "title": [
+        [
+          "From the tool people trust",
+          "to the brand people show."
+        ],
+        [
+          "From the tool",
+          "people trust",
+          "to the brand",
+          "people show."
+        ]
+      ],
+      "lead": "Work with Atla and Park Tool moves to where Silca sits on point of view, at a scale only Park Tool has: the tool brand riders trust, and are proud to show.",
+      "head": [
+        "",
+        "Today",
+        "With Atla"
+      ],
+      "rows": [
+        [
+          "What it stands for",
+          "“Tools. Fix It.”",
+          "One idea riders repeat at the shop and at home."
+        ],
+        [
+          "Where it sits",
+          "Product-led, catalog voice.",
+          "Product-led, with a point of view. Next to Silca and Specialized."
+        ],
+        [
+          "How it looks",
+          "Tools on a dark background, two words, no one holding them.",
+          "The people from your reels, on the homepage and every product page."
+        ],
+        [
+          "What it teaches",
+          "Nearly 200 guides, one level down the menu.",
+          "The teaching at the front, as the brand’s best story."
+        ]
+      ],
+      "axes": {
+        "top": "Product-led",
+        "bottom": "Lifestyle-led",
+        "left": "Catalog voice",
+        "right": "Point of view"
+      },
+      "logos": [
+        {
+          "src": "logo-pedros.jpg",
+          "alt": "Pedro’s",
+          "x": 0.18,
+          "y": 0.62,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-feedback.jpg",
+          "alt": "Feedback Sports",
+          "x": 0.38,
+          "y": 0.4,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-silca.jpg",
+          "alt": "Silca",
+          "x": 0.82,
+          "y": 0.2,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-specialized.jpg",
+          "alt": "Specialized",
+          "x": 0.72,
+          "y": 0.6,
+          "w": 84,
+          "round": true
+        },
+        {
+          "src": "logo-rapha.jpg",
+          "alt": "Rapha",
+          "x": 0.88,
+          "y": 0.82,
+          "w": 84,
+          "round": true
+        }
+      ],
+      "from": {
+        "x": 0.3,
+        "y": 0.22
+      },
+      "to": {
+        "x": 0.66,
+        "y": 0.32
+      },
+      "focus": {
+        "src": "logo-parktool.jpg",
+        "alt": "Park Tool",
+        "w": 96,
+        "round": true
+      },
+      "description": "Park Tool moves from the catalog side of the map to the point-of-view side, between Silca and Specialized.",
+      "note": "Target position is Atla’s editorial read, on the same map as section 04."
+    },
+    {
+      "type": "columns",
+      "id": "what-we-would-build",
+      "label": "What we would build",
+      "title": [
+        [
+          "What we would build."
+        ],
+        [
+          "What we",
+          "would build."
+        ]
+      ],
+      "span": "One agentic brand system",
+      "columns": [
+        {
+          "label": "Positioning",
+          "head": [
+            [
+              "A position",
+              "Park Tool can own."
+            ],
+            [
+              "A position",
+              "Park Tool can own."
+            ]
+          ],
+          "body": "Where Park Tool stands next to the bike, apparel and tool brands riders love, written as one idea the whole company can use."
+        },
+        {
+          "label": "Identity",
+          "head": [
+            [
+              "Keep the blue.",
+              "Change how it’s told."
+            ],
+            [
+              "Keep the blue.",
+              "Change how it’s told."
+            ]
+          ],
+          "body": "The origin story, the blue and the people who use the tools, on the first screen and on every product page."
+        },
+        {
+          "label": "Education",
+          "head": [
+            [
+              "Make the teaching",
+              "the brand."
+            ],
+            [
+              "Make the teaching",
+              "the brand."
+            ]
+          ],
+          "body": "Repair Help, the videos and the Big Blue Book at the front, written in one voice."
+        },
+        {
+          "label": "Team",
+          "head": [
+            [
+              "Brand files your",
+              "team’s AI can read."
+            ],
+            [
+              "Brand files your",
+              "team’s AI can read."
+            ]
+          ],
+          "body": "Assistants for product pages, guides, dealer material and social, and a brand check before anything ships."
+        }
+      ]
+    },
+    {
+      "type": "system",
+      "id": "system",
+      "label": "The system",
+      "title": [
+        [
+          "One set of brand rules",
+          "for your team and your AI."
+        ],
+        [
+          "One set of",
+          "brand rules",
+          "for your team",
+          "and your AI."
+        ]
+      ],
+      "lead": "We write the rules during the project. After that, your team, your dealers’ material, Claude and ChatGPT all work from the same files.",
+      "inputs": [
+        "Strategy",
+        "Positioning",
+        "Voice",
+        "Visual identity",
+        "Art direction",
+        "Product rules"
+      ],
+      "core": "Park Tool brand system",
+      "coreSub": "your team · dealers · Claude · ChatGPT",
+      "outputs": [
+        "Product pages",
+        "Repair Help",
+        "Video scripts",
+        "Dealer kits",
+        "Emails",
+        "Social"
+      ]
+    },
+    {
+      "type": "globe",
+      "id": "imagine",
+      "label": "Imagine",
+      "part": "03",
+      "title": [
+        [
+          "Imagine the",
+          "possibilities."
+        ]
+      ],
+      "photos": [
+        {
+          "src": "reel1.jpg",
+          "x": 432,
+          "y": 245,
+          "w": 96
+        },
+        {
+          "src": "reel2.jpg",
+          "x": 1396,
+          "y": 137,
+          "w": 88
+        },
+        {
+          "src": "reel3.jpg",
+          "x": 85,
+          "y": 202,
+          "w": 110
+        },
+        {
+          "src": "reel4.jpg",
+          "x": 1650,
+          "y": 316,
+          "w": 100
+        },
+        {
+          "src": "reel5.jpg",
+          "x": 295,
+          "y": 846,
+          "w": 100
+        },
+        {
+          "src": "reel6.jpg",
+          "x": 1238,
+          "y": 797,
+          "w": 104
+        },
+        {
+          "src": "reel7.jpg",
+          "x": 1090,
+          "y": 339,
+          "w": 80
+        },
+        {
+          "src": "reel8.jpg",
+          "x": 673,
+          "y": 820,
+          "w": 84
+        }
+      ],
+      "note": "Your reels already put people first. The site hasn’t caught up. Covers from @parktoolblue reels, Jul to Sep 2026."
+    },
+    {
+      "type": "process",
+      "id": "next",
+      "shared": "process"
+    }
+  ],
+  "markImg": "logo-parktool.jpg",
+  "questionnaireBrands": [
+    "Snap-on",
+    "Wera",
+    "Leatherman",
+    "Silca",
+    "Rapha",
+    "Specialized",
+    "Shimano",
+    "Patagonia",
+    "Yeti",
+    "Filson",
+    "Arc’teryx",
+    "Muji",
+    "Teenage Engineering",
+    "Apple",
+    "Strava",
+    "Red Wing"
+  ],
+  "comparePlaceholder": "For example: Snap-on, Patagonia, Silca"
+}

@@ -312,3 +312,9 @@ a{color:inherit;text-underline-offset:3px}
 .bar.on-dark .progress{background:#2A2A2E}
 .bar.on-dark .progress i{background:#F2F2F4}
 .glyphs{position:absolute;width:0;height:0;overflow:hidden}
+.plot .pt.round img,.jmap .ghost.round img,.jmap .mover.round img{border-radius:50%;box-shadow:0 0 0 1px var(--rule)}
+.plot .pt.focus.round::after{width:170%;aspect-ratio:1}
+.mark-img{display:block;width:100%;border-radius:50%}
+.tile .mark-img{width:78%}
+.plot .pt em{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);font:500 10px/1 var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;color:var(--grey)}
+.plot .pt.focus em{color:var(--ink)}

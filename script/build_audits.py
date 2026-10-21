@@ -39,6 +39,15 @@ BEVEL_MARK = (
 MARKS = {"bevel": BEVEL_MARK}
 
 
+def mark(d):
+    """The brand mark: an inline SVG when we have one, else the logo image named by markImg."""
+    if d["slug"] in MARKS:
+        return MARKS[d["slug"]]
+    if d.get("markImg"):
+        return f'<img class="mark-img" src="/audit/{d["slug"]}/img/{d["markImg"]}" alt="">'
+    return ""
+
+
 class Outliner:
     """Shapes text with HarfBuzz (kerning, ligatures) and returns SVG outlines."""
 
@@ -117,9 +126,8 @@ def head(o, s, n):
 
 
 def r_cover(o, s, d, n):
-    mark = MARKS.get(d["slug"], "")
     return (
-        f'<div class="cover-mark">{mark}</div>'
+        f'<div class="cover-mark">{mark(d)}</div>'
         + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
         + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
     )
@@ -152,10 +160,11 @@ def r_map(o, s, d, n):
     a = s["axes"]
     logos = ""
     for i, l in enumerate(s["logos"]):
-        f = " focus" if l.get("focus") else ""
+        f = (" focus" if l.get("focus") else "") + (" round" if l.get("round") else "")
         logos += (
             f'<span class="pt{f}" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]};--i:{i}">'
-            f'<img src="/audit/{d["slug"]}/img/{l["src"]}" alt="{esc(l["alt"])}" title="{esc(l["alt"])}" loading="lazy"></span>'
+            f'<img src="/audit/{d["slug"]}/img/{l["src"]}" alt="{esc(l["alt"])}" title="{esc(l["alt"])}" loading="lazy">'
+            + (f'<em aria-hidden="true">{esc(l["alt"])}</em>' if l.get("round") else "") + "</span>"
         )
     return (
         '<div class="split">'
@@ -215,7 +224,9 @@ def r_columns(o, s, d, n):
         f'<p>{esc(c["body"])}</p></div>'
         for c in s["columns"]
     )
-    return head(o, s, n) + f'<div class="cols-wrap"><p class="label span">{esc(s["span"])}</p><div class="cols n{len(s["columns"])}">{cols}</div></div>'
+    span = f'<p class="label span">{esc(s["span"])}</p>' if s.get("span") else ""
+    lead = f'<p class="lead">{esc(s["lead"])}</p>' if s.get("lead") else ""
+    return head(o, s, n) + lead + f'<div class="cols-wrap">{span}<div class="cols n{len(s["columns"])}">{cols}</div></div>' + note(s)
 
 
 def r_system(o, s, d, n):
@@ -259,14 +270,13 @@ def r_globe(o, s, d, n):
         for i, p in enumerate(sorted(s["photos"], key=lambda p: abs(p["x"] + p["w"] / 2 - 960) + abs(p["y"] - 540)))
     )
     a, b = s["title"][0]
-    mark = MARKS.get(d["slug"], "")
     label = f'Part {esc(s["part"])}' if s.get("part") else f"{n:02d}"
     return (
         f'<p class="label"><span class="idx">{label}</span>{esc(s["label"])}</p>'
         + '<div class="globe reveal" data-reveal>'
         + f'<svg class="rings" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">{rings}<line x1="0" y1="540" x2="1920" y2="540"/></svg>'
         + photos
-        + f'<h2 class="t t-globe" id="{s["id"]}-t"><span class="sr">{esc(a)} {esc(b)}</span><span class="row">{o.svg([a])}<span class="tile">{mark}</span>{o.svg([b])}</span></h2>'
+        + f'<h2 class="t t-globe" id="{s["id"]}-t"><span class="sr">{esc(a)} {esc(b)}</span><span class="row">{o.svg([a])}<span class="tile">{mark(d)}</span>{o.svg([b])}</span></h2>'
         + "</div>"
         + note(s)
     )
@@ -297,7 +307,8 @@ def r_threats(o, s, d, n):
 def r_journey(o, s, d, n):
     a, f, t, fo = s["axes"], s["from"], s["to"], s["focus"]
     logos = "".join(
-        f'<span class="pt static" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]}"><img src="/audit/{d["slug"]}/img/{l["src"]}" alt="" loading="lazy"></span>'
+        f'<span class="pt static{" round" if l.get("round") else ""}" style="--x:{l["x"]};--y:{l["y"]};--lw:{l["w"]}"><img src="/audit/{d["slug"]}/img/{l["src"]}" alt="" loading="lazy">'
+        + (f'<em aria-hidden="true">{esc(l["alt"])}</em>' if l.get("round") else "") + "</span>"
         for l in s["logos"]
     )
     rows = "".join(
@@ -314,8 +325,8 @@ def r_journey(o, s, d, n):
         + f'<p class="sr">{esc(s["description"])}</p>'
         + f'<div class="plot"><i class="vx"></i><i class="hx"></i>{logos}'
         + f'<svg class="path" viewBox="0 0 840 760" preserveAspectRatio="none" aria-hidden="true"><line x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" pathLength="1"/></svg>'
-        + f'<span class="ghost" style="--x:{f["x"]};--y:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt=""><em>Today</em></span>'
-        + f'<span class="pt mover" style="--x:{t["x"]};--y:{t["y"]};--fx:{f["x"]};--fy:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt="{esc(fo["alt"])}"><em>With Atla</em></span>'
+        + f'<span class="ghost{" round" if fo.get("round") else ""}" style="--x:{f["x"]};--y:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt=""><em>Today</em></span>'
+        + f'<span class="pt mover{" round" if fo.get("round") else ""}" style="--x:{t["x"]};--y:{t["y"]};--fx:{f["x"]};--fy:{f["y"]};--lw:{fo["w"]}"><img src="/audit/{d["slug"]}/img/{fo["src"]}" alt="{esc(fo["alt"])}"><em>With Atla</em></span>'
         + f'<span class="ax top">{esc(a["top"])}</span><span class="ax bottom">{esc(a["bottom"])}</span>'
         + f'<span class="ax left">{esc(a["left"])}</span><span class="ax right">{esc(a["right"])}</span></div>'
         + "</figure></div>"
@@ -459,7 +470,13 @@ def with_shared(d):
     """Sections marked {"shared": "<key>"} take their copy from audits/shared.json, with {brand} filled in."""
     shared = json.loads((CONTENT / "shared.json").read_text())
     if d.get("questionnaire"):
-        d["questionnaire_copy"] = json.loads(json.dumps(shared["questionnaire"], ensure_ascii=False).replace("{brand}", d["brand"]))
+        q = json.loads(json.dumps(shared["questionnaire"], ensure_ascii=False).replace("{brand}", d["brand"]))
+        for st in q["steps"]:
+            if st["type"] == "brands" and d.get("questionnaireBrands"):
+                st["options"] = d["questionnaireBrands"]
+            if st["id"] == "compare" and d.get("comparePlaceholder"):
+                st["placeholder"] = d["comparePlaceholder"]
+        d["questionnaire_copy"] = q
     for i, s in enumerate(d["sections"]):
         key = s.get("shared")
         if key:

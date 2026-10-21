@@ -261,7 +261,7 @@
         "type": "text",
         "id": "sentence",
         "q": "In one sentence, what should people say about {brand}?",
-        "hint": "Write it the way a member would say it to a friend.",
+        "hint": "Write it the way a customer would say it to a friend.",
         "placeholder": "{brand} is the one that…"
       },
       {
