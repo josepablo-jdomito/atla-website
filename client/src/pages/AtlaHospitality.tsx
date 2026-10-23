@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import createGlobe from "cobe";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
@@ -156,6 +157,33 @@ const FB_CASES: HospitalityCase[] = [
   },
 ];
 
+// Project locations. Sanity coordinates (atla.design/api/projects, read 2026-10-23) plus the
+// hospitality clients that have no project page yet: Casa Las Tortugas, Christophe's, Temakase.
+type Place = { name: string; projects: string; lat: number; lng: number; hospitality: boolean };
+
+const PLACES: Place[] = [
+  { name: "Los Cabos, Mexico", projects: "Acre Resort, Rústico", lat: 22.8905, lng: -109.9167, hospitality: true },
+  { name: "Holbox, Mexico", projects: "Casa Las Tortugas", lat: 21.5236, lng: -87.378, hospitality: true },
+  { name: "La Saladita, Mexico", projects: "Mundã", lat: 17.8762, lng: -101.7431, hospitality: true },
+  { name: "Querétaro, Mexico", projects: "Huémac", lat: 20.5888, lng: -100.3899, hospitality: true },
+  { name: "San Luis Potosí, Mexico", projects: "TigreTigre", lat: 22.1565, lng: -100.9855, hospitality: true },
+  { name: "Monterrey, Mexico", projects: "Casa Colora", lat: 25.6866, lng: -100.3161, hospitality: true },
+  { name: "Chicago, United States", projects: "Christophe's", lat: 41.8781, lng: -87.6298, hospitality: true },
+  { name: "New York, United States", projects: "Temakase", lat: 40.7128, lng: -74.006, hospitality: true },
+  { name: "Bali, Indonesia", projects: "The Bridge", lat: -8.6705, lng: 115.2126, hospitality: true },
+  { name: "Austin", projects: "", lat: 30.2672, lng: -97.7431, hospitality: false },
+  { name: "Dallas", projects: "", lat: 32.7767, lng: -96.797, hospitality: false },
+  { name: "Los Angeles", projects: "", lat: 34.0522, lng: -118.2437, hospitality: false },
+  { name: "San Diego", projects: "", lat: 32.7157, lng: -117.1611, hospitality: false },
+  { name: "Bellevue", projects: "", lat: 47.6101, lng: -122.2015, hospitality: false },
+  { name: "Charlotte", projects: "", lat: 35.2271, lng: -80.8431, hospitality: false },
+  { name: "Upstate New York", projects: "", lat: 42.6526, lng: -73.7562, hospitality: false },
+  { name: "Toronto", projects: "", lat: 43.6532, lng: -79.3832, hospitality: false },
+  { name: "Amsterdam", projects: "", lat: 52.3676, lng: 4.9041, hospitality: false },
+  { name: "Abu Dhabi", projects: "", lat: 24.4539, lng: 54.3773, hospitality: false },
+  { name: "Dubai", projects: "", lat: 25.2048, lng: 55.2708, hospitality: false },
+];
+
 const TOUCHPOINTS = [
   "Brand architecture for every outlet",
   "Naming",
@@ -258,6 +286,83 @@ function BadgeLine({ badge }: { badge: Badge }) {
       />
       <p style={{ ...bodyStyle, fontSize: 13 }}>{badge.label}</p>
     </div>
+  );
+}
+
+const GLOBE_INK: [number, number, number] = [0.13, 0.13, 0.13];
+const GLOBE_GRAY: [number, number, number] = [0.62, 0.62, 0.6];
+// cobe's phi/theta that put a longitude and latitude in front of the viewer.
+const focusPhi = (lng: number) => Math.PI - ((lng * Math.PI) / 180 - Math.PI / 2);
+const focusTheta = (lat: number) => (lat * Math.PI) / 180;
+
+function ProjectGlobe() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    let size = canvas.offsetWidth;
+    const basePhi = focusPhi(-98);
+    const globe = createGlobe(canvas, {
+      devicePixelRatio: 2,
+      width: size * 2,
+      height: size * 2,
+      phi: basePhi,
+      theta: focusTheta(24),
+      markerElevation: 0,
+      dark: 0,
+      diffuse: 0.4,
+      mapSamples: 16000,
+      mapBrightness: 1.2,
+      baseColor: [1, 1, 1],
+      markerColor: GLOBE_INK,
+      glowColor: [0.98, 0.98, 0.98],
+      markers: PLACES.map((place) => ({
+        location: [place.lat, place.lng] as [number, number],
+        size: place.hospitality ? 0.045 : 0.028,
+        color: place.hospitality ? GLOBE_INK : GLOBE_GRAY,
+      })),
+    });
+
+    // cobe 2 has no render loop of its own. Sway around the Americas, where most of the work is,
+    // and only while the globe is on screen.
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+    let visible = false;
+    let t = 0;
+    const tick = () => {
+      t += 0.006;
+      globe.update({ phi: basePhi + Math.sin(t) * 0.5 });
+      frame = window.requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      window.cancelAnimationFrame(frame);
+      if (visible && !reduceMotion) frame = window.requestAnimationFrame(tick);
+    });
+    observer.observe(canvas);
+
+    const onResize = () => {
+      size = canvas.offsetWidth;
+      globe.update({ width: size * 2, height: size * 2 });
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
+      globe.destroy();
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      role="img"
+      aria-label="Globe with the places where Atla has done projects"
+      style={{ display: "block", width: "100%", maxWidth: 520, aspectRatio: "1 / 1", margin: "0 auto" }}
+    />
   );
 }
 
@@ -653,6 +758,49 @@ export default function AtlaHospitality() {
               {FB_CASES.map((item) => (
                 <CaseStudy key={item.name} item={item} />
               ))}
+            </section>
+
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
+              <SectionHead eyebrow="Where we have worked" title="Nine places with hospitality work, most of them in Mexico" />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) minmax(0, 0.9fr)",
+                  gap: isMobile ? 20 : 40,
+                  alignItems: "center",
+                }}
+              >
+                <ProjectGlobe />
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                    {PLACES.filter((place) => place.hospitality).map((place) => (
+                      <li
+                        key={place.name}
+                        style={{
+                          ...bodyStyle,
+                          display: "grid",
+                          gridTemplateColumns: "16px 1fr",
+                          alignItems: "baseline",
+                          padding: "10px 0",
+                          borderBottom: `1px solid ${RULE}`,
+                        }}
+                      >
+                        <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: INK, display: "inline-block" }} />
+                        <span>
+                          {place.name} <span style={{ color: MUTED }}>· {place.projects}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p style={{ ...bodyStyle, color: MUTED }}>
+                    In gray, the rest of our work:{" "}
+                    {PLACES.filter((place) => !place.hospitality)
+                      .map((place) => place.name)
+                      .join(", ")}
+                    .
+                  </p>
+                </div>
+              </div>
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
