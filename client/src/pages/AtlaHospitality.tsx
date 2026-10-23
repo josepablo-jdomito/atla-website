@@ -27,7 +27,12 @@ const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.des
 const INTRO_CTA: AtlaCta = { label: "Inquire", href: INTRO_URL, external: true };
 
 // Project photography is pending; each slot renders as a placeholder labelled with what goes there.
-type CaseImage = { alt: string; ratio: string };
+// TEMPORARY (design review only): `src` points at deck and Sanity images so JP can judge the layout.
+// JP's own photos replace every one of them before this page is merged.
+type CaseImage = { alt: string; ratio: string; src?: string; position?: string };
+
+const SANITY = "https://cdn.sanity.io/images/dvufm78f/production";
+const sanityImage = (file: string, width: number) => `${SANITY}/${file}?w=${width}&auto=format&q=80`;
 
 type CaseSpec = { label: string; value: string };
 
@@ -59,7 +64,7 @@ const PROPERTY_TYPES = [
 const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
 const BUDGETS = ["$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
 
-const HERO: CaseImage = { alt: "Acre Resort, treehouse at dusk", ratio: "16 / 9" };
+const HERO: CaseImage = { alt: "Acre Resort entrance with the wordmark", ratio: "16 / 9", src: "/hospitality/review/acre-entrance.webp" };
 
 // Project locations. Sanity coordinates (atla.design/api/projects, read 2026-10-23) plus the
 // hospitality clients that have no project page yet: Casa Las Tortugas, Christophe's, Temakase.
@@ -113,7 +118,7 @@ const HOTELS: HospitalityCase[] = [
       { label: "Scope", value: "Audit, brand architecture, brand book, website, Rústico" },
       { label: "Distinction", value: "MICHELIN Green Star, Acre's restaurant" },
     ],
-    image: { alt: "Acre entrance wall with the wordmark", ratio: "4 / 5" },
+    image: { alt: "Acre amenity oil and towel with the wordmark", ratio: "4 / 5", src: "/hospitality/review/acre-objects.webp", position: "100% center" },
     link: { href: "/projects/rustico", label: "Rústico" },
   },
   {
@@ -138,7 +143,7 @@ const RESTAURANTS: HospitalityCase[] = [
     summary:
       "Built from a blank page: logotype, monogram, awning, aprons, totes and a line of reheatable meal trays, with a supplier sheet so the owner could order everything directly.",
     specs: [{ label: "Scope", value: "Identity, packaging, signage, uniforms, website" }],
-    image: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "3 / 2" },
+    image: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "3 / 2", src: "/hospitality/review/christophes-storefront.webp" },
   },
   {
     name: "Temakase",
@@ -147,7 +152,7 @@ const RESTAURANTS: HospitalityCase[] = [
     summary:
       "Hand roll bars with a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck, and appears on the window, the catering box and the sidewalk sign.",
     specs: [{ label: "Scope", value: "Identity, character, storefront, menus, catering" }],
-    image: { alt: "Temakase storefront with window graphics", ratio: "3 / 2" },
+    image: { alt: "Temakase storefront with window graphics", ratio: "3 / 2", src: "/hospitality/review/temakase-storefront.webp" },
   },
 ];
 
@@ -228,15 +233,15 @@ const ctaStyle: CSSProperties = {
 // "Our take on branding", rebuilt from slide 29:592 of the Atla Intro Deck (Figma).
 // Positions are percentages of a 1060 x 750 frame, measured from the slide.
 const TAKE_TILES = [
-  { name: "TigreTigre", x: 0, y: 37, w: 15.7, ratio: "166 / 200" },
-  { name: "Rústico", x: 18, y: 13, w: 15.7, ratio: "166 / 200" },
-  { name: "Baristio", x: 42, y: 0, w: 15.7, ratio: "166 / 216" },
-  { name: "Angeles Wellness", x: 63, y: 7.7, w: 14, ratio: "1 / 1" },
-  { name: "Persona", x: 83, y: 23.5, w: 14, ratio: "150 / 182" },
-  { name: "Casa Colora", x: 84.5, y: 52, w: 15.5, ratio: "166 / 192" },
-  { name: "Packaging", x: 64, y: 63.7, w: 13.4, ratio: "142 / 192" },
-  { name: "Reggie", x: 42.5, y: 71, w: 13.4, ratio: "142 / 216" },
-  { name: "Arc Studio", x: 19, y: 65, w: 13.4, ratio: "142 / 208" },
+  { name: "TigreTigre", src: sanityImage("4db603342969023ae67d8fde174854cdc3bc0aa4-1400x788.png", 600), x: 0, y: 37, w: 15.7, ratio: "166 / 200" },
+  { name: "Rústico", src: sanityImage("7cc46aa684db97a142951eea093612947de54122-2616x1445.png", 600), x: 18, y: 13, w: 15.7, ratio: "166 / 200" },
+  { name: "Baristio", src: sanityImage("0d972a00ce19c334bee663286c8bdec400d70ccb-2616x1445.png", 600), x: 42, y: 0, w: 15.7, ratio: "166 / 216" },
+  { name: "Angeles Wellness", src: sanityImage("97d041917fb7859099cf40caef8e25704b6faf25-1080x1440.png", 600), x: 63, y: 7.7, w: 14, ratio: "1 / 1" },
+  { name: "Persona", src: sanityImage("0a70dd45515bc5ed36769a8d9ae87b8f4f499dce-1453x803.jpg", 600), x: 83, y: 23.5, w: 14, ratio: "150 / 182" },
+  { name: "Casa Colora", src: sanityImage("38132ee83995acfe226e73b2d0fa72edd40e31c3-1722x986.png", 600), x: 84.5, y: 52, w: 15.5, ratio: "166 / 192" },
+  { name: "Bond&Bloom", src: sanityImage("4347625dbb9d17c5d2e1ed6b2e87e9a18ab59125-3840x2160.jpg", 600), x: 64, y: 63.7, w: 13.4, ratio: "142 / 192" },
+  { name: "Reggie", src: sanityImage("ba880c418a42908393fec8329d62677112533e9d-1744x964.png", 600), x: 42.5, y: 71, w: 13.4, ratio: "142 / 216" },
+  { name: "Arc Studio", src: sanityImage("05dd95e74edfd5572c9c6c677ceab72b53207760-3000x2000.jpg", 600), x: 19, y: 65, w: 13.4, ratio: "142 / 208" },
 ];
 const TAKE_WORDS = [
   { word: "Voice & values", x: 37.7, y: 44.5 },
@@ -249,7 +254,26 @@ const TAKE_WORDS = [
   { word: "Storytelling", x: 56.8, y: 56 },
 ];
 
-function Figure({ image }: { image: CaseImage }) {
+function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean }) {
+  if (image.src) {
+    return (
+      <img
+        src={image.src}
+        alt={image.alt}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        style={{
+          display: "block",
+          width: "100%",
+          height: "auto",
+          aspectRatio: image.ratio,
+          objectFit: "cover",
+          objectPosition: image.position ?? "center",
+          backgroundColor: PLACEHOLDER,
+        }}
+      />
+    );
+  }
   return (
     <div
       role="img"
@@ -357,7 +381,7 @@ function TakeConstellation() {
         <p style={{ ...labelStyle, color: INK, lineHeight: "2" }}>{TAKE_WORDS.map((item) => item.word).join(" · ")}</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
           {TAKE_TILES.map((tile) => (
-            <Figure key={tile.name} image={{ alt: tile.name, ratio: "3 / 4" }} />
+            <Figure key={tile.name} image={{ alt: tile.name, ratio: "3 / 4", src: tile.src }} />
           ))}
         </div>
       </div>
@@ -383,20 +407,7 @@ function TakeConstellation() {
       </svg>
       {TAKE_TILES.map((tile) => (
         <div key={tile.name} style={{ position: "absolute", left: `${tile.x}%`, top: `${tile.y}%`, width: `${tile.w}%` }}>
-          <div
-            role="img"
-            aria-label={tile.name}
-            style={{
-              aspectRatio: tile.ratio,
-              backgroundColor: PLACEHOLDER,
-              display: "flex",
-              alignItems: "flex-end",
-              padding: 8,
-              boxSizing: "border-box",
-            }}
-          >
-            <span style={{ ...labelStyle, fontSize: 10, color: "#9a9a96" }}>{tile.name}</span>
-          </div>
+          <Figure image={{ alt: tile.name, ratio: tile.ratio, src: tile.src }} />
         </div>
       ))}
       {TAKE_WORDS.map((item) => (
@@ -690,7 +701,7 @@ export default function AtlaHospitality() {
 
         {/* Full-bleed hero image */}
         <div style={{ width: "100%", maxWidth: 1600, padding: isMobile ? "40px 0 0" : "56px 0 0", boxSizing: "border-box" }}>
-          <Figure image={HERO} />
+          <Figure image={HERO} eager />
         </div>
 
         <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: isMobile ? 56 : 96 }}>
