@@ -39,7 +39,7 @@
       "part": "01",
       "title": [
         [
-          "The audit."
+          "The analysis."
         ]
       ],
       "sub": "Where Park Tool stands today, next to the brands riders are proud of."
@@ -73,7 +73,7 @@
           "text": "countries, with more than 500 products."
         }
       ],
-      "note": "YouTube subscribers: youtube.com/@parktool, Oct 21, 2026. Views: Social Blade, Oct 6, 2026. Products and countries: Park Tool, About Us."
+      "note": "YouTube subscribers: youtube.com/@parktool, Oct 21, 2026. Views: Social Blade, as of Oct 6, 2026. Products and countries: Park Tool, About Us."
     },
     {
       "type": "stats",
@@ -95,18 +95,18 @@
       "stats": [
         {
           "value": "180M",
-          "text": "people on Strava in 2025, up from 50 million in 2020."
+          "text": "Strava users across all sports in 2025, up from 50 million in 2020."
         },
         {
           "value": "250K+",
-          "text": "Ironman and Ironman 70.3 registrations in 2025, a record year."
+          "text": "Ironman and Ironman 70.3 registrations in 2025."
         },
         {
           "value": "$25.3B",
           "text": "projected premium bicycle market by 2034, up from $11.6 billion in 2024."
         }
       ],
-      "note": "Strava press releases, Feb 11, 2020 and Dec 3, 2025. Ironman: Triathlon Today, Dec 17, 2025. Premium bicycles: Global Market Insights."
+      "note": "Strava press releases, Feb 11, 2020 and Dec 3, 2025. Ironman: Triathlon Today, Dec 17, 2025. Premium bicycles: Global Market Insights forecast."
     },
     {
       "type": "table",
@@ -333,7 +333,7 @@
               "learn."
             ]
           ],
-          "body": "Calvin Jones taught a generation of riders for 28 years. The Big Blue Book is in its fourth edition, alongside the Repair Help library and 158 million YouTube views."
+          "body": "Calvin Jones led education at Park Tool for 28 years and taught a generation of riders. The Big Blue Book is in its fourth edition, alongside the Repair Help library and 158 million YouTube views."
         },
         {
           "label": "The origin",
@@ -374,7 +374,7 @@
           "158K follow it."
         ]
       ],
-      "note": "YouTube subscribers (youtube.com/@parktool) against Instagram followers (@parktoolblue), Oct 21, 2026. Different platforms, same audience. For comparison: Specialized has 380K on YouTube and 1.8M on Instagram; Rapha Films has 138K, against 749.4K for Rapha on Instagram."
+      "note": "YouTube subscribers (youtube.com/@parktool) against Instagram followers (@parktoolblue), Oct 21, 2026. Different platforms, measured the same day. For comparison: Specialized has 380K on YouTube and 1.8M on Instagram; Rapha Films has 138K, against 749.4K for Rapha on Instagram."
     },
     {
       "type": "threats",
@@ -391,7 +391,7 @@
           "achieve it."
         ]
       ],
-      "sub": "Calvin Jones retired in January after 28 years. The teaching that built the brand needs a voice of its own, and this is the moment to decide what it says."
+      "sub": "Calvin Jones retired as Director of Education in January after 28 years, and will keep contributing to future Park Tool videos. The next era of Park Tool teaching starts now, and this is the moment to decide what it says."
     },
     {
       "type": "journey",
