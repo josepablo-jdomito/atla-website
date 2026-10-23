@@ -21,14 +21,23 @@ function isActive(href: string, pathname: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AtlaHeader({ inverted = false, cta = CTA }: { inverted?: boolean; cta?: AtlaCta }) {
+export function AtlaHeader({
+  inverted = false,
+  cta = CTA,
+  background,
+}: {
+  inverted?: boolean;
+  cta?: AtlaCta;
+  /** Overrides the bar color so it matches the page underneath. */
+  background?: string;
+}) {
   const isMobile = useIsMobile();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [pathname, setPathname] = useState("/");
   const height = isMobile ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP;
 
-  const surface = inverted ? "#111111" : "#fafafa";
+  const surface = background ?? (inverted ? "#111111" : "#fafafa");
   const ink = inverted ? "#f3f3ef" : "#1c1f27";
   const muted = inverted ? "rgba(243,243,239,0.62)" : "rgba(28,31,39,0.58)";
   const hairline = inverted ? "rgba(243,243,239,0.14)" : "rgba(28,31,39,0.12)";
