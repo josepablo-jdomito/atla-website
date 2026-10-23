@@ -10,6 +10,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl, sanitizeImageUrls } from "@shared/imageDelivery";
 import { formatMetaTitle, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
+import {
+  buildProjectBreadcrumb,
+  buildProjectMetaDescription,
+  buildProjectNarratives,
+  getNextProject,
+} from "@/lib/projectSeo";
 
 const LABEL: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -103,6 +109,7 @@ type ProjectPageView = {
   mediaItems: ProjectMediaAsset[];
   credits: Array<{ role: string; names: string[] }>;
   related: Array<{ slug: string; title: string; date: string }>;
+  nextProject: { slug: string; title: string } | null;
 };
 
 type ProjectRelatedLink = {
@@ -597,20 +604,11 @@ function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): P
       ...(services.length > 0 ? [{ role: "Service", names: services }] : []),
     ],
     related,
+    nextProject: (() => {
+      const next = getNextProject(allProjects, project.slug);
+      return next ? { slug: next.slug, title: next.title } : null;
+    })(),
   };
-}
-
-function buildProjectMetaDescription(project: ProjectPageView) {
-  const base = project.intro?.trim();
-  if (base && base.length >= 130) return base.slice(0, 155);
-
-  const category = project.category || "Brand system";
-  const region = project.region || "US and Latin America";
-  const serviceLabel = project.services.length > 0 ? project.services.slice(0, 3).join(", ") : "strategy, identity, digital, and packaging";
-  const clientLabel = project.client || "a confidential client";
-
-  const fallback = `${project.title} is an Atla case study for ${clientLabel} in ${region}. Explore how ${category.toLowerCase()} work and ${serviceLabel} were developed into a coherent launch-ready system.`;
-  return fallback.slice(0, 155);
 }
 
 function ProjectMediaMosaic({
@@ -806,6 +804,95 @@ function ProjectMediaMosaic({
   );
 }
 
+/** End of a case study: the next project in the site's order, then a single, quiet route to /contact. */
+function ProjectClosing({
+  nextProject,
+  isMobile,
+  primaryTextColor,
+  mutedTextColor,
+  ruleColor,
+}: {
+  nextProject: { slug: string; title: string } | null;
+  isMobile: boolean;
+  primaryTextColor: string;
+  mutedTextColor: string;
+  ruleColor: string;
+}) {
+  const linkStyle: React.CSSProperties = {
+    color: primaryTextColor,
+    textDecoration: "none",
+    display: "inline-flex",
+    alignItems: "baseline",
+    gap: isMobile ? 8 : 12,
+    minHeight: MOBILE_TOUCH_TARGET,
+  };
+
+  return (
+    <nav
+      aria-label="Next steps"
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "minmax(0, 1fr) minmax(0, 1fr)",
+        columnGap: 36,
+        rowGap: 40,
+        padding: isMobile ? "40px 0 56px" : "56px 20px 120px",
+        borderTop: `1px solid ${ruleColor}`,
+        ...(isMobile
+          ? getMobileTextFrameStyle()
+          : {
+            width: "100%",
+            maxWidth: PROJECT_TEXT_MAX_WIDTH,
+            margin: "0 auto",
+            boxSizing: "border-box",
+          }),
+      }}
+    >
+      {nextProject ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12, minWidth: 0 }}>
+          <p style={{ ...LABEL, color: mutedTextColor }}>( Next Project )</p>
+          <a href={`/projects/${nextProject.slug}`} className="atla-link" style={linkStyle}>
+            <span
+              style={{
+                fontFamily: "Helvetica, sans-serif",
+                fontSize: isMobile ? 32 : 42,
+                fontWeight: 400,
+                lineHeight: "1.1",
+                letterSpacing: 0,
+              }}
+            >
+              {nextProject.title}
+            </span>
+            <span aria-hidden="true" style={{ fontFamily: "Helvetica, sans-serif", fontSize: isMobile ? 22 : 28 }}>
+              →
+            </span>
+          </a>
+        </div>
+      ) : null}
+      <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12, minWidth: 0 }}>
+        <p style={{ ...LABEL, color: mutedTextColor }}>( Work With Us )</p>
+        <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.3", maxWidth: 320 }}>
+          Facing a similar brief? Tell us where the brand needs to go.
+        </p>
+        <a
+          href="/contact"
+          className="atla-link"
+          style={{
+            ...LABEL,
+            ...linkStyle,
+            alignItems: "center",
+            fontSize: 12,
+            letterSpacing: 0.48,
+            textDecoration: "underline",
+            textUnderlineOffset: 4,
+          }}
+        >
+          Start a project →
+        </a>
+      </div>
+    </nav>
+  );
+}
+
 export default function AtlaProject() {
   const [, params] = useRoute("/projects/:slug");
   const slug = params?.slug ?? "";
@@ -912,7 +999,13 @@ export default function AtlaProject() {
   const heroAspectRatio = isMobile ? "4 / 3" : "872 / 482";
   const heroSrc = getOptimizedImageUrl(project.heroImage, { width: isMobile ? 1200 : 2200, quality: 92 }) || project.heroImage;
   const heroSrcSet = buildImageSrcSet(project.heroImage, isMobile ? [800, 1200] : [1200, 1600, 2200], { quality: 92 });
-  const projectMetaDescription = buildProjectMetaDescription(project);
+  const projectMetaDescription = buildProjectMetaDescription({
+    title: project.title,
+    client: project.client,
+    category: project.category,
+    services: project.services,
+    description: project.intro,
+  });
   const projectPreloadImages = [
     getOptimizedImageUrl(project.heroImage, { width: 960, quality: 88 }) || project.heroImage,
     getOptimizedImageUrl(project.heroImage, { width: 1600, quality: 92 }) || project.heroImage,
@@ -930,16 +1023,9 @@ export default function AtlaProject() {
   const galleryStream: ProjectMediaMosaicItem[] = fullscreenImages
     .map((src, sourceIndex) => ({ type: "image" as const, src, sourceIndex }))
     .filter(({ src, sourceIndex }) => !(sourceIndex === 0 && src === project.heroImage));
-  const narrativePool = project.bodySections.filter(Boolean);
   const introText = project.intro || project.bodySections[0] || "Case study documentation and execution details.";
-  const brandNarrative = narrativePool[0] || introText;
-  const challengeNarrative = narrativePool[1] || narrativePool[0] || introText;
-  const resultNarrative = narrativePool[2] || narrativePool[narrativePool.length - 1] || introText;
-  const projectNarratives = [
-    { label: "( The Brand )", text: brandNarrative },
-    { label: "( The Challenge )", text: challengeNarrative },
-    { label: "( The Result )", text: resultNarrative },
-  ];
+  // Each distinct text renders once: sections that repeat the intro or an earlier section are omitted.
+  const projectNarratives = buildProjectNarratives(introText, project.bodySections);
   const serviceLabel = project.services.length > 0
     ? project.services.join(isMobile ? ", " : " · ")
     : "Brand Identity";
@@ -1097,7 +1183,7 @@ export default function AtlaProject() {
         pathname={`/projects/${project.slug}`}
         image={project.heroImage}
         preloadImages={projectPreloadImages}
-        structuredData={[creativeWorkSchema, ...videoStructuredData]}
+        structuredData={[creativeWorkSchema, buildProjectBreadcrumb(project), ...videoStructuredData]}
       />
       {videoStructuredData.length > 0 ? (
         <script
@@ -1119,7 +1205,6 @@ export default function AtlaProject() {
           >
             <section className="sr-only" aria-label={`${project.title} case study context`}>
               <h2>{project.title} project overview</h2>
-              <p>{introText}</p>
             </section>
 
             <button
@@ -1254,6 +1339,7 @@ export default function AtlaProject() {
                   }),
               }}
             >
+              {projectNarratives.length > 0 ? (
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 36 }}>
                 {projectNarratives.map((item) => (
                   <article key={item.label} style={{ display: "flex", flexDirection: "column", gap: isMobile ? 6 : 8 }}>
@@ -1262,6 +1348,7 @@ export default function AtlaProject() {
                   </article>
                 ))}
               </div>
+              ) : null}
 
               {project.credits.length > 0 ? (
                 <div
@@ -1314,6 +1401,14 @@ export default function AtlaProject() {
               />
             </section>
           ) : null}
+
+          <ProjectClosing
+            nextProject={project.nextProject}
+            isMobile={isMobile}
+            primaryTextColor={primaryTextColor}
+            mutedTextColor={mutedTextColor}
+            ruleColor={isSurfaceDark ? "rgba(245,245,245,0.18)" : "rgba(34,34,34,0.14)"}
+          />
 
           {fullscreenIndex !== null && fullscreenOptimizedSrc ? (
           <div
