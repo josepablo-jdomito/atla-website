@@ -1,17 +1,16 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaHeader } from "@/components/atla/AtlaHeader";
 import { buildServiceSchema } from "@/components/atla/AtlaLongformLayout";
+import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
   "Identity systems for restaurants and hotels, designed down to the matchbox and delivered ready for the vendors who make them. Rústico, Christophe's, Temakase.";
 
-const SANITY = "https://cdn.sanity.io/images/dvufm78f/production";
-const sanityImage = (id: string, width: number) => `${SANITY}/${id}?w=${width}&auto=format&q=80`;
 
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
@@ -19,13 +18,15 @@ const INK = "#222";
 const MUTED = "#6f6f6f";
 const RULE = "#d4d4d4";
 
-type CaseImage = { src: string; alt: string; ratio: string; wide?: boolean };
+// Project photography is pending; each slot renders as a placeholder labelled with what goes there.
+type CaseImage = { alt: string; ratio: string; wide?: boolean };
 
 type Badge = { src: string; alt: string; label: string };
 
 type HospitalityCase = {
   number: string;
   name: string;
+  tagline: string;
   place: string;
   kind: string;
   summary: string;
@@ -36,8 +37,16 @@ type HospitalityCase = {
   badge?: Badge;
 };
 
+const MICHELIN_KEY = { src: "/hospitality/michelin-key.webp", alt: "MICHELIN Key" };
+const MICHELIN_GREEN_STAR = { src: "/hospitality/michelin-green-star.svg", alt: "MICHELIN Green Star" };
+
+const PROOF_NAMES = ["Casa Las Tortugas", "Acre Resort", "Christophe's", "Temakase"];
+
+const PROPERTY_TYPES = ["Hotel or resort", "Restaurant or bar", "Restaurant group", "Hotel with restaurants", "Other"];
+const STAGES_OF_WORK = ["Opening a new property", "Renovating or repositioning", "Adding a concept", "Other"];
+const BUDGETS = ["Under $50K", "$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
+
 const HERO: CaseImage = {
-  src: sanityImage("7cc46aa684db97a142951eea093612947de54122-2616x1445.png", 2000),
   alt: "Rústico business cards on an agave leaf",
   ratio: "2616 / 1445",
 };
@@ -46,61 +55,55 @@ const CASES: HospitalityCase[] = [
   {
     number: "01",
     name: "Rústico",
+    tagline: "Dinners under the stars, signed by hand.",
     place: "Los Cabos",
     kind: "Open-air restaurant at Acre Resort",
     summary:
       "Five courses outdoors, guided by what is ready now. Start in the garden, finish in the fire. The identity carries that from the leather menu to the bread bag: a heritage wordmark for the restaurant, a hand-led signature for everything the guest holds.",
     scope: ["Identity", "Menus", "Stationery", "Printed matter", "Packaging", "Website"],
     hero: {
-      src: sanityImage("786c593836b374914a16522439f46d67613ba53a-1741x756.png", 2000),
       alt: "Rústico signature on a sandstone texture with the dinner invitation",
       ratio: "1741 / 756",
     },
     details: [
       {
-        src: sanityImage("18a02d9a640324bce8de4272d67087c7c1ab3fbe-1396x1781.png", 1000),
         alt: "Rústico menu cover embossed in leather",
         ratio: "1396 / 1781",
       },
       {
-        src: sanityImage("e728f43c869356fa3a8bcdc4d8fd21c82d6ff8d4-1201x1870.png", 1000),
         alt: "Rústico bread bag with the signature mark",
         ratio: "1201 / 1870",
       },
     ],
     link: { href: "/projects/rustico", label: "See the full project" },
     badge: {
-      src: "/hospitality/michelin-green-star.svg",
-      alt: "MICHELIN Green Star",
+      ...MICHELIN_GREEN_STAR,
       label: "Acre Resort's restaurant holds a MICHELIN Green Star.",
     },
   },
   {
     number: "02",
     name: "Christophe's Fine Foods",
+    tagline: "A chef's market, from the awning in.",
     place: "Chicago",
     kind: "Chef-led prepared foods market",
     summary:
       "A new market built from nothing. Logotype, monogram, awning, uniforms, totes and a reheatable meal tray system, delivered with a supplier sheet so the owner could place every order directly.",
     scope: ["Identity", "Packaging", "Signage", "Uniforms", "Website"],
     hero: {
-      src: "/hospitality/christophes-storefront.webp",
       alt: "Christophe's Fine Foods awning and monogram sign",
       ratio: "16 / 9",
     },
     details: [
       {
-        src: "/hospitality/christophes-apron.webp",
         alt: "Christophe's staff apron",
         ratio: "1000 / 1407",
       },
       {
-        src: "/hospitality/christophes-tote.webp",
         alt: "Christophe's tote bag",
         ratio: "1000 / 1407",
       },
       {
-        src: "/hospitality/christophes-trays.webp",
         alt: "Christophe's reheatable meal trays with labels",
         ratio: "16 / 9",
         wide: true,
@@ -110,24 +113,22 @@ const CASES: HospitalityCase[] = [
   {
     number: "03",
     name: "Temakase",
+    tagline: "Home of the handroll, carried by Mako.",
     place: "New York",
     kind: "Hand roll bars",
     summary:
       "An identity and a character. Mako, drawn after Ebisu, the deity of fishing and fortune, softens the brand without replacing the logo. He carries the takeout on the window, the catering box and the sidewalk sign.",
     scope: ["Identity", "Character", "Storefront", "Menus", "Catering", "Takeout"],
     hero: {
-      src: "/hospitality/temakase-storefront.webp",
       alt: "Temakase storefront with window graphics and sidewalk sign",
       ratio: "2400 / 1240",
     },
     details: [
       {
-        src: "/hospitality/temakase-menu.webp",
         alt: "Temakase lunch menu",
         ratio: "1000 / 1407",
       },
       {
-        src: "/hospitality/temakase-catering-box.webp",
         alt: "Temakase catering box with Mako",
         ratio: "1000 / 1407",
       },
@@ -154,9 +155,8 @@ const STAGES = [
     body: "We start on your property. Brand, guest journey and every touchpoint, read the way a guest reads them. You get one architecture for every room, restaurant and service.",
     proof: "Used at Casa Las Tortugas, Holbox: a hotel with four restaurants and a spa.",
     badge: {
-      src: "/hospitality/michelin-key.webp",
-      alt: "MICHELIN Key",
-      label: "Casa Las Tortugas holds one MICHELIN Key, 2026.",
+      ...MICHELIN_KEY,
+      label: "Casa Las Tortugas holds one MICHELIN Key.",
     },
   },
   {
@@ -207,22 +207,23 @@ const ctaStyle: CSSProperties = {
   padding: "12px 4px",
 };
 
-function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean }) {
+function Figure({ image }: { image: CaseImage }) {
   return (
-    <img
-      src={image.src}
-      alt={image.alt}
-      loading={eager ? "eager" : "lazy"}
-      decoding="async"
+    <div
+      role="img"
+      aria-label={image.alt}
       style={{
-        display: "block",
         width: "100%",
-        height: "auto",
         aspectRatio: image.ratio,
-        objectFit: "cover",
         backgroundColor: "#ececea",
+        display: "flex",
+        alignItems: "flex-end",
+        padding: 14,
+        boxSizing: "border-box",
       }}
-    />
+    >
+      <span style={{ ...eyebrowStyle, color: "#9a9a96" }}>{image.alt}</span>
+    </div>
   );
 }
 
@@ -296,6 +297,9 @@ function CaseStudy({ item }: { item: HospitalityCase }) {
           >
             {item.name}
           </h3>
+          <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 18 : 20, fontWeight: 400, lineHeight: "1.25", color: INK, margin: 0 }}>
+            {item.tagline}
+          </p>
           <p style={{ ...bodyStyle, color: MUTED }}>{item.kind}</p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 640 }}>
@@ -318,12 +322,195 @@ function CaseStudy({ item }: { item: HospitalityCase }) {
         }}
       >
         {item.details.map((image) => (
-          <div key={image.src} style={{ gridColumn: image.wide ? "1 / -1" : undefined }}>
+          <div key={image.alt} style={{ gridColumn: image.wide ? "1 / -1" : undefined }}>
             <Figure image={image.wide ? image : { ...image, ratio: "4 / 5" }} />
           </div>
         ))}
       </div>
     </article>
+  );
+}
+
+const fieldStyle: CSSProperties = {
+  ...bodyStyle,
+  fontSize: 15,
+  width: "100%",
+  minHeight: 48,
+  padding: "12px 14px",
+  border: "1px solid #d8d8d8",
+  borderRadius: 4,
+  background: "#fff",
+  boxSizing: "border-box",
+  outlineOffset: 2,
+};
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={eyebrowStyle}>{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function Choice({ name, label, options }: { name: string; label: string; options: string[] }) {
+  return (
+    <Field label={label}>
+      <select name={name} required defaultValue="" style={{ ...fieldStyle, appearance: "auto" }}>
+        <option value="" disabled>
+          Choose one
+        </option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </Field>
+  );
+}
+
+type InquiryStatus = { state: "idle" | "submitting" | "sent" | "offline" } | { state: "error"; message: string };
+
+// Posts to /api/contact like the audit questionnaire: the qualifying answers travel inside
+// the message, so the Attio note carries them without a server change.
+function InquiryForm() {
+  const isMobile = useIsMobile();
+  const [status, setStatus] = useState<InquiryStatus>({ state: "idle" });
+  const statusRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (status.state === "sent") statusRef.current?.focus();
+  }, [status]);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const value = (key: string) => {
+      const entry = data.get(key);
+      return typeof entry === "string" ? entry.trim() : "";
+    };
+    const message = [
+      `Property type: ${value("propertyType")}`,
+      `Project: ${value("stage")}`,
+      `Opening or launch date: ${value("opening") || "not given"}`,
+      `Budget: ${value("budget")}`,
+      "",
+      value("message"),
+    ]
+      .join("\n")
+      .slice(0, 4000);
+
+    setStatus({ state: "submitting" });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: value("name"),
+          email: value("email"),
+          company: value("company"),
+          message,
+          source: "atla.design/hospitality",
+          _gotcha: value("_gotcha"),
+        }),
+      });
+      if (response.status === 503) {
+        setStatus({ state: "offline" });
+        return;
+      }
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        setStatus({ state: "error", message: body?.error || "Something went wrong. Email us instead." });
+        return;
+      }
+      form.reset();
+      setStatus({ state: "sent" });
+      trackEvent("contact_form_submit", { page: "hospitality", property_type: value("propertyType"), budget: value("budget") });
+    } catch {
+      setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
+    }
+  }
+
+  const isSent = status.state === "sent";
+  const isSubmitting = status.state === "submitting";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} style={{ outline: "none" }}>
+        {isSent ? (
+          <p style={{ ...bodyStyle, fontWeight: 600 }}>Received. José Pablo will reply with the next step.</p>
+        ) : null}
+      </div>
+      {isSent ? null : (
+        <form method="post" action="/api/contact" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <input type="hidden" name="source" value="atla.design/hospitality" />
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 18 }}>
+            <Field label="Name">
+              <input name="name" type="text" required maxLength={120} autoComplete="name" style={fieldStyle} />
+            </Field>
+            <Field label="Email">
+              <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" style={fieldStyle} />
+            </Field>
+            <Field label="Property or group">
+              <input name="company" type="text" required maxLength={160} autoComplete="organization" style={fieldStyle} />
+            </Field>
+            <Choice name="propertyType" label="Type of property" options={PROPERTY_TYPES} />
+            <Choice name="stage" label="Stage of the project" options={STAGES_OF_WORK} />
+            <Field label="Opening or launch date">
+              <input name="opening" type="text" maxLength={60} placeholder="Month and year" style={fieldStyle} />
+            </Field>
+          </div>
+          <Choice name="budget" label="Budget for brand and identity" options={BUDGETS} />
+          <Field label="What should the guest feel when they walk in?">
+            <textarea name="message" required minLength={10} maxLength={3000} rows={5} style={{ ...fieldStyle, resize: "vertical" }} />
+          </Field>
+          <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
+            <label>
+              Leave this field empty
+              <input name="_gotcha" type="text" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+          {status.state === "offline" || status.state === "error" ? (
+            <p role="alert" style={{ ...bodyStyle, color: status.state === "error" ? "#9a2d1f" : MUTED }}>
+              {status.state === "error" ? status.message : "The form is offline right now. Write to us at"}{" "}
+              <a href="mailto:josepablo@atla.design" style={{ color: INK }}>
+                josepablo@atla.design
+              </a>
+            </p>
+          ) : null}
+          <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
+            What you send goes to our CRM so we can answer you. See the{" "}
+            <a href="/privacy" style={{ color: INK }}>
+              privacy policy
+            </a>
+            .
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                ...ctaStyle,
+                padding: "12px 24px",
+                border: `1px solid ${INK}`,
+                borderRadius: 999,
+                background: INK,
+                color: "#fafafa",
+                cursor: "pointer",
+                opacity: isSubmitting ? 0.7 : 1,
+              }}
+            >
+              {isSubmitting ? "Sending…" : "Send"}
+            </button>
+            <a href="mailto:josepablo@atla.design" style={{ ...bodyStyle, color: MUTED, textDecoration: "underline" }}>
+              or email josepablo@atla.design
+            </a>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
 
@@ -336,7 +523,6 @@ export default function AtlaHospitality() {
         title={formatMetaTitle("Hospitality", "Atla")}
         description={DESCRIPTION}
         pathname={PATHNAME}
-        image={sanityImage("7cc46aa684db97a142951eea093612947de54122-2616x1445.png", 1200)}
         structuredData={buildServiceSchema({
           path: PATHNAME,
           name: "Branding for restaurants and hotels",
@@ -386,8 +572,25 @@ export default function AtlaHospitality() {
                   who makes it.
                 </p>
               </div>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: isMobile ? 10 : 16, paddingTop: 4 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {[MICHELIN_KEY, MICHELIN_GREEN_STAR].map((mark) => (
+                    <img
+                      key={mark.src}
+                      src={mark.src}
+                      alt={mark.alt}
+                      width={32}
+                      height={32}
+                      decoding="async"
+                      style={{ display: "block", width: 32, height: 32, objectFit: "contain", mixBlendMode: "multiply" }}
+                    />
+                  ))}
+                </div>
+                <p style={{ ...bodyStyle, fontWeight: 600 }}>Casa Las Tortugas holds a MICHELIN Key. Acre Resort's restaurant holds a MICHELIN Green Star.</p>
+                <p style={{ ...bodyStyle, color: MUTED, flexBasis: isMobile ? "100%" : "auto" }}>Selected clients: {PROOF_NAMES.join(" · ")}</p>
+              </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                <a href="/contact" className="atla-link" style={ctaStyle}>
+                <a href="#inquire" className="atla-link" style={ctaStyle}>
                   Tell us about your property →
                 </a>
                 <a href="#work" className="atla-link" style={{ ...ctaStyle, color: MUTED }}>
@@ -395,7 +598,7 @@ export default function AtlaHospitality() {
                 </a>
               </div>
               <div style={{ marginTop: isMobile ? 8 : 18 }}>
-                <Figure image={HERO} eager />
+                <Figure image={HERO} />
               </div>
             </section>
 
@@ -434,13 +637,7 @@ export default function AtlaHospitality() {
                   ))}
                 </ol>
                 <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-                  <img
-                    src="/hospitality/temakase-mako.webp"
-                    alt="Mako, the Temakase character, carrying a takeout bag"
-                    loading="lazy"
-                    decoding="async"
-                    style={{ display: "block", width: "100%", height: "auto", aspectRatio: "1600 / 1082", backgroundColor: "#C98538" }}
-                  />
+                  <Figure image={{ alt: "Mako, the Temakase character, carrying a takeout bag", ratio: "1600 / 1082" }} />
                   <figcaption style={{ ...eyebrowStyle }}>Mako · Temakase</figcaption>
                 </figure>
               </div>
@@ -473,39 +670,37 @@ export default function AtlaHospitality() {
             </section>
 
             <section
+              id="inquire"
               style={{
                 borderTop: `1px solid ${RULE}`,
                 paddingTop: 20,
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.8fr) minmax(0, 1fr)",
+                gap: isMobile ? 20 : 40,
+                alignItems: "start",
+                scrollMarginTop: 80,
               }}
             >
-              <h2
-                style={{
-                  fontFamily: DISPLAY,
-                  fontSize: isMobile ? 30 : 44,
-                  fontWeight: 400,
-                  lineHeight: "1.1",
-                  color: INK,
-                  margin: 0,
-                  maxWidth: 820,
-                }}
-              >
-                Opening, renovating or adding a concept?
-              </h2>
-              <p style={{ ...bodyStyle, maxWidth: 640 }}>
-                Tell us about the property and what the guest should feel when they walk in. José Pablo Domínguez,
-                founder and creative director, reads every message.
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                <a href="/contact" className="atla-link" style={ctaStyle}>
-                  Start a conversation →
-                </a>
-                <a href="mailto:josepablo@atla.design" className="atla-link" style={{ ...ctaStyle, color: MUTED }}>
-                  josepablo@atla.design
-                </a>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <p style={eyebrowStyle}>Start here</p>
+                <h2
+                  style={{
+                    fontFamily: DISPLAY,
+                    fontSize: isMobile ? 30 : 44,
+                    fontWeight: 400,
+                    lineHeight: "1.1",
+                    color: INK,
+                    margin: 0,
+                  }}
+                >
+                  Opening, renovating or adding a concept?
+                </h2>
+                <p style={bodyStyle}>
+                  Tell us about the property and what the guest should feel when they walk in. José Pablo Domínguez,
+                  founder and creative director, reads every message and replies himself.
+                </p>
               </div>
+              <InquiryForm />
             </section>
           </div>
         </main>
