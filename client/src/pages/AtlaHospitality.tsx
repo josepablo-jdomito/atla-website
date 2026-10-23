@@ -317,6 +317,52 @@ function Label({ children, inverted = false }: { children: ReactNode; inverted?:
   return <p style={{ ...labelStyle, color: inverted ? "rgba(244,240,232,0.6)" : MUTED }}>{children}</p>;
 }
 
+// Equirectangular frame of americas-dots.svg (Natural Earth 110m land, public domain): 128W to 56W, 56N to 12N.
+const MAP_LEFT = -128;
+const MAP_WIDTH = 72;
+const MAP_TOP = 56;
+const MAP_HEIGHT = 44;
+const inMapFrame = (place: Place) =>
+  place.lng >= MAP_LEFT && place.lng <= MAP_LEFT + MAP_WIDTH && place.lat <= MAP_TOP && place.lat >= MAP_TOP - MAP_HEIGHT;
+
+function ProjectMap() {
+  const isMobile = useIsMobile();
+  const placesOnMap = PLACES.filter(inMapFrame).sort((x, y) => Number(x.hospitality) - Number(y.hospitality));
+  return (
+    <div
+      role="img"
+      aria-label={`Map of the places in the Americas where Atla has done projects: ${placesOnMap.map((place) => place.name).join(", ")}`}
+      style={{ position: "relative", width: "100%", aspectRatio: `${MAP_WIDTH} / ${MAP_HEIGHT}` }}
+    >
+      <img src="/hospitality/americas-dots.svg" alt="" decoding="async" style={{ display: "block", width: "100%", height: "100%" }} />
+      {/* Hospitality work is solid ink; the rest of the work is an ink ring. */}
+      {placesOnMap.map((place) => {
+        const size = place.hospitality ? (isMobile ? 7 : 11) : isMobile ? 6 : 8;
+        return (
+          <span
+            key={place.name}
+            title={place.projects ? `${place.name} · ${place.projects}` : place.name}
+            style={{
+              position: "absolute",
+              left: `${((place.lng - MAP_LEFT) / MAP_WIDTH) * 100}%`,
+              top: `${((MAP_TOP - place.lat) / MAP_HEIGHT) * 100}%`,
+              width: size,
+              height: size,
+              marginLeft: -size / 2,
+              marginTop: -size / 2,
+              borderRadius: 999,
+              boxSizing: "border-box",
+              background: place.hospitality ? INK : PAPER,
+              border: place.hospitality ? "none" : `1.5px solid ${INK}`,
+              boxShadow: `0 0 0 2px ${PAPER}`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function Specs({ specs }: { specs: CaseSpec[] }) {
   return (
     <dl style={{ margin: 0, borderTop: `1px solid ${RULE}` }}>
@@ -807,9 +853,19 @@ export default function AtlaHospitality() {
           {/* Places */}
           <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 12 : 40 }}>
             <Label>Where we have worked</Label>
-            <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 30, lineHeight: "1.35", color: INK, margin: 0 }}>
-              {hospitalityPlaces.join(" · ")}
-            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
+              <ProjectMap />
+              <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 30, lineHeight: "1.35", color: INK, margin: 0 }}>
+                {hospitalityPlaces.join(" · ")}
+              </p>
+              <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
+                Solid points mark hospitality work; rings mark the rest of our work. Also in{" "}
+                {PLACES.filter((place) => !inMapFrame(place))
+                  .map((place) => place.name.split(",")[0])
+                  .join(", ")}
+                .
+              </p>
+            </div>
           </section>
 
           {/* FAQ as plain text */}
