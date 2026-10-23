@@ -14,6 +14,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticles, fetchJournalCategories } from "@/lib/journalApi";
 import { articleDescription, articlePublishedIso } from "@/lib/journalSeo";
+import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
@@ -106,7 +107,7 @@ export default function AtlaJournal() {
   const heroImage = heroArticle?.heroImage || heroArticle?.coverImage || "";
   const pathname = activeCategory ? `/journal/category/${activeCategory.slug}` : "/journal";
   const pageTitle = activeCategory
-    ? formatMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`, "Atla Journal")
+    ? formatJournalMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`)
     : formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft");
   const pageDescription = ensureDescriptionLength(activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION);
   const heroTitle = activeCategory

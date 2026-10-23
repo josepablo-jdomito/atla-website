@@ -1,11 +1,5 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  formatMetaTitle,
-  ORGANIZATION_LOGO_URL,
-  ORGANIZATION_NAME,
-  SITE_ORIGIN,
-} from "@shared/siteSeo";
 import { useRoute } from "wouter";
 import { trackEvent, useScrollDepthTracking } from "@/hooks/use-analytics";
 import { JournalPortableText } from "@/components/journal/JournalPortableText";
@@ -14,7 +8,8 @@ import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
-import { articleBodyText, articleDescription, articlePublishedIso } from "@/lib/journalSeo";
+import { articleBodyText, articleDescription, buildArticleBreadcrumb, buildBlogPostingSchema } from "@/lib/journalSeo";
+import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
@@ -88,56 +83,17 @@ export default function AtlaArticle() {
     (section) => section.paragraphs.length > 0 || Boolean(section.image) || Boolean(section.wideImage),
   );
 
-  const articleSchema: Record<string, unknown> = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: article.title,
+  const articleSchema = buildBlogPostingSchema(article, {
     description,
-    articleSection: article.category,
-    datePublished: article.publishedAt || articlePublishedIso(article.date),
-    author: {
-      "@type": "Organization",
-      name: article.authorName || ORGANIZATION_NAME,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: ORGANIZATION_NAME,
-      logo: {
-        "@type": "ImageObject",
-        url: ORGANIZATION_LOGO_URL,
-      },
-    },
-    mainEntityOfPage: `${SITE_ORIGIN}${canonicalPath}`,
+    image: articleImage || undefined,
     articleBody: articleText || description,
-  };
-
-  if (articleImage) {
-    articleSchema.image = [articleImage];
-  }
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Journal",
-        item: `${SITE_ORIGIN}/journal`,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: article.title,
-        item: `${SITE_ORIGIN}${canonicalPath}`,
-      },
-    ],
-  };
+  });
+  const breadcrumbSchema = buildArticleBreadcrumb(article);
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <SeoHead
-        title={formatMetaTitle(article.seoTitle || article.title, "Atla Journal")}
+        title={formatJournalMetaTitle(article.seoTitle || article.title)}
         description={description}
         pathname={canonicalPath}
         image={articleImage || undefined}
