@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Brand systems for hotels and the restaurants inside them: architecture for every outlet, standards your team can run, and production files for every vendor. Acre Resort, Casa Las Tortugas.";
+  "Brand systems for hotels and the restaurants inside them, from Atla. Recent hotel work: Acre Resort in Los Cabos and Casa Las Tortugas in Holbox.";
 
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
@@ -59,7 +59,7 @@ const PROBLEMS = [
   {
     problem: "On the booking site we look like every other hotel.",
     answer:
-      "We set the identity, the photography direction and the website together, so the property reads as itself in a row of thumbnails and the booking path keeps that feeling.",
+      "We set the identity, the photography direction and the website together, so the property looks like itself in a row of thumbnails and the booking pages feel like the same place.",
     proof: "Acre Resort: brand book and website.",
   },
   {
@@ -71,13 +71,13 @@ const PROBLEMS = [
   {
     problem: "We open soon and every vendor is waiting on files.",
     answer:
-      "Signage, uniforms, menus and packaging are designed with the supplier in mind and delivered as production files, with a supplier sheet that lists every item.",
+      "We design signage, uniforms, menus and packaging around the supplier who will make them, and hand over production files plus a supplier sheet that lists every item.",
     proof: "Christophe's got a supplier sheet for its packaging and ordered from it directly.",
   },
   {
     problem: "Our team changes faster than our brand guide.",
     answer:
-      "We write operating standards the staff can actually use: what goes on a room card, how the restaurant posts, who signs off on what. New hires learn the brand from the same document.",
+      "We write operating standards for the people on shift: what goes on a room card, how the restaurant posts, who signs off on what. New hires learn the brand from the same document.",
     proof: "Casa Las Tortugas: operating standards across the hotel.",
   },
 ];
@@ -110,7 +110,7 @@ const HOTEL_CASES: HospitalityCase[] = [
     place: "Holbox",
     kind: "Adults-only beachfront hotel, family owned",
     summary:
-      "A family-owned hotel on Holbox's main beach, with four restaurants and a spa. We audited the property the way a guest moves through it, then set the brand architecture and the operating standards the team works from. The findings belong to the client. The method is the one we bring to every hotel.",
+      "A family-owned hotel on Holbox's main beach, with four restaurants and a spa. We audited the property the way a guest moves through it, then set the brand architecture and the operating standards the team works from. The findings stay with the client. We use the same method on every hotel.",
     scope: ["Hospitality audit", "Brand architecture", "Operating standards"],
     hero: { alt: "Casa Las Tortugas, Holbox", ratio: "16 / 9" },
     details: [],
@@ -210,12 +210,12 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Can we start with the audit alone?",
     answer:
-      "Yes. The audit stands on its own: you get the brand architecture and a clear list of what to fix. If we keep going, it becomes the brief for the brand work.",
+      "You can. The audit stands on its own: you get the brand architecture and a list of what to fix first. If we keep going, it becomes the brief for the brand work.",
   },
   {
     question: "Do you work with our architect, interior designer and operator?",
     answer:
-      "Yes. We bring them in early so signage, materials and the identity are decided together, and we write the operating standards for the people who will run the property.",
+      "We prefer to bring them in early, so signage, materials and the identity get decided in the same room. The operating standards are written for whoever will run the property.",
   },
   {
     question: "Do you produce or install signage and uniforms?",
@@ -234,7 +234,7 @@ const FAQ_ITEMS: FaqItem[] = [
   },
   {
     question: "What happens after I send the form?",
-    answer: "José Pablo reads it and writes back with what we would do first. For most properties, that is the audit.",
+    answer: "José Pablo reads it and replies himself. For most properties, what we suggest first is the audit.",
   },
 ];
 
@@ -255,7 +255,7 @@ const TOUCHPOINTS = [
 const STAGES = [
   {
     name: "Audit",
-    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service. For a group, we run the same audit on each property so the whole portfolio works from one method.",
+    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service.",
     proof: "Casa Las Tortugas and Acre Resort.",
   },
   {
@@ -617,7 +617,6 @@ function InquiryForm() {
               </a>
             </p>
           ) : null}
-          <p style={{ ...bodyStyle, color: MUTED }}>José Pablo reads it and writes back with what we would do first.</p>
           <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
             What you send goes to our CRM so we can answer you. See the{" "}
             <a href="/privacy" style={{ color: INK }}>
@@ -963,9 +962,9 @@ export default function AtlaHospitality() {
                   Tell us about the property.
                 </h2>
                 <p style={bodyStyle}>
-                  Opening, repositioning or adding an outlet, the first conversation is the same: what the property is,
-                  who it is for, and where the brand breaks today. José Pablo Domínguez, our founder and creative
-                  director, reads these and answers them himself.
+                  Whether you are opening, repositioning or adding an outlet, we start with the same questions: what the
+                  property is, who comes to it, and where the brand falls apart today. José Pablo Domínguez, our founder
+                  and creative director, reads these himself.
                 </p>
               </div>
               <InquiryForm />

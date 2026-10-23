@@ -661,7 +661,7 @@ async function prerenderRoutes() {
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Brand systems for hotels and the restaurants inside them: architecture for every outlet, standards your team can run, and production files for every vendor. Acre Resort, Casa Las Tortugas.",
+      description: "Brand systems for hotels and the restaurants inside them, from Atla. Recent hotel work: Acre Resort in Los Cabos and Casa Las Tortugas in Holbox.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
