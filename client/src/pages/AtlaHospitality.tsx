@@ -31,7 +31,9 @@ const DESCRIPTION =
 
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
-const INK = "#222";
+const INK = "#1c1f27";
+const YELLOW = "#f6c428";
+const PLAYGROUND = "'PP Playground', 'Libre Franklin', Helvetica, sans-serif";
 const MUTED = "#6f6f6f";
 const RULE = "#d4d4d4";
 
@@ -247,7 +249,7 @@ function Figure({ image }: { image: CaseImage }) {
       style={{
         width: "100%",
         aspectRatio: image.ratio,
-        backgroundColor: "#ececea",
+        backgroundColor: "#ece8dc",
         display: "flex",
         alignItems: "flex-end",
         padding: 14,
@@ -268,9 +270,9 @@ function BookCall({ position, inverted = false }: { position: string; inverted?:
       onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: position })}
       style={{
         ...ATLA_PILL,
-        background: inverted ? "#fafafa" : INK,
+        background: inverted ? YELLOW : INK,
         color: inverted ? INK : "#fafafa",
-        border: `1px solid ${inverted ? "#fafafa" : INK}`,
+        border: `1px solid ${inverted ? YELLOW : INK}`,
       }}
     >
       Book a call
@@ -278,15 +280,28 @@ function BookCall({ position, inverted = false }: { position: string; inverted?:
   );
 }
 
-function IconCard({ item, large = false }: { item: IconItem; large?: boolean }) {
+function IconCard({ item, large = false, inverted = false }: { item: IconItem; large?: boolean; inverted?: boolean }) {
   const Icon = item.icon;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <Icon size={large ? 26 : 22} strokeWidth={1.5} color={INK} aria-hidden="true" />
-      <h3 style={{ fontFamily: DISPLAY, fontSize: large ? 24 : 20, fontWeight: 400, lineHeight: "1.2", color: INK, margin: 0 }}>
+      <span
+        aria-hidden="true"
+        style={{
+          width: large ? 48 : 40,
+          height: large ? 48 : 40,
+          borderRadius: 999,
+          background: YELLOW,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Icon size={large ? 22 : 18} strokeWidth={1.6} color={INK} />
+      </span>
+      <h3 style={{ fontFamily: DISPLAY, fontSize: large ? 24 : 20, fontWeight: 400, lineHeight: "1.2", color: inverted ? "#fafafa" : INK, margin: 0 }}>
         {item.title}
       </h3>
-      {item.line ? <p style={{ ...bodyStyle, color: MUTED }}>{item.line}</p> : null}
+      {item.line ? <p style={{ ...bodyStyle, color: inverted ? "#bdbdb6" : MUTED }}>{item.line}</p> : null}
     </div>
   );
 }
@@ -594,73 +609,91 @@ export default function AtlaHospitality() {
           }}
         >
           <div style={{ width: "100%", maxWidth: 1160, display: "flex", flexDirection: "column", gap: isMobile ? 56 : 96 }}>
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 16 : 22 }}>
-              <p style={eyebrowStyle}>Hospitality: Restaurants, Wellness, Coffee Shops, Hotels</p>
-              <h1
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
+              <div
                 style={{
-                  fontFamily: DISPLAY,
-                  fontSize: isMobile ? 40 : 72,
-                  fontWeight: 400,
-                  lineHeight: "1.04",
-                  color: INK,
-                  margin: 0,
-                  maxWidth: 940,
+                  background: YELLOW,
+                  padding: isMobile ? "32px 20px 36px" : "56px 56px 64px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: isMobile ? 16 : 22,
                 }}
               >
-                Hotel brands that win the booking and hold up for the stay.
-              </h1>
-              <p style={{ ...bodyStyle, fontSize: isMobile ? 15 : 17, maxWidth: 560 }}>
-                Identity, outlets and standards for hotels and the restaurants inside them.
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
-                <BookCall position="hero" />
-                <a href="#work" className="atla-link" style={{ ...ctaStyle, color: MUTED }}>
-                  See the work ↓
-                </a>
+                <p style={{ ...eyebrowStyle, color: INK }}>Hospitality: Restaurants, Wellness, Coffee Shops, Hotels</p>
+                <p
+                  aria-hidden="true"
+                  style={{ fontFamily: PLAYGROUND, fontSize: isMobile ? 64 : 168, fontWeight: 500, lineHeight: "0.95", color: INK, margin: 0 }}
+                >
+                  Hospitality
+                </p>
+                <h1
+                  style={{
+                    fontFamily: DISPLAY,
+                    fontSize: isMobile ? 30 : 48,
+                    fontWeight: 400,
+                    lineHeight: "1.08",
+                    color: INK,
+                    margin: 0,
+                    maxWidth: 1040,
+                  }}
+                >
+                  Brands for the places guests come back to.
+                </h1>
+                <p style={{ ...bodyStyle, fontSize: isMobile ? 15 : 17, maxWidth: 600 }}>
+                  Hotels, restaurants, wellness and coffee. We design the identity, every outlet and the standards your
+                  team runs on.
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
+                  <BookCall position="hero" />
+                  <a href="#work" className="atla-link" style={{ ...ctaStyle, color: INK }}>
+                    See the work ↓
+                  </a>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 6 }}>
+                  {[
+                    { ...MICHELIN_KEY, label: "MICHELIN Key", who: "Casa Las Tortugas" },
+                    { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star", who: "Acre Resort's restaurant" },
+                  ].map((mark) => (
+                    <div
+                      key={mark.src}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        background: "#fffdf6",
+                        borderRadius: 999,
+                        padding: "8px 18px 8px 10px",
+                      }}
+                    >
+                      <img src={mark.src} alt={mark.alt} width={36} height={36} decoding="async" style={{ width: 36, height: 36, objectFit: "contain", mixBlendMode: "multiply" }} />
+                      <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <span style={{ ...bodyStyle, fontSize: 14, fontWeight: 700 }}>{mark.label}</span>
+                        <span style={{ ...bodyStyle, fontSize: 12, color: MUTED }}>{mark.who}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: isMobile ? 12 : 28, paddingTop: 4 }}>
-                {[
-                  { ...MICHELIN_KEY, label: "MICHELIN Key · Casa Las Tortugas" },
-                  { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star · Acre Resort" },
-                ].map((mark) => (
-                  <div key={mark.src} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <img src={mark.src} alt={mark.alt} width={28} height={28} decoding="async" style={{ width: 28, height: 28, objectFit: "contain", mixBlendMode: "multiply" }} />
-                    <span style={{ ...bodyStyle, fontSize: 13, fontWeight: 600 }}>{mark.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop: isMobile ? 8 : 18 }}>
-                <Figure image={HERO} />
-              </div>
+              <Figure image={HERO} />
             </section>
 
-            <section aria-label="Clients" style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: isMobile ? -32 : -64 }}>
+            <section aria-label="Clients" style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: isMobile ? -24 : -48 }}>
               <p style={eyebrowStyle}>Clients</p>
+              {/* Names stand in for the logo files until they arrive. */}
               <ul
                 style={{
                   listStyle: "none",
                   margin: 0,
-                  padding: 0,
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
-                  gap: isMobile ? 8 : 12,
+                  padding: "20px 0",
+                  borderTop: `1px solid ${RULE}`,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  columnGap: isMobile ? 20 : 40,
+                  rowGap: 12,
                 }}
               >
                 {CLIENT_LOGOS.map((name) => (
-                  <li
-                    key={name}
-                    style={{
-                      ...eyebrowStyle,
-                      height: isMobile ? 64 : 80,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      border: `1px solid ${RULE}`,
-                      color: "#9a9a96",
-                      textAlign: "center",
-                      padding: 8,
-                    }}
-                  >
+                  <li key={name} style={{ fontFamily: DISPLAY, fontSize: isMobile ? 20 : 26, lineHeight: "1.2", color: "#8f8f88" }}>
                     {name}
                   </li>
                 ))}
@@ -668,7 +701,7 @@ export default function AtlaHospitality() {
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
-              <SectionHead eyebrow="What we solve" title="Four problems hotels bring us" />
+              <SectionHead eyebrow="What we solve" title="Four problems owners bring us" />
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gap: isMobile ? 24 : 32 }}>
                 {SOLVES.map((item) => (
                   <IconCard key={item.title} item={item} large />
@@ -677,7 +710,7 @@ export default function AtlaHospitality() {
             </section>
 
             <section id="work" style={{ display: "flex", flexDirection: "column", gap: sectionGap, scrollMarginTop: 80 }}>
-              <SectionHead eyebrow="Selected work" title="Hotels first, then the restaurants inside them" />
+              <SectionHead eyebrow="Selected work" title="Hotels, and the restaurants inside them" />
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: isMobile ? 40 : 48 }}>
                 {CASES.map((item) => (
                   <CaseCard key={item.name} item={item} />
@@ -688,13 +721,18 @@ export default function AtlaHospitality() {
               </div>
             </section>
 
-            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
-              <SectionHead eyebrow="How we work" title="Audit, brand, then stay" />
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 24 : 32 }}>
+            <section style={{ background: INK, padding: isMobile ? "36px 20px" : "56px", display: "flex", flexDirection: "column", gap: sectionGap }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <p style={{ ...eyebrowStyle, color: YELLOW }}>How we work</p>
+                <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 44, fontWeight: 400, lineHeight: "1.1", color: "#fafafa", margin: 0 }}>
+                  Audit, brand, then stay
+                </h2>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 28 : 40 }}>
                 {STEPS.map((item, index) => (
-                  <div key={item.title} style={{ borderTop: `2px solid ${INK}`, paddingTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-                    <p style={eyebrowStyle}>{String(index + 1).padStart(2, "0")}</p>
-                    <IconCard item={item} large />
+                  <div key={item.title} style={{ borderTop: "1px solid rgba(250,250,250,0.25)", paddingTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                    <p style={{ ...eyebrowStyle, color: "#bdbdb6" }}>{String(index + 1).padStart(2, "0")}</p>
+                    <IconCard item={item} large inverted />
                   </div>
                 ))}
               </div>
