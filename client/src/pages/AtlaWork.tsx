@@ -645,18 +645,18 @@ export default function AtlaWork() {
     if (view === "Masonry") {
       return masonryPhotoPool
         .slice(0, 2)
-        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 90 }) || item.imageSrc);
+        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 80 }) || item.imageSrc);
     }
 
     if (view === "Timeline") {
       return timelineProjects
         .slice(0, 2)
-        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 90 }) || project.coverImage);
+        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 80 }) || project.coverImage);
     }
 
     return filteredProjects
       .slice(0, 2)
-      .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 90 }) || project.coverImage);
+      .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 80 }) || project.coverImage);
   }, [filteredProjects, isMobile, masonryPhotoPool, timelineProjects, view]);
 
   const resetArchiveState = (shouldScroll = true) => {
@@ -1200,8 +1200,8 @@ export default function AtlaWork() {
                 {timelineProjects.map((project, index) => {
                   const imageDimensions = getImageDimensions(project.coverImage);
                   const targetWidth = isMobile ? 960 : 1400;
-                  const optimizedSrc = getOptimizedImageUrl(project.coverImage, { width: targetWidth, quality: 90 }) || project.coverImage;
-                  const srcSet = buildImageSrcSet(project.coverImage, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                  const optimizedSrc = getOptimizedImageUrl(project.coverImage, { width: targetWidth, quality: 80 }) || project.coverImage;
+                  const srcSet = buildImageSrcSet(project.coverImage, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                   const stagger = !isMobile && index % 2 === 1 ? 60 : 0;
 
                   return (
@@ -1313,8 +1313,8 @@ export default function AtlaWork() {
                     >
                       {listPhotos.map((photoSrc, photoIndex) => {
                         const photoDimensions = getImageDimensions(photoSrc);
-                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 700 : 900, quality: 90 }) || photoSrc;
-                        const photoSrcSet = buildImageSrcSet(photoSrc, isMobile ? [360, 520, 700] : [520, 700, 900], { quality: 90 });
+                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 700 : 900, quality: 80 }) || photoSrc;
+                        const photoSrcSet = buildImageSrcSet(photoSrc, isMobile ? [360, 520, 700] : [520, 700, 900], { quality: 80 });
                         return (
                           <div key={`${project.slug}-list-photo-${photoIndex}`} style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", backgroundColor: "#ece9e2", overflow: "hidden" }}>
                             <img
@@ -1356,8 +1356,8 @@ export default function AtlaWork() {
                 {masonryFeedItems.map((item, index) => {
                   const imageDimensions = getImageDimensions(item.imageSrc);
                   const targetWidth = isMobile ? 1200 : 1500;
-                  const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 90 }) || item.imageSrc;
-                  const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                  const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 80 }) || item.imageSrc;
+                  const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                   const shouldPrioritize = index < (isMobile ? 3 : 8);
                   const aspectRatio = getMasonryAspectRatio(item, index, isMobile);
 
@@ -1465,8 +1465,8 @@ export default function AtlaWork() {
                     <div style={{ display: "grid", gridTemplateColumns: `repeat(${cardImages.length || 1}, minmax(0, 1fr))`, gap: view === "Grid" ? 6 : 0 }}>
                       {cardImages.map((imageSrc, imageIndex) => {
                         const imageDimensions = getImageDimensions(imageSrc);
-                        const optimizedSrc = getOptimizedImageUrl(imageSrc, { width: targetWidth, quality: 90 }) || imageSrc;
-                        const srcSet = buildImageSrcSet(imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                        const optimizedSrc = getOptimizedImageUrl(imageSrc, { width: targetWidth, quality: 80 }) || imageSrc;
+                        const srcSet = buildImageSrcSet(imageSrc, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                         return (
                           <div
                             key={`${project.slug}-${imageSrc}-${imageIndex}`}
