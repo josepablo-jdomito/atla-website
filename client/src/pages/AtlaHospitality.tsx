@@ -649,10 +649,11 @@ export default function AtlaHospitality() {
                     See the work ↓
                   </a>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, paddingTop: 6 }}>
+                <p style={{ ...eyebrowStyle, color: INK, paddingTop: 6 }}>Recent client awards</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: -8 }}>
                   {[
                     { ...MICHELIN_KEY, label: "MICHELIN Key", who: "Casa Las Tortugas" },
-                    { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star", who: "Acre Resort's restaurant" },
+                    { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star", who: "Acre" },
                   ].map((mark) => (
                     <div
                       key={mark.src}
