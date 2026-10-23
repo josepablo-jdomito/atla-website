@@ -637,7 +637,7 @@ export default function AtlaHospitality() {
                     maxWidth: 1040,
                   }}
                 >
-                  Brands for the places guests come back to.
+                  We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
                 </h1>
                 <p style={{ ...bodyStyle, fontSize: isMobile ? 15 : 17, maxWidth: 600 }}>
                   Hotels, restaurants, wellness and coffee. We design the identity, every outlet and the standards your
