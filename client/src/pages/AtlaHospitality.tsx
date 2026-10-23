@@ -1,8 +1,26 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import {
+  BookOpen,
+  ClipboardList,
+  Globe,
+  Images,
+  Network,
+  PackageCheck,
+  PenTool,
+  Repeat,
+  Search,
+  Shirt,
+  Signpost,
+  Stamp,
+  Type,
+  UtensilsCrossed,
+  type LucideIcon,
+} from "lucide-react";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaHeader } from "@/components/atla/AtlaHeader";
+import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { buildServiceSchema, type FaqItem } from "@/components/atla/AtlaLongformLayout";
 import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -17,24 +35,25 @@ const INK = "#222";
 const MUTED = "#6f6f6f";
 const RULE = "#d4d4d4";
 
+// "Atla* Branding Agency" intro event on Calendly.
+const BOOK_CALL_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
+
 // Project photography is pending; each slot renders as a placeholder labelled with what goes there.
-type CaseImage = { alt: string; ratio: string; wide?: boolean };
+type CaseImage = { alt: string; ratio: string };
 
 type Badge = { src: string; alt: string; label: string };
 
 type HospitalityCase = {
-  number: string;
   name: string;
-  tagline: string;
   place: string;
-  kind: string;
-  summary: string;
+  tagline: string;
   scope: string[];
-  hero: CaseImage;
-  details: CaseImage[];
-  link?: { href: string; label: string };
+  image: CaseImage;
   badge?: Badge;
+  link?: { href: string; label: string };
 };
+
+type IconItem = { icon: LucideIcon; title: string; line?: string };
 
 const MICHELIN_KEY = { src: "/hospitality/michelin-key.webp", alt: "MICHELIN Key" };
 const MICHELIN_GREEN_STAR = { src: "/hospitality/michelin-green-star.svg", alt: "MICHELIN Green Star" };
@@ -49,110 +68,7 @@ const PROPERTY_TYPES = [
 const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
 const BUDGETS = ["$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
 
-const HERO: CaseImage = {
-  alt: "Acre Resort, treehouse at dusk",
-  ratio: "16 / 9",
-};
-
-// What hotel owners and brand teams tell us first, and what we do about it.
-const PROBLEMS = [
-  {
-    problem: "On the booking site we look like every other hotel.",
-    answer:
-      "We set the identity, the photography direction and the website together, so the property looks like itself in a row of thumbnails and the booking pages feel like the same place.",
-    proof: "Acre Resort: brand book and website.",
-  },
-  {
-    problem: "We have five outlets and no single brand.",
-    answer:
-      "We write the brand architecture first: which restaurant, bar, spa and event space gets its own name and mark, which ones share the hotel's, and how every one of them points back to the property.",
-    proof: "Casa Las Tortugas: four restaurants and a spa. Acre: treehouses, villas, a restaurant, a mezcal bar and weddings.",
-  },
-  {
-    problem: "We open soon and every vendor is waiting on files.",
-    answer:
-      "We design signage, uniforms, menus and packaging around the supplier who will make them, and hand over production files plus a supplier sheet that lists every item.",
-    proof: "Christophe's got a supplier sheet for its packaging and ordered from it directly.",
-  },
-  {
-    problem: "Our team changes faster than our brand guide.",
-    answer:
-      "We write operating standards for the people on shift: what goes on a room card, how the restaurant posts, who signs off on what. New hires learn the brand from the same document.",
-    proof: "Casa Las Tortugas: operating standards across the hotel.",
-  },
-];
-
-const HOTEL_CASES: HospitalityCase[] = [
-  {
-    number: "01",
-    name: "Acre Resort",
-    tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
-    place: "Los Cabos",
-    kind: "Treehouse hotel with villas, restaurants, a mezcal bar and weddings",
-    summary:
-      "Acre runs treehouses, villas, a restaurant with a MICHELIN Green Star, a mezcal bar and a wedding business on one property. We started with an audit that put all of it under one brand architecture, then wrote the brand book, designed the website and created Rústico, an open-air dinner on the grounds. We still work with Acre every week.",
-    scope: ["Audit", "Brand architecture", "Brand book", "Website", "Restaurant identity"],
-    hero: { alt: "Acre entrance wall with the wordmark", ratio: "16 / 9" },
-    details: [
-      { alt: "Rústico menu cover embossed in leather", ratio: "4 / 5" },
-      { alt: "Rústico bread bag with the signature mark", ratio: "4 / 5" },
-    ],
-    link: { href: "/projects/rustico", label: "See Rústico" },
-    badge: {
-      ...MICHELIN_GREEN_STAR,
-      label: "Acre Resort's restaurant holds a MICHELIN Green Star.",
-    },
-  },
-  {
-    number: "02",
-    name: "Casa Las Tortugas",
-    tagline: "Four restaurants and a spa on one beach.",
-    place: "Holbox",
-    kind: "Adults-only beachfront hotel, family owned",
-    summary:
-      "A family-owned hotel on Holbox's main beach, with four restaurants and a spa. We audited the property the way a guest moves through it, then set the brand architecture and the operating standards the team works from. The findings stay with the client. We use the same method on every hotel.",
-    scope: ["Hospitality audit", "Brand architecture", "Operating standards"],
-    hero: { alt: "Casa Las Tortugas, Holbox", ratio: "16 / 9" },
-    details: [],
-    badge: {
-      ...MICHELIN_KEY,
-      label: "Casa Las Tortugas holds one MICHELIN Key.",
-    },
-  },
-];
-
-const FB_CASES: HospitalityCase[] = [
-  {
-    number: "03",
-    name: "Christophe's Fine Foods",
-    tagline: "A neighborhood market with a chef behind the counter.",
-    place: "Chicago",
-    kind: "Chef-led prepared foods market",
-    summary:
-      "Christophe's started from a blank page. We drew the logotype and monogram, then the awning, aprons, totes and a line of reheatable meal trays. The owner got a supplier sheet with every item on it and placed the orders directly.",
-    scope: ["Identity", "Packaging", "Signage", "Uniforms", "Website"],
-    hero: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "16 / 9" },
-    details: [
-      { alt: "Christophe's staff apron", ratio: "4 / 5" },
-      { alt: "Christophe's reheatable meal trays with labels", ratio: "4 / 5" },
-    ],
-  },
-  {
-    number: "04",
-    name: "Temakase",
-    tagline: "Home of the handroll, with Mako on the window and the bag.",
-    place: "New York",
-    kind: "Hand roll bars",
-    summary:
-      "Temakase got a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck. He keeps the logo company instead of replacing it, and shows up on the window, the catering box and the sidewalk sign.",
-    scope: ["Identity", "Character", "Storefront", "Menus", "Catering", "Takeout"],
-    hero: { alt: "Temakase storefront with window graphics and sidewalk sign", ratio: "16 / 9" },
-    details: [
-      { alt: "Temakase lunch menu", ratio: "4 / 5" },
-      { alt: "Temakase catering box with Mako", ratio: "4 / 5" },
-    ],
-  },
-];
+const HERO: CaseImage = { alt: "Acre Resort, treehouse at dusk", ratio: "16 / 9" };
 
 // Project locations. Sanity coordinates (atla.design/api/projects, read 2026-10-23) plus the
 // hospitality clients that have no project page yet: Casa Las Tortugas, Christophe's, Temakase.
@@ -203,19 +119,9 @@ const FAQ_ITEMS: FaqItem[] = [
       "Yes. For a property inside a group we start from the group's standards and design what makes this hotel its own. For several properties, we run the same audit on each one so the portfolio shares one method.",
   },
   {
-    question: "Who leads the work?",
-    answer:
-      "José Pablo Domínguez, our founder and creative director, leads every hospitality project, from the audit on site to the files that go to your vendors.",
-  },
-  {
     question: "Can we start with the audit alone?",
     answer:
       "You can. The audit stands on its own: you get the brand architecture and a list of what to fix first. If we keep going, it becomes the brief for the brand work.",
-  },
-  {
-    question: "Do you work with our architect, interior designer and operator?",
-    answer:
-      "We prefer to bring them in early, so signage, materials and the identity get decided in the same room. The operating standards are written for whoever will run the property.",
   },
   {
     question: "Do you produce or install signage and uniforms?",
@@ -233,41 +139,68 @@ const FAQ_ITEMS: FaqItem[] = [
       "Austin, Texas. Most of our hospitality work is in Mexico and the United States, and we travel to the property for the audit.",
   },
   {
-    question: "What happens after I send the form?",
-    answer: "José Pablo reads it and replies himself. For most properties, what we suggest first is the audit.",
+    question: "What happens on the call?",
+    answer:
+      "You talk with José Pablo for about 25 minutes about the property and what is not working. He tells you what we would do first, which for most properties is the audit.",
   },
 ];
 
-const TOUCHPOINTS = [
-  "Brand architecture for every outlet",
-  "Naming",
-  "Identity and signature marks",
-  "Website and booking path",
-  "Photography and art direction",
-  "Signage and wayfinding",
-  "Room collateral and amenities",
-  "Menus and F&B packaging",
-  "Uniforms",
-  "Operating standards for your team",
-  "Production files and supplier specs",
+const SOLVES: IconItem[] = [
+  { icon: Images, title: "Stand out on the booking site", line: "Identity, photography and website, designed as one." },
+  { icon: Network, title: "One brand across every outlet", line: "Names and marks for each restaurant, bar and spa." },
+  { icon: PackageCheck, title: "Files your vendors can use", line: "Production files and a supplier sheet for every item." },
+  { icon: BookOpen, title: "Standards your team can run", line: "Operating rules new hires learn from one document." },
 ];
 
-const STAGES = [
+const CASES: HospitalityCase[] = [
   {
-    name: "Audit",
-    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service.",
-    proof: "Casa Las Tortugas and Acre Resort.",
+    name: "Acre Resort",
+    place: "Los Cabos",
+    tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
+    scope: ["Audit", "Brand book", "Website", "Rústico"],
+    image: { alt: "Acre entrance wall with the wordmark", ratio: "4 / 3" },
+    badge: { ...MICHELIN_GREEN_STAR, label: "Its restaurant holds a MICHELIN Green Star" },
+    link: { href: "/projects/rustico", label: "See Rústico" },
   },
   {
-    name: "Brand",
-    body: "We design the identity and every object around it, then hand over production files set up for the printer, embroiderer or builder who will make each one.",
-    proof: "Acre Resort, Rústico, Christophe's and Temakase.",
+    name: "Casa Las Tortugas",
+    place: "Holbox",
+    tagline: "Four restaurants and a spa on one beach.",
+    scope: ["Audit", "Brand architecture", "Operating standards"],
+    image: { alt: "Casa Las Tortugas, Holbox", ratio: "4 / 3" },
+    badge: { ...MICHELIN_KEY, label: "Holds one MICHELIN Key" },
   },
   {
-    name: "Stay",
-    body: "After launch we keep a weekly seat at the table, so new outlets, new rooms and the website come out of the same system.",
-    proof: "We work with Acre and Temakase this way today.",
+    name: "Christophe's Fine Foods",
+    place: "Chicago",
+    tagline: "A neighborhood market with a chef behind the counter.",
+    scope: ["Identity", "Packaging", "Signage", "Uniforms"],
+    image: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "4 / 3" },
   },
+  {
+    name: "Temakase",
+    place: "New York",
+    tagline: "Home of the handroll, with Mako on the window and the bag.",
+    scope: ["Identity", "Character", "Storefront"],
+    image: { alt: "Temakase storefront with window graphics", ratio: "4 / 3" },
+  },
+];
+
+const STEPS: IconItem[] = [
+  { icon: Search, title: "Audit", line: "We walk the property as a guest and map every outlet." },
+  { icon: PenTool, title: "Brand", line: "Identity and every object, ready for production." },
+  { icon: Repeat, title: "Stay", line: "A weekly seat after launch for new outlets and rooms." },
+];
+
+const DELIVERABLES: IconItem[] = [
+  { icon: Network, title: "Brand architecture" },
+  { icon: Type, title: "Naming" },
+  { icon: Stamp, title: "Identity" },
+  { icon: Globe, title: "Website and booking" },
+  { icon: Signpost, title: "Signage and wayfinding" },
+  { icon: UtensilsCrossed, title: "Menus and F&B" },
+  { icon: Shirt, title: "Uniforms" },
+  { icon: ClipboardList, title: "Operating standards" },
 ];
 
 const eyebrowStyle: CSSProperties = {
@@ -326,20 +259,64 @@ function Figure({ image }: { image: CaseImage }) {
   );
 }
 
-function BadgeLine({ badge }: { badge: Badge }) {
+function BookCall({ position, inverted = false }: { position: string; inverted?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
-      <img
-        src={badge.src}
-        alt={badge.alt}
-        loading="lazy"
-        decoding="async"
-        width={40}
-        height={40}
-        style={{ display: "block", width: 40, height: "auto", mixBlendMode: "multiply" }}
-      />
-      <p style={{ ...bodyStyle, fontSize: 13 }}>{badge.label}</p>
+    <a
+      href={BOOK_CALL_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: position })}
+      style={{
+        ...ATLA_PILL,
+        background: inverted ? "#fafafa" : INK,
+        color: inverted ? INK : "#fafafa",
+        border: `1px solid ${inverted ? "#fafafa" : INK}`,
+      }}
+    >
+      Book a call
+    </a>
+  );
+}
+
+function IconCard({ item, large = false }: { item: IconItem; large?: boolean }) {
+  const Icon = item.icon;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <Icon size={large ? 26 : 22} strokeWidth={1.5} color={INK} aria-hidden="true" />
+      <h3 style={{ fontFamily: DISPLAY, fontSize: large ? 24 : 20, fontWeight: 400, lineHeight: "1.2", color: INK, margin: 0 }}>
+        {item.title}
+      </h3>
+      {item.line ? <p style={{ ...bodyStyle, color: MUTED }}>{item.line}</p> : null}
     </div>
+  );
+}
+
+function CaseCard({ item }: { item: HospitalityCase }) {
+  return (
+    <article style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <Figure image={item.image} />
+      <p style={eyebrowStyle}>{item.place}</p>
+      <h3 style={{ fontFamily: DISPLAY, fontSize: 28, fontWeight: 400, lineHeight: "1.1", color: INK, margin: 0 }}>{item.name}</h3>
+      <p style={bodyStyle}>{item.tagline}</p>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {item.scope.map((tag) => (
+          <li key={tag} style={{ ...eyebrowStyle, fontSize: 11, border: `1px solid ${RULE}`, borderRadius: 999, padding: "6px 10px" }}>
+            {tag}
+          </li>
+        ))}
+      </ul>
+      {item.badge ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src={item.badge.src} alt={item.badge.alt} width={28} height={28} loading="lazy" decoding="async" style={{ width: 28, height: 28, objectFit: "contain", mixBlendMode: "multiply" }} />
+          <p style={{ ...bodyStyle, fontSize: 13 }}>{item.badge.label}</p>
+        </div>
+      ) : null}
+      {item.link ? (
+        <a href={item.link.href} className="atla-link" style={{ ...ctaStyle, minHeight: 32, padding: "4px 0" }}>
+          {item.link.label} →
+        </a>
+      ) : null}
+    </article>
   );
 }
 
@@ -401,70 +378,6 @@ function SectionHead({ eyebrow, title }: { eyebrow: string; title: ReactNode }) 
         {title}
       </h2>
     </div>
-  );
-}
-
-function CaseStudy({ item }: { item: HospitalityCase }) {
-  const isMobile = useIsMobile();
-
-  return (
-    <article style={{ display: "flex", flexDirection: "column", gap: isMobile ? 14 : 20 }}>
-      <Figure image={item.hero} />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.34fr) minmax(0, 1fr)",
-          gap: isMobile ? 10 : 24,
-          alignItems: "start",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <p style={eyebrowStyle}>
-            {item.number} · {item.place}
-          </p>
-          <h3
-            style={{
-              fontFamily: DISPLAY,
-              fontSize: isMobile ? 28 : 36,
-              fontWeight: 400,
-              lineHeight: "1.1",
-              color: INK,
-              margin: 0,
-            }}
-          >
-            {item.name}
-          </h3>
-          <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 18 : 20, fontWeight: 400, lineHeight: "1.25", color: INK, margin: 0 }}>
-            {item.tagline}
-          </p>
-          <p style={{ ...bodyStyle, color: MUTED }}>{item.kind}</p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 640 }}>
-          <p style={bodyStyle}>{item.summary}</p>
-          <p style={{ ...bodyStyle, color: MUTED }}>{item.scope.join(" · ")}</p>
-          {item.badge ? <BadgeLine badge={item.badge} /> : null}
-          {item.link ? (
-            <a href={item.link.href} className="atla-link" style={ctaStyle}>
-              {item.link.label} →
-            </a>
-          ) : null}
-        </div>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: item.details.length > 1 && !isMobile ? "repeat(2, minmax(0, 1fr))" : "1fr",
-          gap: isMobile ? 8 : 12,
-          alignItems: "start",
-        }}
-      >
-        {item.details.map((image) => (
-          <div key={image.alt} style={{ gridColumn: image.wide ? "1 / -1" : undefined }}>
-            <Figure image={image.wide ? image : { ...image, ratio: "4 / 5" }} />
-          </div>
-        ))}
-      </div>
-    </article>
   );
 }
 
@@ -653,6 +566,7 @@ function InquiryForm() {
 
 export default function AtlaHospitality() {
   const isMobile = useIsMobile();
+  const sectionGap = isMobile ? 20 : 32;
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
@@ -679,16 +593,8 @@ export default function AtlaHospitality() {
             boxSizing: "border-box",
           }}
         >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: 1160,
-              display: "flex",
-              flexDirection: "column",
-              gap: isMobile ? 40 : 72,
-            }}
-          >
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 14 : 18 }}>
+          <div style={{ width: "100%", maxWidth: 1160, display: "flex", flexDirection: "column", gap: isMobile ? 56 : 96 }}>
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 16 : 22 }}>
               <p style={eyebrowStyle}>Hospitality: Restaurants, Wellness, Coffee Shops, Hotels</p>
               <h1
                 style={{
@@ -698,48 +604,37 @@ export default function AtlaHospitality() {
                   lineHeight: "1.04",
                   color: INK,
                   margin: 0,
-                  maxWidth: 980,
+                  maxWidth: 940,
                 }}
               >
-                A hotel brand has to win the booking, then hold up for the whole stay.
+                Hotel brands that win the booking and hold up for the stay.
               </h1>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 640 }}>
-                <p style={bodyStyle}>
-                  Guests compare you with a page of other hotels on the same screen. Then they meet your brand at the front
-                  desk, the restaurant, the spa and the room key. We design for both moments, and we hand your team and
-                  your vendors a system they can run.
-                </p>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: isMobile ? 10 : 16, paddingTop: 4 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {[MICHELIN_KEY, MICHELIN_GREEN_STAR].map((mark) => (
-                    <img
-                      key={mark.src}
-                      src={mark.src}
-                      alt={mark.alt}
-                      width={32}
-                      height={32}
-                      decoding="async"
-                      style={{ display: "block", width: 32, height: 32, objectFit: "contain", mixBlendMode: "multiply" }}
-                    />
-                  ))}
-                </div>
-                <p style={{ ...bodyStyle, fontWeight: 600 }}>Casa Las Tortugas holds a MICHELIN Key. Acre Resort's restaurant holds a MICHELIN Green Star.</p>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                <a href="#inquire" className="atla-link" style={ctaStyle}>
-                  Tell us about your property →
-                </a>
+              <p style={{ ...bodyStyle, fontSize: isMobile ? 15 : 17, maxWidth: 560 }}>
+                Identity, outlets and standards for hotels and the restaurants inside them.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
+                <BookCall position="hero" />
                 <a href="#work" className="atla-link" style={{ ...ctaStyle, color: MUTED }}>
                   See the work ↓
                 </a>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: isMobile ? 12 : 28, paddingTop: 4 }}>
+                {[
+                  { ...MICHELIN_KEY, label: "MICHELIN Key · Casa Las Tortugas" },
+                  { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star · Acre Resort" },
+                ].map((mark) => (
+                  <div key={mark.src} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <img src={mark.src} alt={mark.alt} width={28} height={28} decoding="async" style={{ width: 28, height: 28, objectFit: "contain", mixBlendMode: "multiply" }} />
+                    <span style={{ ...bodyStyle, fontSize: 13, fontWeight: 600 }}>{mark.label}</span>
+                  </div>
+                ))}
               </div>
               <div style={{ marginTop: isMobile ? 8 : 18 }}>
                 <Figure image={HERO} />
               </div>
             </section>
 
-            <section aria-label="Clients" style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: isMobile ? -16 : -40 }}>
+            <section aria-label="Clients" style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: isMobile ? -32 : -64 }}>
               <p style={eyebrowStyle}>Clients</p>
               <ul
                 style={{
@@ -755,6 +650,7 @@ export default function AtlaHospitality() {
                   <li
                     key={name}
                     style={{
+                      ...eyebrowStyle,
                       height: isMobile ? 64 : 80,
                       display: "flex",
                       alignItems: "center",
@@ -763,7 +659,6 @@ export default function AtlaHospitality() {
                       color: "#9a9a96",
                       textAlign: "center",
                       padding: 8,
-                      ...eyebrowStyle,
                     }}
                   >
                     {name}
@@ -772,148 +667,67 @@ export default function AtlaHospitality() {
               </ul>
             </section>
 
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="Why hotels come to us" title="What owners and brand teams tell us first" />
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  gap: isMobile ? 24 : 32,
-                }}
-              >
-                {PROBLEMS.map((item) => (
-                  <div key={item.problem} style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `2px solid ${INK}`, paddingTop: 16 }}>
-                    <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 26, fontWeight: 400, lineHeight: "1.2", color: INK, margin: 0 }}>
-                      "{item.problem}"
-                    </h3>
-                    <p style={bodyStyle}>{item.answer}</p>
-                    <p style={{ ...bodyStyle, color: MUTED }}>{item.proof}</p>
-                  </div>
+            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
+              <SectionHead eyebrow="What we solve" title="Four problems hotels bring us" />
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gap: isMobile ? 24 : 32 }}>
+                {SOLVES.map((item) => (
+                  <IconCard key={item.title} item={item} large />
                 ))}
               </div>
             </section>
 
-            <section id="work" style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56, scrollMarginTop: 80 }}>
-              <SectionHead eyebrow="Hotels" title="Two hotels in Mexico, each with several outlets under one brand" />
-              {HOTEL_CASES.map((item) => (
-                <CaseStudy key={item.name} item={item} />
-              ))}
-            </section>
-
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56 }}>
-              <SectionHead eyebrow="Food and beverage" title="Restaurant work you can put inside a hotel" />
-              {FB_CASES.map((item) => (
-                <CaseStudy key={item.name} item={item} />
-              ))}
-            </section>
-
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="Where we have worked" title="Nine places with hospitality work, most of them in Mexico" />
-              <ProjectMap />
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <ul
-                  style={{
-                    listStyle: "none",
-                    margin: 0,
-                    padding: 0,
-                    display: "grid",
-                    gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
-                    columnGap: 32,
-                  }}
-                >
-                  {PLACES.filter((place) => place.hospitality).map((place) => (
-                    <li
-                      key={place.name}
-                      style={{
-                        ...bodyStyle,
-                        display: "grid",
-                        gridTemplateColumns: "16px 1fr",
-                        alignItems: "baseline",
-                        padding: "10px 0",
-                        borderBottom: `1px solid ${RULE}`,
-                      }}
-                    >
-                      <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: INK, display: "inline-block" }} />
-                      <span>
-                        {place.name} <span style={{ color: MUTED }}>· {place.projects}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <p style={{ ...bodyStyle, color: MUTED }}>
-                  In gray, the rest of our work:{" "}
-                  {PLACES.filter((place) => !place.hospitality)
-                    .map((place) => place.name)
-                    .join(", ")}
-                  .
-                </p>
+            <section id="work" style={{ display: "flex", flexDirection: "column", gap: sectionGap, scrollMarginTop: 80 }}>
+              <SectionHead eyebrow="Selected work" title="Hotels first, then the restaurants inside them" />
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: isMobile ? 40 : 48 }}>
+                {CASES.map((item) => (
+                  <CaseCard key={item.name} item={item} />
+                ))}
+              </div>
+              <div>
+                <BookCall position="work" />
               </div>
             </section>
 
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="What we design" title="What a hotel gets from us" />
-              <ol
-                style={{
-                  listStyle: "none",
-                  margin: 0,
-                  padding: 0,
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                  columnGap: 32,
-                }}
-              >
-                {TOUCHPOINTS.map((item, index) => (
-                  <li
-                    key={item}
-                    style={{
-                      ...bodyStyle,
-                      display: "grid",
-                      gridTemplateColumns: "40px 1fr",
-                      padding: "12px 0",
-                      borderBottom: `1px solid ${RULE}`,
-                    }}
-                  >
-                    <span style={{ color: MUTED }}>{String(index + 1).padStart(2, "0")}</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="How we work" title="We start with an audit and stay after launch." />
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
-                  gap: isMobile ? 24 : 28,
-                }}
-              >
-                {STAGES.map((stage, index) => (
-                  <div
-                    key={stage.name}
-                    style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `2px solid ${INK}`, paddingTop: 16 }}
-                  >
+            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
+              <SectionHead eyebrow="How we work" title="Audit, brand, then stay" />
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 24 : 32 }}>
+                {STEPS.map((item, index) => (
+                  <div key={item.title} style={{ borderTop: `2px solid ${INK}`, paddingTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                     <p style={eyebrowStyle}>{String(index + 1).padStart(2, "0")}</p>
-                    <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 28 : 34, fontWeight: 400, lineHeight: "1.1", color: INK, margin: 0 }}>
-                      {stage.name}
-                    </h3>
-                    <p style={bodyStyle}>{stage.body}</p>
-                    <p style={{ ...bodyStyle, color: MUTED }}>{stage.proof}</p>
+                    <IconCard item={item} large />
                   </div>
                 ))}
               </div>
+            </section>
+
+            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
+              <SectionHead eyebrow="What you get" title="Everything a guest touches" />
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gap: isMobile ? 20 : 28 }}>
+                {DELIVERABLES.map((item) => (
+                  <IconCard key={item.title} item={item} />
+                ))}
+              </div>
+            </section>
+
+            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
+              <SectionHead eyebrow="Where we have worked" title="Nine places with hospitality work" />
+              <ProjectMap />
+              <p style={{ ...bodyStyle, color: MUTED }}>
+                {PLACES.filter((place) => place.hospitality)
+                  .map((place) => `${place.name.split(",")[0]} (${place.projects})`)
+                  .join(" · ")}
+              </p>
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
-              <SectionHead eyebrow="FAQ" title="Questions hotel teams ask before they write" />
+              <SectionHead eyebrow="FAQ" title="Before you book" />
               <div>
                 {FAQ_ITEMS.map((item) => (
                   <details key={item.question} style={{ borderBottom: `1px solid ${RULE}`, padding: "16px 0" }}>
                     <summary
                       style={{
                         fontFamily: DISPLAY,
-                        fontSize: isMobile ? 20 : 24,
+                        fontSize: isMobile ? 20 : 22,
                         lineHeight: "1.25",
                         color: INK,
                         cursor: "pointer",
@@ -938,37 +752,31 @@ export default function AtlaHospitality() {
             <section
               id="inquire"
               style={{
-                borderTop: `1px solid ${RULE}`,
-                paddingTop: 20,
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.8fr) minmax(0, 1fr)",
-                gap: isMobile ? 20 : 40,
-                alignItems: "start",
+                background: INK,
+                color: "#fafafa",
+                padding: isMobile ? "36px 20px" : "64px 56px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                alignItems: "flex-start",
                 scrollMarginTop: 80,
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <p style={eyebrowStyle}>Start here</p>
-                <h2
-                  style={{
-                    fontFamily: DISPLAY,
-                    fontSize: isMobile ? 30 : 44,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: INK,
-                    margin: 0,
-                  }}
-                >
-                  Tell us about the property.
-                </h2>
-                <p style={bodyStyle}>
-                  Whether you are opening, repositioning or adding an outlet, we start with the same questions: what the
-                  property is, who comes to it, and where the brand falls apart today. José Pablo Domínguez, our founder
-                  and creative director, reads these himself.
-                </p>
-              </div>
-              <InquiryForm />
+              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", margin: 0, maxWidth: 760 }}>
+                Tell us about your property.
+              </h2>
+              <p style={{ ...bodyStyle, color: "#cfcfca", maxWidth: 560 }}>
+                A short call with José Pablo Domínguez, founder and creative director.
+              </p>
+              <BookCall position="closing" inverted />
             </section>
+
+            <details style={{ marginTop: isMobile ? -40 : -72 }}>
+              <summary style={{ ...ctaStyle, color: MUTED, cursor: "pointer", listStyle: "none" }}>Prefer to write? Send the details →</summary>
+              <div style={{ paddingTop: 20, maxWidth: 760 }}>
+                <InquiryForm />
+              </div>
+            </details>
           </div>
         </main>
       </div>
