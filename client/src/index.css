@@ -570,3 +570,22 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   background: #1c1f27;
   color: #f6c428;
 }
+
+/* Skip link (AtlaNav): off-screen until keyboard focus. */
+.atla-skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: #222;
+  color: #fafafa;
+  font-family: "Libre Franklin", Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.atla-skip-link:focus {
+  transform: none;
+}

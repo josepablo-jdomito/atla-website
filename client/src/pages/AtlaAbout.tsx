@@ -84,7 +84,7 @@ export default function AtlaAbout() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
       <SeoHead
-        title={formatMetaTitle("About Atla", "Branding Studio in Mexico City and Austin")}
+        title={formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm")}
         description="Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America."
         pathname="/about"
         image="/figmaAssets/about-hero.jpg"

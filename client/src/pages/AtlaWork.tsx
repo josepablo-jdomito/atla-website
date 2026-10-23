@@ -265,7 +265,8 @@ function uniqueCaseInsensitive(values: string[]) {
 }
 
 function buildFacetOptions(values: string[], preferredOrder: readonly string[]) {
-  const normalizedValues = uniqueCaseInsensitive(values);
+  // "Unspecified" is a fallback for untagged projects, not a choice a visitor would make.
+  const normalizedValues = uniqueCaseInsensitive(values).filter((value) => value.toLowerCase() !== "unspecified");
   const orderedFromPreference = preferredOrder.filter((preferred) =>
     normalizedValues.some((value) => value.toLowerCase() === preferred.toLowerCase()),
   );
@@ -416,10 +417,13 @@ function FilterColumn({
               key={option}
               type="button"
               onClick={() => onChange(option)}
+              aria-pressed={value === option}
               style={{
                 ...LF_MEDIUM,
                 fontSize: FILTER_OPTION_MOBILE_FONT_SIZE,
                 color: value === option ? primaryColor : mutedColor,
+                textDecoration: value === option ? "underline" : "none",
+                textUnderlineOffset: 3,
                 border: "none",
                 background: "none",
                 textAlign: "left",
@@ -451,9 +455,12 @@ function FilterColumn({
             key={option}
             type="button"
             onClick={() => onChange(option)}
+              aria-pressed={value === option}
             style={{
               ...LF_MEDIUM,
               color: value === option ? primaryColor : mutedColor,
+                textDecoration: value === option ? "underline" : "none",
+                textUnderlineOffset: 3,
               border: "none",
               background: "none",
               textAlign: "left",
