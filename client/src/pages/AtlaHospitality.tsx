@@ -21,6 +21,8 @@ const RULE = "#d4d4d4";
 
 type CaseImage = { src: string; alt: string; ratio: string; wide?: boolean };
 
+type Badge = { src: string; alt: string; label: string };
+
 type HospitalityCase = {
   number: string;
   name: string;
@@ -31,6 +33,7 @@ type HospitalityCase = {
   hero: CaseImage;
   details: CaseImage[];
   link?: { href: string; label: string };
+  badge?: Badge;
 };
 
 const HERO: CaseImage = {
@@ -66,6 +69,11 @@ const CASES: HospitalityCase[] = [
       },
     ],
     link: { href: "/projects/rustico", label: "See the full project" },
+    badge: {
+      src: "/hospitality/michelin-green-star.svg",
+      alt: "MICHELIN Green Star",
+      label: "Acre Resort's restaurant holds a MICHELIN Green Star.",
+    },
   },
   {
     number: "02",
@@ -218,6 +226,23 @@ function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean })
   );
 }
 
+function BadgeLine({ badge }: { badge: Badge }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
+      <img
+        src={badge.src}
+        alt={badge.alt}
+        loading="lazy"
+        decoding="async"
+        width={40}
+        height={40}
+        style={{ display: "block", width: 40, height: "auto", mixBlendMode: "multiply" }}
+      />
+      <p style={{ ...bodyStyle, fontSize: 13 }}>{badge.label}</p>
+    </div>
+  );
+}
+
 function SectionHead({ eyebrow, title }: { eyebrow: string; title: ReactNode }) {
   const isMobile = useIsMobile();
 
@@ -276,6 +301,7 @@ function CaseStudy({ item }: { item: HospitalityCase }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 640 }}>
           <p style={bodyStyle}>{item.summary}</p>
           <p style={{ ...bodyStyle, color: MUTED }}>{item.scope.join(" · ")}</p>
+          {item.badge ? <BadgeLine badge={item.badge} /> : null}
           {item.link ? (
             <a href={item.link.href} className="atla-link" style={ctaStyle}>
               {item.link.label} →
@@ -440,20 +466,7 @@ export default function AtlaHospitality() {
                     </h3>
                     <p style={bodyStyle}>{stage.body}</p>
                     <p style={{ ...bodyStyle, color: MUTED }}>{stage.proof}</p>
-                    {"badge" in stage && stage.badge ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
-                        <img
-                          src={stage.badge.src}
-                          alt={stage.badge.alt}
-                          loading="lazy"
-                          decoding="async"
-                          width={40}
-                          height={45}
-                          style={{ display: "block", width: 40, height: "auto", mixBlendMode: "multiply" }}
-                        />
-                        <p style={{ ...bodyStyle, fontSize: 13 }}>{stage.badge.label}</p>
-                      </div>
-                    ) : null}
+                    {"badge" in stage && stage.badge ? <BadgeLine badge={stage.badge} /> : null}
                   </div>
                 ))}
               </div>
