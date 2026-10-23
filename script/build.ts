@@ -701,6 +701,13 @@ async function prerenderRoutes() {
       includeInSitemap: true,
     },
     {
+      pathname: "/programs",
+      title: formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla"),
+      description: "When a brand has to change, start with the Loved or Lost Diagnostic. Then the Atla Brand Program, in three levels, and Brand Stewardship after launch.",
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
       pathname: "/journal",
       title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
       description: "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.",
