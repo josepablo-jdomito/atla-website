@@ -1,25 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
-import {
-  BookOpen,
-  ClipboardList,
-  Globe,
-  Images,
-  Network,
-  PackageCheck,
-  PenTool,
-  Repeat,
-  Search,
-  Shirt,
-  Signpost,
-  Stamp,
-  Type,
-  UtensilsCrossed,
-  type LucideIcon,
-} from "lucide-react";
+import { BookOpen, Images, Network, PackageCheck, PenTool, Repeat, Search, type LucideIcon } from "lucide-react";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
-import { AtlaHeader } from "@/components/atla/AtlaHeader";
+import { AtlaHeader, type AtlaCta } from "@/components/atla/AtlaHeader";
 import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { buildServiceSchema, type FaqItem } from "@/components/atla/AtlaLongformLayout";
 import { trackEvent } from "@/hooks/use-analytics";
@@ -29,16 +13,19 @@ const PATHNAME = "/hospitality";
 const DESCRIPTION =
   "Brand systems for hotels and the restaurants inside them, from Atla. Recent hotel work: Acre Resort in Los Cabos and Casa Las Tortugas in Holbox.";
 
-const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
+// ABC Synt is only installed locally, so visitors get Instrument Serif (Google Fonts, the deck's face) instead of Helvetica.
+const DISPLAY = "'ABC Synt Variable Unlicensed Trial', 'Instrument Serif', Georgia, serif";
+const DISPLAY_FONT_HREF = "https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
 const INK = "#1c1f27";
 const YELLOW = "#f6c428";
-const PLAYGROUND = "'PP Playground', 'Libre Franklin', Helvetica, sans-serif";
 const MUTED = "#6f6f6f";
 const RULE = "#d4d4d4";
 
 // "Atla* Branding Agency" intro event on Calendly.
 const BOOK_CALL_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
+// One path on this page: header, footer and every button go to the call.
+const BOOK_CALL_CTA: AtlaCta = { label: "Book a call", href: BOOK_CALL_URL, external: true };
 
 // Project photography is pending; each slot renders as a placeholder labelled with what goes there.
 type CaseImage = { alt: string; ratio: string };
@@ -218,16 +205,8 @@ const STEPS: IconItem[] = [
   { icon: Repeat, title: "Stay", line: "A weekly seat after launch for new outlets and rooms." },
 ];
 
-const DELIVERABLES: IconItem[] = [
-  { icon: Network, title: "Brand architecture" },
-  { icon: Type, title: "Naming" },
-  { icon: Stamp, title: "Identity" },
-  { icon: Globe, title: "Website and booking" },
-  { icon: Signpost, title: "Signage and wayfinding" },
-  { icon: UtensilsCrossed, title: "Menus and F&B" },
-  { icon: Shirt, title: "Uniforms" },
-  { icon: ClipboardList, title: "Operating standards" },
-];
+// Covered by the problems above; listed once so the page does not repeat itself.
+const ALSO_DESIGN = ["naming", "signage and wayfinding", "menus and F&B packaging", "uniforms", "website and booking"];
 
 const eyebrowStyle: CSSProperties = {
   fontFamily: SANS,
@@ -359,36 +338,47 @@ function CaseCard({ item }: { item: HospitalityCase }) {
   );
 }
 
-// Equirectangular frame of world-dots.svg (generated from Natural Earth 110m land): 360 by 132 degrees, 76N to 56S.
-const MAP_TOP = 76;
-const MAP_HEIGHT = 132;
+// Equirectangular frame of americas-dots.svg (Natural Earth 110m land): 128W to 56W, 56N to 12N.
+const MAP_LEFT = -128;
+const MAP_WIDTH = 72;
+const MAP_TOP = 56;
+const MAP_HEIGHT = 44;
+const inMapFrame = (place: Place) =>
+  place.lng >= MAP_LEFT && place.lng <= MAP_LEFT + MAP_WIDTH && place.lat <= MAP_TOP && place.lat >= MAP_TOP - MAP_HEIGHT;
 
 function ProjectMap() {
   return (
     <div
       role="img"
-      aria-label={`Map of the places where Atla has done projects: ${PLACES.map((place) => place.name).join(", ")}`}
-      style={{ position: "relative", width: "100%", aspectRatio: `360 / ${MAP_HEIGHT}` }}
+      aria-label={`Map of the places in the Americas where Atla has done projects: ${PLACES.filter(inMapFrame)
+        .map((place) => place.name)
+        .join(", ")}`}
+      style={{ position: "relative", width: "100%", aspectRatio: `${MAP_WIDTH} / ${MAP_HEIGHT}` }}
     >
-      <img src="/hospitality/world-dots.svg" alt="" decoding="async" style={{ display: "block", width: "100%", height: "100%" }} />
+      <img src="/hospitality/americas-dots.svg" alt="" decoding="async" style={{ display: "block", width: "100%", height: "100%" }} />
       {/* Gray first so the hospitality markers sit on top. */}
-      {[...PLACES].sort((x, y) => Number(x.hospitality) - Number(y.hospitality)).map((place) => {
-        const size = place.hospitality ? 11 : 7;
+      {PLACES.filter(inMapFrame)
+        .sort((x, y) => Number(x.hospitality) - Number(y.hospitality))
+        .map((place) => {
+        const size = place.hospitality ? 11 : 8;
         return (
           <span
             key={place.name}
             title={place.projects ? `${place.name} · ${place.projects}` : place.name}
             style={{
               position: "absolute",
-              left: `${((place.lng + 180) / 360) * 100}%`,
+              left: `${((place.lng - MAP_LEFT) / MAP_WIDTH) * 100}%`,
               top: `${((MAP_TOP - place.lat) / MAP_HEIGHT) * 100}%`,
               width: size,
               height: size,
               marginLeft: -size / 2,
               marginTop: -size / 2,
               borderRadius: 999,
-              background: place.hospitality ? INK : "#a3a39e",
-              boxShadow: place.hospitality ? "0 0 0 3px #fafafa" : "0 0 0 2px #fafafa",
+              // Hospitality work is solid ink; the rest is an outlined ring so it reads against the dot grid.
+              background: place.hospitality ? INK : "#fafafa",
+              border: place.hospitality ? "none" : `1.5px solid ${INK}`,
+              boxSizing: "border-box",
+              boxShadow: "0 0 0 2px #fafafa",
             }}
           />
         );
@@ -684,6 +674,31 @@ function InquiryForm() {
 export default function AtlaHospitality() {
   const isMobile = useIsMobile();
   const sectionGap = isMobile ? 20 : 32;
+  const heroRef = useRef<HTMLElement | null>(null);
+  const closingRef = useRef<HTMLElement | null>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    if (document.querySelector(`link[href="${DISPLAY_FONT_HREF}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = DISPLAY_FONT_HREF;
+    document.head.appendChild(link);
+  }, []);
+
+  // Mobile only: keep Book a call in reach between the hero and the closing band.
+  useEffect(() => {
+    if (!isMobile) return;
+    const seen = new Map<Element, boolean>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => seen.set(entry.target, entry.isIntersecting));
+      const heroVisible = heroRef.current ? seen.get(heroRef.current) ?? true : true;
+      const closingVisible = closingRef.current ? seen.get(closingRef.current) ?? false : false;
+      setShowStickyCta(!heroVisible && !closingVisible);
+    });
+    [heroRef.current, closingRef.current].forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, [isMobile]);
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
@@ -698,7 +713,7 @@ export default function AtlaHospitality() {
           faqItems: FAQ_ITEMS,
         })}
       />
-      <AtlaHeader />
+      <AtlaHeader cta={BOOK_CALL_CTA} />
       <div className="atla-dark-surface">
         <main
           className="atla-enter"
@@ -711,7 +726,7 @@ export default function AtlaHospitality() {
           }}
         >
           <div style={{ width: "100%", maxWidth: 1160, display: "flex", flexDirection: "column", gap: isMobile ? 56 : 96 }}>
-            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
+            <section ref={heroRef} style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
               <div
                 style={{
                   background: YELLOW,
@@ -721,13 +736,14 @@ export default function AtlaHospitality() {
                   gap: isMobile ? 16 : 22,
                 }}
               >
-                <p style={{ ...eyebrowStyle, color: INK }}>Hospitality: Restaurants, Wellness, Coffee Shops, Hotels</p>
-                <p
-                  aria-hidden="true"
-                  style={{ fontFamily: PLAYGROUND, fontSize: isMobile ? 64 : 168, fontWeight: 500, lineHeight: "0.95", color: INK, margin: 0 }}
-                >
-                  Hospitality
-                </p>
+                <p style={{ ...eyebrowStyle, color: INK }}>Restaurants · Wellness · Coffee Shops · Hotels</p>
+                {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
+                <img
+                  src="/hospitality/hospitality-wordmark.svg"
+                  alt="Hospitality"
+                  decoding="async"
+                  style={{ display: "block", width: isMobile ? 250 : 560, height: "auto", aspectRatio: "3560 / 1100", marginLeft: isMobile ? -6 : -14 }}
+                />
                 <h1
                   style={{
                     fontFamily: DISPLAY,
@@ -835,6 +851,7 @@ export default function AtlaHospitality() {
                   <IconCard key={item.title} item={item} large />
                 ))}
               </div>
+              <p style={{ ...bodyStyle, color: MUTED }}>Also on the list: {ALSO_DESIGN.join(", ")}.</p>
             </section>
 
             <section id="work" style={{ display: "flex", flexDirection: "column", gap: sectionGap, scrollMarginTop: 80 }}>
@@ -871,21 +888,36 @@ export default function AtlaHospitality() {
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
-              <SectionHead eyebrow="What you get" title="Everything a guest touches" />
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gap: isMobile ? 20 : 28 }}>
-                {DELIVERABLES.map((item) => (
-                  <IconCard key={item.title} item={item} />
-                ))}
-              </div>
-            </section>
-
-            <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
               <SectionHead eyebrow="Where we have worked" title="Nine places with hospitality work" />
-              <ProjectMap />
+              {isMobile ? null : <ProjectMap />}
+              <ul
+                style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                  columnGap: 32,
+                }}
+              >
+                {PLACES.filter((place) => place.hospitality).map((place) => (
+                  <li
+                    key={place.name}
+                    style={{ ...bodyStyle, padding: "10px 0", borderBottom: `1px solid ${RULE}`, display: "flex", gap: 10, alignItems: "baseline" }}
+                  >
+                    <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: INK, flexShrink: 0 }} />
+                    <span>
+                      {place.name} <span style={{ color: MUTED }}>· {place.projects}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
               <p style={{ ...bodyStyle, color: MUTED }}>
-                {PLACES.filter((place) => place.hospitality)
-                  .map((place) => `${place.name.split(",")[0]} (${place.projects})`)
-                  .join(" · ")}
+                Other work in{" "}
+                {PLACES.filter((place) => !place.hospitality)
+                  .map((place) => place.name)
+                  .join(", ")}
+                .
               </p>
             </section>
 
@@ -920,6 +952,7 @@ export default function AtlaHospitality() {
             </section>
 
             <section
+              ref={closingRef}
               id="inquire"
               style={{
                 background: INK,
@@ -950,7 +983,25 @@ export default function AtlaHospitality() {
           </div>
         </main>
       </div>
-      <AtlaFooter />
+      {isMobile && showStickyCta ? (
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 40,
+            padding: "10px 12px calc(10px + env(safe-area-inset-bottom))",
+            background: "rgba(250,250,250,0.94)",
+            borderTop: `1px solid ${RULE}`,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <BookCall position="sticky" />
+        </div>
+      ) : null}
+      <AtlaFooter cta={BOOK_CALL_CTA} />
     </div>
   );
 }

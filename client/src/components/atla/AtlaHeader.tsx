@@ -12,14 +12,16 @@ const LINKS = [
   { label: "Journal", href: "/journal" },
 ] as const;
 
-const CTA = { label: "Start a project", href: "/contact" } as const;
+export type AtlaCta = { label: string; href: string; external?: boolean };
+
+const CTA: AtlaCta = { label: "Start a project", href: "/contact" };
 
 function isActive(href: string, pathname: string) {
   if (href === "/") return pathname === "/" || pathname.startsWith("/projects");
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AtlaHeader({ inverted = false }: { inverted?: boolean }) {
+export function AtlaHeader({ inverted = false, cta = CTA }: { inverted?: boolean; cta?: AtlaCta }) {
   const isMobile = useIsMobile();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -106,8 +108,13 @@ export function AtlaHeader({ inverted = false }: { inverted?: boolean }) {
 
           {isMobile ? (
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <a href={CTA.href} className="atla-header-cta" style={ctaStyle}>
-                {CTA.label}
+              <a
+                href={cta.href}
+                className="atla-header-cta"
+                style={ctaStyle}
+                {...(cta.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {cta.label}
               </a>
               <button
                 type="button"
@@ -154,8 +161,13 @@ export function AtlaHeader({ inverted = false }: { inverted?: boolean }) {
                   );
                 })}
               </ul>
-              <a href={CTA.href} className="atla-header-cta" style={ctaStyle}>
-                {CTA.label}
+              <a
+                href={cta.href}
+                className="atla-header-cta"
+                style={ctaStyle}
+                {...(cta.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {cta.label}
               </a>
             </nav>
           )}
