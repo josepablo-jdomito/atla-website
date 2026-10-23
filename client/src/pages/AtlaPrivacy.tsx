@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
-  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+  fontFamily: "Helvetica, sans-serif",
   fontWeight: 400,
   lineHeight: "1.1",
   color: "#222",

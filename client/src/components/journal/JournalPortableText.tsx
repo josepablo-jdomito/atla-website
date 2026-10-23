@@ -28,7 +28,7 @@ const components: PortableTextComponents = {
     h2: ({ children }) => (
       <h2
         style={{
-          fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+          fontFamily: "Helvetica, sans-serif",
           fontSize: 36,
           fontWeight: 400,
           lineHeight: "1.1",
@@ -43,7 +43,7 @@ const components: PortableTextComponents = {
     h3: ({ children }) => (
       <h3
         style={{
-          fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+          fontFamily: "Helvetica, sans-serif",
           fontSize: 28,
           fontWeight: 400,
           lineHeight: "1.15",

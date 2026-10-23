@@ -29,7 +29,7 @@ function SectionTitle({ children, mobile = false }: { children: React.ReactNode;
     <div style={{ flex: "1 0 0", minWidth: 0 }}>
       <p
         style={{
-          fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif",
+          fontFamily: "'Libre Franklin', Helvetica, sans-serif",
           fontSize: mobile ? 40 : 140,
           fontWeight: 500,
           lineHeight: "1.1",
@@ -129,7 +129,7 @@ export default function AtlaAbout() {
         >
           <p
             style={{
-              fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+              fontFamily: "Helvetica, sans-serif",
               fontSize: isMobile ? 40 : 64,
               fontWeight: 400,
               fontStyle: "normal",

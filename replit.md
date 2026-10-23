@@ -31,7 +31,7 @@ The root-level `client/` + `server/` form the main Atla design studio web app:
   - `/` → `client/src/pages/AtlaWork.tsx` — Home (hero with H1 and CTAs + filterable work archive)
   - `/about` → `client/src/pages/AtlaAbout.tsx` — About (hero + About/Team/Services/Clients/Honors sections)
   - `/admin/projects` → `client/src/pages/ProjectsAdmin.tsx` — retired legacy admin notice
-- **Fonts**: Libre Franklin + Roboto Mono (Google Fonts via `<link>` in index.html), ABC Synt Variable Unlicensed Trial + PP Playground (local fallback via `@font-face`)
+- **Fonts**: Libre Franklin + Roboto Mono (Google Fonts via `<link>` in index.html). Display type falls back to Helvetica until ABC Synt (Dinamo) and PP Playground are licensed and self-hosted; never reference trial font files
 
 ## Vercel Deployment
 

@@ -196,7 +196,7 @@ export default function AtlaJournal() {
                 ) : null}
                 <h1
                   style={{
-                    fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                    fontFamily: "Helvetica, sans-serif",
                     fontSize: isMobile ? 40 : 64,
                     fontWeight: 400,
                     lineHeight: "1.1",
@@ -371,7 +371,7 @@ export default function AtlaJournal() {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <p
                 style={{
-                  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                  fontFamily: "Helvetica, sans-serif",
                   fontSize: isMobile ? 32 : 48,
                   lineHeight: "1.1",
                   color: "#222",

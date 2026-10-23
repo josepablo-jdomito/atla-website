@@ -176,7 +176,7 @@ export default function AtlaArticle() {
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <h1
                   style={{
-                    fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                    fontFamily: "Helvetica, sans-serif",
                     fontSize: 40,
                     fontWeight: 400,
                     lineHeight: "1.1",
@@ -283,7 +283,7 @@ export default function AtlaArticle() {
               <div style={{ paddingTop: articleImage ? 20 : 0, display: "flex", flexDirection: "column", gap: 4 }}>
                 <h1
                   style={{
-                    fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                    fontFamily: "Helvetica, sans-serif",
                     fontSize: 64,
                     fontWeight: 400,
                     lineHeight: "1.1",

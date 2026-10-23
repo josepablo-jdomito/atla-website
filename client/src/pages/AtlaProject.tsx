@@ -1177,7 +1177,7 @@ export default function AtlaProject() {
               <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
                 <h1
                   style={{
-                    fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                    fontFamily: "Helvetica, sans-serif",
                     fontSize: isMobile ? 42 : 64,
                     fontWeight: 400,
                     lineHeight: "1.1",
