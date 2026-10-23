@@ -90,8 +90,8 @@ const PLACES: Place[] = [
   { name: "Upstate New York", projects: "", lat: 42.6526, lng: -73.7562, hospitality: false },
   { name: "Toronto", projects: "", lat: 43.6532, lng: -79.3832, hospitality: false },
   { name: "Amsterdam", projects: "", lat: 52.3676, lng: 4.9041, hospitality: false },
-  { name: "Abu Dhabi", projects: "", lat: 24.4539, lng: 54.3773, hospitality: false },
-  { name: "Dubai", projects: "", lat: 25.2048, lng: 55.2708, hospitality: false },
+  { name: "Abu Dhabi", projects: "Arc Studio", lat: 24.4539, lng: 54.3773, hospitality: false },
+  { name: "Dubai", projects: "Oxylife", lat: 25.2048, lng: 55.2708, hospitality: false },
 ];
 
 // Names stand in for the logo files until they arrive.
@@ -317,83 +317,142 @@ function Label({ children, inverted = false }: { children: ReactNode; inverted?:
   return <p style={{ ...labelStyle, color: inverted ? "rgba(244,240,232,0.6)" : MUTED }}>{children}</p>;
 }
 
-// Atlas plate (script/build_hospitality_atlas.py, Natural Earth 50m): plate carree, x scaled by cos(32N).
-// These constants must match the script.
-const ATLAS_LEFT = -124;
-const ATLAS_RIGHT = -62;
-const ATLAS_TOP = 50;
-const ATLAS_BOTTOM = 14;
-const ATLAS_KX = Math.cos((32 * Math.PI) / 180);
-const ATLAS_SCALE = 20;
-const ATLAS_WIDTH = Math.round((ATLAS_RIGHT - ATLAS_LEFT) * ATLAS_KX * ATLAS_SCALE);
-const ATLAS_HEIGHT = (ATLAS_TOP - ATLAS_BOTTOM) * ATLAS_SCALE;
-const project = (lng: number, lat: number) => ({
-  x: (lng - ATLAS_LEFT) * ATLAS_KX * ATLAS_SCALE,
-  y: (ATLAS_TOP - lat) * ATLAS_SCALE,
-});
-const inMapFrame = (place: Place) =>
-  place.lng >= ATLAS_LEFT && place.lng <= ATLAS_RIGHT && place.lat <= ATLAS_TOP && place.lat >= ATLAS_BOTTOM;
-
-// Where each hospitality label sits relative to its point (plate units). Long offsets get a leader line.
-const ATLAS_LABELS: Record<string, { dx: number; dy: number; anchor: "start" | "end" }> = {
-  "Los Cabos, Mexico": { dx: -14, dy: 4, anchor: "end" },
-  "Holbox, Mexico": { dx: 30, dy: 54, anchor: "start" },
-  "La Saladita, Mexico": { dx: -14, dy: 20, anchor: "end" },
-  "Querétaro, Mexico": { dx: 74, dy: 14, anchor: "start" },
-  "San Luis Potosí, Mexico": { dx: 84, dy: -4, anchor: "start" },
-  "Monterrey, Mexico": { dx: 34, dy: -10, anchor: "start" },
-  "Chicago, United States": { dx: -14, dy: -6, anchor: "end" },
-  "New York, United States": { dx: 16, dy: 6, anchor: "start" },
+// Atlas plates (script/build_hospitality_atlas.py, Natural Earth 50m): plate carree, x scaled by
+// cos(reference latitude). These frames must match PLATES in the script.
+type AtlasPlate = {
+  id: string;
+  title: string;
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  refLat: number;
+  scale: number;
+  grid: number;
+  // Where each label sits relative to its point (plate units). Long offsets get a leader line.
+  labels: Record<string, { dx: number; dy: number; anchor: "start" | "end" }>;
 };
 
-function ProjectAtlas() {
-  const isMobile = useIsMobile();
-  const placesOnMap = PLACES.filter(inMapFrame).sort((x, y) => Number(x.hospitality) - Number(y.hospitality));
+const ATLAS_PLATES: AtlasPlate[] = [
+  {
+    id: "americas",
+    title: "The Americas",
+    left: -124,
+    right: -62,
+    top: 50,
+    bottom: 14,
+    refLat: 32,
+    scale: 20,
+    grid: 10,
+    labels: {
+      "Los Cabos, Mexico": { dx: -14, dy: 4, anchor: "end" },
+      "Holbox, Mexico": { dx: 30, dy: 54, anchor: "start" },
+      "La Saladita, Mexico": { dx: -14, dy: 20, anchor: "end" },
+      "Querétaro, Mexico": { dx: 74, dy: 14, anchor: "start" },
+      "San Luis Potosí, Mexico": { dx: 84, dy: -4, anchor: "start" },
+      "Monterrey, Mexico": { dx: 34, dy: -10, anchor: "start" },
+      "Chicago, United States": { dx: -14, dy: -6, anchor: "end" },
+      "New York, United States": { dx: 16, dy: 6, anchor: "start" },
+    },
+  },
+  {
+    id: "gulf",
+    title: "The Gulf",
+    left: 47,
+    right: 61,
+    top: 28,
+    bottom: 21,
+    refLat: 25,
+    scale: 40,
+    grid: 5,
+    labels: {
+      "Dubai": { dx: 14, dy: -14, anchor: "start" },
+      "Abu Dhabi": { dx: -12, dy: 22, anchor: "end" },
+    },
+  },
+  {
+    id: "bali",
+    title: "Bali",
+    left: 111,
+    right: 120,
+    top: -5.5,
+    bottom: -10.5,
+    refLat: -8,
+    scale: 44,
+    grid: 5,
+    labels: {
+      "Bali, Indonesia": { dx: 18, dy: -30, anchor: "start" },
+    },
+  },
+];
+
+const plateSize = (plate: AtlasPlate) => {
+  const kx = Math.cos((plate.refLat * Math.PI) / 180);
+  return {
+    kx,
+    width: Math.round((plate.right - plate.left) * kx * plate.scale),
+    height: Math.round((plate.top - plate.bottom) * plate.scale),
+  };
+};
+const inPlate = (plate: AtlasPlate, place: Place) =>
+  place.lng >= plate.left && place.lng <= plate.right && place.lat <= plate.top && place.lat >= plate.bottom;
+const onAnyPlate = (place: Place) => ATLAS_PLATES.some((plate) => inPlate(plate, place));
+
+// `unit` keeps text and points the same on-screen size across plates drawn at different widths.
+function AtlasPlateView({ plate, showLabels, unit = 1 }: { plate: AtlasPlate; showLabels: boolean; unit?: number }) {
+  const { kx, width, height } = plateSize(plate);
+  const project = (lng: number, lat: number) => ({ x: (lng - plate.left) * kx * plate.scale, y: (plate.top - lat) * plate.scale });
+  const places = PLACES.filter((place) => inPlate(plate, place)).sort((x, y) => Number(x.hospitality) - Number(y.hospitality));
+  const latMarks: number[] = [];
+  for (let lat = Math.ceil(plate.bottom / plate.grid) * plate.grid; lat <= plate.top; lat += plate.grid) {
+    if (lat > plate.bottom && lat < plate.top) latMarks.push(lat);
+  }
+  const lngMarks: number[] = [];
+  for (let lng = Math.ceil(plate.left / plate.grid) * plate.grid; lng <= plate.right; lng += plate.grid) {
+    if (lng > plate.left && lng < plate.right) lngMarks.push(lng);
+  }
+  const degree = (value: number, positive: string, negative: string) => `${Math.abs(value)}°${value >= 0 ? positive : negative}`;
   return (
     <svg
-      viewBox={`0 0 ${ATLAS_WIDTH} ${ATLAS_HEIGHT}`}
+      viewBox={`0 0 ${width} ${height}`}
       role="img"
-      aria-label={`Map of the places in North America where Atla has done hospitality work: ${placesOnMap
-        .filter((place) => place.hospitality)
-        .map((place) => place.name)
-        .join(", ")}`}
+      aria-label={`${plate.title}: ${places.map((place) => place.name).join(", ")}`}
       style={{ display: "block", width: "100%", height: "auto" }}
     >
-      <image href="/hospitality/atlas-americas.svg" x={0} y={0} width={ATLAS_WIDTH} height={ATLAS_HEIGHT} />
-      {/* Degree marks on the frame, as on a printed plate. */}
-      {isMobile
-        ? null
-        : [20, 30, 40].map((lat) => (
-            <text key={lat} x={8} y={project(0, lat).y - 5} fontFamily={SANS} fontSize={9} letterSpacing={1} fill={MUTED}>
-              {lat}°N
+      <image href={`/hospitality/atlas-${plate.id}.svg`} x={0} y={0} width={width} height={height} />
+      {showLabels
+        ? latMarks.map((lat) => (
+            <text key={`lat${lat}`} x={8 * unit} y={project(0, lat).y - 5 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={MUTED}>
+              {degree(lat, "N", "S")}
             </text>
-          ))}
-      {isMobile
-        ? null
-        : [-120, -110, -100, -90, -80, -70].map((lng) => (
-            <text key={lng} x={project(lng, 0).x + 5} y={ATLAS_HEIGHT - 8} fontFamily={SANS} fontSize={9} letterSpacing={1} fill={MUTED}>
-              {Math.abs(lng)}°W
+          ))
+        : null}
+      {showLabels
+        ? lngMarks.map((lng) => (
+            <text key={`lng${lng}`} x={project(lng, 0).x + 5 * unit} y={height - 8 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={MUTED}>
+              {degree(lng, "E", "W")}
             </text>
-          ))}
-      {placesOnMap.map((place) => {
+          ))
+        : null}
+      {places.map((place) => {
         const { x, y } = project(place.lng, place.lat);
-        const label = place.hospitality ? ATLAS_LABELS[place.name] : undefined;
+        const label = plate.labels[place.name];
         return (
           <g key={place.name}>
-            {label && !isMobile && Math.abs(label.dx) > 24 ? (
-              <line x1={x} y1={y} x2={x + label.dx - 4} y2={y + label.dy - 5} stroke={INK} strokeWidth={0.6} />
+            {label && showLabels && Math.abs(label.dx) > 24 ? (
+              <line x1={x} y1={y} x2={x + label.dx - 4 * unit} y2={y + label.dy - 5 * unit} stroke={INK} strokeWidth={0.6 * unit} />
             ) : null}
             {place.hospitality ? (
-              <circle cx={x} cy={y} r={isMobile ? 6 : 4} fill={INK} />
+              <circle cx={x} cy={y} r={(showLabels ? 4 : 13) * unit} fill={INK} />
             ) : (
-              <circle cx={x} cy={y} r={isMobile ? 5 : 3.5} fill={PAPER} stroke={INK} strokeWidth={1} />
+              <circle cx={x} cy={y} r={(showLabels ? 3.5 : 10) * unit} fill={PAPER} stroke={INK} strokeWidth={(showLabels ? 1 : 3) * unit} />
             )}
-            {label && !isMobile ? (
+            {label && showLabels ? (
               <text x={x + label.dx} y={y + label.dy} textAnchor={label.anchor} fill={INK}>
-                <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17}>
+                <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17 * unit}>
                   {place.name.split(",")[0]}
                 </tspan>
-                <tspan x={x + label.dx} dy={13} fontFamily={SANS} fontSize={8.5} letterSpacing={1.2} fill={MUTED}>
+                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={8.5 * unit} letterSpacing={1.2 * unit} fill={MUTED}>
                   {place.projects.toUpperCase()}
                 </tspan>
               </text>
@@ -402,6 +461,26 @@ function ProjectAtlas() {
         );
       })}
     </svg>
+  );
+}
+
+function ProjectAtlas() {
+  const isMobile = useIsMobile();
+  const [main, ...insets] = ATLAS_PLATES;
+  // Insets render at half the main plate's width, so one plate unit covers a different number of pixels.
+  const mainWidth = plateSize(main).width;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 20 }}>
+      <AtlasPlateView plate={main} showLabels={!isMobile} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: isMobile ? 12 : 20, alignItems: "start" }}>
+        {insets.map((plate) => (
+          <figure key={plate.id} style={{ margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+            <AtlasPlateView plate={plate} showLabels={!isMobile} unit={plateSize(plate).width / (mainWidth / 2)} />
+            <figcaption style={labelStyle}>{plate.title}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -902,7 +981,7 @@ export default function AtlaHospitality() {
               </p>
               <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
                 Solid points mark hospitality work; open points mark the rest of our work. Also in{" "}
-                {PLACES.filter((place) => !inMapFrame(place))
+                {PLACES.filter((place) => !onAnyPlate(place))
                   .map((place) => place.name.split(",")[0])
                   .join(", ")}
                 .
