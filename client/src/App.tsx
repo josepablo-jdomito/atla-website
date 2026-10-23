@@ -2,7 +2,8 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { usePageAnalytics } from "@/hooks/use-analytics";
+import { useFunnelClickTracking, usePageAnalytics } from "@/hooks/use-analytics";
+import { AnalyticsConsent } from "@/components/atla/AnalyticsConsent";
 import { AppRouter } from "./AppRouter";
 
 const NotFound = lazy(() => import("@/pages/not-found"));
@@ -39,6 +40,7 @@ function PrerenderReveal() {
 
 function Router() {
   usePageAnalytics();
+  useFunnelClickTracking();
 
   return (
     <Suspense fallback={null}>
@@ -84,6 +86,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router />
+        <AnalyticsConsent />
         <DeferredEnhancements />
       </ThemeProvider>
     </QueryClientProvider>

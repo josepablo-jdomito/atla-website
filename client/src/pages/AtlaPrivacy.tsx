@@ -74,7 +74,10 @@ export default function AtlaPrivacy() {
               If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, and we keep your IP address in memory for up to ten minutes to limit repeated submissions.
             </p>
             <p style={bodyStyle}>
-              The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites. The site does not run advertising pixels, except on the waitlist page described below.
+              The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites.
+            </p>
+            <p style={bodyStyle}>
+              The site also uses Google Analytics 4 to understand which pages and links lead to inquiries. It records the pages you view, the links and buttons you use, the referring site, your approximate location, and your browser and device type, and it sets first-party cookies (named _ga) that recognize a returning browser for up to two years. Google Analytics does not receive the content of the contact form. If you browse from the European Economic Area, the United Kingdom, or Switzerland, Google Analytics stays off until you accept it in the cookie notice. Anywhere else you can turn it off from the "Analytics cookies" link in the footer or with Google's opt-out browser add-on. The site does not run advertising pixels, except on the waitlist page described below.
             </p>
             <p style={bodyStyle}>
               The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies.
@@ -83,7 +86,10 @@ export default function AtlaPrivacy() {
 
           <Section title="Cookies and storage">
             <p style={bodyStyle}>
-              The site stores a few preferences in your browser's local storage: your light or dark theme, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.
+              The site stores a few preferences in your browser's local storage: your light or dark theme, your analytics cookie choice, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.
+            </p>
+            <p style={bodyStyle}>
+              Google Analytics sets the _ga cookies described above, unless you decline them or, in the European Economic Area, the United Kingdom, or Switzerland, until you accept them.
             </p>
             <p style={bodyStyle}>
               Video case studies embed the Vimeo player with Do Not Track enabled. Vimeo may still process technical request data and set the cookies it needs to play the video. The /waitlist page uses the analytics and advertising cookies described above.
@@ -102,7 +108,7 @@ export default function AtlaPrivacy() {
           {/* Legal copy. Changes here are drafted for JP and reviewed before merge. */}
           <Section title="Third parties">
             <p style={bodyStyle}>
-              The site is hosted on Vercel, which also provides the analytics described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.
+              The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.
             </p>
           </Section>
 

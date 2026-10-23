@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { AtlaSymbol, AtlaWordmark } from "@/components/atla/AtlaMarks";
+import { OPEN_CONSENT_EVENT } from "@/components/atla/AnalyticsConsent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SOCIAL_PROFILES } from "@shared/siteSeo";
 
@@ -218,6 +219,14 @@ export function AtlaFooter() {
             <a href="/terms" className="atla-footer-link" style={{ ...LINK, fontSize: 13, lineHeight: 1.4, color: SOFT }}>
               Terms
             </a>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent(OPEN_CONSENT_EVENT))}
+              className="atla-footer-link"
+              style={{ border: "none", background: "none", padding: 0, cursor: "pointer", color: SOFT, fontSize: 13, lineHeight: 1.4, fontFamily: "inherit" }}
+            >
+              Analytics cookies
+            </button>
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
