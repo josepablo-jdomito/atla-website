@@ -9,8 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Atla designs restaurant and hotel brands down to the matchbox, with production files for every vendor. Recent work: Rústico, Christophe's, Temakase.";
-
+  "Brand systems for hotels and the restaurants inside them: architecture for every outlet, standards your team can run, and production files for every vendor. Acre Resort, Casa Las Tortugas.";
 
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
@@ -40,42 +39,67 @@ type HospitalityCase = {
 const MICHELIN_KEY = { src: "/hospitality/michelin-key.webp", alt: "MICHELIN Key" };
 const MICHELIN_GREEN_STAR = { src: "/hospitality/michelin-green-star.svg", alt: "MICHELIN Green Star" };
 
-const PROOF_NAMES = ["Casa Las Tortugas", "Acre Resort", "Christophe's", "Temakase"];
+const PROOF_NAMES = ["Acre Resort", "Casa Las Tortugas", "Christophe's", "Temakase"];
 
-const PROPERTY_TYPES = ["Hotel or resort", "Restaurant or bar", "Restaurant group", "Hotel with restaurants", "Other"];
-const STAGES_OF_WORK = ["Opening a new property", "Renovating or repositioning", "Adding a concept", "Other"];
-const BUDGETS = ["Under $50K", "$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
+const PROPERTY_TYPES = [
+  "Independent hotel or resort",
+  "Hotel within a brand or group",
+  "Restaurant or bar inside a hotel",
+  "Standalone restaurant or bar",
+  "Other",
+];
+const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
+const BUDGETS = ["$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
 
 const HERO: CaseImage = {
-  alt: "Rústico business cards on an agave leaf",
-  ratio: "2616 / 1445",
+  alt: "Acre Resort, treehouse at dusk",
+  ratio: "16 / 9",
 };
 
-const CASES: HospitalityCase[] = [
+// What hotel owners and brand teams tell us first, and what we do about it.
+const PROBLEMS = [
+  {
+    problem: "On the booking site we look like every other hotel.",
+    answer:
+      "We set the identity, the photography direction and the website together, so the property reads as itself in a row of thumbnails and the booking path keeps that feeling.",
+    proof: "Acre Resort: brand book and website.",
+  },
+  {
+    problem: "We have five outlets and no single brand.",
+    answer:
+      "We write the brand architecture first: which restaurant, bar, spa and event space gets its own name and mark, which ones share the hotel's, and how every one of them points back to the property.",
+    proof: "Casa Las Tortugas: four restaurants and a spa. Acre: treehouses, villas, a restaurant, a mezcal bar and weddings.",
+  },
+  {
+    problem: "We open soon and every vendor is waiting on files.",
+    answer:
+      "Signage, uniforms, menus and packaging are designed with the supplier in mind and delivered as production files, with a supplier sheet that lists every item.",
+    proof: "Christophe's got a supplier sheet for its packaging and ordered from it directly.",
+  },
+  {
+    problem: "Our team changes faster than our brand guide.",
+    answer:
+      "We write operating standards the staff can actually use: what goes on a room card, how the restaurant posts, who signs off on what. New hires learn the brand from the same document.",
+    proof: "Casa Las Tortugas: operating standards across the hotel.",
+  },
+];
+
+const HOTEL_CASES: HospitalityCase[] = [
   {
     number: "01",
-    name: "Rústico",
-    tagline: "Dinners under the stars, signed by hand.",
+    name: "Acre Resort",
+    tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
     place: "Los Cabos",
-    kind: "Open-air restaurant at Acre Resort",
+    kind: "Treehouse hotel with villas, restaurants, a mezcal bar and weddings",
     summary:
-      "Dinner is five courses outdoors, cooked from whatever the garden has that night. We gave the restaurant a heritage wordmark and a looser hand-lettered signature, and the signature goes on everything a guest picks up: the leather menu, the matchbox, the bread bag.",
-    scope: ["Identity", "Menus", "Stationery", "Printed matter", "Packaging", "Website"],
-    hero: {
-      alt: "Rústico signature on a sandstone texture with the dinner invitation",
-      ratio: "1741 / 756",
-    },
+      "Acre runs treehouses, villas, a restaurant with a MICHELIN Green Star, a mezcal bar and a wedding business on one property. We started with an audit that put all of it under one brand architecture, then wrote the brand book, designed the website and created Rústico, an open-air dinner on the grounds. We still work with Acre every week.",
+    scope: ["Audit", "Brand architecture", "Brand book", "Website", "Restaurant identity"],
+    hero: { alt: "Acre entrance wall with the wordmark", ratio: "16 / 9" },
     details: [
-      {
-        alt: "Rústico menu cover embossed in leather",
-        ratio: "1396 / 1781",
-      },
-      {
-        alt: "Rústico bread bag with the signature mark",
-        ratio: "1201 / 1870",
-      },
+      { alt: "Rústico menu cover embossed in leather", ratio: "4 / 5" },
+      { alt: "Rústico bread bag with the signature mark", ratio: "4 / 5" },
     ],
-    link: { href: "/projects/rustico", label: "See the full project" },
+    link: { href: "/projects/rustico", label: "See Rústico" },
     badge: {
       ...MICHELIN_GREEN_STAR,
       label: "Acre Resort's restaurant holds a MICHELIN Green Star.",
@@ -83,6 +107,25 @@ const CASES: HospitalityCase[] = [
   },
   {
     number: "02",
+    name: "Casa Las Tortugas",
+    tagline: "Four restaurants and a spa on one beach.",
+    place: "Holbox",
+    kind: "Adults-only beachfront hotel, family owned",
+    summary:
+      "A family-owned hotel on Holbox's main beach, with four restaurants and a spa. We audited the property the way a guest moves through it, then set the brand architecture and the operating standards the team works from. The findings belong to the client. The method is the one we bring to every hotel.",
+    scope: ["Hospitality audit", "Brand architecture", "Operating standards"],
+    hero: { alt: "Casa Las Tortugas, Holbox", ratio: "16 / 9" },
+    details: [],
+    badge: {
+      ...MICHELIN_KEY,
+      label: "Casa Las Tortugas holds one MICHELIN Key.",
+    },
+  },
+];
+
+const FB_CASES: HospitalityCase[] = [
+  {
+    number: "03",
     name: "Christophe's Fine Foods",
     tagline: "A neighborhood market with a chef behind the counter.",
     place: "Chicago",
@@ -90,28 +133,14 @@ const CASES: HospitalityCase[] = [
     summary:
       "Christophe's started from a blank page. We drew the logotype and monogram, then the awning, aprons, totes and a line of reheatable meal trays. The owner got a supplier sheet with every item on it and placed the orders directly.",
     scope: ["Identity", "Packaging", "Signage", "Uniforms", "Website"],
-    hero: {
-      alt: "Christophe's Fine Foods awning and monogram sign",
-      ratio: "16 / 9",
-    },
+    hero: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "16 / 9" },
     details: [
-      {
-        alt: "Christophe's staff apron",
-        ratio: "1000 / 1407",
-      },
-      {
-        alt: "Christophe's tote bag",
-        ratio: "1000 / 1407",
-      },
-      {
-        alt: "Christophe's reheatable meal trays with labels",
-        ratio: "16 / 9",
-        wide: true,
-      },
+      { alt: "Christophe's staff apron", ratio: "4 / 5" },
+      { alt: "Christophe's reheatable meal trays with labels", ratio: "4 / 5" },
     ],
   },
   {
-    number: "03",
+    number: "04",
     name: "Temakase",
     tagline: "Home of the handroll, with Mako on the window and the bag.",
     place: "New York",
@@ -119,55 +148,43 @@ const CASES: HospitalityCase[] = [
     summary:
       "Temakase got a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck. He keeps the logo company instead of replacing it, and shows up on the window, the catering box and the sidewalk sign.",
     scope: ["Identity", "Character", "Storefront", "Menus", "Catering", "Takeout"],
-    hero: {
-      alt: "Temakase storefront with window graphics and sidewalk sign",
-      ratio: "2400 / 1240",
-    },
+    hero: { alt: "Temakase storefront with window graphics and sidewalk sign", ratio: "16 / 9" },
     details: [
-      {
-        alt: "Temakase lunch menu",
-        ratio: "1000 / 1407",
-      },
-      {
-        alt: "Temakase catering box with Mako",
-        ratio: "1000 / 1407",
-      },
+      { alt: "Temakase lunch menu", ratio: "4 / 5" },
+      { alt: "Temakase catering box with Mako", ratio: "4 / 5" },
     ],
   },
 ];
 
 const TOUCHPOINTS = [
-  "Naming and brand architecture",
+  "Brand architecture for every outlet",
+  "Naming",
   "Identity and signature marks",
-  "Menus and wine lists",
-  "Facades, awnings and signage",
+  "Website and booking path",
+  "Photography and art direction",
+  "Signage and wayfinding",
+  "Room collateral and amenities",
+  "Menus and F&B packaging",
   "Uniforms",
-  "Takeout, catering and retail packaging",
-  "Stationery and printed matter",
-  "Characters and illustration",
-  "Websites and booking",
-  "Vendor files and supplier specs",
+  "Operating standards for your team",
+  "Production files and supplier specs",
 ];
 
 const STAGES = [
   {
     name: "Audit",
-    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service.",
-    proof: "We ran this at Casa Las Tortugas in Holbox, a hotel with four restaurants and a spa.",
-    badge: {
-      ...MICHELIN_KEY,
-      label: "Casa Las Tortugas holds one MICHELIN Key.",
-    },
+    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service. For a group, we run the same audit on each property so the whole portfolio works from one method.",
+    proof: "Casa Las Tortugas and Acre Resort.",
   },
   {
     name: "Brand",
     body: "We design the identity and every object around it, then hand over production files set up for the printer, embroiderer or builder who will make each one.",
-    proof: "This is the work you see above for Rústico, Christophe's and Temakase.",
+    proof: "Acre Resort, Rústico, Christophe's and Temakase.",
   },
   {
     name: "Stay",
-    body: "After launch we keep a weekly seat at the table, so new concepts, new rooms and the website come out of the same system.",
-    proof: "We still work with Temakase this way.",
+    body: "After launch we keep a weekly seat at the table, so new outlets, new rooms and the website come out of the same system.",
+    proof: "We work with Acre and Temakase this way today.",
   },
 ];
 
@@ -453,7 +470,7 @@ function InquiryForm() {
             <Field label="Email">
               <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" style={fieldStyle} />
             </Field>
-            <Field label="Property or group">
+            <Field label="Property, brand or group">
               <input name="company" type="text" required maxLength={160} autoComplete="organization" style={fieldStyle} />
             </Field>
             <Choice name="propertyType" label="Type of property" options={PROPERTY_TYPES} />
@@ -480,6 +497,7 @@ function InquiryForm() {
               </a>
             </p>
           ) : null}
+          <p style={{ ...bodyStyle, color: MUTED }}>José Pablo reads it and writes back with what we would do first.</p>
           <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
             What you send goes to our CRM so we can answer you. See the{" "}
             <a href="/privacy" style={{ color: INK }}>
@@ -551,7 +569,7 @@ export default function AtlaHospitality() {
             }}
           >
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 14 : 18 }}>
-              <p style={eyebrowStyle}>Hospitality</p>
+              <p style={eyebrowStyle}>Hotels and hospitality</p>
               <h1
                 style={{
                   fontFamily: DISPLAY,
@@ -563,12 +581,13 @@ export default function AtlaHospitality() {
                   maxWidth: 980,
                 }}
               >
-                We brand restaurants and hotels, down to the matchbox.
+                A hotel brand has to win the booking, then hold up for the whole stay.
               </h1>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 640 }}>
                 <p style={bodyStyle}>
-                  A guest meets your brand on the booking page, the awning, the menu and the server's apron. We design
-                  all of it as one system and send each piece to the vendor who produces it, with the files they need.
+                  Guests compare you with a page of other hotels on the same screen. Then they meet your brand at the front
+                  desk, the restaurant, the spa and the room key. We design for both moments, and we hand your team and
+                  your vendors a system they can run.
                 </p>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: isMobile ? 10 : 16, paddingTop: 4 }}>
@@ -601,45 +620,69 @@ export default function AtlaHospitality() {
               </div>
             </section>
 
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
+              <SectionHead eyebrow="Why hotels come to us" title="What owners and brand teams tell us first" />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                  gap: isMobile ? 24 : 32,
+                }}
+              >
+                {PROBLEMS.map((item) => (
+                  <div key={item.problem} style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `2px solid ${INK}`, paddingTop: 16 }}>
+                    <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 26, fontWeight: 400, lineHeight: "1.2", color: INK, margin: 0 }}>
+                      "{item.problem}"
+                    </h3>
+                    <p style={bodyStyle}>{item.answer}</p>
+                    <p style={{ ...bodyStyle, color: MUTED }}>{item.proof}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             <section id="work" style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56, scrollMarginTop: 80 }}>
-              <SectionHead eyebrow="Selected work" title="A restaurant in Los Cabos, a market in Chicago, hand roll bars in New York." />
-              {CASES.map((item) => (
+              <SectionHead eyebrow="Hotels" title="Two hotels in Mexico, each with several outlets under one brand" />
+              {HOTEL_CASES.map((item) => (
+                <CaseStudy key={item.name} item={item} />
+              ))}
+            </section>
+
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56 }}>
+              <SectionHead eyebrow="Food and beverage" title="Restaurant work you can put inside a hotel" />
+              {FB_CASES.map((item) => (
                 <CaseStudy key={item.name} item={item} />
               ))}
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="What we design" title="What we design for a property" />
-              <div
+              <SectionHead eyebrow="What we design" title="What a hotel gets from us" />
+              <ol
                 style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) minmax(0, 0.8fr)",
-                  gap: isMobile ? 20 : 32,
-                  alignItems: "start",
+                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                  columnGap: 32,
                 }}
               >
-                <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {TOUCHPOINTS.map((item, index) => (
-                    <li
-                      key={item}
-                      style={{
-                        ...bodyStyle,
-                        display: "grid",
-                        gridTemplateColumns: "40px 1fr",
-                        padding: "12px 0",
-                        borderBottom: `1px solid ${RULE}`,
-                      }}
-                    >
-                      <span style={{ color: MUTED }}>{String(index + 1).padStart(2, "0")}</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ol>
-                <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-                  <Figure image={{ alt: "Mako, the Temakase character, carrying a takeout bag", ratio: "1600 / 1082" }} />
-                  <figcaption style={{ ...eyebrowStyle }}>Mako · Temakase</figcaption>
-                </figure>
-              </div>
+                {TOUCHPOINTS.map((item, index) => (
+                  <li
+                    key={item}
+                    style={{
+                      ...bodyStyle,
+                      display: "grid",
+                      gridTemplateColumns: "40px 1fr",
+                      padding: "12px 0",
+                      borderBottom: `1px solid ${RULE}`,
+                    }}
+                  >
+                    <span style={{ color: MUTED }}>{String(index + 1).padStart(2, "0")}</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ol>
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
@@ -662,7 +705,6 @@ export default function AtlaHospitality() {
                     </h3>
                     <p style={bodyStyle}>{stage.body}</p>
                     <p style={{ ...bodyStyle, color: MUTED }}>{stage.proof}</p>
-                    {"badge" in stage && stage.badge ? <BadgeLine badge={stage.badge} /> : null}
                   </div>
                 ))}
               </div>
@@ -692,11 +734,12 @@ export default function AtlaHospitality() {
                     margin: 0,
                   }}
                 >
-                  Opening, renovating or adding a concept?
+                  Tell us about the property.
                 </h2>
                 <p style={bodyStyle}>
-                  Tell us about the property and how a guest should feel walking in. José Pablo Domínguez, our founder
-                  and creative director, reads these and answers them himself.
+                  Opening, repositioning or adding an outlet, the first conversation is the same: what the property is,
+                  who it is for, and where the brand breaks today. José Pablo Domínguez, our founder and creative
+                  director, reads these and answers them himself.
                 </p>
               </div>
               <InquiryForm />

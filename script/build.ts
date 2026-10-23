@@ -661,7 +661,7 @@ async function prerenderRoutes() {
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Atla designs restaurant and hotel brands down to the matchbox, with production files for every vendor. Recent work: Rústico, Christophe's, Temakase.",
+      description: "Brand systems for hotels and the restaurants inside them: architecture for every outlet, standards your team can run, and production files for every vendor. Acre Resort, Casa Las Tortugas.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
