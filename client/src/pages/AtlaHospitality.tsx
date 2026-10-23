@@ -346,7 +346,7 @@ export default function AtlaHospitality() {
                   maxWidth: 980,
                 }}
               >
-                Your guest never reads the brand book. They hold the menu.
+                Your guest holds the menu. The brand book stays on the shelf.
               </h1>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 640 }}>
                 <p style={bodyStyle}>
@@ -369,7 +369,7 @@ export default function AtlaHospitality() {
             </section>
 
             <section id="work" style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56, scrollMarginTop: 80 }}>
-              <SectionHead eyebrow="Selected work" title="Three places to eat. Every object designed." />
+              <SectionHead eyebrow="Selected work" title="Three kitchens. Every object designed." />
               {CASES.map((item) => (
                 <CaseStudy key={item.name} item={item} />
               ))}
