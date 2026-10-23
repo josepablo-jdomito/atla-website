@@ -659,6 +659,13 @@ async function prerenderRoutes() {
       },
     },
     {
+      pathname: "/hospitality",
+      title: formatMetaTitle("Hospitality", "Atla"),
+      description: "Identity systems for restaurants and hotels, designed down to the matchbox and delivered ready for the vendors who make them. Rústico, Christophe's, Temakase.",
+      image: "https://cdn.sanity.io/images/dvufm78f/production/7cc46aa684db97a142951eea093612947de54122-2616x1445.png?w=1200&auto=format&q=80",
+      includeInSitemap: true,
+    },
+    {
       pathname: "/hospitality-branding",
       title: formatMetaTitle("Hospitality Branding Agency", "Hotels, Restaurants and Travel"),
       description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",

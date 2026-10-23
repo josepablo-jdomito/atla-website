@@ -16,6 +16,7 @@ import AtlaJournal from "./pages/AtlaJournal";
 import AtlaArticle from "./pages/AtlaArticle";
 import AtlaPrivacy from "./pages/AtlaPrivacy";
 import AtlaTerms from "./pages/AtlaTerms";
+import AtlaHospitality from "./pages/AtlaHospitality";
 import AtlaHospitalityBranding from "./pages/AtlaHospitalityBranding";
 import AtlaCpgBranding from "./pages/AtlaCpgBranding";
 import AtlaWellnessBranding from "./pages/AtlaWellnessBranding";
@@ -102,6 +103,7 @@ export function renderPrerenderedRoute(
             AtlaArticle={AtlaArticle}
             AtlaPrivacy={AtlaPrivacy}
             AtlaTerms={AtlaTerms}
+            AtlaHospitality={AtlaHospitality}
             AtlaHospitalityBranding={AtlaHospitalityBranding}
             AtlaCpgBranding={AtlaCpgBranding}
             AtlaWellnessBranding={AtlaWellnessBranding}

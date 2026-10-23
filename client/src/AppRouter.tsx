@@ -16,6 +16,7 @@ type AppRouterProps = {
   AtlaArticle: RouteComponent;
   AtlaPrivacy: RouteComponent;
   AtlaTerms: RouteComponent;
+  AtlaHospitality: RouteComponent;
   AtlaHospitalityBranding: RouteComponent;
   AtlaCpgBranding: RouteComponent;
   AtlaWellnessBranding: RouteComponent;
@@ -36,6 +37,7 @@ export function AppRouter({
   AtlaArticle,
   AtlaPrivacy,
   AtlaTerms,
+  AtlaHospitality,
   AtlaHospitalityBranding,
   AtlaCpgBranding,
   AtlaWellnessBranding,
@@ -50,6 +52,7 @@ export function AppRouter({
       <Route path="/about" component={AtlaAbout} />
       <Route path="/contact" component={AtlaContact} />
       <Route path="/services" component={AtlaServices} />
+      <Route path="/hospitality" component={AtlaHospitality} />
       <Route path="/hospitality-branding" component={AtlaHospitalityBranding} />
       <Route path="/cpg-branding" component={AtlaCpgBranding} />
       <Route path="/wellness-branding" component={AtlaWellnessBranding} />
