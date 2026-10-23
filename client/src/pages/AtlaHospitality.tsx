@@ -147,6 +147,30 @@ const FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
+// "Our take on branding", rebuilt from slide 29:592 of the Atla Intro Deck (Figma).
+// Positions are percentages of a 1060 x 750 frame, measured from the slide.
+const TAKE_TILES = [
+  { name: "TigreTigre", x: 0, y: 37, w: 15.7, ratio: "166 / 200" },
+  { name: "Rústico", x: 18, y: 13, w: 15.7, ratio: "166 / 200" },
+  { name: "Baristio", x: 42, y: 0, w: 15.7, ratio: "166 / 216" },
+  { name: "Angeles Wellness", x: 63, y: 7.7, w: 14, ratio: "1 / 1" },
+  { name: "Persona", x: 83, y: 23.5, w: 14, ratio: "150 / 182" },
+  { name: "Casa Colora", x: 84.5, y: 52, w: 15.5, ratio: "166 / 192" },
+  { name: "Packaging", x: 64, y: 63.7, w: 13.4, ratio: "142 / 192" },
+  { name: "Reggie", x: 42.5, y: 71, w: 13.4, ratio: "142 / 216" },
+  { name: "Arc Studio", x: 19, y: 65, w: 13.4, ratio: "142 / 208" },
+];
+const TAKE_WORDS = [
+  { word: "Voice & values", x: 37.7, y: 44.5 },
+  { word: "Strategy", x: 54.7, y: 45 },
+  { word: "Loyalty", x: 32.9, y: 49 },
+  { word: "Brands", x: 47.5, y: 49.2 },
+  { word: "Humans", x: 41.2, y: 52.8 },
+  { word: "Visual identity", x: 51, y: 52.7 },
+  { word: "Customer experience", x: 37.4, y: 57.5 },
+  { word: "Storytelling", x: 56.8, y: 56 },
+];
+
 const SOLVES: IconItem[] = [
   { icon: Images, title: "Stand out on the booking site", line: "Identity, photography and website, designed as one." },
   { icon: Network, title: "One brand across every outlet", line: "Names and marks for each restaurant, bar and spa." },
@@ -369,6 +393,84 @@ function ProjectMap() {
           />
         );
       })}
+    </div>
+  );
+}
+
+function TakeConstellation() {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {TAKE_WORDS.map((item) => (
+            <li key={item.word} style={{ ...eyebrowStyle, fontSize: 11, color: INK, border: `1px solid ${RULE}`, borderRadius: 999, padding: "6px 10px" }}>
+              {item.word}
+            </li>
+          ))}
+        </ul>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+          {TAKE_TILES.map((tile) => (
+            <Figure key={tile.name} image={{ alt: tile.name, ratio: "3 / 4" }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div style={{ position: "relative", width: "100%", aspectRatio: "1060 / 750" }}>
+      {/* Thin lines from each project to the middle, like the deck slide. */}
+      <svg viewBox="0 0 1060 750" aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        {TAKE_TILES.map((tile) => {
+          const cx = ((tile.x + tile.w / 2) / 100) * 1060;
+          const cy = (tile.y / 100) * 750 + 90;
+          return (
+            <path
+              key={tile.name}
+              d={`M${cx} ${cy} Q ${(cx + 500) / 2} ${cy > 375 ? cy - 60 : cy + 60} 500 375`}
+              fill="none"
+              stroke="#d4d4cf"
+              strokeWidth={1}
+            />
+          );
+        })}
+      </svg>
+      {TAKE_TILES.map((tile) => (
+        <div key={tile.name} style={{ position: "absolute", left: `${tile.x}%`, top: `${tile.y}%`, width: `${tile.w}%` }}>
+          <div
+            role="img"
+            aria-label={tile.name}
+            style={{
+              aspectRatio: tile.ratio,
+              backgroundColor: "#ece8dc",
+              display: "flex",
+              alignItems: "flex-end",
+              padding: 8,
+              boxSizing: "border-box",
+            }}
+          >
+            <span style={{ ...eyebrowStyle, fontSize: 10, color: "#9a9a96" }}>{tile.name}</span>
+          </div>
+        </div>
+      ))}
+      {TAKE_WORDS.map((item) => (
+        <span
+          key={item.word}
+          style={{
+            ...eyebrowStyle,
+            fontSize: 11,
+            color: INK,
+            position: "absolute",
+            left: `${item.x}%`,
+            top: `${item.y}%`,
+            background: "#fafafa",
+            padding: "2px 4px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {item.word}
+        </span>
+      ))}
     </div>
   );
 }
@@ -701,6 +803,31 @@ export default function AtlaHospitality() {
               </ul>
             </section>
 
+            <section
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.38fr) minmax(0, 1fr)",
+                gap: isMobile ? 24 : 40,
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 26, lineHeight: "1.2", color: INK, margin: 0 }}>Our take on branding.</p>
+                <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 28 : 34, fontWeight: 400, lineHeight: "1.12", color: INK, margin: 0 }}>
+                  Branding goes far beyond visuals, it’s the foundation of building a complete and memorable identity.
+                </h2>
+                <p style={bodyStyle}>
+                  While the visual elements are the starting point, a true brand is shaped by a cohesive strategy that
+                  aligns tone, voice, and objectives.
+                </p>
+                <p style={bodyStyle}>
+                  The ultimate goal of branding is to foster meaningful, long-term relationships that inspire loyalty and
+                  trust, turning every interaction into an opportunity to connect with your audience on a deeper level.
+                </p>
+              </div>
+              <TakeConstellation />
+            </section>
+
             <section style={{ display: "flex", flexDirection: "column", gap: sectionGap }}>
               <SectionHead eyebrow="What we solve" title="Four problems owners bring us" />
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gap: isMobile ? 24 : 32 }}>
@@ -728,6 +855,10 @@ export default function AtlaHospitality() {
                 <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 44, fontWeight: 400, lineHeight: "1.1", color: "#fafafa", margin: 0 }}>
                   Audit, brand, then stay
                 </h2>
+                <p style={{ ...bodyStyle, color: "#cfcfca", maxWidth: 640 }}>
+                  We believe in a holistic approach to branding, guided by defined creative processes and the
+                  understanding that great brands are built day by day.
+                </p>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 28 : 40 }}>
                 {STEPS.map((item, index) => (
