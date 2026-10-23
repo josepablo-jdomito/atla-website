@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Identity systems for restaurants and hotels, designed down to the matchbox and delivered ready for the vendors who make them. Rústico, Christophe's, Temakase.";
+  "Atla designs restaurant and hotel brands down to the matchbox, with production files for every vendor. Recent work: Rústico, Christophe's, Temakase.";
 
 
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif";
@@ -59,7 +59,7 @@ const CASES: HospitalityCase[] = [
     place: "Los Cabos",
     kind: "Open-air restaurant at Acre Resort",
     summary:
-      "Five courses outdoors, guided by what is ready now. Start in the garden, finish in the fire. The identity carries that from the leather menu to the bread bag: a heritage wordmark for the restaurant, a hand-led signature for everything the guest holds.",
+      "Dinner is five courses outdoors, cooked from whatever the garden has that night. We gave the restaurant a heritage wordmark and a looser hand-lettered signature, and the signature goes on everything a guest picks up: the leather menu, the matchbox, the bread bag.",
     scope: ["Identity", "Menus", "Stationery", "Printed matter", "Packaging", "Website"],
     hero: {
       alt: "Rústico signature on a sandstone texture with the dinner invitation",
@@ -84,11 +84,11 @@ const CASES: HospitalityCase[] = [
   {
     number: "02",
     name: "Christophe's Fine Foods",
-    tagline: "A chef's market, from the awning in.",
+    tagline: "A neighborhood market with a chef behind the counter.",
     place: "Chicago",
     kind: "Chef-led prepared foods market",
     summary:
-      "A new market built from nothing. Logotype, monogram, awning, uniforms, totes and a reheatable meal tray system, delivered with a supplier sheet so the owner could place every order directly.",
+      "Christophe's started from a blank page. We drew the logotype and monogram, then the awning, aprons, totes and a line of reheatable meal trays. The owner got a supplier sheet with every item on it and placed the orders directly.",
     scope: ["Identity", "Packaging", "Signage", "Uniforms", "Website"],
     hero: {
       alt: "Christophe's Fine Foods awning and monogram sign",
@@ -113,11 +113,11 @@ const CASES: HospitalityCase[] = [
   {
     number: "03",
     name: "Temakase",
-    tagline: "Home of the handroll, carried by Mako.",
+    tagline: "Home of the handroll, with Mako on the window and the bag.",
     place: "New York",
     kind: "Hand roll bars",
     summary:
-      "An identity and a character. Mako, drawn after Ebisu, the deity of fishing and fortune, softens the brand without replacing the logo. He carries the takeout on the window, the catering box and the sidewalk sign.",
+      "Temakase got a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck. He keeps the logo company instead of replacing it, and shows up on the window, the catering box and the sidewalk sign.",
     scope: ["Identity", "Character", "Storefront", "Menus", "Catering", "Takeout"],
     hero: {
       alt: "Temakase storefront with window graphics and sidewalk sign",
@@ -152,8 +152,8 @@ const TOUCHPOINTS = [
 const STAGES = [
   {
     name: "Audit",
-    body: "We start on your property. Brand, guest journey and every touchpoint, read the way a guest reads them. You get one architecture for every room, restaurant and service.",
-    proof: "Used at Casa Las Tortugas, Holbox: a hotel with four restaurants and a spa.",
+    body: "We start on site, walking the property the way a guest would and noting every place the brand shows up. You come out of it with one brand architecture that covers each room, restaurant and service.",
+    proof: "We ran this at Casa Las Tortugas in Holbox, a hotel with four restaurants and a spa.",
     badge: {
       ...MICHELIN_KEY,
       label: "Casa Las Tortugas holds one MICHELIN Key.",
@@ -161,13 +161,13 @@ const STAGES = [
   },
   {
     name: "Brand",
-    body: "Identity to facade. Every object designed in context and handed over as production files, matched to the supplier who prints, stitches or builds it.",
-    proof: "Rústico, Christophe's and Temakase.",
+    body: "We design the identity and every object around it, then hand over production files set up for the printer, embroiderer or builder who will make each one.",
+    proof: "This is the work you see above for Rústico, Christophe's and Temakase.",
   },
   {
     name: "Stay",
-    body: "A weekly seat at your table after launch. New concepts, new rooms, the website, and every new object held to the same standard.",
-    proof: "Temakase, after the identity shipped.",
+    body: "After launch we keep a weekly seat at the table, so new concepts, new rooms and the website come out of the same system.",
+    proof: "We still work with Temakase this way.",
   },
 ];
 
@@ -440,7 +440,7 @@ function InquiryForm() {
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} style={{ outline: "none" }}>
         {isSent ? (
-          <p style={{ ...bodyStyle, fontWeight: 600 }}>Received. José Pablo will reply with the next step.</p>
+          <p style={{ ...bodyStyle, fontWeight: 600 }}>Got it. José Pablo will write back with what we would do next.</p>
         ) : null}
       </div>
       {isSent ? null : (
@@ -563,13 +563,12 @@ export default function AtlaHospitality() {
                   maxWidth: 980,
                 }}
               >
-                Your guest holds the menu. The brand book stays on the shelf.
+                We brand restaurants and hotels, down to the matchbox.
               </h1>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 640 }}>
                 <p style={bodyStyle}>
-                  Atla builds identities for restaurants and hotels that have to work on a facade, a menu, a uniform
-                  and a booking page at once. Every object is designed in context and handed over ready for the vendor
-                  who makes it.
+                  A guest meets your brand on the booking page, the awning, the menu and the server's apron. We design
+                  all of it as one system and send each piece to the vendor who produces it, with the files they need.
                 </p>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: isMobile ? 10 : 16, paddingTop: 4 }}>
@@ -603,14 +602,14 @@ export default function AtlaHospitality() {
             </section>
 
             <section id="work" style={{ display: "flex", flexDirection: "column", gap: isMobile ? 32 : 56, scrollMarginTop: 80 }}>
-              <SectionHead eyebrow="Selected work" title="Three kitchens. Every object designed." />
+              <SectionHead eyebrow="Selected work" title="A restaurant in Los Cabos, a market in Chicago, hand roll bars in New York." />
               {CASES.map((item) => (
                 <CaseStudy key={item.name} item={item} />
               ))}
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="What we design" title="Everything a guest touches." />
+              <SectionHead eyebrow="What we design" title="What we design for a property" />
               <div
                 style={{
                   display: "grid",
@@ -644,7 +643,7 @@ export default function AtlaHospitality() {
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <SectionHead eyebrow="How we work" title="Audit. Brand. Stay." />
+              <SectionHead eyebrow="How we work" title="We start with an audit and stay after launch." />
               <div
                 style={{
                   display: "grid",
@@ -696,8 +695,8 @@ export default function AtlaHospitality() {
                   Opening, renovating or adding a concept?
                 </h2>
                 <p style={bodyStyle}>
-                  Tell us about the property and what the guest should feel when they walk in. José Pablo Domínguez,
-                  founder and creative director, reads every message and replies himself.
+                  Tell us about the property and how a guest should feel walking in. José Pablo Domínguez, our founder
+                  and creative director, reads these and answers them himself.
                 </p>
               </div>
               <InquiryForm />

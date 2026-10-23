@@ -661,7 +661,7 @@ async function prerenderRoutes() {
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Identity systems for restaurants and hotels, designed down to the matchbox and delivered ready for the vendors who make them. Rústico, Christophe's, Temakase.",
+      description: "Atla designs restaurant and hotel brands down to the matchbox, with production files for every vendor. Recent work: Rústico, Christophe's, Temakase.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
