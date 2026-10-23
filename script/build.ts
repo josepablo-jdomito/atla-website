@@ -643,6 +643,13 @@ async function prerenderRoutes() {
       },
     },
     {
+      pathname: "/hospitality",
+      title: formatMetaTitle("Hospitality", "Atla"),
+      description: "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+    },
+    {
       pathname: "/hospitality-branding",
       title: formatMetaTitle("Hospitality Branding Agency", "Hotels, Restaurants and Travel"),
       description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",

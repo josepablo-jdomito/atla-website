@@ -96,7 +96,8 @@ type ConversionEvent =
   | "brief_template_download"
   | "journal_cta_click"
   | "journal_article_read"
-  | "portfolio_project_view";
+  | "portfolio_project_view"
+  | "book_call_click";
 
 interface EventParams {
   page?: string;

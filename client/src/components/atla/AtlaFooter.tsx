@@ -4,6 +4,7 @@ import { AtlaSymbol, AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { OPEN_CONSENT_EVENT } from "@/components/atla/AnalyticsConsent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SOCIAL_PROFILES } from "@shared/siteSeo";
+import type { AtlaCta } from "@/components/atla/AtlaHeader";
 
 const INK = "#1c1f27";
 const SURFACE = "#f6c428";
@@ -54,7 +55,7 @@ const LINK: React.CSSProperties = {
   lineHeight: 1.9,
 };
 
-export function AtlaFooter() {
+export function AtlaFooter({ cta = { label: "Start a project", href: "/contact" } }: { cta?: AtlaCta }) {
   const isMobile = useIsMobile();
   const [cityTimes, setCityTimes] = useState(getCityTimes);
   const year = useMemo(() => new Date().getFullYear(), []);
@@ -105,8 +106,9 @@ export function AtlaFooter() {
             When your brand has to change, start here.
           </p>
           <a
-            href="/contact"
+            href={cta.href}
             className="atla-footer-cta"
+            {...(cta.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -123,7 +125,7 @@ export function AtlaFooter() {
               textDecoration: "none",
             }}
           >
-            Start a project
+            {cta.label}
             <ArrowUpRight size={18} strokeWidth={1.75} aria-hidden="true" />
           </a>
         </div>
