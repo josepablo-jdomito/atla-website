@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Atla designs hospitality brands for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
+  "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
 
 // ABC Synt is only installed locally, so visitors get Instrument Serif (Google Fonts, the deck's face) instead of Helvetica.
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', 'Instrument Serif', Georgia, serif";
@@ -156,23 +156,51 @@ const RESTAURANTS: HospitalityCase[] = [
   },
 ];
 
-const METHOD = [
+// The three engagements. No prices or durations on the page (JP's rule); proof comes from the cases below.
+const SERVICES = [
   {
     numeral: "I",
     name: "Audit",
-    body: "We walk the property the way a guest does and map every outlet, from the booking page to the room. You come away with one brand architecture.",
+    forWhom: "For a property that is open and feels off, or before you commit to a rebrand.",
+    body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own.",
+    includes: [
+      "On-site walk of every guest touchpoint",
+      "Brand architecture across rooms, restaurants and spa",
+      "Findings, ranked by what to fix first",
+      "Operating standards for your team",
+    ],
+    example: "Casa Las Tortugas, Holbox",
   },
   {
     numeral: "II",
-    name: "Brand",
-    body: "Identity, naming and every object a guest touches, delivered as production files your vendors can use.",
+    name: "Rebranding",
+    forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
+    body: "We start from the audit, keep what guests already recognize and redesign the rest, then roll it out without confusing the people who come back every year.",
+    includes: [
+      "Positioning and brand architecture",
+      "New identity and signature marks",
+      "Rollout across signage, menus, uniforms and rooms",
+      "Website and booking path",
+      "Production files and supplier specs",
+    ],
+    example: "Acre Resort, Los Cabos",
   },
   {
     numeral: "III",
-    name: "Stay",
-    body: "A weekly seat at the table after launch, so new outlets, rooms and the website come out of the same system.",
+    name: "Branding",
+    forWhom: "For a new opening: a hotel, restaurant, spa or coffee shop.",
+    body: "We build the brand before the doors open: the name, the identity and every object a guest touches on the first day, ready for the vendors who make them.",
+    includes: [
+      "Naming and positioning",
+      "Identity, character and signature marks",
+      "Facade, signage and interiors direction",
+      "Menus, packaging and uniforms",
+      "Website, launch and production files",
+    ],
+    example: "Christophe's, Temakase, Rústico",
   },
 ];
+
 
 const FAQ_ITEMS: FaqItem[] = [
   {
@@ -880,6 +908,71 @@ export default function AtlaHospitality() {
             </p>
           </section>
 
+          </div>
+
+        {/* Services, on ink */}
+        <section style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center" }}>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 1280,
+              padding: isMobile ? `72px ${gutter}px` : `120px ${gutter}px`,
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              gap: isMobile ? 44 : 64,
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 760 }}>
+              <Label inverted>Services</Label>
+              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
+                Three ways to work with us.
+              </h2>
+              <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>
+                We believe in a holistic approach to branding, guided by defined creative processes and the understanding
+                that great brands are built day by day.
+              </p>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 56 : 48 }}>
+              {SERVICES.map((service) => (
+                <article
+                  key={service.name}
+                  style={{ display: "flex", flexDirection: "column", gap: 14, borderTop: "1px solid rgba(244,240,232,0.22)", paddingTop: 22 }}
+                >
+                  <p style={{ fontFamily: DISPLAY, fontSize: 18, color: "rgba(244,240,232,0.55)", margin: 0 }}>{service.numeral}</p>
+                  <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 34 : 40, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
+                    {service.name}
+                  </h3>
+                  <p style={{ fontFamily: DISPLAY, fontStyle: "italic", fontSize: 19, lineHeight: "1.3", color: PAPER, margin: 0 }}>{service.forWhom}</p>
+                  <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>{service.body}</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
+                    <Label inverted>Includes</Label>
+                    <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                      {service.includes.map((item) => (
+                        <li
+                          key={item}
+                          style={{ ...bodyStyle, fontSize: 14, color: PAPER, padding: "9px 0", borderBottom: "1px solid rgba(244,240,232,0.14)" }}
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 6 }}>
+                    <Label inverted>Example</Label>
+                    <p style={{ fontFamily: DISPLAY, fontSize: 18, color: PAPER, margin: 0 }}>{service.example}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <p style={{ ...bodyStyle, fontSize: 14, color: "rgba(244,240,232,0.6)", maxWidth: 760 }}>
+              After launch, we can keep a weekly seat at the table so new outlets and rooms come out of the same system. We
+              work with Acre and Temakase this way today.
+            </p>
+          </div>
+        </section>
+
+        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: sectionGap }}>
           {/* Our take on branding */}
           <section
             style={{
@@ -934,41 +1027,6 @@ export default function AtlaHospitality() {
             </div>
           </section>
         </div>
-
-        {/* Method, on ink */}
-        <section style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center" }}>
-          <div
-            style={{
-              width: "100%",
-              maxWidth: 1280,
-              padding: isMobile ? `72px ${gutter}px` : `128px ${gutter}px`,
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              gap: isMobile ? 40 : 64,
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 760 }}>
-              <Label inverted>Method</Label>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
-                Audit, brand, then stay.
-              </h2>
-              <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>
-                We believe in a holistic approach to branding, guided by defined creative processes and the understanding
-                that great brands are built day by day.
-              </p>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 36 : 48 }}>
-              {METHOD.map((step) => (
-                <div key={step.name} style={{ display: "flex", flexDirection: "column", gap: 12, borderTop: "1px solid rgba(244,240,232,0.22)", paddingTop: 20 }}>
-                  <p style={{ fontFamily: DISPLAY, fontSize: 18, color: "rgba(244,240,232,0.6)", margin: 0 }}>{step.numeral}</p>
-                  <h3 style={{ fontFamily: DISPLAY, fontSize: 30, fontWeight: 400, lineHeight: "1.1", color: PAPER, margin: 0 }}>{step.name}</h3>
-                  <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>{step.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: sectionGap }}>
           {/* Places */}

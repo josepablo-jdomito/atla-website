@@ -661,7 +661,7 @@ async function prerenderRoutes() {
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Brand systems for hotels and the restaurants inside them, from Atla. Recent hotel work: Acre Resort in Los Cabos and Casa Las Tortugas in Holbox.",
+      description: "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
