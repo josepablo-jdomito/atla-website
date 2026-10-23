@@ -62,6 +62,31 @@ const PROPERTY_TYPES = [
   "Other",
 ];
 const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
+const DECIDERS = ["I do", "I do, with partners or a board", "Someone else; I am gathering options"];
+
+// Where the visitor came from, kept for the tab so it survives moving around the site before writing.
+const ATTRIBUTION_KEY = "atla-hospitality-attribution";
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+
+function readAttribution(): string {
+  try {
+    const saved = sessionStorage.getItem(ATTRIBUTION_KEY);
+    if (saved) return saved;
+  } catch {
+    // Storage blocked: fall through and read the current visit only.
+  }
+  const params = new URLSearchParams(window.location.search);
+  const parts = UTM_KEYS.filter((key) => params.get(key)).map((key) => `${key}=${params.get(key)!.slice(0, 80)}`);
+  const referrer = document.referrer && !document.referrer.startsWith(window.location.origin) ? document.referrer.slice(0, 200) : "";
+  if (referrer) parts.push(`referrer=${referrer}`);
+  const attribution = parts.join(", ") || "direct";
+  try {
+    sessionStorage.setItem(ATTRIBUTION_KEY, attribution);
+  } catch {
+    // Not critical; the form still sends what this visit shows.
+  }
+  return attribution;
+}
 
 const HERO: CaseImage = { alt: "Acre Resort entrance with the wordmark", ratio: "16 / 9", src: "/hospitality/review/acre-entrance.webp" };
 
@@ -680,6 +705,11 @@ function InquiryForm() {
   const isMobile = useIsMobile();
   const [status, setStatus] = useState<InquiryStatus>({ state: "idle" });
   const statusRef = useRef<HTMLDivElement | null>(null);
+  const attributionRef = useRef("direct");
+
+  useEffect(() => {
+    attributionRef.current = readAttribution();
+  }, []);
 
   useEffect(() => {
     if (status.state === "sent") statusRef.current?.focus();
@@ -698,6 +728,8 @@ function InquiryForm() {
       `Project: ${value("stage")}`,
       `Opening or launch date: ${value("opening") || "not given"}`,
       `Budget: ${value("budget") || "not given"}`,
+      `Decides: ${value("decider")}`,
+      `Came from: ${attributionRef.current}`,
       "",
       value("message"),
     ]
@@ -729,7 +761,7 @@ function InquiryForm() {
       }
       form.reset();
       setStatus({ state: "sent" });
-      trackEvent("contact_form_submit", { page: "hospitality", property_type: value("propertyType"), budget: value("budget") });
+      trackEvent("contact_form_submit", { page: "hospitality", property_type: value("propertyType"), budget: value("budget"), decider: value("decider") });
     } catch {
       setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
     }
@@ -763,10 +795,11 @@ function InquiryForm() {
             <Field label="Opening or launch date">
               <input name="opening" type="text" maxLength={60} placeholder="Month and year" style={fieldStyle} />
             </Field>
+            <Choice name="decider" label="Who decides on this project?" options={DECIDERS} />
+            <Field label="Budget (optional)">
+              <input name="budget" type="text" maxLength={80} style={fieldStyle} />
+            </Field>
           </div>
-          <Field label="Budget range, if you have one (optional)">
-            <input name="budget" type="text" maxLength={80} style={fieldStyle} />
-          </Field>
           <Field label="What should the guest feel when they walk in?">
             <textarea name="message" required minLength={10} maxLength={3000} rows={5} style={{ ...fieldStyle, resize: "vertical" }} />
           </Field>
