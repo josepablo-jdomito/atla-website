@@ -24,7 +24,7 @@ const RULE = "rgba(28,31,39,0.18)";
 // "Atla* Branding Agency" intro event on Calendly.
 const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
 // One path on this page: header, footer and every link go to the introduction.
-const INTRO_CTA: AtlaCta = { label: "Inquire", href: INTRO_URL, external: true };
+const INTRO_CTA: AtlaCta = { label: "Book a call", href: INTRO_URL, external: true };
 
 // Project photography is pending; each slot renders as a placeholder labelled with what goes there.
 // TEMPORARY (design review only): `src` points at deck and Sanity images so JP can judge the layout.
@@ -62,7 +62,6 @@ const PROPERTY_TYPES = [
   "Other",
 ];
 const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
-const BUDGETS = ["$50K to $100K", "$100K to $250K", "$250K and up", "Not sure yet"];
 
 const HERO: CaseImage = { alt: "Acre Resort entrance with the wordmark", ratio: "16 / 9", src: "/hospitality/review/acre-entrance.webp" };
 
@@ -165,23 +164,23 @@ const SERVICES = [
     body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own.",
     includes: [
       "On-site walk of every guest touchpoint",
-      "Brand architecture across rooms, restaurants and spa",
       "Findings, ranked by what to fix first",
+      "What to keep and what to change",
       "Operating standards for your team",
     ],
-    example: "Casa Las Tortugas, Holbox",
+    example: "Casa Las Tortugas, Holbox. The audit led to its brand architecture.",
   },
   {
     numeral: "II",
     name: "Rebranding",
     forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
-    body: "We start from the audit, keep what guests already recognize and redesign the rest, then roll it out without confusing the people who come back every year.",
+    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the people who come back every year.",
     includes: [
-      "Positioning and brand architecture",
+      "Brand architecture across rooms, restaurants and spa",
+      "Repositioning",
       "New identity and signature marks",
       "Rollout across signage, menus, uniforms and rooms",
       "Website and booking path",
-      "Production files and supplier specs",
     ],
     example: "Acre Resort, Los Cabos",
   },
@@ -197,32 +196,34 @@ const SERVICES = [
       "Menus, packaging and uniforms",
       "Website, launch and production files",
     ],
-    example: "Christophe's, Temakase, Rústico",
+    example: "Christophe's, Chicago. Temakase, New York.",
   },
 ];
 
 
+
 const FAQ_ITEMS: FaqItem[] = [
+  {
+    question: "Is this right for a small independent property?",
+    answer:
+      "Yes. What matters is where you are: open and something feels off, start with the audit; opening soon, start with branding. The size of the property changes the scope, not the method.",
+  },
   {
     question: "Do you work with hotels that belong to a brand or group?",
     answer:
       "Yes. We start from the group's standards and design what makes this hotel its own. Across several properties, the audit runs the same way on each one.",
   },
   {
-    question: "Can we start with the audit alone?",
-    answer:
-      "You can. The audit stands on its own: you get the brand architecture and a list of what to fix first. If we continue, it becomes the brief for the brand work.",
-  },
-  {
     question: "Will you show our project?",
     answer: "Only with your permission. With Casa Las Tortugas we name the client and the method, and the findings stay private.",
   },
   {
-    question: "What happens in the introduction?",
+    question: "What happens on the call?",
     answer:
-      "A short conversation with José Pablo about the property and what is not working. He tells you what we would do first, which for most properties is the audit.",
+      "A short conversation with José Pablo about the property and what is not working. He tells you what we would do first.",
   },
 ];
+
 
 const labelStyle: CSSProperties = {
   fontFamily: SANS,
@@ -321,23 +322,28 @@ function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean })
   );
 }
 
-function IntroLink({ position, inverted = false }: { position: string; inverted?: boolean }) {
+function BookCall({ position, inverted = false }: { position: string; inverted?: boolean }) {
   return (
-    <a
-      href={INTRO_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: position })}
-      style={{
-        ...ctaStyle,
-        color: inverted ? PAPER : INK,
-        borderBottom: `1px solid ${inverted ? PAPER : INK}`,
-        minHeight: 0,
-        paddingBottom: 4,
-      }}
-    >
-      Request an introduction
-    </a>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
+      <a
+        href={INTRO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: position })}
+        style={{
+          ...ctaStyle,
+          minHeight: 52,
+          padding: "0 26px",
+          background: inverted ? PAPER : INK,
+          color: inverted ? INK : PAPER,
+        }}
+      >
+        Book a call with José Pablo
+      </a>
+      <p style={{ ...bodyStyle, fontSize: 13, color: inverted ? "rgba(244,240,232,0.65)" : MUTED }}>
+        A short conversation about your property. He tells you what we would do first.
+      </p>
+    </div>
   );
 }
 
@@ -691,7 +697,7 @@ function InquiryForm() {
       `Property type: ${value("propertyType")}`,
       `Project: ${value("stage")}`,
       `Opening or launch date: ${value("opening") || "not given"}`,
-      `Budget: ${value("budget")}`,
+      `Budget: ${value("budget") || "not given"}`,
       "",
       value("message"),
     ]
@@ -758,7 +764,9 @@ function InquiryForm() {
               <input name="opening" type="text" maxLength={60} placeholder="Month and year" style={fieldStyle} />
             </Field>
           </div>
-          <Choice name="budget" label="Budget for brand and identity" options={BUDGETS} />
+          <Field label="Budget range, if you have one (optional)">
+            <input name="budget" type="text" maxLength={80} style={fieldStyle} />
+          </Field>
           <Field label="What should the guest feel when they walk in?">
             <textarea name="message" required minLength={10} maxLength={3000} rows={5} style={{ ...fieldStyle, resize: "vertical" }} />
           </Field>
@@ -798,7 +806,7 @@ function InquiryForm() {
                 opacity: isSubmitting ? 0.7 : 1,
               }}
             >
-              {isSubmitting ? "Sending…" : "Send"}
+              {isSubmitting ? "Sending…" : "Send the details"}
             </button>
             <a href="mailto:josepablo@atla.design" style={{ ...bodyStyle, color: MUTED, textDecoration: "underline" }}>
               or email josepablo@atla.design
@@ -823,7 +831,6 @@ export default function AtlaHospitality() {
     document.head.appendChild(link);
   }, []);
 
-  const hospitalityPlaces = PLACES.filter((place) => place.hospitality).map((place) => place.name.split(",")[0]);
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: PAPER }}>
@@ -844,41 +851,40 @@ export default function AtlaHospitality() {
         style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", background: PAPER, paddingBottom: isMobile ? 0 : 0 }}
       >
         <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap }}>
-          {/* Hero */}
-          <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 22 : 32, paddingTop: isMobile ? 40 : 96 }}>
-            <Label>Restaurants · Wellness · Coffee Shops · Hotels</Label>
-            {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
-            <img
-              src="/hospitality/hospitality-wordmark.svg"
-              alt="Hospitality"
-              decoding="async"
-              style={{ display: "block", width: isMobile ? "88%" : 760, maxWidth: "100%", height: "auto", aspectRatio: "3560 / 1100", marginLeft: isMobile ? -6 : -18 }}
-            />
-            <h1
-              style={{
-                fontFamily: DISPLAY,
-                fontSize: isMobile ? 28 : 46,
-                fontWeight: 400,
-                lineHeight: "1.12",
-                color: INK,
-                margin: 0,
-                maxWidth: 900,
-              }}
-            >
-              We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
-            </h1>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: isMobile ? "flex-start" : "flex-end",
-                justifyContent: "space-between",
-                gap: 28,
-                borderTop: `1px solid ${RULE}`,
-                paddingTop: 24,
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* Hero: text and photo side by side so the place is in the first screen */}
+          <section
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.05fr) minmax(0, 0.95fr)",
+              gap: isMobile ? 28 : 56,
+              alignItems: "center",
+              paddingTop: isMobile ? 32 : 64,
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 26 }}>
+              <Label>Restaurants · Wellness · Coffee Shops · Hotels</Label>
+              {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
+              <img
+                src="/hospitality/hospitality-wordmark.svg"
+                alt="Hospitality"
+                decoding="async"
+                style={{ display: "block", width: isMobile ? "88%" : 520, maxWidth: "100%", height: "auto", aspectRatio: "3560 / 1100", marginLeft: isMobile ? -6 : -12 }}
+              />
+              <h1
+                style={{
+                  fontFamily: DISPLAY,
+                  fontSize: isMobile ? 28 : 38,
+                  fontWeight: 400,
+                  lineHeight: "1.14",
+                  color: INK,
+                  margin: 0,
+                  maxWidth: 620,
+                }}
+              >
+                We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
+              </h1>
+              <BookCall position="hero" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `1px solid ${RULE}`, paddingTop: 18 }}>
                 <Label>Recent client awards</Label>
                 {AWARDS.map((award) => (
                   <div key={award.src} style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -889,17 +895,13 @@ export default function AtlaHospitality() {
                   </div>
                 ))}
               </div>
-              <IntroLink position="hero" />
             </div>
+            <Figure image={{ ...HERO, ratio: isMobile ? "4 / 3" : "4 / 5" }} eager />
           </section>
         </div>
 
-        {/* Full-bleed hero image */}
-        <div style={{ width: "100%", maxWidth: 1600, padding: isMobile ? "40px 0 0" : "56px 0 0", boxSizing: "border-box" }}>
-          <Figure image={HERO} eager />
-        </div>
 
-        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: isMobile ? 56 : 96 }}>
+        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: isMobile ? 64 : 104 }}>
           {/* Selected clients */}
           <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 12 : 40 }}>
             <Label>Selected clients</Label>
@@ -1004,7 +1006,7 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <Label>Hotels</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 52, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0, maxWidth: 820 }}>
-                Properties with many outlets and one brand.
+                One brand, whether you have ten rooms or four restaurants.
               </h2>
             </div>
             {HOTELS.map((item, index) => (
@@ -1034,9 +1036,6 @@ export default function AtlaHospitality() {
             <Label>Where we have worked</Label>
             <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
               <ProjectAtlas />
-              <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 30, lineHeight: "1.35", color: INK, margin: 0 }}>
-                {hospitalityPlaces.join(" · ")}
-              </p>
               <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
                 Solid points mark hospitality work; open points mark the rest of our work. Also in{" "}
                 {PLACES.filter((place) => !onAnyPlate(place))
@@ -1047,6 +1046,43 @@ export default function AtlaHospitality() {
             </div>
           </section>
 
+        </div>
+
+        {/* Closing, on ink: the call and the written form side by side */}
+        <section
+          id="inquire"
+          style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center", scrollMarginTop: 80 }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 1280,
+              padding: isMobile ? `72px ${gutter}px` : `112px ${gutter}px`,
+              boxSizing: "border-box",
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.9fr) minmax(0, 1.1fr)",
+              gap: isMobile ? 40 : 72,
+              alignItems: "start",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 28, alignItems: "flex-start" }}>
+              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 36 : 60, fontWeight: 400, lineHeight: "1.02", color: PAPER, margin: 0 }}>
+                Tell us about your property.
+              </h2>
+              <BookCall position="closing" inverted />
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 12 }}>
+                <p style={{ fontFamily: DISPLAY, fontSize: 20, color: PAPER, margin: 0 }}>José Pablo Domínguez</p>
+                <Label inverted>Founder and Creative Director</Label>
+              </div>
+            </div>
+            <div style={{ background: PAPER, padding: isMobile ? "28px 20px" : "40px 40px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
+              <Label>Prefer to write</Label>
+              <InquiryForm />
+            </div>
+          </div>
+        </section>
+
+        <div style={{ width: "100%", maxWidth: 1280, padding: `${isMobile ? 64 : 104}px ${gutter}px ${isMobile ? 72 : 112}px`, boxSizing: "border-box" }}>
           {/* FAQ as plain text */}
           <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 20 : 40 }}>
             <Label>Questions</Label>
@@ -1059,43 +1095,6 @@ export default function AtlaHospitality() {
               ))}
             </dl>
           </section>
-        </div>
-
-        {/* Closing, on ink */}
-        <section
-          id="inquire"
-          style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center", scrollMarginTop: 80 }}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: 1280,
-              padding: isMobile ? `72px ${gutter}px` : `128px ${gutter}px`,
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              gap: 28,
-              alignItems: "flex-start",
-            }}
-          >
-            <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 36 : 72, fontWeight: 400, lineHeight: "1.02", color: PAPER, margin: 0, maxWidth: 900 }}>
-              Tell us about your property.
-            </h2>
-            <IntroLink position="closing" inverted />
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 24 }}>
-              <p style={{ fontFamily: DISPLAY, fontSize: 20, color: PAPER, margin: 0 }}>José Pablo Domínguez</p>
-              <Label inverted>Founder and Creative Director</Label>
-            </div>
-          </div>
-        </section>
-
-        <div style={{ width: "100%", maxWidth: 1280, padding: `40px ${gutter}px ${isMobile ? 72 : 112}px`, boxSizing: "border-box" }}>
-          <details>
-            <summary style={{ ...ctaStyle, color: MUTED, cursor: "pointer", listStyle: "none" }}>Prefer to write? Send the details</summary>
-            <div style={{ paddingTop: 20, maxWidth: 760 }}>
-              <InquiryForm />
-            </div>
-          </details>
         </div>
       </main>
       <AtlaFooter cta={INTRO_CTA} />
