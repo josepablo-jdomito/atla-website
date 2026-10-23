@@ -317,49 +317,91 @@ function Label({ children, inverted = false }: { children: ReactNode; inverted?:
   return <p style={{ ...labelStyle, color: inverted ? "rgba(244,240,232,0.6)" : MUTED }}>{children}</p>;
 }
 
-// Equirectangular frame of americas-dots.svg (Natural Earth 110m land, public domain): 128W to 56W, 56N to 12N.
-const MAP_LEFT = -128;
-const MAP_WIDTH = 72;
-const MAP_TOP = 56;
-const MAP_HEIGHT = 44;
+// Atlas plate (script/build_hospitality_atlas.py, Natural Earth 50m): plate carree, x scaled by cos(32N).
+// These constants must match the script.
+const ATLAS_LEFT = -124;
+const ATLAS_RIGHT = -62;
+const ATLAS_TOP = 50;
+const ATLAS_BOTTOM = 14;
+const ATLAS_KX = Math.cos((32 * Math.PI) / 180);
+const ATLAS_SCALE = 20;
+const ATLAS_WIDTH = Math.round((ATLAS_RIGHT - ATLAS_LEFT) * ATLAS_KX * ATLAS_SCALE);
+const ATLAS_HEIGHT = (ATLAS_TOP - ATLAS_BOTTOM) * ATLAS_SCALE;
+const project = (lng: number, lat: number) => ({
+  x: (lng - ATLAS_LEFT) * ATLAS_KX * ATLAS_SCALE,
+  y: (ATLAS_TOP - lat) * ATLAS_SCALE,
+});
 const inMapFrame = (place: Place) =>
-  place.lng >= MAP_LEFT && place.lng <= MAP_LEFT + MAP_WIDTH && place.lat <= MAP_TOP && place.lat >= MAP_TOP - MAP_HEIGHT;
+  place.lng >= ATLAS_LEFT && place.lng <= ATLAS_RIGHT && place.lat <= ATLAS_TOP && place.lat >= ATLAS_BOTTOM;
 
-function ProjectMap() {
+// Where each hospitality label sits relative to its point (plate units). Long offsets get a leader line.
+const ATLAS_LABELS: Record<string, { dx: number; dy: number; anchor: "start" | "end" }> = {
+  "Los Cabos, Mexico": { dx: -14, dy: 4, anchor: "end" },
+  "Holbox, Mexico": { dx: 30, dy: 54, anchor: "start" },
+  "La Saladita, Mexico": { dx: -14, dy: 20, anchor: "end" },
+  "Querétaro, Mexico": { dx: 74, dy: 14, anchor: "start" },
+  "San Luis Potosí, Mexico": { dx: 84, dy: -4, anchor: "start" },
+  "Monterrey, Mexico": { dx: 34, dy: -10, anchor: "start" },
+  "Chicago, United States": { dx: -14, dy: -6, anchor: "end" },
+  "New York, United States": { dx: 16, dy: 6, anchor: "start" },
+};
+
+function ProjectAtlas() {
   const isMobile = useIsMobile();
   const placesOnMap = PLACES.filter(inMapFrame).sort((x, y) => Number(x.hospitality) - Number(y.hospitality));
   return (
-    <div
+    <svg
+      viewBox={`0 0 ${ATLAS_WIDTH} ${ATLAS_HEIGHT}`}
       role="img"
-      aria-label={`Map of the places in the Americas where Atla has done projects: ${placesOnMap.map((place) => place.name).join(", ")}`}
-      style={{ position: "relative", width: "100%", aspectRatio: `${MAP_WIDTH} / ${MAP_HEIGHT}` }}
+      aria-label={`Map of the places in North America where Atla has done hospitality work: ${placesOnMap
+        .filter((place) => place.hospitality)
+        .map((place) => place.name)
+        .join(", ")}`}
+      style={{ display: "block", width: "100%", height: "auto" }}
     >
-      <img src="/hospitality/americas-dots.svg" alt="" decoding="async" style={{ display: "block", width: "100%", height: "100%" }} />
-      {/* Hospitality work is solid ink; the rest of the work is an ink ring. */}
+      <image href="/hospitality/atlas-americas.svg" x={0} y={0} width={ATLAS_WIDTH} height={ATLAS_HEIGHT} />
+      {/* Degree marks on the frame, as on a printed plate. */}
+      {isMobile
+        ? null
+        : [20, 30, 40].map((lat) => (
+            <text key={lat} x={8} y={project(0, lat).y - 5} fontFamily={SANS} fontSize={9} letterSpacing={1} fill={MUTED}>
+              {lat}°N
+            </text>
+          ))}
+      {isMobile
+        ? null
+        : [-120, -110, -100, -90, -80, -70].map((lng) => (
+            <text key={lng} x={project(lng, 0).x + 5} y={ATLAS_HEIGHT - 8} fontFamily={SANS} fontSize={9} letterSpacing={1} fill={MUTED}>
+              {Math.abs(lng)}°W
+            </text>
+          ))}
       {placesOnMap.map((place) => {
-        const size = place.hospitality ? (isMobile ? 7 : 11) : isMobile ? 6 : 8;
+        const { x, y } = project(place.lng, place.lat);
+        const label = place.hospitality ? ATLAS_LABELS[place.name] : undefined;
         return (
-          <span
-            key={place.name}
-            title={place.projects ? `${place.name} · ${place.projects}` : place.name}
-            style={{
-              position: "absolute",
-              left: `${((place.lng - MAP_LEFT) / MAP_WIDTH) * 100}%`,
-              top: `${((MAP_TOP - place.lat) / MAP_HEIGHT) * 100}%`,
-              width: size,
-              height: size,
-              marginLeft: -size / 2,
-              marginTop: -size / 2,
-              borderRadius: 999,
-              boxSizing: "border-box",
-              background: place.hospitality ? INK : PAPER,
-              border: place.hospitality ? "none" : `1.5px solid ${INK}`,
-              boxShadow: `0 0 0 2px ${PAPER}`,
-            }}
-          />
+          <g key={place.name}>
+            {label && !isMobile && Math.abs(label.dx) > 24 ? (
+              <line x1={x} y1={y} x2={x + label.dx - 4} y2={y + label.dy - 5} stroke={INK} strokeWidth={0.6} />
+            ) : null}
+            {place.hospitality ? (
+              <circle cx={x} cy={y} r={isMobile ? 6 : 4} fill={INK} />
+            ) : (
+              <circle cx={x} cy={y} r={isMobile ? 5 : 3.5} fill={PAPER} stroke={INK} strokeWidth={1} />
+            )}
+            {label && !isMobile ? (
+              <text x={x + label.dx} y={y + label.dy} textAnchor={label.anchor} fill={INK}>
+                <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17}>
+                  {place.name.split(",")[0]}
+                </tspan>
+                <tspan x={x + label.dx} dy={13} fontFamily={SANS} fontSize={8.5} letterSpacing={1.2} fill={MUTED}>
+                  {place.projects.toUpperCase()}
+                </tspan>
+              </text>
+            ) : null}
+          </g>
         );
       })}
-    </div>
+    </svg>
   );
 }
 
@@ -854,12 +896,12 @@ export default function AtlaHospitality() {
           <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 12 : 40 }}>
             <Label>Where we have worked</Label>
             <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <ProjectMap />
+              <ProjectAtlas />
               <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 30, lineHeight: "1.35", color: INK, margin: 0 }}>
                 {hospitalityPlaces.join(" · ")}
               </p>
               <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
-                Solid points mark hospitality work; rings mark the rest of our work. Also in{" "}
+                Solid points mark hospitality work; open points mark the rest of our work. Also in{" "}
                 {PLACES.filter((place) => !inMapFrame(place))
                   .map((place) => place.name.split(",")[0])
                   .join(", ")}
