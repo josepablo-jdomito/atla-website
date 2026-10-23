@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
-import createGlobe from "cobe";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaHeader } from "@/components/atla/AtlaHeader";
-import { buildServiceSchema } from "@/components/atla/AtlaLongformLayout";
+import { buildServiceSchema, type FaqItem } from "@/components/atla/AtlaLongformLayout";
 import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -39,8 +38,6 @@ type HospitalityCase = {
 
 const MICHELIN_KEY = { src: "/hospitality/michelin-key.webp", alt: "MICHELIN Key" };
 const MICHELIN_GREEN_STAR = { src: "/hospitality/michelin-green-star.svg", alt: "MICHELIN Green Star" };
-
-const PROOF_NAMES = ["Acre Resort", "Casa Las Tortugas", "Christophe's", "Temakase"];
 
 const PROPERTY_TYPES = [
   "Independent hotel or resort",
@@ -173,6 +170,7 @@ const PLACES: Place[] = [
   { name: "Bali, Indonesia", projects: "The Bridge", lat: -8.6705, lng: 115.2126, hospitality: true },
   { name: "Austin", projects: "", lat: 30.2672, lng: -97.7431, hospitality: false },
   { name: "Dallas", projects: "", lat: 32.7767, lng: -96.797, hospitality: false },
+  { name: "Denver", projects: "", lat: 39.7392, lng: -104.9903, hospitality: false },
   { name: "Los Angeles", projects: "", lat: 34.0522, lng: -118.2437, hospitality: false },
   { name: "San Diego", projects: "", lat: 32.7157, lng: -117.1611, hospitality: false },
   { name: "Bellevue", projects: "", lat: 47.6101, lng: -122.2015, hospitality: false },
@@ -182,6 +180,62 @@ const PLACES: Place[] = [
   { name: "Amsterdam", projects: "", lat: 52.3676, lng: 4.9041, hospitality: false },
   { name: "Abu Dhabi", projects: "", lat: 24.4539, lng: 54.3773, hospitality: false },
   { name: "Dubai", projects: "", lat: 25.2048, lng: 55.2708, hospitality: false },
+];
+
+// Logo files are pending; each slot renders as a placeholder with the client's name.
+const CLIENT_LOGOS = [
+  "Acre Resort",
+  "Casa Las Tortugas",
+  "Rústico",
+  "Christophe's",
+  "Temakase",
+  "TigreTigre",
+  "Casa Colora",
+  "Mundã",
+  "Huémac",
+  "The Bridge",
+];
+
+const FAQ_ITEMS: FaqItem[] = [
+  {
+    question: "Do you work with hotels that belong to a brand or group?",
+    answer:
+      "Yes. For a property inside a group we start from the group's standards and design what makes this hotel its own. For several properties, we run the same audit on each one so the portfolio shares one method.",
+  },
+  {
+    question: "Who leads the work?",
+    answer:
+      "José Pablo Domínguez, our founder and creative director, leads every hospitality project, from the audit on site to the files that go to your vendors.",
+  },
+  {
+    question: "Can we start with the audit alone?",
+    answer:
+      "Yes. The audit stands on its own: you get the brand architecture and a clear list of what to fix. If we keep going, it becomes the brief for the brand work.",
+  },
+  {
+    question: "Do you work with our architect, interior designer and operator?",
+    answer:
+      "Yes. We bring them in early so signage, materials and the identity are decided together, and we write the operating standards for the people who will run the property.",
+  },
+  {
+    question: "Do you produce or install signage and uniforms?",
+    answer:
+      "No. We design every piece and prepare production files and specifications for your vendors. We do not fabricate or install, but we direct the process.",
+  },
+  {
+    question: "Will you show our project in your portfolio?",
+    answer:
+      "Only with your permission. Casa Las Tortugas is an example: we name the client and the method, and the findings stay private.",
+  },
+  {
+    question: "Where are you based?",
+    answer:
+      "Austin, Texas. Most of our hospitality work is in Mexico and the United States, and we travel to the property for the audit.",
+  },
+  {
+    question: "What happens after I send the form?",
+    answer: "José Pablo reads it and writes back with what we would do first. For most properties, that is the audit.",
+  },
 ];
 
 const TOUCHPOINTS = [
@@ -289,80 +343,41 @@ function BadgeLine({ badge }: { badge: Badge }) {
   );
 }
 
-const GLOBE_INK: [number, number, number] = [0.13, 0.13, 0.13];
-const GLOBE_GRAY: [number, number, number] = [0.62, 0.62, 0.6];
-// cobe's phi/theta that put a longitude and latitude in front of the viewer.
-const focusPhi = (lng: number) => Math.PI - ((lng * Math.PI) / 180 - Math.PI / 2);
-const focusTheta = (lat: number) => (lat * Math.PI) / 180;
+// Equirectangular frame of world-dots.svg (generated from Natural Earth 110m land): 360 by 132 degrees, 76N to 56S.
+const MAP_TOP = 76;
+const MAP_HEIGHT = 132;
 
-function ProjectGlobe() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let size = canvas.offsetWidth;
-    const basePhi = focusPhi(-98);
-    const globe = createGlobe(canvas, {
-      devicePixelRatio: 2,
-      width: size * 2,
-      height: size * 2,
-      phi: basePhi,
-      theta: focusTheta(24),
-      markerElevation: 0,
-      dark: 0,
-      diffuse: 0.4,
-      mapSamples: 16000,
-      mapBrightness: 1.2,
-      baseColor: [1, 1, 1],
-      markerColor: GLOBE_INK,
-      glowColor: [0.98, 0.98, 0.98],
-      markers: PLACES.map((place) => ({
-        location: [place.lat, place.lng] as [number, number],
-        size: place.hospitality ? 0.045 : 0.028,
-        color: place.hospitality ? GLOBE_INK : GLOBE_GRAY,
-      })),
-    });
-
-    // cobe 2 has no render loop of its own. Sway around the Americas, where most of the work is,
-    // and only while the globe is on screen.
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let frame = 0;
-    let visible = false;
-    let t = 0;
-    const tick = () => {
-      t += 0.006;
-      globe.update({ phi: basePhi + Math.sin(t) * 0.5 });
-      frame = window.requestAnimationFrame(tick);
-    };
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      window.cancelAnimationFrame(frame);
-      if (visible && !reduceMotion) frame = window.requestAnimationFrame(tick);
-    });
-    observer.observe(canvas);
-
-    const onResize = () => {
-      size = canvas.offsetWidth;
-      globe.update({ width: size * 2, height: size * 2 });
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      observer.disconnect();
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", onResize);
-      globe.destroy();
-    };
-  }, []);
-
+function ProjectMap() {
   return (
-    <canvas
-      ref={canvasRef}
+    <div
       role="img"
-      aria-label="Globe with the places where Atla has done projects"
-      style={{ display: "block", width: "100%", maxWidth: 520, aspectRatio: "1 / 1", margin: "0 auto" }}
-    />
+      aria-label={`Map of the places where Atla has done projects: ${PLACES.map((place) => place.name).join(", ")}`}
+      style={{ position: "relative", width: "100%", aspectRatio: `360 / ${MAP_HEIGHT}` }}
+    >
+      <img src="/hospitality/world-dots.svg" alt="" decoding="async" style={{ display: "block", width: "100%", height: "100%" }} />
+      {/* Gray first so the hospitality markers sit on top. */}
+      {[...PLACES].sort((x, y) => Number(x.hospitality) - Number(y.hospitality)).map((place) => {
+        const size = place.hospitality ? 11 : 7;
+        return (
+          <span
+            key={place.name}
+            title={place.projects ? `${place.name} · ${place.projects}` : place.name}
+            style={{
+              position: "absolute",
+              left: `${((place.lng + 180) / 360) * 100}%`,
+              top: `${((MAP_TOP - place.lat) / MAP_HEIGHT) * 100}%`,
+              width: size,
+              height: size,
+              marginLeft: -size / 2,
+              marginTop: -size / 2,
+              borderRadius: 999,
+              background: place.hospitality ? INK : "#a3a39e",
+              boxShadow: place.hospitality ? "0 0 0 3px #fafafa" : "0 0 0 2px #fafafa",
+            }}
+          />
+        );
+      })}
+    </div>
   );
 }
 
@@ -650,6 +665,7 @@ export default function AtlaHospitality() {
           path: PATHNAME,
           name: "Branding for restaurants and hotels",
           description: DESCRIPTION,
+          faqItems: FAQ_ITEMS,
         })}
       />
       <AtlaHeader />
@@ -674,7 +690,7 @@ export default function AtlaHospitality() {
             }}
           >
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 14 : 18 }}>
-              <p style={eyebrowStyle}>Hotels and hospitality</p>
+              <p style={eyebrowStyle}>Hospitality: Restaurants, Wellness, Coffee Shops, Hotels</p>
               <h1
                 style={{
                   fontFamily: DISPLAY,
@@ -710,7 +726,6 @@ export default function AtlaHospitality() {
                   ))}
                 </div>
                 <p style={{ ...bodyStyle, fontWeight: 600 }}>Casa Las Tortugas holds a MICHELIN Key. Acre Resort's restaurant holds a MICHELIN Green Star.</p>
-                <p style={{ ...bodyStyle, color: MUTED, flexBasis: isMobile ? "100%" : "auto" }}>Selected clients: {PROOF_NAMES.join(" · ")}</p>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                 <a href="#inquire" className="atla-link" style={ctaStyle}>
@@ -723,6 +738,39 @@ export default function AtlaHospitality() {
               <div style={{ marginTop: isMobile ? 8 : 18 }}>
                 <Figure image={HERO} />
               </div>
+            </section>
+
+            <section aria-label="Clients" style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: isMobile ? -16 : -40 }}>
+              <p style={eyebrowStyle}>Clients</p>
+              <ul
+                style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
+                  gap: isMobile ? 8 : 12,
+                }}
+              >
+                {CLIENT_LOGOS.map((name) => (
+                  <li
+                    key={name}
+                    style={{
+                      height: isMobile ? 64 : 80,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: `1px solid ${RULE}`,
+                      color: "#9a9a96",
+                      textAlign: "center",
+                      padding: 8,
+                      ...eyebrowStyle,
+                    }}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
             </section>
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
@@ -762,44 +810,44 @@ export default function AtlaHospitality() {
 
             <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
               <SectionHead eyebrow="Where we have worked" title="Nine places with hospitality work, most of them in Mexico" />
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) minmax(0, 0.9fr)",
-                  gap: isMobile ? 20 : 40,
-                  alignItems: "center",
-                }}
-              >
-                <ProjectGlobe />
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                    {PLACES.filter((place) => place.hospitality).map((place) => (
-                      <li
-                        key={place.name}
-                        style={{
-                          ...bodyStyle,
-                          display: "grid",
-                          gridTemplateColumns: "16px 1fr",
-                          alignItems: "baseline",
-                          padding: "10px 0",
-                          borderBottom: `1px solid ${RULE}`,
-                        }}
-                      >
-                        <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: INK, display: "inline-block" }} />
-                        <span>
-                          {place.name} <span style={{ color: MUTED }}>· {place.projects}</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p style={{ ...bodyStyle, color: MUTED }}>
-                    In gray, the rest of our work:{" "}
-                    {PLACES.filter((place) => !place.hospitality)
-                      .map((place) => place.name)
-                      .join(", ")}
-                    .
-                  </p>
-                </div>
+              <ProjectMap />
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    margin: 0,
+                    padding: 0,
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                    columnGap: 32,
+                  }}
+                >
+                  {PLACES.filter((place) => place.hospitality).map((place) => (
+                    <li
+                      key={place.name}
+                      style={{
+                        ...bodyStyle,
+                        display: "grid",
+                        gridTemplateColumns: "16px 1fr",
+                        alignItems: "baseline",
+                        padding: "10px 0",
+                        borderBottom: `1px solid ${RULE}`,
+                      }}
+                    >
+                      <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: INK, display: "inline-block" }} />
+                      <span>
+                        {place.name} <span style={{ color: MUTED }}>· {place.projects}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ ...bodyStyle, color: MUTED }}>
+                  In gray, the rest of our work:{" "}
+                  {PLACES.filter((place) => !place.hospitality)
+                    .map((place) => place.name)
+                    .join(", ")}
+                  .
+                </p>
               </div>
             </section>
 
@@ -854,6 +902,36 @@ export default function AtlaHospitality() {
                     <p style={bodyStyle}>{stage.body}</p>
                     <p style={{ ...bodyStyle, color: MUTED }}>{stage.proof}</p>
                   </div>
+                ))}
+              </div>
+            </section>
+
+            <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
+              <SectionHead eyebrow="FAQ" title="Questions hotel teams ask before they write" />
+              <div>
+                {FAQ_ITEMS.map((item) => (
+                  <details key={item.question} style={{ borderBottom: `1px solid ${RULE}`, padding: "16px 0" }}>
+                    <summary
+                      style={{
+                        fontFamily: DISPLAY,
+                        fontSize: isMobile ? 20 : 24,
+                        lineHeight: "1.25",
+                        color: INK,
+                        cursor: "pointer",
+                        // A flex summary drops the native disclosure marker in every engine.
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
+                        gap: 16,
+                      }}
+                    >
+                      <span>{item.question}</span>
+                      <span aria-hidden="true" style={{ color: MUTED }}>
+                        +
+                      </span>
+                    </summary>
+                    <p style={{ ...bodyStyle, maxWidth: 720, paddingTop: 10 }}>{item.answer}</p>
+                  </details>
                 ))}
               </div>
             </section>
