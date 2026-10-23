@@ -629,7 +629,7 @@ export default function AtlaHospitality() {
                 <h1
                   style={{
                     fontFamily: DISPLAY,
-                    fontSize: isMobile ? 30 : 48,
+                    fontSize: isMobile ? 26 : 48,
                     fontWeight: 400,
                     lineHeight: "1.08",
                     color: INK,
@@ -640,8 +640,8 @@ export default function AtlaHospitality() {
                   We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
                 </h1>
                 <p style={{ ...bodyStyle, fontSize: isMobile ? 15 : 17, maxWidth: 600 }}>
-                  Hotels, restaurants, wellness and coffee. We design the identity, every outlet and the standards your
-                  team runs on.
+                  Hotels, restaurants, wellness and coffee: the identity, every outlet and the standards your team runs
+                  on.
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
                   <BookCall position="hero" />
