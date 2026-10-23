@@ -220,7 +220,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "What happens on the call?",
     answer:
-      "A short conversation with José Pablo about the property and what is not working. He tells you what we would do first.",
+      "A short conversation about the property and what is not working. We tell you what we would do first.",
   },
 ];
 
@@ -338,10 +338,10 @@ function BookCall({ position, inverted = false }: { position: string; inverted?:
           color: inverted ? INK : PAPER,
         }}
       >
-        Book a call with José Pablo
+        Book a call
       </a>
       <p style={{ ...bodyStyle, fontSize: 13, color: inverted ? "rgba(244,240,232,0.65)" : MUTED }}>
-        A short conversation about your property. He tells you what we would do first.
+        A short conversation about your property. We tell you what we would do first.
       </p>
     </div>
   );
@@ -742,7 +742,7 @@ function InquiryForm() {
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} style={{ outline: "none" }}>
         {isSent ? (
-          <p style={{ ...bodyStyle, fontWeight: 600 }}>Got it. José Pablo will write back with what we would do next.</p>
+          <p style={{ ...bodyStyle, fontWeight: 600 }}>Got it. We will write back with what we would do next.</p>
         ) : null}
       </div>
       {isSent ? null : (
@@ -1070,10 +1070,6 @@ export default function AtlaHospitality() {
                 Tell us about your property.
               </h2>
               <BookCall position="closing" inverted />
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 12 }}>
-                <p style={{ fontFamily: DISPLAY, fontSize: 20, color: PAPER, margin: 0 }}>José Pablo Domínguez</p>
-                <Label inverted>Founder and Creative Director</Label>
-              </div>
             </div>
             <div style={{ background: PAPER, padding: isMobile ? "28px 20px" : "40px 40px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
               <Label>Prefer to write</Label>
