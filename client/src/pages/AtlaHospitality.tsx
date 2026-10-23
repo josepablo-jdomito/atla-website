@@ -145,6 +145,11 @@ const STAGES = [
     name: "Audit",
     body: "We start on your property. Brand, guest journey and every touchpoint, read the way a guest reads them. You get one architecture for every room, restaurant and service.",
     proof: "Used at Casa Las Tortugas, Holbox: a hotel with four restaurants and a spa.",
+    badge: {
+      src: "/hospitality/michelin-key.webp",
+      alt: "MICHELIN Key",
+      label: "Casa Las Tortugas holds one MICHELIN Key, 2026.",
+    },
   },
   {
     name: "Brand",
@@ -435,6 +440,20 @@ export default function AtlaHospitality() {
                     </h3>
                     <p style={bodyStyle}>{stage.body}</p>
                     <p style={{ ...bodyStyle, color: MUTED }}>{stage.proof}</p>
+                    {"badge" in stage && stage.badge ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
+                        <img
+                          src={stage.badge.src}
+                          alt={stage.badge.alt}
+                          loading="lazy"
+                          decoding="async"
+                          width={40}
+                          height={45}
+                          style={{ display: "block", width: 40, height: "auto", mixBlendMode: "multiply" }}
+                        />
+                        <p style={{ ...bodyStyle, fontSize: 13 }}>{stage.badge.label}</p>
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </div>
