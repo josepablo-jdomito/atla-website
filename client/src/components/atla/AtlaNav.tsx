@@ -831,6 +831,20 @@ export function AtlaNav({
 
   return (
     <>
+      {/* Skip link: hidden until focused. Targets the page's <main>, whatever its id. */}
+      <a
+        href="#main"
+        className="atla-skip-link"
+        onClick={(event) => {
+          const main = document.querySelector("main");
+          if (!main) return;
+          event.preventDefault();
+          main.setAttribute("tabindex", "-1");
+          main.focus();
+        }}
+      >
+        Skip to content
+      </a>
       <AtlaHeader inverted={inverted} />
 
       {isCommandOpen ? (

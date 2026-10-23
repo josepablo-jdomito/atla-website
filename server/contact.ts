@@ -56,6 +56,8 @@ const contactSchema = z.object({
     .pipe(z.string().email("Enter a valid email").max(200)),
   company: z.string().transform(singleLine).pipe(z.string().max(160)).optional().default(""),
   message: z.string().transform(multiLine).pipe(z.string().min(10, "Tell us a little more").max(4000)),
+  budget: z.enum(["", "under-25k", "25k-100k", "100k-250k", "250k-plus", "not-sure"]).optional().default(""),
+  timeline: z.enum(["", "this-month", "1-3-months", "3-6-months", "exploring"]).optional().default(""),
   // Where the form lives, e.g. "atla.design/audit/bevel". Only names the Attio note.
   source: z
     .string()
@@ -67,6 +69,21 @@ const contactSchema = z.object({
 export type ContactPayload = z.infer<typeof contactSchema>;
 
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+const BUDGET_LABELS: Record<string, string> = {
+  "under-25k": "Under $25K",
+  "25k-100k": "$25K–$100K",
+  "100k-250k": "$100K–$250K",
+  "250k-plus": "$250K+",
+  "not-sure": "Not sure yet",
+};
+
+const TIMELINE_LABELS: Record<string, string> = {
+  "this-month": "This month",
+  "1-3-months": "1–3 months",
+  "3-6-months": "3–6 months",
+  exploring: "Exploring",
+};
 
 function headerValue(req: Request, name: string): string {
   const raw = req.headers[name];
@@ -195,6 +212,8 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
   const lines = [
     `From: ${payload.name} <${payload.email}>`,
     payload.company ? `Company / site: ${payload.company}` : null,
+    payload.budget ? `Budget: ${BUDGET_LABELS[payload.budget] ?? payload.budget}` : null,
+    payload.timeline ? `Timeline: ${TIMELINE_LABELS[payload.timeline] ?? payload.timeline}` : null,
     `Received: ${new Date().toISOString()}`,
     person.data.created
       ? "Sender: new record created from this form. Email address not verified."

@@ -5,31 +5,11 @@ import {
   LongformParagraph,
   LongformSection,
   LongformSubTitle,
-  buildServiceSchema,
 } from "@/components/atla/AtlaLongformLayout";
+import { INDUSTRY_SERVICE_PAGES, buildServiceSchema } from "@/lib/serviceSchema";
 
-const FAQ_ITEMS = [
-  {
-    question: "Do you work with health tech and digital health platforms?",
-    answer:
-      "Yes. We have delivered brand systems for health-tech teams where identity needs to hold across app UI, marketing site, and investor materials.",
-  },
-  {
-    question: "Can you help with supplement packaging specifically?",
-    answer:
-      "Yes. We support wellness packaging systems and launch assets, including SKU logic, hierarchy, and DTC-ready visual standards.",
-  },
-  {
-    question: "How do you handle messaging in regulated categories?",
-    answer:
-      "We define messaging frameworks and flag claims that may need legal review. Final regulatory approval remains with your legal team.",
-  },
-  {
-    question: "What is different about wellness branding?",
-    answer:
-      "The trust threshold is higher. Buyers are more skeptical and research-heavy, so visual and verbal signals must be precise, credible, and human at the same time.",
-  },
-];
+const SERVICE_PAGE = INDUSTRY_SERVICE_PAGES.wellness;
+const FAQ_ITEMS = SERVICE_PAGE.faqItems;
 
 export default function AtlaWellnessBranding() {
   return (
@@ -38,13 +18,7 @@ export default function AtlaWellnessBranding() {
       title="Wellness and Health Brand Design Agency"
       titleSuffix="Atla"
       description="Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection."
-      structuredData={buildServiceSchema({
-        path: "/wellness-branding",
-        name: "Wellness branding built for trust, clarity, and real connection",
-        description:
-          "Brand strategy, identity, packaging, and digital design for wellness and health companies balancing credibility with emotional resonance.",
-        faqItems: FAQ_ITEMS,
-      })}
+      structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
         eyebrow="Wellness Branding"

@@ -24,6 +24,7 @@
     }
   ],
   "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "atla-website.vercel.app" }], "destination": "https://www.atla.design/:path*", "permanent": true },
     { "source": "/studio", "destination": "https://atla-dvufm78f.sanity.studio", "permanent": true },
     { "source": "/studio/:path*", "destination": "https://atla-dvufm78f.sanity.studio/:path*", "permanent": true },
     { "source": "/work", "destination": "/", "permanent": true },

@@ -4,11 +4,12 @@ import { AtlaNav } from "@/components/atla/AtlaNav";
 import { ATLA_PILL } from "@/components/atla/atlaStyles";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { trackEvent } from "@/hooks/use-analytics";
+import { ga4Event } from "@/lib/ga";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CONTACT_EMAIL, formatMetaTitle, START_URL } from "@shared/siteSeo";
 
 const headingStyle: React.CSSProperties = {
-  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+  fontFamily: "Helvetica, sans-serif",
   fontWeight: 400,
   lineHeight: "1.05",
   color: "#222",
@@ -110,6 +111,8 @@ function ContactForm() {
       form.reset();
       setStatus({ state: "sent" });
       trackEvent("contact_form_submit", { page: "contact" });
+      // No form fields go to GA; the privacy policy promises that.
+      ga4Event("generate_lead", { form: "contact" });
     } catch {
       setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
     }
@@ -151,6 +154,27 @@ function ContactForm() {
           <Field label="Company or website (optional)">
             <input name="company" type="text" maxLength={160} autoComplete="organization" style={fieldStyle} />
           </Field>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 18 }}>
+            <Field label="Budget (optional)">
+              <select name="budget" defaultValue="" style={fieldStyle}>
+                <option value="">Select a range</option>
+                <option value="under-25k">Under $25K</option>
+                <option value="25k-100k">$25K–$100K</option>
+                <option value="100k-250k">$100K–$250K</option>
+                <option value="250k-plus">$250K+</option>
+                <option value="not-sure">Not sure yet</option>
+              </select>
+            </Field>
+            <Field label="Timeline (optional)">
+              <select name="timeline" defaultValue="" style={fieldStyle}>
+                <option value="">Select a timeline</option>
+                <option value="this-month">This month</option>
+                <option value="1-3-months">1–3 months</option>
+                <option value="3-6-months">3–6 months</option>
+                <option value="exploring">Exploring</option>
+              </select>
+            </Field>
+          </div>
           <Field label="What is the business, what feels misaligned, and what has to happen next?">
             <textarea name="message" required minLength={10} maxLength={4000} rows={6} style={{ ...fieldStyle, resize: "vertical" }} />
           </Field>

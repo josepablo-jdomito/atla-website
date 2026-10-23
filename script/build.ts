@@ -14,6 +14,10 @@ import {
   fetchJournalCategoriesFromSanity,
 } from "../server/sanity/journalService.ts";
 import { fetchProjectsFromSanity } from "../server/sanity/projectService.ts";
+import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/lib/journalSeo.ts";
+import { buildProjectBreadcrumb, buildProjectMetaDescription } from "../client/src/lib/projectSeo.ts";
+import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
+import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -263,7 +267,8 @@ function createHeadMarkup({
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }) {
   const url = `${SITE_ORIGIN}${pathname}`;
-  const imageUrl = image || DEFAULT_OG_IMAGE_URL;
+  // og:image / twitter:image must be absolute; route tables pass site paths like /figmaAssets/about-hero.jpg.
+  const imageUrl = toAbsoluteUrl(image || DEFAULT_OG_IMAGE_URL);
   const tags = [
     `<title>${escapeHtml(title)}</title>`,
     `<meta name="description" content="${escapeHtml(description)}">`,
@@ -530,27 +535,6 @@ async function injectPrerenderedApp(
   return withRoot.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
 }
 
-function articlePublishedIso(dateLabel: string) {
-  const [month, year] = dateLabel.split(" ");
-  const monthMap: Record<string, string> = {
-    Jan: "01",
-    Feb: "02",
-    Mar: "03",
-    Apr: "04",
-    May: "05",
-    Jun: "06",
-    Jul: "07",
-    Aug: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dec: "12",
-  };
-  const monthNumber = monthMap[month];
-  if (!monthNumber || !year) return undefined;
-  return `${year}-${monthNumber}-01`;
-}
-
 async function writeRoutePage(route: string, html: string) {
   const relativePath = route === "/" ? "index.html" : path.join(route.replace(/^\//, ""), "index.html");
   const outputPath = path.resolve("dist/public", relativePath);
@@ -595,7 +579,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/about",
-      title: formatMetaTitle("About Atla", "Branding Studio in Mexico City and Austin"),
+      title: formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm"),
       description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
       image: "/figmaAssets/about-hero.jpg",
       preloadImage: "/figmaAssets/about-hero.jpg",
@@ -664,6 +648,7 @@ async function prerenderRoutes() {
       description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",
       image: workFeaturedImage,
       includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/hospitality-branding"),
     },
     {
       pathname: "/cpg-branding",
@@ -671,6 +656,7 @@ async function prerenderRoutes() {
       description: "Brand identity and packaging design for CPG companies launching or repositioning products. Strategy-led systems that perform on shelf and screen.",
       image: workFeaturedImage,
       includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/cpg-branding"),
     },
     {
       pathname: "/wellness-branding",
@@ -678,6 +664,7 @@ async function prerenderRoutes() {
       description: "Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection.",
       image: workFeaturedImage,
       includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/wellness-branding"),
     },
     {
       pathname: "/saas-branding",
@@ -685,6 +672,7 @@ async function prerenderRoutes() {
       description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/saas-branding"),
     },
     {
       pathname: "/brand-strategy",
@@ -762,7 +750,7 @@ async function prerenderRoutes() {
       category.seoDescription || category.description || DEFAULT_JOURNAL_CATEGORY_DESCRIPTION,
       "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems."
     );
-    const title = formatMetaTitle(category.seoTitle || `${category.title} Articles`, "Atla Journal");
+    const title = formatJournalMetaTitle(category.seoTitle || `${category.title} Articles`);
 
     const html = await injectPrerenderedApp(
       replaceHead(
@@ -792,10 +780,14 @@ async function prerenderRoutes() {
   }
 
   for (const project of projects) {
-    const projectClientLabel = project.client === "Confidential" ? "a confidential client" : project.client;
-    const projectCategoryLabel = project.category && project.category !== "Uncategorized" ? project.category.toLowerCase() : "brand system";
-    const projectMetaFallback =
-      `${project.title} is an Atla case study for ${projectClientLabel}. Explore how ${projectCategoryLabel} strategy, identity, and implementation were translated across launch touchpoints.`;
+    // Same builder as AtlaProject's SeoHead, so the prerendered and hydrated descriptions match.
+    const projectMetaDescription = buildProjectMetaDescription({
+      title: project.title,
+      client: project.client,
+      category: project.category === "Uncategorized" ? "" : project.category,
+      services: project.tags,
+      description: project.description,
+    });
     const parsedProjectYear = Number.parseInt(String(project.year), 10);
     const videoUploadDate = Number.isFinite(parsedProjectYear) ? `${parsedProjectYear}-01-01T00:00:00.000Z` : undefined;
     const videoStructuredData = (project.videos ?? [])
@@ -833,14 +825,14 @@ async function prerenderRoutes() {
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       name: project.title,
-      description: ensureDescriptionLength(project.description, projectMetaFallback),
+      description: projectMetaDescription,
       image: resolveProjectHeroImage(project),
       url: `${SITE_ORIGIN}/projects/${project.slug}`,
       creator: {
         "@type": "Organization",
         name: ORGANIZATION_NAME,
       },
-    }];
+    }, buildProjectBreadcrumb(project)];
 
     if (videoStructuredData.length > 0) {
       structuredDataBlocks.push(...videoStructuredData);
@@ -860,7 +852,7 @@ async function prerenderRoutes() {
         template,
         createHeadMarkup({
           title: formatMetaTitle(`${project.title} ${project.category} Case Study`, "Atla"),
-          description: ensureDescriptionLength(project.description, projectMetaFallback),
+          description: projectMetaDescription,
           pathname,
           image: resolveProjectHeroImage(project),
           ...buildResponsiveImagePreload(
@@ -889,34 +881,17 @@ async function prerenderRoutes() {
       article.seoDescription || article.excerpt,
       "Read the full article from Atla Journal for practical thinking on branding, strategy, and digital craft.",
     );
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: article.seoTitle || article.title,
-      description,
-      image: articleImage,
-      url: `${SITE_ORIGIN}/journal/${article.slug}`,
-      author: {
-        "@type": "Organization",
-        name: article.authorName || ORGANIZATION_NAME,
-      },
-      publisher: {
-        "@type": "Organization",
-        name: ORGANIZATION_NAME,
-        logo: {
-          "@type": "ImageObject",
-          url: ORGANIZATION_LOGO_URL,
-        },
-      },
-      datePublished: article.publishedAt || articlePublishedIso(article.date),
-    };
+    const structuredData = [
+      buildBlogPostingSchema(articleDetail, { description, image: articleImage }),
+      buildArticleBreadcrumb(articleDetail),
+    ];
 
     const pathname = `/journal/${article.slug}`;
     const html = await injectPrerenderedApp(
       replaceHead(
         template,
         createHeadMarkup({
-          title: formatMetaTitle(article.seoTitle || article.title, "Atla Journal"),
+          title: formatJournalMetaTitle(article.seoTitle || article.title),
           description,
           pathname,
           image: articleImage,
