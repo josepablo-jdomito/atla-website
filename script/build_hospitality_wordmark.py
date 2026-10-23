@@ -20,7 +20,7 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 TEXT = "Hospitality"
-INK = "#1c1f27"
+INK = "#111111"
 OUT = Path(__file__).resolve().parent.parent / "client/public/hospitality/hospitality-wordmark.svg"
 
 

@@ -15,11 +15,11 @@ const DESCRIPTION =
 const DISPLAY = "'ABC Synt Variable Unlicensed Trial', 'Instrument Serif', Georgia, serif";
 const DISPLAY_FONT_HREF = "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
-const INK = "#1c1f27";
+const INK = "#111111";
 const PAPER = "#f4f0e8";
 const PLACEHOLDER = "#e7e1d4";
 const MUTED = "#6b6a66";
-const RULE = "rgba(28,31,39,0.18)";
+const RULE = "rgba(17,17,17,0.18)";
 
 // "Atla* Branding Agency" intro event on Calendly.
 const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";

@@ -22,7 +22,7 @@ PLATES = {
 }
 MIN_STEP = 0.9  # drop points closer than this (SVG units) to the previous one
 
-INK = "#1c1f27"
+INK = "#111111"
 LAND = "#ebe5d8"
 PAPER = "#f4f0e8"
 OUT_DIR = Path(__file__).resolve().parent.parent / "client/public/hospitality"
