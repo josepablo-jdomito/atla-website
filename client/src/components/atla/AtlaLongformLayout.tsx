@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { formatMetaTitle, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
+import { formatMetaTitle, SITE_ORIGIN } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaHeader } from "@/components/atla/AtlaHeader";
@@ -16,50 +16,8 @@ export type LongformLinkItem = {
   description?: string;
 };
 
-export function buildServiceSchema({
-  path,
-  name,
-  description,
-  faqItems,
-}: {
-  path: string;
-  name: string;
-  description: string;
-  faqItems?: FaqItem[];
-}) {
-  const schema: Array<Record<string, unknown>> = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      name,
-      description,
-      url: `${SITE_ORIGIN}${path}`,
-      areaServed: ["United States", "Latin America"],
-      provider: {
-        "@type": "Organization",
-        name: ORGANIZATION_NAME,
-        url: SITE_ORIGIN,
-      },
-    },
-  ];
-
-  if (faqItems && faqItems.length > 0) {
-    schema.push({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqItems.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: typeof item.answer === "string" ? item.answer : "",
-        },
-      })),
-    });
-  }
-
-  return schema;
-}
+/** Moved to a framework-free module so script/build.ts can emit the same JSON-LD. */
+export { buildServiceSchema } from "@/lib/serviceSchema";
 
 export function buildBreadcrumbSchema(path: string, label: string) {
   return {
