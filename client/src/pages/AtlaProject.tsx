@@ -14,7 +14,10 @@ import {
   buildProjectBreadcrumb,
   buildProjectMetaDescription,
   buildProjectNarratives,
+  cleanProjectSummary,
   getNextProject,
+  isSectionLabel,
+  projectBodySections,
 } from "@/lib/projectSeo";
 
 const LABEL: React.CSSProperties = {
@@ -549,11 +552,13 @@ function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): P
   const region = project.region;
   const country = project.country || "";
   const locationName = project.locationName || "";
-  const bodySections = project.body
-    .split("\n\n")
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-  const services = project.tags.filter(Boolean);
+  const bodySections = projectBodySections(
+    project.body,
+    [project.title, project.client],
+    allProjects.filter((item) => item.slug !== project.slug).map((item) => item.title),
+  );
+  // "Unspecified" is the import's fallback for an untagged project, not a service.
+  const services = project.tags.filter((tag) => Boolean(tag) && tag.trim().toLowerCase() !== "unspecified");
   const imageGallery = sanitizeImageUrls(project.images);
   const heroImage = sanitizeImageUrls([project.coverImage, ...imageGallery])[0] || "/figmaAssets/media.png";
   const gallery = imageGallery.length > 0 ? imageGallery : [heroImage];
@@ -587,7 +592,7 @@ function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): P
     services,
     category,
     dateLabel: String(project.year),
-    intro: project.description,
+    intro: cleanProjectSummary(project.description),
     bodySections,
     heroImage,
     storyImage: project.images[1] || heroImage,
@@ -1023,7 +1028,8 @@ export default function AtlaProject() {
   const galleryStream: ProjectMediaMosaicItem[] = fullscreenImages
     .map((src, sourceIndex) => ({ type: "image" as const, src, sourceIndex }))
     .filter(({ src, sourceIndex }) => !(sourceIndex === 0 && src === project.heroImage));
-  const introText = project.intro || project.bodySections[0] || "Case study documentation and execution details.";
+  // No intro and no body: the page shows the work and its credits, not a stand-in sentence.
+  const introText = project.intro || project.bodySections.find((section) => !isSectionLabel(section)) || "";
   // Each distinct text renders once: sections that repeat the intro or an earlier section are omitted.
   const projectNarratives = buildProjectNarratives(introText, project.bodySections);
   const serviceLabel = project.services.length > 0
@@ -1306,9 +1312,13 @@ export default function AtlaProject() {
                   minWidth: 0,
                 }}
               >
-                <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>
-                  {introText}
-                </p>
+                {introText ? (
+                  <p style={{ ...BODY, color: primaryTextColor, lineHeight: "1.1" }}>
+                    {introText}
+                  </p>
+                ) : (
+                  <span aria-hidden="true" />
+                )}
                 <div
                   style={{
                   display: "grid",

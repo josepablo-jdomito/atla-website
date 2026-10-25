@@ -30,7 +30,7 @@ export function truncateOnWord(value: string, max = META_DESCRIPTION_MAX) {
 }
 
 /** Drops Sanity placeholder text: a leading "testing" token and the generic "X is an Atla case study…" line. */
-function cleanProjectSummary(value: string | null | undefined) {
+export function cleanProjectSummary(value: string | null | undefined) {
   const text = collapseWhitespace(value).replace(/^testing\b[\s:.,\-–—]*/i, "");
   if (/^.{0,80}\bis an Atla case study focused on brand identity execution\.?$/i.test(text)) return "";
   return text;
@@ -93,13 +93,72 @@ export type ProjectNarrative = {
   text: string;
 };
 
+/** A body paragraph that is only an editor's heading ("The Client", "The Result"), not copy. */
+const SECTION_LABEL = /^\(?\s*(?:the\s+)?(client|brand|challenge|result)\s*\)?[:.]?$/i;
+const SECTION_FOR_LABEL: Record<string, string> = {
+  client: "( The Brand )",
+  brand: "( The Brand )",
+  challenge: "( The Challenge )",
+  result: "( The Result )",
+};
+
+export function isSectionLabel(text: string) {
+  return SECTION_LABEL.test(collapseWhitespace(text));
+}
+
+function namesTitle(text: string, title: string) {
+  const name = collapseWhitespace(title);
+  if (!name) return false;
+  return new RegExp(`(^|[^\\p{L}\\p{N}])${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "iu").test(text);
+}
+
+/**
+ * Body paragraphs for a case study. A body that names another project and never this one
+ * was pasted from that project (Hanks Leather carried Arc Studio's copy, 2026-10-25), so
+ * none of it is shown. "Atla" is the studio, not another client, and is not checked.
+ */
+export function projectBodySections(
+  body: string | null | undefined,
+  ownNames: Array<string | null | undefined>,
+  otherTitles: string[],
+): string[] {
+  const sections = (body ?? "")
+    .split("\n\n")
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+  const text = sections.join(" ");
+  const namesSelf = ownNames.some((name) => namesTitle(text, name ?? ""));
+  const namesOther = otherTitles.some((title) => textKey(title) !== "atla" && namesTitle(text, title));
+  return namesOther && !namesSelf ? [] : sections;
+}
+
+/** Sections an editor headed in the body itself ("The Client", then its paragraph). */
+function labelledNarratives(pool: string[]): ProjectNarrative[] | null {
+  if (!pool.some(isSectionLabel)) return null;
+  const byLabel = new Map<string, string[]>();
+  let current: string | null = null;
+  for (const paragraph of pool) {
+    const match = collapseWhitespace(paragraph).match(SECTION_LABEL);
+    if (match) {
+      current = SECTION_FOR_LABEL[match[1].toLowerCase()];
+      continue;
+    }
+    if (!current) continue;
+    byLabel.set(current, [...(byLabel.get(current) ?? []), paragraph]);
+  }
+  return ["( The Brand )", "( The Challenge )", "( The Result )"]
+    .filter((label) => byLabel.has(label))
+    .map((label) => ({ label, text: (byLabel.get(label) ?? []).join(" ") }));
+}
+
 /**
  * The Brand / The Challenge / The Result sections. Text already shown (the intro, or an
  * earlier section) is not repeated: its section is omitted, heading included.
  */
 export function buildProjectNarratives(intro: string, bodySections: string[]): ProjectNarrative[] {
   const pool = bodySections.map((section) => section.trim()).filter(Boolean);
-  const candidates: ProjectNarrative[] = [
+  const labelled = labelledNarratives(pool);
+  const candidates: ProjectNarrative[] = labelled ?? [
     { label: "( The Brand )", text: pool[0] || intro },
     { label: "( The Challenge )", text: pool[1] || pool[0] || intro },
     { label: "( The Result )", text: pool[2] || pool[pool.length - 1] || intro },
