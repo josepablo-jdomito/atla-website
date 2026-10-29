@@ -88,7 +88,7 @@ function readAttribution(): string {
   return attribution;
 }
 
-const HERO: CaseImage = { alt: "Acre Resort entrance with the wordmark", ratio: "16 / 9", src: "/hospitality/review/acre-entrance.webp" };
+const HERO: CaseImage = { alt: "Rústico menu in embossed suede, Acre Resort", ratio: "16 / 9", src: sanityImage("18a02d9a640324bce8de4272d67087c7c1ab3fbe-1396x1781.png", 1400) };
 
 // Project locations. Sanity coordinates (atla.design/api/projects, read 2026-10-23) plus the
 // hospitality clients that have no project page yet: Casa Las Tortugas, Christophe's, Temakase.
@@ -142,7 +142,7 @@ const HOTELS: HospitalityCase[] = [
       { label: "Scope", value: "Audit, brand architecture, brand book, website, Rústico" },
       { label: "Distinction", value: "MICHELIN Green Star, Acre's restaurant" },
     ],
-    image: { alt: "Acre amenity oil and towel with the wordmark", ratio: "4 / 5", src: "/hospitality/review/acre-objects.webp", position: "100% center" },
+    image: { alt: "Rústico napkin with the embroidered wordmark", ratio: "4 / 5", src: sanityImage("0cd9da27361a74cf11d59ee76bf054f30ffe97bc-1188x1781.png", 1200) },
     link: { href: "/projects/rustico", label: "Rústico" },
   },
   {
