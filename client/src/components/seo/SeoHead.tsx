@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
+import { toAbsoluteUrl } from "@/lib/seoSchema";
 
 type SeoHeadProps = {
   title: string;
@@ -67,7 +68,9 @@ export function SeoHead({
   useEffect(() => {
     const origin = getOrigin();
     const canonicalUrl = new URL(pathname, origin).toString();
-    const imageUrl = new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString();
+    // Share images resolve against the production origin, never the current host: crawlers
+    // need an absolute URL, and a preview host's URL would expire.
+    const imageUrl = toAbsoluteUrl(image || DEFAULT_OG_IMAGE_URL);
     const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
     document.title = fullTitle;
@@ -88,7 +91,7 @@ export function SeoHead({
     upsertLink("canonical", canonicalUrl);
     const preloadSet = new Set<string>([
       new URL("/figmaAssets/logo.svg", origin).toString(),
-      imageUrl,
+      new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString(),
       ...preloadImages.filter(Boolean),
     ]);
     syncImagePreloads(Array.from(preloadSet));

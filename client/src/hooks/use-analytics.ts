@@ -49,6 +49,47 @@ export function usePageAnalytics() {
   }, [location]);
 }
 
+/**
+ * One delegated listener for the clicks that matter to the funnel: any link
+ * to /contact (cta_click), to start.atla.design or /waitlist (start_click),
+ * and email links (email_click). Covers nav, footer and in-page CTAs without
+ * touching each component.
+ */
+export function useFunnelClickTracking() {
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const onClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const href = anchor.getAttribute("href") || "";
+      const label = (anchor.textContent || "").trim().slice(0, 80);
+      const page = window.location.pathname;
+
+      if (href.startsWith("mailto:")) {
+        ga4Event("email_click", { page, link_text: label });
+        return;
+      }
+
+      let url: URL;
+      try {
+        url = new URL(href, window.location.origin);
+      } catch {
+        return;
+      }
+
+      if (url.hostname === "start.atla.design" || url.pathname.startsWith("/waitlist")) {
+        ga4Event("start_click", { page, link_text: label, link_url: url.toString() });
+      } else if (url.origin === window.location.origin && url.pathname === "/contact" && page !== "/contact") {
+        ga4Event("cta_click", { page, link_text: label, cta_type: "contact" });
+      }
+    };
+
+    document.addEventListener("click", onClick, { capture: true });
+    return () => document.removeEventListener("click", onClick, { capture: true });
+  }, []);
+}
+
 type ConversionEvent =
   | "contact_form_submit"
   | "newsletter_signup"

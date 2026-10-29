@@ -11,7 +11,7 @@ export const CONTACT_EMAIL = "josepablo@atla.design";
 export const START_URL = "https://start.atla.design";
 /** Social profiles: rendered in the footer and asserted as Organization sameAs. */
 export const SOCIAL_PROFILES = [
-  { label: "Instagram", href: "https://www.instagram.com/atla.studio" },
+  { label: "Instagram", href: "https://www.instagram.com/atla.design" },
   { label: "Behance", href: "https://www.behance.net/atla" },
   { label: "Linkedin", href: "https://www.linkedin.com/company/atlabrandingagency" },
 ] as const;

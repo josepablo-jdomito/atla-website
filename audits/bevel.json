@@ -32,7 +32,7 @@
       "part": "01",
       "title": [
         [
-          "The audit."
+          "The analysis."
         ]
       ],
       "sub": "Where Bevel stands today, next to Whoop and Oura."
@@ -83,7 +83,7 @@
           "ever."
         ]
       ],
-      "lead": "Bevel has about as many members as Whoop has paying members. Whoop has 18 times the Instagram following.",
+      "lead": "Bevel counts as many members, free and paid, as Whoop has paying members. Whoop has 18 times the Instagram following.",
       "head": [
         "Brand",
         "Members",
@@ -102,12 +102,12 @@
         ],
         [
           "Oura",
-          "5.5M rings sold",
+          "5M paying members",
           "1.2M"
         ]
       ],
       "highlight": 0,
-      "note": "Bevel: bevel.health, Oct 21, 2026, includes free users. Whoop: Yahoo Finance, Mar 31, 2026, paying members. Oura: company release, Sep 22, 2025. Followers: Instagram via vidIQ, Oct 21, 2026."
+      "note": "Bevel: bevel.health, Oct 21, 2026, includes free users. Whoop: Yahoo Finance, Mar 31, 2026, paying members. Oura: IPO filing, via NPR, Sep 28, 2026, paying members. Followers: Instagram via vidIQ, Oct 21, 2026."
     },
     {
       "type": "map",
@@ -279,8 +279,8 @@
           "name": "Oura",
           "src": "logo-oura.png",
           "w": 80,
-          "value": 22,
-          "label": "22%",
+          "value": 24,
+          "label": "24%",
           "lift": 1
         },
         {
@@ -292,7 +292,7 @@
           "focus": true
         }
       ],
-      "note": "Directional, because each company counts members differently: Whoop 2.3M followers / 2.5M paying members, Oura 1.2M / 5.5M rings sold, Bevel 129K / 2.5M members including free users."
+      "note": "Directional, because each company counts members differently: Whoop 2.3M followers / 2.5M paying members, Oura 1.2M / 5M paying members, Bevel 129K / 2.5M members including free users."
     },
     {
       "type": "statement",
@@ -317,7 +317,7 @@
           "show it."
         ]
       ],
-      "note": "2.5M members, including free users. 129K Instagram followers."
+      "note": "2.5M members, including free users: bevel.health, Oct 21, 2026. 129K Instagram followers: vidIQ, Oct 21, 2026."
     },
     {
       "type": "threats",
@@ -378,7 +378,7 @@
           "people can name."
         ]
       ],
-      "lead": "Work with Atla and we take Bevel to the position its strongest competitors hold: one idea people can name and repeat.",
+      "lead": "Work with Atla and we take Bevel where Strava and Apple Watch sit: product-led, with taste, and one idea people can name and repeat.",
       "rows": [
         [
           "What it stands for",
@@ -491,7 +491,7 @@
         "w": 115
       },
       "description": "Bevel moves from the generic side of the map to the taste curator side, next to Strava and Apple Watch.",
-      "note": "Target position is Atla’s editorial read, on the same map as section 03."
+      "note": "Target position is Atla’s editorial read, on the same map as Where Bevel sits."
     },
     {
       "type": "columns",

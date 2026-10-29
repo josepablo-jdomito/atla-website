@@ -5,31 +5,11 @@ import {
   LongformParagraph,
   LongformSection,
   LongformSubTitle,
-  buildServiceSchema,
 } from "@/components/atla/AtlaLongformLayout";
+import { INDUSTRY_SERVICE_PAGES, buildServiceSchema } from "@/lib/serviceSchema";
 
-const FAQ_ITEMS = [
-  {
-    question: "Do you handle structural packaging design?",
-    answer:
-      "We design graphics and visual systems. For structural and dieline engineering, we coordinate with your packaging supplier or recommended specialist partners.",
-  },
-  {
-    question: "Can you work with existing manufacturer specs?",
-    answer:
-      "Yes. We design within substrate, print method, and dieline constraints provided by your manufacturer.",
-  },
-  {
-    question: "What about Amazon and DTC listing design?",
-    answer:
-      "Included. We design photography direction, A+ content layouts, and storefront templates as part of launch-ready assets.",
-  },
-  {
-    question: "How do you handle line extensions?",
-    answer:
-      "The initial system is built for extensibility so adding new variants takes days instead of weeks.",
-  },
-];
+const SERVICE_PAGE = INDUSTRY_SERVICE_PAGES.cpg;
+const FAQ_ITEMS = SERVICE_PAGE.faqItems;
 
 export default function AtlaCpgBranding() {
   return (
@@ -38,13 +18,7 @@ export default function AtlaCpgBranding() {
       title="CPG Branding and Packaging Agency"
       titleSuffix="Consumer Goods"
       description="Brand identity and packaging design for CPG companies launching or repositioning products. Strategy-led systems that perform on shelf and screen."
-      structuredData={buildServiceSchema({
-        path: "/cpg-branding",
-        name: "CPG branding and packaging that performs on shelf and screen",
-        description:
-          "Brand strategy, visual identity, packaging design, and launch-ready digital assets for consumer packaged goods companies.",
-        faqItems: FAQ_ITEMS,
-      })}
+      structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
         eyebrow="CPG Branding"

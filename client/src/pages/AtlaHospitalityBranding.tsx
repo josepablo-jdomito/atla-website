@@ -5,31 +5,11 @@ import {
   LongformParagraph,
   LongformSection,
   LongformSubTitle,
-  buildServiceSchema,
 } from "@/components/atla/AtlaLongformLayout";
+import { INDUSTRY_SERVICE_PAGES, buildServiceSchema } from "@/lib/serviceSchema";
 
-const FAQ_ITEMS = [
-  {
-    question: "How long does a full hospitality branding project take?",
-    answer:
-      "Most projects run 8–14 weeks from kickoff to final delivery. Larger properties or multi-location rollouts may take longer depending on the number of touchpoints and approval layers.",
-  },
-  {
-    question: "Do you work with properties that are already open?",
-    answer:
-      "Yes. Repositioning an existing property is a different challenge than launching a new one — the brand needs to evolve without confusing returning guests.",
-  },
-  {
-    question: "Can you handle environmental and signage design?",
-    answer:
-      "We design the system and provide production-ready files and specifications for signage vendors. We do not fabricate or install, but we direct the process.",
-  },
-  {
-    question: "What if we already have a logo but need everything else?",
-    answer:
-      "That is common. We evaluate whether the existing mark can anchor a full system or whether it needs refinement, then build from there.",
-  },
-];
+const SERVICE_PAGE = INDUSTRY_SERVICE_PAGES.hospitality;
+const FAQ_ITEMS = SERVICE_PAGE.faqItems;
 
 export default function AtlaHospitalityBranding() {
   return (
@@ -38,13 +18,7 @@ export default function AtlaHospitalityBranding() {
       title="Hospitality Branding Agency"
       titleSuffix="Hotels, Restaurants and Travel"
       description="Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints."
-      structuredData={buildServiceSchema({
-        path: "/hospitality-branding",
-        name: "Hospitality branding that works across every guest touchpoint",
-        description:
-          "Brand strategy, identity systems, digital design, and environmental guidelines for hotels, restaurants, and travel brands.",
-        faqItems: FAQ_ITEMS,
-      })}
+      structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
         eyebrow="Hospitality Branding"

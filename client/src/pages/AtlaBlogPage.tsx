@@ -349,7 +349,7 @@ export default function AtlaBlogPage() {
         </p>
         <h1
           style={{
-            fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+            fontFamily: "Helvetica, sans-serif",
             fontSize: isMobile ? 38 : 56,
             fontWeight: 400,
             lineHeight: "1.06",

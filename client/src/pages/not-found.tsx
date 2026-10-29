@@ -67,7 +67,7 @@ export default function NotFound() {
             <a
               href="/"
               style={{
-                fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                fontFamily: "Helvetica, sans-serif",
                 fontSize: isMobile ? 40 : 64,
                 fontWeight: 400,
                 lineHeight: "1.1",
