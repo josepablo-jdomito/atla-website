@@ -56,7 +56,7 @@ const LF_MEDIUM: React.CSSProperties = {
 const LF_SMALL: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: 500,
   letterSpacing: 0.48,
   lineHeight: "1.2",
   color: "#222",
@@ -1128,42 +1128,7 @@ export default function AtlaWork() {
           </div>
 
           <div id="atla-work-results" style={{ width: "100%", maxWidth: "none", margin: 0 }}>
-          <section className="sr-only" aria-label="Work archive context">
-            <h2>About the Atla work archive</h2>
-            <p>
-              This work archive presents selected branding, identity, packaging, and digital projects developed by
-              Atla for companies across hospitality, consumer products, wellness, and technology. Each case study is
-              documented to show how strategy decisions become visual systems, launch assets, and ongoing brand
-              behavior across real customer touchpoints.
-            </p>
-            <p>
-              The filters are structured so users can compare work by region, industry, service type, and year. The
-              different visual views support different tasks: masonry for visual discovery, grid for controlled
-              comparison, list for quick project scanning, and timeline for chronological context. This makes the
-              archive useful both for inspiration and for practical vendor evaluation.
-            </p>
-            <p>
-              Atla is a global team across Austin, Mexico City, Barcelona, Lima and Caracas, with clients across the United States and Latin America.
-              Typical engagements begin when a team needs stronger positioning, better identity coherence, or clearer
-              digital execution before a launch. The archive reflects a consistent standard: strategic clarity,
-              recognizable craft, and systems that remain reliable after launch.
-            </p>
-            <p>
-              For procurement teams, this page is also a practical reference for evaluating fit: project types,
-              categories, regional contexts, and visible outputs are all indexed in one place. Instead of presenting
-              isolated visuals, the archive groups work by the strategic role it played in growth, repositioning,
-              launch readiness, and customer experience consistency.
-            </p>
-            <p>
-              The long-term intent is operational clarity. Teams should be able to identify relevant examples fast,
-              see proof of execution quality, and move from inspiration to scoped conversation without switching tools
-              or opening new pages for basic qualification.
-            </p>
-            <p>
-              The archive also highlights how different categories can still feel like one brand when strategy,
-              identity, and execution are aligned from the start.
-            </p>
-          </section>
+          <h1 className="sr-only">Atla work archive: branding, packaging and websites</h1>
           {view === "Timeline" ? (
             <div
               className="atla-hide-scrollbar"
