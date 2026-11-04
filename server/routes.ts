@@ -333,6 +333,7 @@ export async function registerRoutes(
           "/saas-branding",
           "/brand-strategy",
           "/how-we-work",
+          "/programs",
           "/journal",
           "/privacy",
           "/terms",
