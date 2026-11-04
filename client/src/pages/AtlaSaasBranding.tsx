@@ -5,31 +5,11 @@ import {
   LongformParagraph,
   LongformSection,
   LongformSubTitle,
-  buildServiceSchema,
 } from "@/components/atla/AtlaLongformLayout";
+import { INDUSTRY_SERVICE_PAGES, buildServiceSchema } from "@/lib/serviceSchema";
 
-const FAQ_ITEMS = [
-  {
-    question: "Can you work with our existing product design system?",
-    answer:
-      "Yes. We can align a new brand system to existing product tokens or extend the brand into a broader product expression where needed.",
-  },
-  {
-    question: "Do you design actual product UI?",
-    answer:
-      "We design brand-level interface language and component styling guidance. For deep UX workflows, we can collaborate with dedicated product design teams.",
-  },
-  {
-    question: "What about pitch decks?",
-    answer:
-      "Included in most SaaS scopes. We build master templates and key slides so internal teams can produce consistent deck updates.",
-  },
-  {
-    question: "How fast can you move?",
-    answer:
-      "Most SaaS branding engagements run 6–10 weeks. For pre-launch or fundraising pressure windows, we can scope focused sprints.",
-  },
-];
+const SERVICE_PAGE = INDUSTRY_SERVICE_PAGES.saas;
+const FAQ_ITEMS = SERVICE_PAGE.faqItems;
 
 export default function AtlaSaasBranding() {
   return (
@@ -38,13 +18,7 @@ export default function AtlaSaasBranding() {
       title="SaaS Branding Agency"
       titleSuffix="Brand Identity for Software Companies"
       description="Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation."
-      structuredData={buildServiceSchema({
-        path: "/saas-branding",
-        name: "SaaS branding that separates signal from noise",
-        description:
-          "Positioning, visual identity systems, web conversion architecture, and sales-ready materials for SaaS teams.",
-        faqItems: FAQ_ITEMS,
-      })}
+      structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
         eyebrow="SaaS Branding"

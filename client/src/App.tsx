@@ -2,7 +2,8 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { usePageAnalytics } from "@/hooks/use-analytics";
+import { useFunnelClickTracking, usePageAnalytics } from "@/hooks/use-analytics";
+import { AnalyticsConsent } from "@/components/atla/AnalyticsConsent";
 import { AppRouter } from "./AppRouter";
 
 const NotFound = lazy(() => import("@/pages/not-found"));
@@ -16,6 +17,7 @@ const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
 const AtlaArticle = lazy(() => import("@/pages/AtlaArticle"));
 const AtlaPrivacy = lazy(() => import("@/pages/AtlaPrivacy"));
 const AtlaTerms = lazy(() => import("@/pages/AtlaTerms"));
+const AtlaHospitality = lazy(() => import("@/pages/AtlaHospitality"));
 const AtlaHospitalityBranding = lazy(() => import("@/pages/AtlaHospitalityBranding"));
 const AtlaCpgBranding = lazy(() => import("@/pages/AtlaCpgBranding"));
 const AtlaWellnessBranding = lazy(() => import("@/pages/AtlaWellnessBranding"));
@@ -40,6 +42,7 @@ function PrerenderReveal() {
 
 function Router() {
   usePageAnalytics();
+  useFunnelClickTracking();
 
   return (
     <Suspense fallback={null}>
@@ -56,6 +59,7 @@ function Router() {
         AtlaArticle={AtlaArticle}
         AtlaPrivacy={AtlaPrivacy}
         AtlaTerms={AtlaTerms}
+        AtlaHospitality={AtlaHospitality}
         AtlaHospitalityBranding={AtlaHospitalityBranding}
         AtlaCpgBranding={AtlaCpgBranding}
         AtlaWellnessBranding={AtlaWellnessBranding}
@@ -86,6 +90,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router />
+        <AnalyticsConsent />
         <DeferredEnhancements />
       </ThemeProvider>
     </QueryClientProvider>

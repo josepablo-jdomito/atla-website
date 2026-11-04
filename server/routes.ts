@@ -326,6 +326,7 @@ export async function registerRoutes(
           "/about",
           "/contact",
           "/services",
+          "/hospitality",
           "/hospitality-branding",
           "/cpg-branding",
           "/wellness-branding",

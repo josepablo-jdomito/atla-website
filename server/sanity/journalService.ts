@@ -14,6 +14,7 @@ type SanityJournalArticleBase = {
   primaryCategoryTitle?: string;
   primaryCategorySlug?: string;
   publishedAt?: string;
+  updatedAt?: string;
   excerpt?: string;
   heroImage?: string;
   coverImage?: string;
@@ -102,6 +103,7 @@ const JOURNAL_ARTICLE_LIST_QUERY = `
     "primaryCategoryTitle": primaryCategory->title,
     "primaryCategorySlug": primaryCategory->slug.current,
     publishedAt,
+    "updatedAt": _updatedAt,
     excerpt,
     "heroImage": heroImage.asset->url,
     "coverImage": coverImage.asset->url,
@@ -126,6 +128,7 @@ const JOURNAL_ARTICLE_DETAIL_QUERY = `
     "primaryCategoryTitle": primaryCategory->title,
     "primaryCategorySlug": primaryCategory->slug.current,
     publishedAt,
+    "updatedAt": _updatedAt,
     excerpt,
     "heroImage": heroImage.asset->url,
     "coverImage": coverImage.asset->url,
@@ -236,7 +239,10 @@ function normalizeCategorySlug(article: SanityJournalArticleBase) {
   return slugifyCategory(normalizeCategoryTitle(article));
 }
 
-function normalizeArticle(article: SanityJournalArticleBase): JournalArticle {
+/** `updatedAt` (Sanity `_updatedAt`) feeds BlogPosting dateModified; it is not part of the shared type. */
+export type JournalArticleRecord = JournalArticle & { updatedAt?: string };
+
+function normalizeArticle(article: SanityJournalArticleBase): JournalArticleRecord {
   const heroImage = article.heroImage || article.coverImage || article.bodyImage || "";
   const coverImage = article.coverImage || article.heroImage || article.bodyImage || "";
 
@@ -263,6 +269,7 @@ function normalizeArticle(article: SanityJournalArticleBase): JournalArticle {
     authorName: article.authorName || undefined,
     sourceName: article.sourceName || undefined,
     publishedAt: article.publishedAt,
+    updatedAt: article.updatedAt || undefined,
     seoTitle: article.seoTitle || undefined,
     seoDescription: article.seoDescription || undefined,
   };

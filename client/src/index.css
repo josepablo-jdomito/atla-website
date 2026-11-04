@@ -23,7 +23,7 @@
   --web-desktop-body-small-font-weight: 600;
   --web-desktop-body-small-letter-spacing: 0.48px;
   --web-desktop-body-small-line-height: 120.00000762939453%;
-  --web-desktop-h3-font-family: "ABC Synt Variable Unlicensed Trial", Helvetica;
+  --web-desktop-h3-font-family: Helvetica, sans-serif;
   --web-desktop-h3-font-size: 64px;
   --web-desktop-h3-font-style: normal;
   --web-desktop-h3-font-weight: 400;
@@ -569,4 +569,23 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
 .atla-footer ::selection {
   background: #1c1f27;
   color: #f6c428;
+}
+
+/* Skip link (AtlaNav): off-screen until keyboard focus. */
+.atla-skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: #222;
+  color: #fafafa;
+  font-family: "Libre Franklin", Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.atla-skip-link:focus {
+  transform: none;
 }

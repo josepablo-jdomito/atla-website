@@ -1,5 +1,6 @@
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { JournalPortableTextBlock } from "@shared/journal";
+import { expandMarkdownLinks, isExternalHref, isSafeHref } from "@/lib/markdownLinks";
 
 const PARAGRAPH: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
@@ -28,7 +29,7 @@ const components: PortableTextComponents = {
     h2: ({ children }) => (
       <h2
         style={{
-          fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+          fontFamily: "Helvetica, sans-serif",
           fontSize: 36,
           fontWeight: 400,
           lineHeight: "1.1",
@@ -43,7 +44,7 @@ const components: PortableTextComponents = {
     h3: ({ children }) => (
       <h3
         style={{
-          fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+          fontFamily: "Helvetica, sans-serif",
           fontSize: 28,
           fontWeight: 400,
           lineHeight: "1.15",
@@ -124,13 +125,14 @@ const components: PortableTextComponents = {
     em: ({ children }) => <em>{children}</em>,
     link: ({ children, value }) => {
       const href = normalizeHref(typeof value?.href === "string" ? value.href : "");
-      const openBlank = value?.blank === true;
+      const external = isExternalHref(href);
+      const openBlank = value?.blank === true || external;
 
       return (
         <a
-          href={href || "#"}
+          href={href && isSafeHref(href) ? href : "#"}
           target={openBlank ? "_blank" : undefined}
-          rel={openBlank ? "noopener noreferrer" : undefined}
+          rel={openBlank || external ? "noopener noreferrer" : undefined}
           style={{
             color: "#222",
             textDecoration: "underline",
@@ -146,8 +148,12 @@ const components: PortableTextComponents = {
 
 function normalizeHref(href: string) {
   if (!href) return href;
-  if (href.startsWith("/blog/")) return href.replace(/^\/blog\//, "/journal/");
-  return href;
+  const trimmed = href.trim();
+  // Absolute links to this site stay relative so they never leave the current host.
+  const sameSite = trimmed.match(/^https?:\/\/(?:www\.)?atla\.design(\/[^\s]*)?$/i);
+  const local = sameSite ? sameSite[1] || "/" : trimmed;
+  if (local.startsWith("/blog/")) return local.replace(/^\/blog\//, "/journal/");
+  return local;
 }
 
 export function JournalPortableText({ value }: { value: JournalPortableTextBlock[] }) {
@@ -155,9 +161,10 @@ export function JournalPortableText({ value }: { value: JournalPortableTextBlock
     return null;
   }
 
+  const blocks = expandMarkdownLinks(value);
   const chunks: JournalPortableTextBlock[][] = [];
-  for (let index = 0; index < value.length; index += 12) {
-    chunks.push(value.slice(index, index + 12));
+  for (let index = 0; index < blocks.length; index += 12) {
+    chunks.push(blocks.slice(index, index + 12));
   }
 
   return (

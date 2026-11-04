@@ -56,7 +56,7 @@ const LF_MEDIUM: React.CSSProperties = {
 const LF_SMALL: React.CSSProperties = {
   fontFamily: "'Libre Franklin', Helvetica, sans-serif",
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: 500,
   letterSpacing: 0.48,
   lineHeight: "1.2",
   color: "#222",
@@ -265,7 +265,8 @@ function uniqueCaseInsensitive(values: string[]) {
 }
 
 function buildFacetOptions(values: string[], preferredOrder: readonly string[]) {
-  const normalizedValues = uniqueCaseInsensitive(values);
+  // "Unspecified" is a fallback for untagged projects, not a choice a visitor would make.
+  const normalizedValues = uniqueCaseInsensitive(values).filter((value) => value.toLowerCase() !== "unspecified");
   const orderedFromPreference = preferredOrder.filter((preferred) =>
     normalizedValues.some((value) => value.toLowerCase() === preferred.toLowerCase()),
   );
@@ -416,10 +417,13 @@ function FilterColumn({
               key={option}
               type="button"
               onClick={() => onChange(option)}
+              aria-pressed={value === option}
               style={{
                 ...LF_MEDIUM,
                 fontSize: FILTER_OPTION_MOBILE_FONT_SIZE,
                 color: value === option ? primaryColor : mutedColor,
+                textDecoration: value === option ? "underline" : "none",
+                textUnderlineOffset: 3,
                 border: "none",
                 background: "none",
                 textAlign: "left",
@@ -451,9 +455,12 @@ function FilterColumn({
             key={option}
             type="button"
             onClick={() => onChange(option)}
+              aria-pressed={value === option}
             style={{
               ...LF_MEDIUM,
               color: value === option ? primaryColor : mutedColor,
+                textDecoration: value === option ? "underline" : "none",
+                textUnderlineOffset: 3,
               border: "none",
               background: "none",
               textAlign: "left",
@@ -638,18 +645,18 @@ export default function AtlaWork() {
     if (view === "Masonry") {
       return masonryPhotoPool
         .slice(0, 2)
-        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 90 }) || item.imageSrc);
+        .map((item) => getOptimizedImageUrl(item.imageSrc, { width: isMobile ? 1200 : 1500, quality: 80 }) || item.imageSrc);
     }
 
     if (view === "Timeline") {
       return timelineProjects
         .slice(0, 2)
-        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 90 }) || project.coverImage);
+        .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1400, quality: 80 }) || project.coverImage);
     }
 
     return filteredProjects
       .slice(0, 2)
-      .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 90 }) || project.coverImage);
+      .map((project) => getOptimizedImageUrl(project.coverImage, { width: isMobile ? 960 : 1600, quality: 80 }) || project.coverImage);
   }, [filteredProjects, isMobile, masonryPhotoPool, timelineProjects, view]);
 
   const resetArchiveState = (shouldScroll = true) => {
@@ -1121,42 +1128,7 @@ export default function AtlaWork() {
           </div>
 
           <div id="atla-work-results" style={{ width: "100%", maxWidth: "none", margin: 0 }}>
-          <section className="sr-only" aria-label="Work archive context">
-            <h2>About the Atla work archive</h2>
-            <p>
-              This work archive presents selected branding, identity, packaging, and digital projects developed by
-              Atla for companies across hospitality, consumer products, wellness, and technology. Each case study is
-              documented to show how strategy decisions become visual systems, launch assets, and ongoing brand
-              behavior across real customer touchpoints.
-            </p>
-            <p>
-              The filters are structured so users can compare work by region, industry, service type, and year. The
-              different visual views support different tasks: masonry for visual discovery, grid for controlled
-              comparison, list for quick project scanning, and timeline for chronological context. This makes the
-              archive useful both for inspiration and for practical vendor evaluation.
-            </p>
-            <p>
-              Atla is a global team across Austin, Mexico City, Barcelona, Lima and Caracas, with clients across the United States and Latin America.
-              Typical engagements begin when a team needs stronger positioning, better identity coherence, or clearer
-              digital execution before a launch. The archive reflects a consistent standard: strategic clarity,
-              recognizable craft, and systems that remain reliable after launch.
-            </p>
-            <p>
-              For procurement teams, this page is also a practical reference for evaluating fit: project types,
-              categories, regional contexts, and visible outputs are all indexed in one place. Instead of presenting
-              isolated visuals, the archive groups work by the strategic role it played in growth, repositioning,
-              launch readiness, and customer experience consistency.
-            </p>
-            <p>
-              The long-term intent is operational clarity. Teams should be able to identify relevant examples fast,
-              see proof of execution quality, and move from inspiration to scoped conversation without switching tools
-              or opening new pages for basic qualification.
-            </p>
-            <p>
-              The archive also highlights how different categories can still feel like one brand when strategy,
-              identity, and execution are aligned from the start.
-            </p>
-          </section>
+          <h1 className="sr-only">Atla work archive: branding, packaging and websites</h1>
           {view === "Timeline" ? (
             <div
               className="atla-hide-scrollbar"
@@ -1193,8 +1165,8 @@ export default function AtlaWork() {
                 {timelineProjects.map((project, index) => {
                   const imageDimensions = getImageDimensions(project.coverImage);
                   const targetWidth = isMobile ? 960 : 1400;
-                  const optimizedSrc = getOptimizedImageUrl(project.coverImage, { width: targetWidth, quality: 90 }) || project.coverImage;
-                  const srcSet = buildImageSrcSet(project.coverImage, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                  const optimizedSrc = getOptimizedImageUrl(project.coverImage, { width: targetWidth, quality: 80 }) || project.coverImage;
+                  const srcSet = buildImageSrcSet(project.coverImage, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                   const stagger = !isMobile && index % 2 === 1 ? 60 : 0;
 
                   return (
@@ -1306,8 +1278,8 @@ export default function AtlaWork() {
                     >
                       {listPhotos.map((photoSrc, photoIndex) => {
                         const photoDimensions = getImageDimensions(photoSrc);
-                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 700 : 900, quality: 90 }) || photoSrc;
-                        const photoSrcSet = buildImageSrcSet(photoSrc, isMobile ? [360, 520, 700] : [520, 700, 900], { quality: 90 });
+                        const optimizedPhotoSrc = getOptimizedImageUrl(photoSrc, { width: isMobile ? 700 : 900, quality: 80 }) || photoSrc;
+                        const photoSrcSet = buildImageSrcSet(photoSrc, isMobile ? [360, 520, 700] : [520, 700, 900], { quality: 80 });
                         return (
                           <div key={`${project.slug}-list-photo-${photoIndex}`} style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", backgroundColor: "#ece9e2", overflow: "hidden" }}>
                             <img
@@ -1349,8 +1321,8 @@ export default function AtlaWork() {
                 {masonryFeedItems.map((item, index) => {
                   const imageDimensions = getImageDimensions(item.imageSrc);
                   const targetWidth = isMobile ? 1200 : 1500;
-                  const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 90 }) || item.imageSrc;
-                  const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                  const optimizedSrc = getOptimizedImageUrl(item.imageSrc, { width: targetWidth, quality: 80 }) || item.imageSrc;
+                  const srcSet = buildImageSrcSet(item.imageSrc, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                   const shouldPrioritize = index < (isMobile ? 3 : 8);
                   const aspectRatio = getMasonryAspectRatio(item, index, isMobile);
 
@@ -1458,8 +1430,8 @@ export default function AtlaWork() {
                     <div style={{ display: "grid", gridTemplateColumns: `repeat(${cardImages.length || 1}, minmax(0, 1fr))`, gap: view === "Grid" ? 6 : 0 }}>
                       {cardImages.map((imageSrc, imageIndex) => {
                         const imageDimensions = getImageDimensions(imageSrc);
-                        const optimizedSrc = getOptimizedImageUrl(imageSrc, { width: targetWidth, quality: 90 }) || imageSrc;
-                        const srcSet = buildImageSrcSet(imageSrc, [Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 90 });
+                        const optimizedSrc = getOptimizedImageUrl(imageSrc, { width: targetWidth, quality: 80 }) || imageSrc;
+                        const srcSet = buildImageSrcSet(imageSrc, [Math.round(targetWidth / 4), Math.round(targetWidth / 3), Math.round(targetWidth / 2), Math.round(targetWidth * 0.75), targetWidth], { quality: 80 });
                         return (
                           <div
                             key={`${project.slug}-${imageSrc}-${imageIndex}`}

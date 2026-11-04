@@ -9,11 +9,40 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
 
+// Copy approved by JP on 2026-10-27 (Notion: Atla — Web · Services copy v1). No figures on the site.
 const HERO_COPY =
-  "Strategy first. Expression second. Every service here exists to sharpen the brand, not add noise to it.";
+  "We find the reasons people could fall in love with your brand. Then we build on the ones you can deliver without compromise.";
 
 const INTRO =
-  "Most studios sell services in silos. We don't. Strategy, identity, digital, and creative direction work as one system here — so the brand stays coherent across every surface it touches.";
+  "We start with what your customers already say about you, in their own words. We read it through Why We Love the Brands We Love, José Pablo's framework for why people choose a brand and stay with it. Then we design from what we find.";
+
+const DIAGNOSTIC_STEPS = [
+  {
+    lead: "What your customers say.",
+    text: "Public reviews and conversations about your brand and your competitors, read stage by stage, from the first time they hear of you to the day they recommend you.",
+  },
+  { lead: "What your team says.", text: "Interviews across leadership, sales, product and service." },
+  { lead: "Every touchpoint.", text: "Everything a customer sees, from the first ad to the box." },
+  {
+    lead: "A workshop with your leadership.",
+    text: "Every reason a customer could fall in love with the brand, cut to the few you will deliver without compromise.",
+  },
+  { lead: "A roadmap.", text: "What changes, what stays, and the exact scope of what comes next." },
+];
+
+const NEXT_STEPS = [
+  {
+    label: "Program",
+    title: "Atla Brand Program",
+    description:
+      "The scope from the roadmap, built: strategy, identity, system and guidelines, by the team that ran the Diagnostic.",
+  },
+  {
+    label: "Stewardship",
+    title: "Brand Stewardship",
+    description: "After launch, we stay on to keep the brand on course as the company grows.",
+  },
+];
 
 const SERVICES = [
   {
@@ -24,7 +53,7 @@ const SERVICES = [
   {
     title: "Brand Strategy",
     description:
-      "Positioning, messaging, audience definition, and competitive framing. The foundational thinking that clarifies what the company stands for, who it needs to reach, and why it should matter before visual exploration begins.",
+      "Positioning, messaging, audience and competitive framing, decided before anyone opens a design file.",
   },
   {
     title: "Identity",
@@ -39,7 +68,7 @@ const SERVICES = [
   {
     title: "Motion",
     description:
-      "Brand animations, logo reveals, social content, and UI motion. Movement that feels intentional, not decorative.",
+      "Brand animations, logo reveals, social content and UI motion, built from the same system as the identity.",
   },
   {
     title: "Print & Packaging",
@@ -54,7 +83,7 @@ const SERVICES = [
   {
     title: "Copywriting",
     description:
-      "Headlines, taglines, product copy, and narratives. Words that sound unmistakably like the company, not like a category template.",
+      "Headlines, taglines, product copy and narratives, written in the company's own voice.",
   },
   {
     title: "Tone of Voice",
@@ -98,13 +127,14 @@ function SectionTitle({ children, mobile = false }: { children: React.ReactNode;
     <div style={{ flex: "1 0 0", minWidth: 0 }}>
       <p
         style={{
-          fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif",
+          fontFamily: "'Libre Franklin', Helvetica, sans-serif",
           fontSize: mobile ? 40 : 140,
           fontWeight: 500,
           lineHeight: "1.1",
           color: "#222",
           margin: 0,
-          whiteSpace: mobile ? "normal" : "nowrap",
+          // Long titles wrap instead of running into the copy column ("Where to Start" overlapped it by 192px).
+          whiteSpace: "normal",
         }}
       >
         {children}
@@ -198,7 +228,8 @@ export default function AtlaServices() {
           style={{
             position: isMobile ? "relative" : "absolute",
             left: isMobile ? "auto" : 565,
-            top: isMobile ? "auto" : 200,
+            // The approved headline runs 8 lines at 64px; from 200 its last line clipped at the hero's edge.
+            top: isMobile ? "auto" : 160,
             width: isMobile ? "100%" : 635,
             padding: isMobile ? "20px 10px 0" : 0,
             boxSizing: "border-box",
@@ -206,7 +237,7 @@ export default function AtlaServices() {
         >
           <p
             style={{
-              fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+              fontFamily: "Helvetica, sans-serif",
               fontSize: isMobile ? 40 : 64,
               fontWeight: 400,
               lineHeight: "1.1",
@@ -261,11 +292,109 @@ export default function AtlaServices() {
           <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
             <div style={{ width: isMobile ? "100%" : 456 }}>
               <p style={LF_REG18}>{INTRO}</p>
-              <p style={{ ...LF_REG18, marginTop: 18 }}>
-                That structure matters because most companies do not need more disconnected outputs. They need sharper
-                decisions, clearer systems, and a way to move from positioning to rollout without losing the logic that
-                made the work strong in the first place.
-              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: isMobile ? 24 : 0,
+            width: "100%",
+          }}
+        >
+          <SectionTitle mobile={isMobile}>How it starts</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+              <div
+                  style={{
+                    borderTop: "1px solid #d7d7d7",
+                    padding: isMobile ? "20px 0" : "28px 0",
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "110px minmax(0, 1fr)",
+                    gap: isMobile ? 12 : 20,
+                    alignItems: "start",
+                  }}
+              >
+                <p style={LF_SB12}>Diagnostic</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <p
+                      style={{
+                        fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+                        fontSize: isMobile ? 24 : 32,
+                        fontWeight: 400,
+                        lineHeight: "1.1",
+                        color: "#222",
+                        margin: 0,
+                      }}
+                  >
+                    Loved or Lost Diagnostic
+                  </p>
+                  <p style={SERVICE_BODY}>
+                    Before we design anything, we find where people fall in love with your brand and where they fall out.
+                  </p>
+                  {DIAGNOSTIC_STEPS.map((step) => (
+                    <p key={step.lead} style={SERVICE_BODY}>
+                      <span style={{ fontWeight: 600 }}>{step.lead}</span> {step.text}
+                    </p>
+                  ))}
+                  <p style={SERVICE_BODY}>
+                    If the evidence says the problem is product, price or operations, the Diagnostic says so.
+                  </p>
+                </div>
+              </div>
+              {NEXT_STEPS.map((step) => (
+                <div
+                  key={step.label}
+                  style={{
+                    borderTop: "1px solid #d7d7d7",
+                    padding: isMobile ? "20px 0" : "28px 0",
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "110px minmax(0, 1fr)",
+                    gap: isMobile ? 12 : 20,
+                    alignItems: "start",
+                  }}
+                >
+                  <p style={LF_SB12}>{step.label}</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <p
+                      style={{
+                        fontFamily: "'Libre Franklin', Helvetica, sans-serif",
+                        fontSize: isMobile ? 24 : 32,
+                        fontWeight: 400,
+                        lineHeight: "1.1",
+                        color: "#222",
+                        margin: 0,
+                      }}
+                    >
+                      {step.title}
+                    </p>
+                    <p style={SERVICE_BODY}>{step.description}</p>
+                  </div>
+                </div>
+              ))}
+              <div
+                  style={{
+                    borderTop: "1px solid #d7d7d7",
+                    padding: isMobile ? "20px 0" : "28px 0",
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "110px minmax(0, 1fr)",
+                    gap: isMobile ? 12 : 20,
+                    alignItems: "start",
+                  }}
+              >
+                <p style={LF_SB12}>Earlier stage</p>
+                <p style={SERVICE_BODY}>
+                  A smaller team or a first brand? Start with the Branding Analysis, a written read on where your brand
+                  stands today.{" "}
+                  <a href="https://start.atla.design" className="atla-link" style={{ color: "#222" }}>
+                    Take the Branding Analysis
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -313,6 +442,38 @@ export default function AtlaServices() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: isMobile ? 24 : 0,
+            width: "100%",
+          }}
+        >
+          <SectionTitle mobile={isMobile}>Why Atla</SectionTitle>
+          <div style={{ width: isMobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 28 }}>
+            <div style={{ width: isMobile ? "100%" : 456, display: "flex", flexDirection: "column", gap: 10 }}>
+              <p style={{ ...LF_REG18, fontWeight: 600 }}>Atla also runs WeLoveDaily.</p>
+              <p style={LF_REG18}>
+                WeLoveDaily is a design curation channel on Instagram and a publication at{" "}
+                <a href="https://welovedaily.net" className="atla-link" style={{ color: "#222" }}>
+                  welovedaily.net
+                </a>
+                . Every day we pick the brand work worth publishing. That same eye goes into every Atla project.
+              </p>
+            </div>
+            <div style={{ width: isMobile ? "100%" : 456, display: "flex", flexDirection: "column", gap: 10 }}>
+              <p style={{ ...LF_REG18, fontWeight: 600 }}>Founder at the table, no handoff chain.</p>
+              <p style={LF_REG18}>
+                José Pablo is at the table on every engagement, with a small senior team across Austin, Mexico City,
+                Barcelona, Lima and Caracas.
+              </p>
             </div>
           </div>
         </div>

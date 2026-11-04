@@ -164,7 +164,7 @@ export const ElementDefault = (): JSX.Element => {
                 key={centerProject?.slug ?? "fallback-title"}
                 className="atla-home-title"
                 style={{
-                  fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
+                  fontFamily: "Helvetica, sans-serif",
                   fontSize: isMobile ? 42 : 68,
                   fontWeight: 400,
                   lineHeight: "1.02",
