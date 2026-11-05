@@ -12,6 +12,7 @@ import {
 } from "react";
 import { BRIEF_QUESTION_IDS, briefContactSchema, nextFixedQuestion, type BriefContact, type BriefQuestion } from "@shared/brief";
 import { siteCopy } from "@/content/siteCopy";
+import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
 import { fetchNextStep, submitBrief } from "./briefApi";
 import { clearBrief, loadBrief, momentFromParam, saveBrief, type BriefStep, type SavedBrief } from "./briefStorage";
 
@@ -76,6 +77,9 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
   const request = useRef(0);
   const userMoved = useRef(false);
+  // brief_start: once per brief, when its first question is on screen. Nothing typed goes with it.
+  const seededVisit = useRef(Boolean(cleanSeed(seed) || momentFromParam(moment)));
+  const startTracked = useRef(false);
 
   const commit = useCallback((next: SavedBrief) => {
     saveBrief(next);
@@ -128,6 +132,13 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!brief || startTracked.current) return;
+    if (brief.calendlyUrl !== undefined || brief.index !== 0 || !brief.path[0]) return;
+    startTracked.current = true;
+    trackBriefStart(seededVisit.current);
+  }, [brief]);
+
   if (!brief) return <BriefFrame progress={0} pending={false} />;
 
   const total = totalSteps(brief);
@@ -162,6 +173,7 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
     setSubmitStatus("sending");
     const result = await submitBrief({ ...brief, contact }, brief.submissionId, honeypot);
     if (result.status === "ok") {
+      trackBriefComplete();
       userMoved.current = true;
       setSubmitStatus("idle");
       setDirection("forward");
@@ -175,6 +187,8 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
   const restart = () => {
     userMoved.current = true;
     clearBrief();
+    seededVisit.current = false;
+    startTracked.current = false;
     setSubmitStatus("idle");
     setDirection("forward");
     if (typeof window !== "undefined" && window.location.search) {
@@ -540,7 +554,7 @@ function DoneScreen({
       {bookable ? <p className="brief-lead brief-lead--muted">{copy.callLead}</p> : null}
       <div className="brief-actions">
         {bookable ? (
-          <a className="brief-primary" href={calendlyUrl} target="_blank" rel="noopener noreferrer">
+          <a className="brief-primary" href={calendlyUrl} target="_blank" rel="noopener noreferrer" onClick={trackCalendlyClick}>
             {copy.bookCall}
           </a>
         ) : null}

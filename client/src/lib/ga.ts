@@ -102,3 +102,38 @@ export function ga4Event(name: string, params?: Record<string, unknown>) {
   configureGa4();
   gtag("event", name, params ?? {});
 }
+
+/**
+ * The gate for the site v2 events below. A stored choice decides; without one, a visitor whose
+ * clock is in Europe (the visitors the consent banner asks) sends nothing until they accept.
+ * Everyone else follows the granted default above, as the privacy page says.
+ */
+export function analyticsAllowed(): boolean {
+  if (typeof window === "undefined") return false;
+  const stored = readStoredConsent();
+  if (stored) return stored === "granted";
+  return !likelyNeedsConsentPrompt();
+}
+
+/**
+ * Site v2 funnel events. Params are fixed strings and booleans only: never the typed query,
+ * the seed, an answer, a name, an email or a company (tested in siteEvents.test.ts).
+ */
+export type SiteEvent =
+  | { name: "bar_search"; params: { kind: "results" | "brief"; closest: boolean } }
+  | { name: "brief_start"; params: { seeded: boolean } }
+  | { name: "brief_complete"; params: Record<string, never> }
+  | { name: "calendly_click"; params: Record<string, never> };
+
+function siteEvent(event: SiteEvent) {
+  if (!analyticsAllowed()) return;
+  ga4Event(event.name, event.params);
+}
+
+/** A typed search on the work wall settled. `closest` is true when nothing matched and the wall shows the nearest work. */
+export const trackBarSearch = (kind: "results" | "brief", closest: boolean) =>
+  siteEvent({ name: "bar_search", params: { kind, closest } });
+/** The brief showed its first question. `seeded` is true when the visit came with a seed or a ?moment=. */
+export const trackBriefStart = (seeded: boolean) => siteEvent({ name: "brief_start", params: { seeded } });
+export const trackBriefComplete = () => siteEvent({ name: "brief_complete", params: {} });
+export const trackCalendlyClick = () => siteEvent({ name: "calendly_click", params: {} });

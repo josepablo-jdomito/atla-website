@@ -15,6 +15,7 @@ import {
 } from "@/components/site/workFilters";
 import { rankProjects } from "@shared/rankProjects";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { trackBarSearch } from "@/lib/ga";
 import { siteCopy } from "@/content/siteCopy";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
@@ -30,6 +31,8 @@ const PAGE = 72;
  * Prerender has no window and renders the phone layout.
  */
 const COLUMN_TARGET = 220;
+/** A typed search counts once it has rested this long (after the URL debounce and any /api/ask answer). */
+const SEARCH_EVENT_SETTLE_MS = 1000;
 const MAX_COLUMNS = 8;
 
 function readColumns() {
@@ -197,6 +200,20 @@ export function WorkWall() {
     };
   }, [urlQuery, ranked.closest]);
 
+  // bar_search: once per settled typed query, never per keystroke, and never for a ?q= the visitor
+  // arrived with. Only whether it matched goes to analytics, never the text.
+  const typed = useRef(false);
+  const lastSearchEvent = useRef("");
+  useEffect(() => {
+    if (!typed.current || !urlQuery || urlQuery === lastSearchEvent.current) return;
+    const closest = ranked.closest;
+    const timer = window.setTimeout(() => {
+      lastSearchEvent.current = urlQuery;
+      trackBarSearch("results", closest);
+    }, SEARCH_EVENT_SETTLE_MS);
+    return () => window.clearTimeout(timer);
+  }, [urlQuery, ranked.closest]);
+
   // The pool loops only once the visitor has seen all of it; each pass starts elsewhere.
   const tiles = useMemo(() => {
     const all: Array<WallTile & { key: string }> = [];
@@ -259,7 +276,10 @@ export function WorkWall() {
       <div ref={sentinelRef} aria-hidden="true" />
       <WorkExplore
         query={draft}
-        onQuery={setDraft}
+        onQuery={(value) => {
+          typed.current = true;
+          setDraft(value);
+        }}
         onClear={() => {
           setDraft("");
           changeFilters({ ...filters, region: ALL_VALUE, industry: ALL_VALUE, service: ALL_VALUE, year: ALL_VALUE });
