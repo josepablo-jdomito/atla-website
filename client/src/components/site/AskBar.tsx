@@ -96,7 +96,7 @@ export function AskBar() {
 
   const shown = results?.projects.slice(0, MAX_RESULTS) ?? [];
   const status = results
-    ? results.offline && shown.length === 0
+    ? shown.length === 0
       ? home.results.empty
       : results.closest
         ? home.results.closest
