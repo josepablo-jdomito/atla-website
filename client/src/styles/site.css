@@ -1,0 +1,48 @@
+/* atla.design v2 tokens. Additive: old pages keep using index.css rules. */
+:root {
+  --site-bg: #fbfaf8;
+  --site-ink: #16181d;
+  --site-muted: #6b6f78;
+  --site-line: rgba(22, 24, 29, 0.1);
+  --site-surface: #ffffff;
+  --site-accent: #f6c428;
+  --site-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --site-gutter: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --site-bg: #111214;
+    --site-ink: #f2f1ee;
+    --site-muted: #9a9da4;
+    --site-line: rgba(242, 241, 238, 0.12);
+    --site-surface: #1a1b1e;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-gutter: 24px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --site-gutter: 40px;
+  }
+}
+
+body {
+  background: var(--site-bg);
+  color: var(--site-ink);
+  font-family: "Libre Franklin", Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
