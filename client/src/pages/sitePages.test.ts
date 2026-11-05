@@ -133,12 +133,25 @@ async function submit(form: HTMLFormElement) {
 }
 
 describe("ContactForm", () => {
+  it("asks no budget question, shows no price and posts no budget", async () => {
+    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    act(() => root.render(createElement(ContactForm)));
+    const form = container.querySelector("form")!;
+    expect(form.querySelector('[name="budget"]')).toBeNull();
+    expect(container.textContent).not.toMatch(/\$|budget/i);
+    fill(form, { name: "Ana", email: "ana@example.com", message: "We are opening a hotel." });
+    await submit(form);
+    const body = JSON.parse(String((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body));
+    expect(body.budget ?? "").toBe("");
+  });
+
   it("posts the same JSON payload as before and shows the confirmation", async () => {
     const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
     act(() => root.render(createElement(ContactForm)));
     const form = container.querySelector("form")!;
-    fill(form, { name: "Ana", email: "ana@example.com", company: "Acme", budget: "not-sure", timeline: "exploring", message: "We are opening a hotel." });
+    fill(form, { name: "Ana", email: "ana@example.com", company: "Acme", timeline: "exploring", message: "We are opening a hotel." });
     await submit(form);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -150,7 +163,6 @@ describe("ContactForm", () => {
       name: "Ana",
       email: "ana@example.com",
       company: "Acme",
-      budget: "not-sure",
       timeline: "exploring",
       message: "We are opening a hotel.",
       _gotcha: "",

@@ -1139,7 +1139,6 @@ body {
 .site-root .contact-form,
 .site-root .contact-form__form { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 40rem; }
 .site-root .contact-form__status { outline: none; }
-.site-root .contact-form__pair { display: grid; grid-template-columns: 1fr; gap: 24px; }
 .site-root .contact-form__select { cursor: pointer; }
 .site-root .contact-form__select option { color: var(--site-ink); background: var(--site-surface); }
 .site-root .contact-form__message { resize: vertical; min-height: 8lh; }
@@ -1172,5 +1171,4 @@ body {
   .site-root .how-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
   .site-root .team-list__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .site-root .contact-details { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-  .site-root .contact-form__pair { grid-template-columns: 1fr 1fr; }
 }

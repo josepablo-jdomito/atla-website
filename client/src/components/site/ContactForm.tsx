@@ -4,8 +4,8 @@ import { ga4Event } from "@/lib/ga";
 import { CONTACT_EMAIL } from "@shared/siteSeo";
 
 // Extracted from AtlaContact.tsx (Task 10). Fields, payload, endpoint, analytics and messages are
-// unchanged; only the styling moved to the v2 tokens. Its strings stay here, not in siteCopy:
-// the budget options carry the old price ranges, which siteCopy's no-prices test rejects.
+// unchanged except one ruling: the budget question is gone (no budget questions or prices on v2).
+// /api/contact treats budget as optional (default ""), so the payload stays valid without it.
 
 const SUCCESS_TEXT = "Received. We read every note directly and reply with the next recommended step.";
 
@@ -106,27 +106,15 @@ export function ContactForm() {
           <Field label="Company or website (optional)">
             <input name="company" type="text" maxLength={160} autoComplete="organization" className="brief-input" />
           </Field>
-          <div className="contact-form__pair">
-            <Field label="Budget (optional)">
-              <select name="budget" defaultValue="" className="brief-input contact-form__select">
-                <option value="">Select a range</option>
-                <option value="under-25k">Under $25K</option>
-                <option value="25k-100k">$25K–$100K</option>
-                <option value="100k-250k">$100K–$250K</option>
-                <option value="250k-plus">$250K+</option>
-                <option value="not-sure">Not sure yet</option>
-              </select>
-            </Field>
-            <Field label="Timeline (optional)">
-              <select name="timeline" defaultValue="" className="brief-input contact-form__select">
-                <option value="">Select a timeline</option>
-                <option value="this-month">This month</option>
-                <option value="1-3-months">1–3 months</option>
-                <option value="3-6-months">3–6 months</option>
-                <option value="exploring">Exploring</option>
-              </select>
-            </Field>
-          </div>
+          <Field label="Timeline (optional)">
+            <select name="timeline" defaultValue="" className="brief-input contact-form__select">
+              <option value="">Select a timeline</option>
+              <option value="this-month">This month</option>
+              <option value="1-3-months">1–3 months</option>
+              <option value="3-6-months">3–6 months</option>
+              <option value="exploring">Exploring</option>
+            </select>
+          </Field>
           <Field label="What is the business, what feels misaligned, and what has to happen next?">
             <textarea name="message" required minLength={10} maxLength={4000} rows={6} className="brief-input contact-form__message" />
           </Field>
