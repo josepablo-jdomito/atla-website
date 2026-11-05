@@ -175,7 +175,7 @@ export function resolveProjectFacets(source: FacetSource): ProjectFacets {
     searchTerms: stringList(source.searchTerms).map((term) => term.toLowerCase()).slice(0, MAX_SEARCH_TERMS),
   };
   const hasStored = Boolean(stored.sector) || stored.disciplines.length > 0;
-  const facets = hasStored
+  const facets: Omit<ProjectFacets, "place"> = hasStored
     ? stored
     : {
         sector: fallback?.[0] ?? "",
