@@ -1,9 +1,7 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { formatMetaTitle, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
-import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { PageShell } from "@/components/site/PageShell";
 
 // Copy source: marketing-plans/atla/oferta-A.md, sections 3, 4 and 6 (offer approved by JP, 2026-10-13).
 // No prices and no durations on this page by design.
@@ -92,126 +90,44 @@ const PROOF: NumberedItem[] = [
   },
 ];
 
-const LF_REG18: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 18,
-  fontWeight: 400,
-  lineHeight: "1.1",
-  color: "#222",
-  margin: 0,
-};
-
-const LF_SB12: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  color: "#6f6f6f",
-  textTransform: "uppercase",
-  margin: 0,
-};
-
-const ITEM_BODY: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.35",
-  color: "#222",
-  margin: 0,
-};
-
-function SectionTitle({ children, mobile = false }: { children: ReactNode; mobile?: boolean }) {
+function SectionRow({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <div style={{ flex: "1 0 0", minWidth: 0 }}>
-      <h2
-        style={{
-          fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif",
-          fontSize: mobile ? 40 : 140,
-          fontWeight: 500,
-          lineHeight: "1.1",
-          color: "#222",
-          margin: 0,
-          whiteSpace: mobile ? "normal" : "nowrap",
-        }}
-      >
-        {children}
+    <section className="page-section" aria-labelledby={id}>
+      <h2 id={id} className="page-section__title">
+        {title}
       </h2>
-    </div>
-  );
-}
-
-function SectionRow({ title, mobile, children }: { title: string; mobile: boolean; children: ReactNode }) {
-  return (
-    <section
-      style={{
-        display: "flex",
-        flexDirection: mobile ? "column" : "row",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: mobile ? 24 : 0,
-        width: "100%",
-      }}
-    >
-      <SectionTitle mobile={mobile}>{title}</SectionTitle>
-      <div style={{ width: mobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 18 }}>
-        {children}
-      </div>
+      <div className="page-section__body">{children}</div>
     </section>
   );
 }
 
-function Lead({ children, mobile }: { children: ReactNode; mobile: boolean }) {
-  return <div style={{ width: mobile ? "100%" : 456, display: "flex", flexDirection: "column", gap: 18 }}>{children}</div>;
-}
-
-function NumberedList({ items, mobile }: { items: NumberedItem[]; mobile: boolean }) {
+function NumberedList({ items }: { items: NumberedItem[] }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", marginTop: 6 }}>
+    <ol className="numbered-list">
       {items.map((item, index) => (
-        <div
-          key={item.title}
-          style={{
-            borderTop: "1px solid #d7d7d7",
-            padding: mobile ? "20px 0" : "28px 0",
-            display: "grid",
-            gridTemplateColumns: mobile ? "1fr" : "76px minmax(0, 1fr)",
-            gap: mobile ? 12 : 20,
-            alignItems: "start",
-          }}
-        >
-          <p style={LF_SB12}>{String(index + 1).padStart(2, "0")}</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <h3
-              style={{
-                fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: mobile ? 24 : 32,
-                fontWeight: 400,
-                lineHeight: "1.1",
-                color: "#222",
-                margin: 0,
-              }}
-            >
+        <li key={item.title} className="numbered-list__item">
+          <span className="home-section-label" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <div className="numbered-list__text">
+            <h3 className="numbered-list__title">
               {item.href ? (
-                <a href={item.href} className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                <a href={item.href} className="longform-link">
                   {item.title}
                 </a>
               ) : (
                 item.title
               )}
             </h3>
-            <p style={ITEM_BODY}>{item.description}</p>
+            <p className="numbered-list__body">{item.description}</p>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
 
 export default function AtlaPrograms() {
-  const isMobile = useIsMobile();
-
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -253,142 +169,75 @@ export default function AtlaPrograms() {
     areaServed: ["United States", "Latin America"],
   }));
 
-  const ctaStyle: CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    minHeight: 48,
-    padding: "0 22px",
-    borderRadius: 999,
-    background: "#1c1f27",
-    color: "#fafafa",
-    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-    fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: "-0.01em",
-    textDecoration: "none",
-    whiteSpace: "nowrap",
-    alignSelf: "flex-start",
-  };
-
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+    <PageShell>
       <SeoHead
         title={PROGRAMS_META_TITLE}
         description={PROGRAMS_META_DESCRIPTION}
         pathname="/programs"
         structuredData={[breadcrumbSchema, ...programSchema]}
       />
-      <div className="atla-dark-surface">
-        <AtlaNav />
+      <div className="site-page-body">
+        <header className="page-intro">
+          <p className="home-section-label">Programs</p>
+          <h1 className="page-intro__title">{HERO_COPY}</h1>
+          <p className="page-intro__lead">{HERO_SUPPORT}</p>
+        </header>
 
-        <main
-          className="atla-enter"
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: isMobile ? 80 : 240,
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: isMobile ? "40px 10px 100px" : "160px 20px 240px",
-            boxSizing: "border-box",
-          }}
-        >
-          <section
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: isMobile ? 20 : 28,
-              width: "100%",
-              maxWidth: 960,
-            }}
-          >
-            <p style={LF_SB12}>Programs</p>
-            <h1
-              style={{
-                fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-                fontSize: isMobile ? 40 : 64,
-                fontWeight: 400,
-                lineHeight: "1.1",
-                color: "#222",
-                margin: 0,
-              }}
-            >
-              {HERO_COPY}
-            </h1>
-            <p style={{ ...LF_REG18, maxWidth: 548 }}>{HERO_SUPPORT}</p>
-          </section>
+        <SectionRow id="programs-path" title="The Path">
+          <p className="longform-text">
+            One sequence, three steps. We read the evidence before we design anything, build only what it calls for, and
+            stay close once the brand is live.
+          </p>
+          <NumberedList items={PATH} />
+        </SectionRow>
 
-          <SectionRow title="The Path" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                One sequence, three steps. We read the evidence before we design anything, build only what it calls for,
-                and stay close once the brand is live.
-              </p>
-            </Lead>
-            <NumberedList items={PATH} mobile={isMobile} />
-          </SectionRow>
+        <SectionRow id="programs-diagnose" title="Diagnose">
+          <p className="longform-text">
+            The Loved or Lost Diagnostic. We read what your customers actually say about you, at scale, and find where
+            they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit with
+            your leadership and decide what the brand must keep, and what it must stop saying.
+          </p>
+          <NumberedList items={DIAGNOSTIC_ITEMS} />
+          <p className="longform-text">
+            You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
+            you that too.
+          </p>
+          <p className="longform-text">
+            The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
+            Atla Brand Program if you continue within 60 days.
+          </p>
+        </SectionRow>
 
-          <SectionRow title="Diagnose" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                The Loved or Lost Diagnostic. We read what your customers actually say about you, at scale, and find where
-                they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit
-                with your leadership and decide what the brand must keep, and what it must stop saying.
-              </p>
-            </Lead>
-            <NumberedList items={DIAGNOSTIC_ITEMS} mobile={isMobile} />
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
-                you that too.
-              </p>
-              <p style={LF_REG18}>
-                The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to
-                the Atla Brand Program if you continue within 60 days.
-              </p>
-            </Lead>
-          </SectionRow>
+        <SectionRow id="programs-build" title="Build">
+          <p className="longform-text">
+            The Atla Brand Program. Three levels, chosen from the roadmap, with the scope fixed before work starts.
+            Strategy decisions come first, design decisions second, production last.
+          </p>
+          <NumberedList items={PROGRAM_LEVELS} />
+        </SectionRow>
 
-          <SectionRow title="Build" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                The Atla Brand Program. Three levels, chosen from the roadmap, with the scope fixed before work starts.
-                Strategy decisions come first, design decisions second, production last.
-              </p>
-            </Lead>
-            <NumberedList items={PROGRAM_LEVELS} mobile={isMobile} />
-          </SectionRow>
+        <SectionRow id="programs-steward" title="Steward">
+          <p className="longform-text">
+            Brand Stewardship. A monthly engagement after launch. We review new work, extend the system as the company
+            grows, and help every team and partner use the brand the same way.
+          </p>
+        </SectionRow>
 
-          <SectionRow title="Steward" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                Brand Stewardship. A monthly engagement after launch. We review new work, extend the system as the company
-                grows, and help every team and partner use the brand the same way.
-              </p>
-            </Lead>
-          </SectionRow>
+        <SectionRow id="programs-proof" title="Proof">
+          <NumberedList items={PROOF} />
+        </SectionRow>
 
-          <SectionRow title="Proof" mobile={isMobile}>
-            <NumberedList items={PROOF} mobile={isMobile} />
-          </SectionRow>
-
-          <SectionRow title="Start" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>Atla*. Senior team, founder at the table, no handoff chain.</p>
-              <p style={LF_REG18}>
-                Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next
-                step.
-              </p>
-              <a href="/contact" style={ctaStyle}>
-                Start a project
-              </a>
-            </Lead>
-          </SectionRow>
-        </main>
+        <SectionRow id="programs-start" title="Start">
+          <p className="longform-text">Atla*. Senior team, founder at the table, no handoff chain.</p>
+          <p className="longform-text">
+            Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next step.
+          </p>
+          <a href="/contact" className="brief-primary">
+            Start a project
+          </a>
+        </SectionRow>
       </div>
-
-      <AtlaFooter />
-    </div>
+    </PageShell>
   );
 }

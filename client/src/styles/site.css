@@ -1244,3 +1244,47 @@ body {
 @media (min-width: 768px) {
   .site-root .longform-section__title { font-size: 28px; }
 }
+
+/* Numbered rows (Programs): mono index, title, muted body. */
+.site-root .numbered-list {
+  width: 100%;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.site-root .numbered-list__item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 20px 0;
+  border-top: 1px solid var(--site-line);
+}
+.site-root .numbered-list__text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.site-root .numbered-list__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.site-root .numbered-list__body {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--site-muted);
+  text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .site-root .numbered-list__item { grid-template-columns: 56px minmax(0, 1fr); gap: 16px; padding: 24px 0; }
+  .site-root .numbered-list__title { font-size: 26px; }
+}
+
+/* /hospitality keeps its editorial layout (JP, 2026-10-23); only these two marks need dark mode help. */
+.site-root .hospitality-award { mix-blend-mode: multiply; }
+@media (prefers-color-scheme: dark) {
+  /* The outlined wordmark SVG is drawn in #111; invert it to read as ink on the dark page. */
+  .site-root .hospitality-wordmark { filter: invert(1); }
+  /* Multiply would turn the award marks black on a dark page; sit them on a small light chip instead. */
+  .site-root .hospitality-award { mix-blend-mode: normal; background: #fff; border-radius: 4px; padding: 2px; box-sizing: border-box; }
+}
