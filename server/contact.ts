@@ -140,7 +140,7 @@ function foreignPostSource(req: Request): string | null {
   }
 }
 
-type AttioResult<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
+export type AttioResult<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
 
 /** POST to Attio. `parse` turns the JSON body into T, or returns undefined when the shape is not what we expect. */
 async function attio<T>(apiKey: string, path: string, body: unknown, parse?: (json: unknown) => T | undefined): Promise<AttioResult<T>> {
@@ -179,7 +179,10 @@ const recordId = (record: unknown): string | undefined => {
 };
 
 /** Find the person by email; create one only when no record matches. Never edits an existing record. */
-async function findOrCreatePerson(apiKey: string, payload: ContactPayload): Promise<AttioResult<{ recordId: string; created: boolean }>> {
+export async function findOrCreatePerson(
+  apiKey: string,
+  payload: Pick<ContactPayload, "name" | "email">,
+): Promise<AttioResult<{ recordId: string; created: boolean }>> {
   const found = await attio(
     apiKey,
     "/objects/people/records/query",
@@ -205,6 +208,13 @@ async function findOrCreatePerson(apiKey: string, payload: ContactPayload): Prom
   return { ok: true, data: { recordId: created.data, created: true } };
 }
 
+/** Attach a plaintext note to a person record. Any 2xx means the note landed; the body is not needed. */
+export function addPersonNote(apiKey: string, personRecordId: string, title: string, content: string): Promise<AttioResult<true>> {
+  return attio<true>(apiKey, "/notes", {
+    data: { parent_object: "people", parent_record_id: personRecordId, title, format: "plaintext", content },
+  });
+}
+
 export async function deliverContactToAttio(apiKey: string, payload: ContactPayload): Promise<AttioResult<{ recordId: string }>> {
   const person = await findOrCreatePerson(apiKey, payload);
   if (!person.ok) return person;
@@ -222,16 +232,7 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
     payload.message,
   ].filter((line): line is string => line !== null);
 
-  // Any 2xx means the note landed; the body is not needed.
-  const note = await attio(apiKey, "/notes", {
-    data: {
-      parent_object: "people",
-      parent_record_id: person.data.recordId,
-      title: `Website inquiry (${payload.source ?? "atla.design/contact"})`,
-      format: "plaintext",
-      content: lines.join("\n"),
-    },
-  });
+  const note = await addPersonNote(apiKey, person.data.recordId, `Website inquiry (${payload.source ?? "atla.design/contact"})`, lines.join("\n"));
   if (!note.ok) {
     return { ...note, error: `note failed for record ${person.data.recordId} (person ${person.data.created ? "created" : "matched"}): ${note.error}` };
   }
