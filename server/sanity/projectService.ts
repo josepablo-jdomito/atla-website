@@ -1,4 +1,5 @@
 import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "../../shared/schema.ts";
+import { resolveProjectFacets } from "../../shared/projectFacets.ts";
 import { getJournalSanityClient, isJournalSanityConfigured } from "./journalClient.ts";
 
 type SanityProject = {
@@ -25,6 +26,10 @@ type SanityProject = {
   keywords?: unknown;
   service?: unknown;
   services?: unknown;
+  sector?: unknown;
+  disciplines?: unknown;
+  stage?: unknown;
+  searchTerms?: unknown;
   vimeoVideos?: unknown;
   videoFiles?: unknown;
   mediaItems?: unknown;
@@ -146,6 +151,10 @@ const PROJECT_QUERY = `
     keywords,
     service,
     services,
+    sector,
+    disciplines,
+    stage,
+    searchTerms,
     vimeoVideos,
     mediaItems[]{
       mediaType,
@@ -528,6 +537,15 @@ function normalizeProject(project: SanityProject): Project {
   ) || "";
   const latitude = normalizeCoordinate(project.latitude) ?? null;
   const longitude = normalizeCoordinate(project.longitude) ?? null;
+  // The controlled facets; while a document has none, the fallback table by slug (shared/projectFacets.ts).
+  const facets = resolveProjectFacets({
+    slug: project.slug,
+    country,
+    sector: project.sector,
+    disciplines: project.disciplines,
+    stage: project.stage,
+    searchTerms: project.searchTerms,
+  });
 
   return {
     id: project._id,
@@ -542,6 +560,11 @@ function normalizeProject(project: SanityProject): Project {
     service: primaryService,
     services,
     tags,
+    sector: facets.sector,
+    disciplines: facets.disciplines,
+    stage: facets.stage,
+    place: facets.place,
+    searchTerms: facets.searchTerms,
     description: description || "",
     body,
     coverImage: project.coverImage || "",

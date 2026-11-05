@@ -5,21 +5,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ProjectLite } from "../../shared/rankProjects.ts";
 import { registerAskRoute, type AskDeps } from "./route.ts";
 
-const project = (slug: string, industry: string, services: string[], tags: string[], year: number): ProjectLite => ({
+const project = (slug: string, sector: string, disciplines: string[], searchTerms: string[], year: number): ProjectLite => ({
   slug,
   title: slug,
-  industry,
-  region: "America",
-  services,
-  tags,
+  sector,
+  disciplines,
+  stage: "New brand",
+  place: "United States",
+  searchTerms,
   year,
   coverImage: "",
 });
 
 const FIXTURES: ProjectLite[] = [
-  project("the-bridge", "Hospitality", ["Branding", "Website"], ["hotel"], 2023),
-  project("pax-and-beneficia", "Food & Beverage", ["Branding", "Packaging"], ["wine", "spirits"], 2021),
-  project("nova", "SaaS", ["Website"], ["ai"], 2025),
+  project("the-bridge", "Hospitality & Travel", ["Brand Identity", "Website"], ["hotel"], 2023),
+  project("pax-and-beneficia", "Food & Drink", ["Brand Identity", "Packaging"], ["wine", "spirits"], 2021),
+  project("nova", "Technology & Digital", ["Website", "Brand Identity"], ["ai"], 2025),
 ];
 
 const AMBIGUOUS = "show me something with bold colors for a label";
