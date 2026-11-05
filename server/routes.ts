@@ -2,6 +2,7 @@ import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
+import { registerAskRoute } from "./ask/route.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
@@ -136,6 +137,7 @@ export async function registerRoutes(
   });
 
   registerContactRoute(app);
+  registerAskRoute(app);
 
   app.get("/api/admin/session", async (req, res) => {
     if (isProjectSanityConfigured()) {

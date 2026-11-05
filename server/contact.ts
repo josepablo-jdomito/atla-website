@@ -40,7 +40,7 @@ const LOG_EXCERPT_CHARS = 160;
 const RESULT_PATH = "/api/contact/result";
 
 /** Collapse line breaks and control characters so a value stays on one line. */
-const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029]+/g, " ").trim();
+export const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029]+/g, " ").trim();
 /** Keep line breaks in free text but drop other control characters. */
 const multiLine = (value: string) =>
   value
@@ -96,7 +96,7 @@ function headerValue(req: Request, name: string): string {
  * connecting client, so they are safe to key on. Anywhere else those headers are
  * whatever the client sent, so only the socket address is trusted.
  */
-function clientIp(req: Request): string {
+export function clientIp(req: Request): string {
   if (process.env.VERCEL === "1") {
     const platformIp = headerValue(req, "x-vercel-forwarded-for") || headerValue(req, "x-real-ip");
     if (platformIp) return platformIp;
