@@ -441,6 +441,7 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   .atla-home-card-image,
   .atla-home-title,
   .atla-symbol-float,
+  .atla-theme-switch-knob,
   .atla-time,
   .atla-footer-cta,
   .atla-menu-panel,
@@ -540,6 +541,10 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   }
 }
 
+.atla-theme-switch-knob {
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease;
+}
+
 .atla-header-link,
 .atla-footer-link {
   text-underline-offset: 4px;
@@ -588,4 +593,130 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
 }
 .atla-skip-link:focus {
   transform: none;
+}
+
+/* Work index: floating Explore pill + filter panel (WorkExplore.tsx). */
+.atla-explore {
+  --explore-bg: #fafafa;
+  --explore-ink: #222222;
+  --explore-line: rgba(34, 34, 34, 0.1);
+  position: fixed;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  width: min(1120px, calc(100vw - 32px));
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  font-family: "Libre Franklin", Helvetica, sans-serif;
+}
+
+/* The filter columns carry light-surface inline colors, so dark mode inverts
+   the whole widget the same way .atla-dark-surface does. */
+.atla-explore[data-theme="dark"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.atla-explore-pill,
+.atla-explore-panel {
+  pointer-events: auto;
+  border: 1px solid var(--explore-line);
+  background: var(--explore-bg);
+  color: var(--explore-ink);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.atla-explore-pill {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 160ms ease-out;
+}
+
+.atla-explore-pill:active {
+  transform: scale(0.97);
+}
+
+.atla-explore-pill:focus-visible {
+  outline: 2px solid var(--explore-ink);
+  outline-offset: 3px;
+}
+
+.atla-explore-count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--explore-ink);
+  color: var(--explore-bg);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.atla-explore-panel {
+  width: 100%;
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+  border-radius: 16px;
+  transform-origin: bottom center;
+  animation: atla-explore-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.atla-explore-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--explore-line);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.48px;
+  text-transform: uppercase;
+}
+
+.atla-explore-panel-head p {
+  margin: 0;
+}
+
+.atla-explore-panel-head button {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+@keyframes atla-explore-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@media (max-width: 767px) {
+  .atla-explore-panel {
+    max-height: 72vh;
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atla-explore-panel {
+    animation: none;
+  }
 }
