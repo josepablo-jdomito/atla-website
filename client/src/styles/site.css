@@ -935,15 +935,33 @@ html body {
   min-height: 48px;
   align-items: center;
   gap: 10px;
-  padding: 0 22px;
+  padding: 0 18px 0 20px;
   border-radius: 999px;
   font: inherit;
   font-size: 15px;
   font-weight: 500;
-  cursor: pointer;
-  transition: transform 160ms var(--site-ease);
+  cursor: text;
+  margin: 0;
+  transition: width 200ms var(--site-ease);
 }
-.site-explore__pill:active { transform: scale(0.97); }
+.site-explore__input {
+  width: 7ch;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  outline: none;
+  transition: width 200ms var(--site-ease);
+}
+.site-explore__input::placeholder { color: var(--site-ink); opacity: 1; }
+.site-explore__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.site-explore[data-open="true"] .site-explore__input,
+.site-explore__input:not(:placeholder-shown) { width: min(32ch, 60vw); }
+.site-explore[data-open="true"] .site-explore__input::placeholder { color: var(--site-muted); }
+.site-explore__head-actions { display: flex; gap: 20px; }
+.work-wall__note { margin: 0 0 16px; font-size: 14px; color: var(--site-muted); }
 .site-explore button:focus-visible {
   outline: 2px solid var(--site-accent);
   outline-offset: 3px;

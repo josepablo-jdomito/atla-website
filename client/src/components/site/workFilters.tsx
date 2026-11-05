@@ -54,12 +54,19 @@ export function filtersFromSearch(search: string): Filters {
   return filters;
 }
 
-/** Filters → the query string for the wall, "" when nothing is active. */
-export function searchFromFilters(filters: Filters): string {
+/** The typed search (`?q=coffee shop`), trimmed; "" when absent. */
+export function queryFromSearch(search: string): string {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  return (params.get("q") ?? "").trim().slice(0, 120);
+}
+
+/** Filters and query → the query string for the wall, "" when nothing is active. */
+export function searchFromFilters(filters: Filters, query = ""): string {
   const params = new URLSearchParams();
+  if (query.trim()) params.set("q", query.trim());
   for (const key of FILTER_KEYS) if (filters[key] !== ALL) params.set(key, filters[key]);
-  const query = params.toString();
-  return query ? `?${query}` : "";
+  const out = params.toString();
+  return out ? `?${out}` : "";
 }
 
 /** The four facets with their values, for the header peek and the Explore panel. */

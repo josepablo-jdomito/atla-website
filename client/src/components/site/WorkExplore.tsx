@@ -4,18 +4,27 @@ import { siteCopy } from "@/content/siteCopy";
 
 const { home } = siteCopy;
 
-// Floating "Explore" pill for the archive (reference: littleplains.com/search), from PR #31.
-// The filters open in a panel above the pill, so the work starts right under its label.
-// Portaled to <body> so position: fixed is never trapped by a transformed ancestor.
-// v2: colors come from the --site-* tokens, so dark mode needs no invert filter.
-
+/**
+ * The floating Explore pill (reference: littleplains.com), from PR #31, the
+ * component JP kept on 2026-11-05. Two things live in it: a text field, so
+ * typing "coffee shop" narrows the wall as you type, and the filter panel,
+ * which opens above the pill when the field has focus. Portaled to <body>
+ * so position: fixed is never trapped by a transformed ancestor.
+ */
 export function WorkExplore({
+  query,
+  onQuery,
+  onClear,
   activeCount,
   visible,
   children,
 }: {
+  query: string;
+  onQuery: (value: string) => void;
+  /** Clears the typed search and every filter. */
+  onClear: () => void;
   activeCount: number;
-  /** The pill only shows while the archive is on screen. */
+  /** The pill only shows while the wall is on screen. */
   visible: boolean;
   children: ReactNode;
 }) {
@@ -23,7 +32,7 @@ export function WorkExplore({
   const [mounted, setMounted] = useState(false);
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => setMounted(true), []);
   // Hidden means hidden for keyboards too (React 18 has no `inert` prop).
@@ -37,7 +46,7 @@ export function WorkExplore({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
-        triggerRef.current?.focus();
+        inputRef.current?.blur();
       }
     };
     const onPointerDown = (event: PointerEvent) => {
@@ -54,33 +63,55 @@ export function WorkExplore({
   if (!mounted) return null;
 
   return createPortal(
-    <div ref={rootRef} className="site-explore" data-visible={visible}>
+    <div ref={rootRef} className="site-explore" data-visible={visible} data-open={open}>
       {open ? (
         <div id={panelId} role="dialog" aria-label={home.exploreDialog} className="site-explore__panel">
           <div className="site-explore__head">
             <p>{home.exploreDialog}</p>
-            <button type="button" onClick={() => setOpen(false)}>
-              {home.close}
-            </button>
+            <div className="site-explore__head-actions">
+              {query || activeCount > 0 ? (
+                <button type="button" onClick={onClear} data-action="clear">
+                  {home.results.clear}
+                </button>
+              ) : null}
+              <button type="button" onClick={() => setOpen(false)}>
+                {home.close}
+              </button>
+            </div>
           </div>
           {children}
         </div>
       ) : null}
-      <button
-        ref={triggerRef}
-        type="button"
+      <form
+        role="search"
         className="site-explore__pill"
-        aria-expanded={open}
-        aria-controls={open ? panelId : undefined}
-        onClick={() => setOpen((value) => !value)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          inputRef.current?.blur();
+          setOpen(false);
+        }}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none">
           <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
           <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
-        <span>{home.explore}</span>
+        <input
+          ref={inputRef}
+          type="search"
+          className="site-explore__input"
+          value={query}
+          placeholder={home.explore}
+          aria-label={home.askLabel}
+          aria-expanded={open}
+          aria-controls={open ? panelId : undefined}
+          autoComplete="off"
+          enterKeyHint="search"
+          onChange={(event) => onQuery(event.target.value)}
+          onFocus={() => setOpen(true)}
+          onClick={() => setOpen(true)}
+        />
         {activeCount > 0 ? <span className="site-explore__count">{activeCount}</span> : null}
-      </button>
+      </form>
     </div>,
     document.body,
   );

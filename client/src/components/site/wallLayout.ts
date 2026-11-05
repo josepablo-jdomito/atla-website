@@ -94,9 +94,10 @@ function shuffled<T>(items: T[], random: () => number): T[] {
  * projects and every project's pieces, so each load of the page deals a new
  * wall (JP, 2026-11-05).
  */
-export function buildWallSequence(projects: SiteProject[], seed = 0): WallTile[] {
-  const random = seed ? seededRandom(seed) : null;
-  let decks = siteOrder(projects)
+export function buildWallSequence(projects: SiteProject[], seed = 0, ordered = false): WallTile[] {
+  const random = seed && !ordered ? seededRandom(seed) : null;
+  // `ordered` keeps the given order (search results ranked best first) and each cover first.
+  let decks = (ordered ? projects : siteOrder(projects))
     .filter(isClientWork)
     .map(tilesOf)
     .filter((deck) => deck.length > 0);

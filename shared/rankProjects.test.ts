@@ -49,29 +49,28 @@ describe("rankProjects", () => {
     expect(projects.map((x) => x.slug)).toEqual(["nova", "angeles-wellness", "the-bridge", "ando", "pax-and-beneficia", "kin"]);
   });
 
-  it("closest uses the synonym map before recency", () => {
+  it("synonyms score as direct matches, one point per project, then recency", () => {
     const { projects, closest } = rankProjects("a cafe in Lisbon", FIXTURES);
-    expect(closest).toBe(true);
-    // cafe -> Food & Beverage (two words overlap) and Hospitality (one), then recency.
-    expect(projects.slice(0, 3).map((x) => x.slug)).toEqual(["pax-and-beneficia", "the-bridge", "old-table"]);
-    expect(projects).toHaveLength(6);
+    expect(closest).toBe(false);
+    // cafe -> hospitality, food, beverage: the Hospitality and Food & Beverage projects, newest first.
+    expect(projects.map((x) => x.slug)).toEqual(["the-bridge", "pax-and-beneficia", "old-table"]);
   });
 
   it("maps the two-word synonym real estate", () => {
     const { projects, closest } = rankProjects("real estate developer", FIXTURES);
-    expect(closest).toBe(true);
-    expect(projects.slice(0, 2).map((x) => x.slug)).toEqual(["the-bridge", "old-table"]);
+    expect(closest).toBe(false);
+    expect(projects.map((x) => x.slug)).toEqual(["the-bridge", "old-table"]);
   });
 
-  it("fintech with no direct hit returns the tech industries first", () => {
+  it("fintech reaches the tech industries through the synonym map", () => {
     const { projects, closest } = rankProjects("fintech", FIXTURES);
-    expect(closest).toBe(true);
+    expect(closest).toBe(false);
     // SaaS and Digital are the live tech-ish industries.
     expect(projects.slice(0, 2).map((x) => x.industry)).toEqual(["SaaS", "Digital"]);
     expect(projects.slice(0, 2).map((x) => x.slug)).toEqual(["nova", "kin"]);
   });
 
-  it("counts tag overlap in the closest fallback", () => {
+  it("a synonym can hit through a tag alone", () => {
     // "residence" maps to hospitality; only a tag says so here.
     const tagged = [...FIXTURES, p("casa-norte", "Unspecified", ["Branding"], ["hospitality"], 2010)];
     const { projects } = rankProjects("a residence", tagged);

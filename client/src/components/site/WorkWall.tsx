@@ -1,9 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearch } from "wouter";
-import { useSiteProjects } from "@/components/site/siteProjects";
+import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
 import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
-import { WorkFilters, activeFilterCount, filtersFromSearch, matchesFilters, searchFromFilters, type Filters } from "@/components/site/workFilters";
+import {
+  ALL as ALL_VALUE,
+  WorkFilters,
+  activeFilterCount,
+  filtersFromSearch,
+  matchesFilters,
+  queryFromSearch,
+  searchFromFilters,
+  type Filters,
+} from "@/components/site/workFilters";
+import { rankProjects } from "@shared/rankProjects";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { siteCopy } from "@/content/siteCopy";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
@@ -116,34 +126,91 @@ export function WorkWall() {
   const { projects } = useSiteProjects();
   const columns = useColumns();
   const reduced = useReducedMotion();
-  // The URL is the filter state: /?industry=Hospitality is shareable and the header peek links to it.
+  // The URL is the state: /?q=coffee+shop&industry=Hospitality is shareable.
   const search = useSearch();
   const filters = useMemo(() => filtersFromSearch(search), [search]);
+  const urlQuery = useMemo(() => queryFromSearch(search), [search]);
+  const [draft, setDraft] = useState(urlQuery);
   const [shown, setShown] = useState(PAGE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // One fresh shuffle per page load; the prerender (no window) keeps the site order.
   const [seed] = useState(() => (typeof window === "undefined" ? 0 : 1 + Math.floor(Math.random() * 2 ** 31)));
   const filtered = useMemo(() => projects.filter((project) => matchesFilters(project, filters)), [projects, filters]);
-  const sequence = useMemo(() => buildWallSequence(filtered, seed), [filtered, seed]);
+
+  // Typing narrows the wall as you go: the same ranking the search bar uses, in the browser.
+  // When nothing scores locally, /api/ask gets one try (synonyms, AI); its answer replaces "closest".
+  const [remote, setRemote] = useState<{ query: string; slugs: string[]; closest: boolean } | null>(null);
+  const ranked = useMemo(() => {
+    if (!urlQuery) return { projects: filtered, closest: false };
+    if (remote && remote.query === urlQuery && remote.slugs.length > 0) {
+      const bySlug = new Map(filtered.map((project) => [project.slug, project]));
+      const hits = remote.slugs.map((slug) => bySlug.get(slug)).filter((p): p is SiteProjectT => Boolean(p));
+      if (hits.length > 0) return { projects: hits, closest: remote.closest };
+    }
+    return rankProjects(urlQuery, filtered) as { projects: SiteProjectT[]; closest: boolean };
+  }, [urlQuery, filtered, remote]);
+  const sequence = useMemo(
+    () => buildWallSequence(ranked.projects, seed, Boolean(urlQuery)),
+    [ranked.projects, seed, urlQuery],
+  );
+
+  // Draft → URL after a short pause, so each keystroke does not rewrite history.
+  useEffect(() => {
+    if (draft === urlQuery) return;
+    const timer = window.setTimeout(() => {
+      window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(filters, draft)}`);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+      setShown(PAGE);
+    }, 220);
+    return () => window.clearTimeout(timer);
+  }, [draft, urlQuery, filters]);
+  // The URL can change under us (Back, a link); keep the field in step.
+  useEffect(() => setDraft(urlQuery), [urlQuery]);
+
+  useEffect(() => {
+    if (!urlQuery || urlQuery.length < 3 || !ranked.closest) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: urlQuery }),
+        signal: controller.signal,
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((body: { kind?: string; projects?: Array<{ slug: string }>; closest?: boolean } | null) => {
+          if (body?.kind === "results" && Array.isArray(body.projects)) {
+            setRemote({ query: urlQuery, slugs: body.projects.map((p) => p.slug), closest: body.closest === true });
+          }
+        })
+        .catch(() => undefined);
+    }, 400);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [urlQuery, ranked.closest]);
 
   // The pool loops only once the visitor has seen all of it; each pass starts elsewhere.
   const tiles = useMemo(() => {
     const all: Array<WallTile & { key: string }> = [];
     if (sequence.length === 0) return all;
-    for (let pass = 0; all.length < shown; pass += 1) {
+    // A search shows each piece once; only the open wall loops.
+    const limit = urlQuery ? Math.min(shown, sequence.length) : shown;
+    for (let pass = 0; all.length < limit; pass += 1) {
       for (const tile of wallPass(sequence, pass)) {
-        if (all.length >= shown) break;
+        if (all.length >= limit) break;
         all.push({ ...tile, key: `${pass}:${tile.src}` });
       }
     }
     return all;
-  }, [sequence, shown]);
+  }, [sequence, shown, urlQuery]);
   const placed = useMemo(() => placeInColumns(tiles, columns), [tiles, columns]);
   const eagerKeys = useMemo(() => new Set(tiles.slice(0, EAGER).map((tile) => tile.key)), [tiles]);
 
   const changeFilters = (next: Filters) => {
-    window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next)}`);
+    window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next, urlQuery)}`);
     window.dispatchEvent(new PopStateEvent("popstate"));
     setShown(PAGE);
     window.scrollTo({ top: 0 });
@@ -166,6 +233,11 @@ export function WorkWall() {
 
   return (
     <section className="work-wall" aria-label="Work">
+      {urlQuery && ranked.closest && sequence.length > 0 ? (
+        <p className="work-wall__note" aria-live="polite">
+          {siteCopy.home.results.closest}
+        </p>
+      ) : null}
       {sequence.length === 0 ? (
         <p className="work-wall__empty">{siteCopy.home.results.empty}</p>
       ) : (
@@ -180,7 +252,16 @@ export function WorkWall() {
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
-      <WorkExplore activeCount={activeFilterCount(filters)} visible>
+      <WorkExplore
+        query={draft}
+        onQuery={setDraft}
+        onClear={() => {
+          setDraft("");
+          changeFilters({ ...filters, region: ALL_VALUE, industry: ALL_VALUE, service: ALL_VALUE, year: ALL_VALUE });
+        }}
+        activeCount={activeFilterCount(filters)}
+        visible
+      >
         <WorkFilters projects={projects} filters={filters} onChange={changeFilters} />
       </WorkExplore>
     </section>

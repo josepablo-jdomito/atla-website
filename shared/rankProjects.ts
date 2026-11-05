@@ -3,7 +3,8 @@
  * way offline; it has no server dependencies.
  *
  * A query token scores against each project field it appears in: title 3,
- * industry 3, services 2, tags 2, region 1. When nothing scores, the visitor
+ * industry 3, services 2, tags 2, region 1; a synonym of a query word scores 1
+ * per field, so "coffee" reaches the hospitality work. When nothing scores, the visitor
  * still gets work back: the 6 projects whose industry, services or tags overlap
  * the query (through a small synonym map), else the 6 most recent, flagged
  * `closest` so the UI can label them "Closest work".
@@ -51,7 +52,25 @@ const SYNONYMS: Record<string, string[]> = {
   residence: ["hospitality"],
   fashion: ["consumer"],
   retail: ["consumer"],
+  shop: ["hospitality"],
+  store: ["consumer"],
+  bar: ["hospitality", "food", "beverage"],
+  bakery: ["hospitality", "food", "beverage"],
+  wellness: ["consumer", "hospitality"],
+  spa: ["hospitality"],
+  app: ["saas", "digital"],
+  startup: ["saas", "digital"],
 };
+
+/** Query words widened by the synonym map: the words a visitor types next to the words the portfolio uses. */
+function widen(queryWords: string[]): Set<string> {
+  const joined = ` ${queryWords.join(" ")} `;
+  const wanted = new Set<string>();
+  for (const [term, targets] of Object.entries(SYNONYMS)) {
+    if (joined.includes(` ${term} `)) targets.forEach((target) => wanted.add(target));
+  }
+  return wanted;
+}
 
 // Whitespace, ASCII punctuation, Latin-1 punctuation and general punctuation; letters of any script survive.
 const SEPARATORS = /[\s!-\/:-@[-`{-~\u00a1-\u00bf\u00d7\u00f7\u2000-\u206f]+/;
@@ -73,6 +92,8 @@ const byYearDesc = (a: ProjectLite, b: ProjectLite) => (b.year || 0) - (a.year |
 export function rankProjects(query: string, projects: ProjectLite[]): RankResult {
   const queryWords = words(query);
   const queryTokens = queryWords.filter((token) => !STOPWORDS.has(token));
+  const synonyms = widen(queryWords);
+  queryTokens.forEach((token) => synonyms.delete(token));
 
   const scored = projects.map((project) => {
     const fields: Array<[Set<string>, number]> = [
@@ -86,6 +107,13 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
     for (const token of queryTokens) {
       for (const [field, weight] of fields) if (field.has(token)) score += weight;
     }
+    // A synonym hit counts for one, once per project: "coffee" reaches the hospitality
+    // and food projects, below anything the visitor named outright.
+    let synonymHit = false;
+    synonyms.forEach((token) => {
+      if (fields[1][0].has(token) || fields[2][0].has(token) || fields[3][0].has(token)) synonymHit = true;
+    });
+    if (synonymHit) score += 1;
     return { project, score };
   });
 
@@ -97,11 +125,8 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
 
   // Closest work: overlap on industry, services and tags, query words widened by the synonym map.
   // Recency only orders ties, so with no overlap at all it is the 6 most recent.
-  const joined = ` ${queryWords.join(" ")} `;
   const wanted = new Set(queryTokens);
-  for (const [term, targets] of Object.entries(SYNONYMS)) {
-    if (joined.includes(` ${term} `)) targets.forEach((target) => wanted.add(target));
-  }
+  synonyms.forEach((token) => wanted.add(token));
   const overlap = (project: ProjectLite) => {
     const facets = tokenSet([project.industry, ...project.services, ...project.tags]);
     let count = 0;
