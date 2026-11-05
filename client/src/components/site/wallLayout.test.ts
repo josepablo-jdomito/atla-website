@@ -94,6 +94,28 @@ describe("buildWallSequence", () => {
   });
 });
 
+describe("buildWallSequence shuffle", () => {
+  const pool = Array.from({ length: 8 }, (_, i) =>
+    project(`s${i}`, `https://cdn.sanity.io/images/p/production/s${i}-1600x900.jpg`, {
+      images: [`https://cdn.sanity.io/images/p/production/s${i}b-1200x1600.jpg`],
+    }),
+  );
+  it("keeps the site order with seed 0 and deals a different wall per seed", () => {
+    const base = buildWallSequence(pool).map((t) => t.src);
+    const a = buildWallSequence(pool, 7).map((t) => t.src);
+    const b = buildWallSequence(pool, 8).map((t) => t.src);
+    expect(base[0]).toContain("s0-");
+    expect(a).not.toEqual(base);
+    expect(a).not.toEqual(b);
+    expect([...a].sort()).toEqual([...base].sort());
+  });
+  it("is stable for one seed and still never repeats a project back to back", () => {
+    const a = buildWallSequence(pool, 42);
+    expect(buildWallSequence(pool, 42)).toEqual(a);
+    for (let i = 1; i < a.length; i += 1) expect(a[i].slug).not.toBe(a[i - 1].slug);
+  });
+});
+
 describe("placeInColumns", () => {
   it("puts each tile in the shortest column", () => {
     const tiles = [{ ratio: 1.78 }, { ratio: 1.78 }, { ratio: 0.75 }, { ratio: 1.78 }, { ratio: 1.78 }];

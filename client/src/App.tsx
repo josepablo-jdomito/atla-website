@@ -8,6 +8,7 @@ import { AppRouter } from "./AppRouter";
 const NotFound = lazy(() => import("@/pages/not-found"));
 const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
 const About = lazy(() => import("@/pages/About"));
+const Ventures = lazy(() => import("@/pages/Ventures"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const Services = lazy(() => import("@/pages/Services"));
 const Home = lazy(() => import("@/pages/Home"));
@@ -51,6 +52,7 @@ function Router() {
         NotFound={NotFound}
         ProjectsAdmin={ProjectsAdmin}
         About={About}
+        Ventures={Ventures}
         Contact={Contact}
         Services={Services}
         Home={Home}

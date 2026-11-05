@@ -579,6 +579,13 @@ async function prerenderRoutes() {
       structuredData: ORGANIZATION_SCHEMA,
     },
     {
+      pathname: "/ventures",
+      title: formatMetaTitle("Ventures", "Atla"),
+      description: "Companies Atla is involved in beyond client work.",
+      includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
+    },
+    {
       pathname: "/about",
       title: formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm"),
       description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",

@@ -8,6 +8,7 @@ type AppRouterProps = {
   NotFound: RouteComponent;
   ProjectsAdmin: RouteComponent;
   About: RouteComponent;
+  Ventures: RouteComponent;
   Contact: RouteComponent;
   Services: RouteComponent;
   Home: RouteComponent;
@@ -31,6 +32,7 @@ export function AppRouter({
   NotFound,
   ProjectsAdmin,
   About,
+  Ventures,
   Contact,
   Services,
   Home,
@@ -54,6 +56,7 @@ export function AppRouter({
       <Route path="/" component={Home} />
       <Route path="/work" component={Home} />
       <Route path="/about" component={About} />
+      <Route path="/ventures" component={Ventures} />
       <Route path="/contact" component={Contact} />
       <Route path="/services" component={Services} />
       <Route path="/hospitality" component={AtlaHospitality} />

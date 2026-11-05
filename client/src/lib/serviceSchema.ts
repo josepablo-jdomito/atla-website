@@ -55,116 +55,112 @@ export function buildServiceSchema({ path, name, description, faqItems }: Servic
 export const INDUSTRY_SERVICE_PAGES = {
   hospitality: {
     path: "/hospitality-branding",
-    name: "Hospitality branding that works across every guest touchpoint",
+    name: "Hospitality branding that holds from the booking page to the room",
     description:
-      "Brand strategy, identity systems, digital design, and environmental guidelines for hotels, restaurants, and travel brands.",
+      "Brand strategy, identity, digital design and environmental guidelines for hotels, restaurants and travel brands.",
     faqItems: [
       {
         question: "How long does a full hospitality branding project take?",
         // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer:
-          "It depends on the number of touchpoints, locations and approval layers. We set the timeline with you during scoping, before work starts.",
+          "It depends on how many touchpoints, locations and approval layers there are. We set the timeline with you during scoping, before work starts.",
       },
       {
         question: "Do you work with properties that are already open?",
         answer:
-          "Yes. Repositioning an existing property is a different challenge than launching a new one — the brand needs to evolve without confusing returning guests.",
+          "Yes. Repositioning an open property is a different job from launching a new one. We keep what returning guests recognize and change the rest without confusing them.",
       },
       {
         question: "Can you handle environmental and signage design?",
         answer:
-          "We design the system and provide production-ready files and specifications for signage vendors. We do not fabricate or install, but we direct the process.",
+          "We design the system and give your signage vendors production-ready files and specs. We do not fabricate or install. We direct the people who do.",
       },
       {
         question: "What if we already have a logo but need everything else?",
         answer:
-          "That is common. We evaluate whether the existing mark can anchor a full system or whether it needs refinement, then build from there.",
+          "That is common. We check whether the mark can carry a full system or needs refinement, then build from there.",
       },
     ],
   },
   cpg: {
     path: "/cpg-branding",
-    name: "CPG branding and packaging that performs on shelf and screen",
+    name: "CPG branding and packaging for the shelf and the screen",
     description:
-      "Brand strategy, visual identity, packaging design, and launch-ready digital assets for consumer packaged goods companies.",
+      "Brand strategy, identity, packaging design and launch assets for consumer packaged goods companies.",
     faqItems: [
       {
         question: "Do you handle structural packaging design?",
         answer:
-          "We design graphics and visual systems. For structural and dieline engineering, we coordinate with your packaging supplier or recommended specialist partners.",
+          "We design the graphics and the visual system. For structure and dielines, we work with your packaging supplier or a specialist we recommend.",
       },
       {
         question: "Can you work with existing manufacturer specs?",
-        answer:
-          "Yes. We design within substrate, print method, and dieline constraints provided by your manufacturer.",
+        answer: "Yes. We design inside the substrate, print method and dieline your manufacturer gives us.",
       },
       {
         question: "What about Amazon and DTC listing design?",
         answer:
-          "Included. We design photography direction, A+ content layouts, and storefront templates as part of launch-ready assets.",
+          "Included. Photography direction, A+ content layouts and storefront templates are part of the launch assets.",
       },
       {
         question: "How do you handle line extensions?",
         // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
-        answer:
-          "The initial system is built for extensibility, so a new variant extends it instead of reopening it.",
+        answer: "We build the first system to stretch. A new variant extends it instead of reopening it.",
       },
     ],
   },
   wellness: {
     path: "/wellness-branding",
-    name: "Wellness branding built for trust, clarity, and real connection",
+    name: "Wellness branding people can trust",
     description:
-      "Brand strategy, identity, packaging, and digital design for wellness and health companies balancing credibility with emotional resonance.",
+      "Brand strategy, identity, packaging and digital design for wellness and health companies that need to feel credible and warm at once.",
     faqItems: [
       {
         question: "Do you work with health tech and digital health platforms?",
         answer:
-          "Yes. We have delivered brand systems for health-tech teams where identity needs to hold across app UI, marketing site, and investor materials.",
+          "Yes. We have built brand systems for health-tech teams where the identity has to hold across the app, the marketing site and investor materials.",
       },
       {
         question: "Can you help with supplement packaging specifically?",
         answer:
-          "Yes. We support wellness packaging systems and launch assets, including SKU logic, hierarchy, and DTC-ready visual standards.",
+          "Yes. We do wellness packaging systems and launch assets, including SKU logic, hierarchy and DTC-ready visual standards.",
       },
       {
         question: "How do you handle messaging in regulated categories?",
         answer:
-          "We define messaging frameworks and flag claims that may need legal review. Final regulatory approval remains with your legal team.",
+          "We write the messaging framework and flag claims that may need legal review. Final regulatory approval stays with your legal team.",
       },
       {
         question: "What is different about wellness branding?",
         answer:
-          "The trust threshold is higher. Buyers are more skeptical and research-heavy, so visual and verbal signals must be precise, credible, and human at the same time.",
+          "The bar for trust is higher. Buyers are skeptical and do their research, so every visual and verbal signal has to be precise and still feel human.",
       },
     ],
   },
   saas: {
     path: "/saas-branding",
-    name: "SaaS branding that separates signal from noise",
-    description:
-      "Positioning, visual identity systems, web conversion architecture, and sales-ready materials for SaaS teams.",
+    name: "SaaS branding for software that needs to stand apart",
+    description: "Positioning, identity systems, website design and sales materials for SaaS teams.",
     faqItems: [
       {
         question: "Can you work with our existing product design system?",
         answer:
-          "Yes. We can align a new brand system to existing product tokens or extend the brand into a broader product expression where needed.",
+          "Yes. We can fit the new brand to your existing product tokens, or carry the brand further into the product where it needs it.",
       },
       {
         question: "Do you design actual product UI?",
         answer:
-          "We design brand-level interface language and component styling guidance. For deep UX workflows, we can collaborate with dedicated product design teams.",
+          "We design the brand side of the interface: the visual language and how components should look. For deep UX work, we partner with your product design team.",
       },
       {
         question: "What about pitch decks?",
         answer:
-          "Included in most SaaS scopes. We build master templates and key slides so internal teams can produce consistent deck updates.",
+          "Included in most SaaS scopes. We build a master template and the key slides, so your team can update the deck and keep it consistent.",
       },
       {
         question: "How fast can you move?",
         // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
-        answer:
-          "We scope the engagement around your launch or fundraising window, and run focused sprints when timing is tight.",
+        answer: "We scope the work around your launch or your raise, and run focused sprints when timing is tight.",
       },
     ],
   },

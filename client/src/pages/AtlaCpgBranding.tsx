@@ -23,97 +23,97 @@ export default function AtlaCpgBranding() {
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
-        eyebrow="CPG Branding"
-        h1="CPG branding and packaging that performs on shelf and screen"
+        eyebrow="CPG branding"
+        h1="CPG branding and packaging for the shelf and the screen"
         paragraphs={[
-          "Consumer packaged goods live in the most unforgiving brand environment. Three seconds on shelf, a thumbnail in marketplace listings, and a split-second decision in paid social.",
-          "We build CPG identities engineered for recognition at speed. Strategy, visual identity, packaging, and digital launch assets are developed as one system so nothing gets lost between strategy and retail execution.",
+          "A packaged product gets a glance on the shelf, a thumbnail on a marketplace and a thumb on social. That is all the time it gets.",
+          "We design CPG brands to be recognized fast. Strategy, identity, packaging and launch assets are one system, so nothing gets lost between the deck and the store.",
         ]}
         cta={
           <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
-      <LongformSection title="What CPG brands typically need from us">
-        <LongformSubTitle>Brand strategy and positioning</LongformSubTitle>
+      <LongformSection title="What CPG brands usually ask us for">
+        <LongformSubTitle>Strategy and positioning</LongformSubTitle>
         <LongformParagraph>
-          Category analysis, competitive mapping, audience definition, and messaging architecture. We define where your
-          product sits in market and why someone should reach for it.
+          Category analysis, competitive mapping, audience and messaging. We decide where the product sits and why
+          someone reaches for it.
         </LongformParagraph>
-        <LongformSubTitle>Packaging design systems</LongformSubTitle>
+        <LongformSubTitle>Packaging systems</LongformSubTitle>
         <LongformParagraph>
-          Primary and secondary packaging, label systems, retail-ready artwork, and production specifications built to
-          scale across SKUs without losing coherence.
+          Primary and secondary packaging, labels, retail artwork and production specs that stay consistent as the SKU
+          count grows.
         </LongformParagraph>
-        <LongformSubTitle>Brand identity beyond the package</LongformSubTitle>
+        <LongformSubTitle>The brand off the package</LongformSubTitle>
         <LongformParagraph>
-          Logo, typography, color, and visual language that hold across website, ads, social, and retail.
+          Logo, type, color and visual language for the website, ads, social and retail.
         </LongformParagraph>
-        <LongformSubTitle>Launch-ready digital assets</LongformSubTitle>
+        <LongformSubTitle>Launch assets</LongformSubTitle>
         <LongformParagraph>
-          E-commerce photography direction, Amazon and DTC listing design, social templates, and landing pages.
+          Ecommerce photography direction, Amazon and DTC listings, social templates and landing pages.
         </LongformParagraph>
       </LongformSection>
 
       <LongformSection title="Selected CPG work">
         <LongformParagraph>
-          <strong>Ando</strong> — Brand identity and packaging for a gummy supplement line built for retail visibility.{" "}
+          <strong>Ando</strong>. Identity and packaging for a gummy supplement line, built to be seen at retail.{" "}
           <a href="/projects/ando" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>TigreTigre</strong> —{" "}
+          <strong>TigreTigre</strong>{" "}
           <a href="/projects/tigretigre" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Reggie</strong> —{" "}
+          <strong>Reggie</strong>{" "}
           <a href="/projects/reggie" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Oxylife</strong> —{" "}
+          <strong>Oxylife</strong>{" "}
           <a href="/projects/oxylife" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Bovi Health</strong> —{" "}
+          <strong>Bovi Health</strong>{" "}
           <a href="/projects/bovi-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Why CPG companies work with Atla">
-        <LongformSubTitle>We design for the shelf, not for the portfolio</LongformSubTitle>
+      <LongformSection title="Why CPG teams hire Atla">
+        <LongformSubTitle>We design for the shelf</LongformSubTitle>
         <LongformParagraph>
-          Pretty packaging that does not perform is wasted budget. We pressure-test hierarchy, readability, and
-          differentiation before finalizing direction.
+          Pretty packaging that does not sell is wasted budget. We test hierarchy, legibility and how the pack stands
+          apart before we lock a direction.
         </LongformParagraph>
-        <LongformSubTitle>Strategy and packaging under one roof</LongformSubTitle>
+        <LongformSubTitle>Strategy and packaging in one place</LongformSubTitle>
         <LongformParagraph>
-          Strategy, identity, packaging, and digital are scoped as one engagement so the launch looks and feels coherent
-          across channels. The planning process is documented on{" "}
+          Strategy, identity, packaging and digital are one engagement, so the launch looks like one brand everywhere.
+          How we plan it is on{" "}
           <a href="/how-we-work" className="longform-link">
             how we work
           </a>
           .
         </LongformParagraph>
-        <LongformSubTitle>Production-aware from day one</LongformSubTitle>
+        <LongformSubTitle>Designed for the press</LongformSubTitle>
         <LongformParagraph>
-          We design with print method, substrate, and cost constraints in mind to avoid concept decay at production.
+          We design with the print method, the substrate and the cost in mind, so the concept survives production.
         </LongformParagraph>
-        <LongformSubTitle>Scalable across SKUs</LongformSubTitle>
+        <LongformSubTitle>Built for the next SKU</LongformSubTitle>
         <LongformParagraph>
-          New products should extend the system, not require a redesign every quarter.
+          A new product should extend the system. It should not need a redesign.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Common questions from CPG teams">
+      <LongformSection title="Questions CPG teams ask">
         {FAQ_ITEMS.map((item) => (
           <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
@@ -122,20 +122,20 @@ export default function AtlaCpgBranding() {
         ))}
       </LongformSection>
 
-      <LongformSection title="Related reads and references">
+      <LongformSection title="Related reads">
         <LongformParagraph>
-          Start with the strategic framing in{" "}
+          Start with{" "}
           <a href="/journal/brand-audit-framework" className="longform-link">
             the brand audit framework
           </a>
           .
         </LongformParagraph>
         <LongformParagraph>
-          For strategic framing before design, review{" "}
+          Before design, read about{" "}
           <a href="/brand-strategy" className="longform-link">
             brand strategy
           </a>{" "}
-          and the broader{" "}
+          and the full{" "}
           <a href="/services" className="longform-link">
             service model
           </a>
@@ -145,7 +145,7 @@ export default function AtlaCpgBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the product, category, and channel mix. We will tell you quickly whether we are the right partner."
+        description="Tell us about the product, the category and where it sells. We will tell you quickly if we are the right partner."
         actions={[
           { href: "/contact", label: "Start a project →" },
           { href: "/", label: "Browse selected work →" },

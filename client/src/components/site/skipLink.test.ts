@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { siteCopy } from "@/content/siteCopy";
 import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -34,7 +35,7 @@ describe("skip link", () => {
 
     const first = container.querySelector<HTMLElement>("a[href], button, input, select, textarea, [tabindex]:not([tabindex='-1'])");
     expect(first?.className).toBe("site-skip-link");
-    expect(first?.textContent).toBe("Skip to content");
+    expect(first?.textContent).toBe(siteCopy.header.skipLink);
 
     const targetId = first!.getAttribute("href")!.slice(1);
     const target = document.getElementById(targetId);

@@ -68,11 +68,39 @@ function tilesOf(project: SiteProject): WallTile[] {
  * whole wall instead of bunching at the end. A project never follows itself
  * and the ratio alternates whenever a candidate allows it.
  */
-export function buildWallSequence(projects: SiteProject[]): WallTile[] {
-  const decks = siteOrder(projects)
+/** Small seeded PRNG (mulberry32), so one page load keeps one order across re-renders. */
+function seededRandom(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffled<T>(items: T[], random: () => number): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * `seed` 0 keeps the site order (the prerender). Any other seed shuffles the
+ * projects and every project's pieces, so each load of the page deals a new
+ * wall (JP, 2026-11-05).
+ */
+export function buildWallSequence(projects: SiteProject[], seed = 0): WallTile[] {
+  const random = seed ? seededRandom(seed) : null;
+  let decks = siteOrder(projects)
     .filter(isClientWork)
     .map(tilesOf)
     .filter((deck) => deck.length > 0);
+  if (random) decks = shuffled(decks.map((deck) => shuffled(deck, random)), random);
   const cursors = decks.map(() => 0);
   const total = decks.reduce((sum, deck) => sum + deck.length, 0);
   const sequence: WallTile[] = [];

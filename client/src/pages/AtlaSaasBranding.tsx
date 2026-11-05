@@ -23,87 +23,85 @@ export default function AtlaSaasBranding() {
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
-        eyebrow="SaaS Branding"
-        h1="SaaS branding that separates signal from noise"
+        eyebrow="SaaS branding"
+        h1="SaaS branding for software that needs to stand apart"
         paragraphs={[
-          "Most SaaS brands look interchangeable. When identity is generic, the brand becomes invisible and customer acquisition gets more expensive.",
-          "Durable SaaS brands make specific decisions about how they look, sound, and behave across product, marketing, sales, and investor contexts.",
-          "We build systems that are immediately recognizable and flexible enough to scale with the business.",
+          "Most SaaS brands look interchangeable. When the identity is generic, nobody remembers it and every customer costs more to win.",
+          "The SaaS brands that last make specific choices about how they look, sound and behave in the product, in marketing, in sales and in front of investors.",
+          "We build systems people recognize on sight, with room to grow with the company.",
         ]}
         cta={
           <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
-      <LongformSection title="What SaaS companies typically need from us">
-        <LongformSubTitle>Brand strategy and positioning</LongformSubTitle>
+      <LongformSection title="What SaaS companies usually ask us for">
+        <LongformSubTitle>Strategy and positioning</LongformSubTitle>
         <LongformParagraph>
-          Competitive differentiation, category framing, audience segmentation, and messaging hierarchy so the company is
-          understood for what matters, not just feature lists.
+          Differentiation, category framing, audience segments and a messaging hierarchy. People should remember why you
+          matter, and a feature list does not do that.
         </LongformParagraph>
-        <LongformSubTitle>Visual systems for product and marketing</LongformSubTitle>
+        <LongformSubTitle>One visual system for product and marketing</LongformSubTitle>
         <LongformParagraph>
-          Logo, typography, color, iconography, and illustration designed to hold across product UI and marketing
-          surfaces.
+          Logo, type, color, icons and illustration that hold in the product and in the marketing.
         </LongformParagraph>
-        <LongformSubTitle>Website design and conversion architecture</LongformSubTitle>
+        <LongformSubTitle>Websites built to convert</LongformSubTitle>
         <LongformParagraph>
-          Marketing sites with clear information architecture, stronger conversion pathways, and SEO-informed content
-          structure.
+          Marketing sites with a clear structure, a shorter path to sign up and content written to be found in search.
         </LongformParagraph>
         <LongformSubTitle>Sales and investor materials</LongformSubTitle>
         <LongformParagraph>
-          Pitch decks and one-pagers that keep the same strategic and visual standard as product and web surfaces.
+          Pitch decks and one-pagers held to the same standard as the product and the website.
         </LongformParagraph>
       </LongformSection>
 
       <LongformSection title="Selected SaaS and digital work">
         <LongformParagraph>
-          <strong>Anything AI</strong> — Brand identity and digital design for an AI creative platform.{" "}
+          <strong>Anything AI</strong>. Brand identity and digital design for an AI creative platform.{" "}
           <a href="/projects/anything-ai" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>PuppyPy</strong> —{" "}
+          <strong>PuppyPy</strong>{" "}
           <a href="/projects/puppypy" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Pathize Health</strong> —{" "}
+          <strong>Pathize Health</strong>{" "}
           <a href="/projects/pathize-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Why SaaS companies work with Atla">
-        <LongformSubTitle>We design for the full funnel</LongformSubTitle>
+      <LongformSection title="Why SaaS teams hire Atla">
+        <LongformSubTitle>The whole funnel</LongformSubTitle>
         <LongformParagraph>
-          Brand coherence has to survive Google ads, onboarding, sales calls, and investor decks, not only the homepage.
+          The brand has to hold up in Google ads, onboarding, sales calls and investor decks. The homepage is the easy
+          part.
         </LongformParagraph>
-        <LongformSubTitle>Strategy-first execution</LongformSubTitle>
+        <LongformSubTitle>Strategy first</LongformSubTitle>
         <LongformParagraph>
-          We start with market positioning and decision criteria, then translate into design. Learn the framework on{" "}
+          We start with positioning and how your buyers decide, then we design. The method is on{" "}
           <a href="/brand-strategy" className="longform-link">
-            our strategy pillar
+            our strategy page
           </a>
           .
         </LongformParagraph>
-        <LongformSubTitle>Opinionated, not decorative</LongformSubTitle>
+        <LongformSubTitle>Opinionated on purpose</LongformSubTitle>
         <LongformParagraph>
-          In crowded markets, safe design is expensive because it does not convert. We push for precise, ownable brand
-          signals.
+          In a crowded market, safe design is expensive because nobody notices it. We push for signals you can own.
         </LongformParagraph>
-        <LongformSubTitle>Senior team, fast cycles</LongformSubTitle>
+        <LongformSubTitle>Senior team, no relay</LongformSubTitle>
         <LongformParagraph>
-          No account-manager relay model. The core strategist-designer team works directly with your operators and
-          founders.
+          No account managers passing notes. The strategists and designers on your project work directly with your
+          founders and operators.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Common questions from SaaS teams">
+      <LongformSection title="Questions SaaS teams ask">
         {FAQ_ITEMS.map((item) => (
           <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
@@ -112,20 +110,20 @@ export default function AtlaSaasBranding() {
         ))}
       </LongformSection>
 
-      <LongformSection title="Related reads and references">
+      <LongformSection title="Related reads">
         <LongformParagraph>
-          Review{" "}
+          See{" "}
           <a href="/how-we-work" className="longform-link">
             how we work
           </a>{" "}
-          for timeline and engagement structure.
+          for how an engagement runs.
         </LongformParagraph>
         <LongformParagraph>
-          Compare examples in the full{" "}
+          Examples are in the{" "}
           <a href="/" className="longform-link">
             work archive
-          </a>{" "}
-          and service scope on{" "}
+          </a>
+          , and the full scope is on{" "}
           <a href="/services" className="longform-link">
             services
           </a>
@@ -135,7 +133,7 @@ export default function AtlaSaasBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the product, market pressure, and timeline. We will tell you what to prioritize and whether we are the right fit."
+        description="Tell us about the product, the market pressure and the timeline. We will tell you what to fix first and if we are the right fit."
         actions={[
           { href: "/contact", label: "Start a project →" },
           { href: "/", label: "Browse selected work →" },

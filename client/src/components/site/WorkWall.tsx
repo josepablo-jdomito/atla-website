@@ -9,30 +9,40 @@ import { siteCopy } from "@/content/siteCopy";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
 const WIDTHS = [320, 480, 640, 800, 1000, 1280];
-const SIZES = "(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw";
+const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw";
 /** Pieces in the first viewport load eagerly; everything after waits for the scroll. */
-const EAGER = 12;
+const EAGER = 20;
 /** How many pieces one pass shows at most; the next pass arrives as the visitor nears the end. */
-const PAGE = 48;
-/** Prerender has no window and renders the phone layout. */
-const COLUMNS = { phone: 2, tablet: 3, desktop: 4 } as const;
+const PAGE = 72;
+/**
+ * Column count follows the viewport, like Cosmos (8 columns on a wide desktop,
+ * JP 2026-11-05): a column is about 240 px plus the gutter, between 2 and 8.
+ * Prerender has no window and renders the phone layout.
+ */
+const COLUMN_TARGET = 220;
+const MAX_COLUMNS = 8;
 
 function readColumns() {
-  if (typeof window === "undefined") return COLUMNS.phone;
-  if (window.matchMedia("(min-width: 1200px)").matches) return COLUMNS.desktop;
-  if (window.matchMedia("(min-width: 768px)").matches) return COLUMNS.tablet;
-  return COLUMNS.phone;
+  if (typeof window === "undefined") return 2;
+  const width = window.innerWidth;
+  if (width < 768) return 2;
+  const gap = width >= 1200 ? 24 : 20;
+  return Math.max(3, Math.min(MAX_COLUMNS, Math.floor((width - gap) / (COLUMN_TARGET + gap))));
 }
 
 function useColumns() {
   const [columns, setColumns] = useState(readColumns);
   useEffect(() => {
-    const queries = [window.matchMedia("(min-width: 1200px)"), window.matchMedia("(min-width: 768px)")];
-    const update = () => setColumns(readColumns());
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setColumns(readColumns()));
+    };
     update();
-    for (const query of queries) query.addEventListener("change", update);
+    window.addEventListener("resize", update);
     return () => {
-      for (const query of queries) query.removeEventListener("change", update);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", update);
     };
   }, []);
   return columns;
@@ -110,8 +120,10 @@ export function WorkWall() {
   const [shown, setShown] = useState(PAGE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
+  // One fresh shuffle per page load; the prerender (no window) keeps the site order.
+  const [seed] = useState(() => (typeof window === "undefined" ? 0 : 1 + Math.floor(Math.random() * 2 ** 31)));
   const filtered = useMemo(() => projects.filter((project) => matchesFilters(project, filters)), [projects, filters]);
-  const sequence = useMemo(() => buildWallSequence(filtered), [filtered]);
+  const sequence = useMemo(() => buildWallSequence(filtered, seed), [filtered, seed]);
 
   // The pool loops only once the visitor has seen all of it; each pass starts elsewhere.
   const tiles = useMemo(() => {

@@ -23,101 +23,98 @@ export default function AtlaHospitalityBranding() {
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
-        eyebrow="Hospitality Branding"
-        h1="Hospitality branding that works across every guest touchpoint"
+        eyebrow="Hospitality branding"
+        h1="Hospitality branding that holds from the booking page to the room"
         paragraphs={[
-          "Hotels, restaurants, and travel brands live or die by consistency. The logo on the napkin, the booking confirmation email, the signage at check-in, and the Instagram grid all need to feel like the same place.",
-          "Most hospitality companies outgrow their original identity within two years of opening. What worked for a soft launch stops working when the brand needs to scale across locations, channels, and staff turnover.",
-          "We build identity systems that hold. Strategy, visual identity, digital design, and environmental guidelines are developed together so your team can execute without second-guessing what on-brand means.",
+          "A guest sees the napkin, the confirmation email, the sign at check-in and the Instagram grid. All of it has to feel like the same place.",
+          "Most hospitality brands are built for opening day. Then come a second location, new channels and new staff, and the identity stops holding.",
+          "We build the strategy, the identity, the digital work and the environmental guidelines together. Your team knows what on-brand means without having to ask.",
         ]}
         cta={
           <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
-      <LongformSection title="What hospitality brands typically need from us">
-        <LongformSubTitle>Brand strategy for new concepts</LongformSubTitle>
+      <LongformSection title="What hospitality brands usually ask us for">
+        <LongformSubTitle>Strategy for new concepts</LongformSubTitle>
         <LongformParagraph>
-          Positioning, naming direction, audience definition, and competitive framing built before the visual work
-          begins. We clarify what the property stands for, who it attracts, and how it should feel relative to what
-          already exists in the market.
+          Positioning, naming direction, audience and competitive framing, done before any visual work. We decide what
+          the property stands for, who it is for, and how it should feel next to what is already out there.
         </LongformParagraph>
-        <LongformSubTitle>Identity systems for multi-touchpoint environments</LongformSubTitle>
+        <LongformSubTitle>One identity for every touchpoint</LongformSubTitle>
         <LongformParagraph>
-          Logo, typography, color, iconography, and application rules designed for menus, signage, packaging, uniforms,
-          key cards, digital platforms, and print collateral. One system, not twelve disconnected assets.
+          Logo, type, color, icons and the rules for using them on menus, signage, packaging, uniforms, key cards, screens
+          and print. One system instead of a pile of loose assets.
         </LongformParagraph>
-        <LongformSubTitle>Digital design for booking and discovery</LongformSubTitle>
+        <LongformSubTitle>Digital design for booking</LongformSubTitle>
         <LongformParagraph>
-          Websites and landing pages optimized for conversion, SEO, and visual storytelling. We design the experience
-          from first search result to confirmed reservation.
+          Websites and landing pages built to convert and to be found. We design the path from the first search result
+          to the confirmed reservation.
         </LongformParagraph>
         <LongformSubTitle>Art direction and content standards</LongformSubTitle>
         <LongformParagraph>
-          Photography guidelines, editorial templates, and social content frameworks so your marketing team can produce
-          new content that stays on-brand without requiring creative director approval on every post.
+          Photography guidelines, editorial templates and social formats. Your marketing team makes new content without
+          sending every post to a creative director.
         </LongformParagraph>
       </LongformSection>
 
       <LongformSection title="Selected hospitality work">
         <LongformParagraph>
-          <strong>The Bridge</strong> — Hospitality brand identity for a Bali-based hotel and restaurant concept. Refined,
-          travel-forward visual system with editorial sensibility.{" "}
+          <strong>The Bridge</strong>. Identity for a hotel and restaurant concept in Bali, with an editorial eye.{" "}
           <a href="/projects/the-bridge" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Pax &amp; Beneficia</strong> —{" "}
+          <strong>Pax &amp; Beneficia</strong>{" "}
           <a href="/projects/pax-and-beneficia" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Alma Brava</strong> —{" "}
+          <strong>Alma Brava</strong>{" "}
           <a href="/projects/alma-brava" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Tequila Unido</strong> —{" "}
+          <strong>Tequila Unido</strong>{" "}
           <a href="/projects/tequila-unido" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Why hospitality companies work with Atla">
-        <LongformSubTitle>Physical + digital thinking from day one</LongformSubTitle>
+      <LongformSection title="Why hospitality teams hire Atla">
+        <LongformSubTitle>Physical and digital from the start</LongformSubTitle>
         <LongformParagraph>
-          Most agencies design for screens or for spaces, not both. We build systems that translate from a 4-inch phone
-          to a 40-foot wall without losing coherence.
+          Most agencies design for screens or for spaces. We build one system that works on a phone and on the side of a
+          building.
         </LongformParagraph>
-        <LongformSubTitle>Strategy before aesthetics</LongformSubTitle>
+        <LongformSubTitle>Strategy before mood boards</LongformSubTitle>
         <LongformParagraph>
-          We do not start with mood boards. We start with positioning, competitive context, and guest journey mapping.
-          The visual decisions come after the strategic ones are locked. See{" "}
+          We start with positioning, the competition and the guest's path through the property. Visual decisions come
+          after the strategic ones are locked. See{" "}
           <a href="/brand-strategy" className="longform-link">
             our brand strategy process
           </a>
           .
         </LongformParagraph>
-        <LongformSubTitle>Systems, not just deliverables</LongformSubTitle>
+        <LongformSubTitle>Guidelines your team will use</LongformSubTitle>
         <LongformParagraph>
-          You get brand guidelines your team can actually use: templates, asset libraries, and execution rules that
-          scale with your operation. The full delivery model is documented on{" "}
+          Templates, asset libraries and clear rules that grow with the operation. The full delivery model is on{" "}
           <a href="/how-we-work" className="longform-link">
             how we work
           </a>
           .
         </LongformParagraph>
-        <LongformSubTitle>Senior-led, no handoffs to juniors</LongformSubTitle>
+        <LongformSubTitle>Senior people, start to finish</LongformSubTitle>
         <LongformParagraph>
-          The people in strategy sessions are the same people doing the design work.
+          The people in the strategy sessions are the people doing the design.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Common questions from hospitality teams">
+      <LongformSection title="Questions hospitality teams ask">
         {FAQ_ITEMS.map((item) => (
           <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
@@ -126,16 +123,16 @@ export default function AtlaHospitalityBranding() {
         ))}
       </LongformSection>
 
-      <LongformSection title="Related reads and references">
+      <LongformSection title="Related reads">
         <LongformParagraph>
-          Read the category deep dive in{" "}
+          For the long version, read{" "}
           <a href="/journal/hospitality-branding-guide" className="longform-link">
             the hospitality branding guide
           </a>
           .
         </LongformParagraph>
         <LongformParagraph>
-          Compare this category against the broader{" "}
+          Or see the{" "}
           <a href="/services" className="longform-link">
             services overview
           </a>{" "}
@@ -149,7 +146,7 @@ export default function AtlaHospitalityBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the property, the timeline, and what is not working. We will tell you honestly whether we are the right fit."
+        description="Tell us about the property, the timeline and what is not working. We will tell you honestly if we are the right fit."
         actions={[
           { href: "/contact", label: "Start a project →" },
           { href: "/", label: "Browse selected work →" },

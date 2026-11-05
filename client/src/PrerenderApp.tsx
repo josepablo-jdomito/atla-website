@@ -7,6 +7,7 @@ import type { Project } from "@shared/schema";
 import { AppRouter } from "./AppRouter";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import About from "./pages/About";
+import Ventures from "./pages/Ventures";
 import Contact from "./pages/Contact";
 import Services from "./pages/Services";
 import Home from "./pages/Home";
@@ -95,6 +96,7 @@ export function renderPrerenderedRoute(
           NotFound={NotFound}
           ProjectsAdmin={ProjectsAdmin}
           About={About}
+          Ventures={Ventures}
           Contact={Contact}
           Services={Services}
           Home={Home}
