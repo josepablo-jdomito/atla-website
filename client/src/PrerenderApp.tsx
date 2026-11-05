@@ -24,6 +24,7 @@ import AtlaSaasBranding from "./pages/AtlaSaasBranding";
 import AtlaBrandStrategy from "./pages/AtlaBrandStrategy";
 import AtlaHowWeWork from "./pages/AtlaHowWeWork";
 import AtlaPrograms from "./pages/AtlaPrograms";
+import Brief from "./pages/Brief";
 import NotFound from "./pages/not-found";
 
 export type PrerenderRouteData = {
@@ -112,6 +113,7 @@ export function renderPrerenderedRoute(
             AtlaBrandStrategy={AtlaBrandStrategy}
             AtlaHowWeWork={AtlaHowWeWork}
             AtlaPrograms={AtlaPrograms}
+            Brief={Brief}
           />
         </Router>
       </ThemeProvider>
