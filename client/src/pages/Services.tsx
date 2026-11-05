@@ -2,28 +2,16 @@ import { Link } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
-import { formatMetaTitle, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
+import { buildServicesStructuredData } from "@/lib/sitePageSchema";
+import { formatMetaTitle } from "@shared/siteSeo";
 
 const copy = siteCopy.services;
 
-function briefHref(seed: string) {
-  return `/brief?seed=${encodeURIComponent(seed)}`;
+function briefHref(moment: string) {
+  return `/brief?moment=${encodeURIComponent(moment)}`;
 }
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [{ "@type": "ListItem", position: 1, name: "Services", item: `${SITE_ORIGIN}/services` }],
-};
-
-const servicesSchema = copy.moments.map((moment) => ({
-  "@context": "https://schema.org",
-  "@type": "Service",
-  name: moment.title,
-  description: `${moment.line} ${moment.items.join(". ")}.`,
-  provider: { "@type": "Organization", name: ORGANIZATION_NAME, url: SITE_ORIGIN },
-  areaServed: ["United States", "Latin America"],
-}));
+const structuredData = buildServicesStructuredData();
 
 export default function Services() {
   return (
@@ -32,7 +20,7 @@ export default function Services() {
         title={formatMetaTitle(copy.metaTitle, "Atla")}
         description={copy.metaDescription}
         pathname="/services"
-        structuredData={[breadcrumbSchema, ...servicesSchema]}
+        structuredData={structuredData}
       />
       <div className="site-page-body">
         <header className="page-intro">
@@ -54,7 +42,7 @@ export default function Services() {
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-                <Link href={briefHref(moment.seed)} className="brief-primary moment__cta">
+                <Link href={briefHref(moment.brief)} className="brief-primary moment__cta">
                   {copy.cta}
                 </Link>
               </div>

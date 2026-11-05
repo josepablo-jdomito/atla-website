@@ -6,6 +6,7 @@
   --site-line: rgba(22, 24, 29, 0.1);
   --site-surface: #ffffff;
   --site-accent: #f6c428;
+  --site-error: #b3261e;
   --site-ease: cubic-bezier(0.23, 1, 0.32, 1);
   --site-gutter: 16px;
 }
@@ -17,6 +18,7 @@
     --site-muted: #9a9da4;
     --site-line: rgba(242, 241, 238, 0.12);
     --site-surface: #1a1b1e;
+    --site-error: #f2b8b5;
   }
 }
 
@@ -1139,21 +1141,19 @@ body {
 .site-root .contact-form,
 .site-root .contact-form__form { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 40rem; }
 .site-root .contact-form__status { outline: none; }
-.site-root .contact-form__select { cursor: pointer; }
+/* Same type as the text inputs at every width; the empty choice reads as a placeholder. */
+.site-root .contact-form__select { cursor: pointer; font-size: 18px; line-height: 1.4; }
+.site-root .contact-form__select:has(option[value=""]:checked) { color: var(--site-muted); }
 .site-root .contact-form__select option { color: var(--site-ink); background: var(--site-surface); }
 .site-root .contact-form__message { resize: vertical; min-height: 8lh; }
 .site-root .contact-form__notice { margin: 0; font-size: 15px; line-height: 1.5; }
 .site-root .contact-form__notice[data-tone="muted"] { color: var(--site-muted); }
-.site-root .contact-form__notice[data-tone="error"] { color: #b3261e; }
+.site-root .contact-form__notice[data-tone="error"] { color: var(--site-error); }
 .site-root .contact-form__note { margin: 0; max-width: 34rem; font-size: 13px; line-height: 1.5; color: var(--site-muted); }
 .site-root .contact-form a { color: inherit; }
 .site-root .contact-form__sent { display: flex; flex-direction: column; gap: 12px; }
 .site-root .contact-form__sent-title { margin: 0; font-size: 18px; font-weight: 500; line-height: 1.4; }
 .site-root .contact-form__email { font-size: 14px; color: var(--site-muted); }
-
-@media (prefers-color-scheme: dark) {
-  .site-root .contact-form__notice[data-tone="error"] { color: #f2b8b5; }
-}
 
 @media (min-width: 768px) {
   .site-root .site-page-body { padding-bottom: 120px; }

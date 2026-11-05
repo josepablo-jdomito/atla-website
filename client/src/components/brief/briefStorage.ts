@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { BriefContact, BriefQuestion, BriefState } from "@shared/brief";
+import { BRIEF_QUESTIONS, type BriefContact, type BriefQuestion, type BriefState } from "@shared/brief";
 
 /** A screen in the flow: a question from the bank or the contact form. */
 export type BriefStep = BriefQuestion | { id: "contact" };
@@ -17,6 +17,21 @@ export type SavedBrief = BriefState & {
 };
 
 const STORAGE_KEY = "atla-brief-v1";
+
+/** `/brief?moment=<id>` (the Services page) pre-answers "What is the moment?" with one of its options. */
+const MOMENT_PARAMS: Record<string, string> = {
+  launch: "Launch",
+  raise: "Raise capital",
+  grow: "Grow / scale",
+  reposition: "Reposition",
+};
+const MOMENT_OPTIONS = BRIEF_QUESTIONS.find((q) => q.id === "moment")?.options ?? [];
+
+/** The moment option a `?moment=` value stands for; unknown values are ignored. */
+export function momentFromParam(param: string | null | undefined): string | undefined {
+  const option = param ? MOMENT_PARAMS[param.trim().toLowerCase()] : undefined;
+  return option && MOMENT_OPTIONS.includes(option) ? option : undefined;
+}
 
 const contactSchema: z.ZodType<BriefContact> = z.object({
   name: z.string(),

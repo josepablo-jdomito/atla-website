@@ -18,6 +18,7 @@ import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/li
 import { buildProjectBreadcrumb, buildProjectMetaDescription } from "../client/src/lib/projectSeo.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
+import { buildServicesStructuredData, CONTACT_PAGE_SCHEMA } from "../client/src/lib/sitePageSchema.ts";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -581,12 +582,8 @@ async function prerenderRoutes() {
       pathname: "/about",
       title: formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm"),
       description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
+      // og:image only: the v2 About page renders no images, so nothing is preloaded.
       image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
-      preloadImages: [
-        { href: "/figmaAssets/photo-1.jpg" },
-        { href: "/figmaAssets/photo-2.jpg" },
-      ],
       includeInSitemap: true,
       structuredData: ORGANIZATION_SCHEMA,
     },
@@ -595,52 +592,17 @@ async function prerenderRoutes() {
       title: formatMetaTitle("Contact Atla", "Start a Branding or Digital Project"),
       description: "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
       image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "ContactPage",
-        name: "Contact Atla",
-        url: `${SITE_ORIGIN}/contact`,
-        mainEntity: {
-          "@type": "Organization",
-          name: ORGANIZATION_NAME,
-          email: CONTACT_EMAIL,
-          url: SITE_ORIGIN,
-        },
-      },
+      structuredData: CONTACT_PAGE_SCHEMA,
     },
     {
       pathname: "/services",
       title: formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla"),
       description: "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
       image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: "Atla Services",
-        itemListElement: [
-          "Creative Direction",
-          "Brand Strategy",
-          "Identity",
-          "Digital Design",
-          "Motion",
-          "Print & Packaging",
-          "Art Direction",
-          "Copywriting",
-          "Tone of Voice",
-        ].map((service, index) => ({
-          "@type": "Service",
-          position: index + 1,
-          name: service,
-          provider: {
-            "@type": "Organization",
-            name: ORGANIZATION_NAME,
-          },
-        })),
-      },
+      // Same JSON-LD as the live page's SeoHead: breadcrumb + one Service per moment.
+      structuredData: buildServicesStructuredData(),
     },
     {
       pathname: "/hospitality",

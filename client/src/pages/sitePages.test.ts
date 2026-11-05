@@ -9,6 +9,7 @@ import Services from "./Services";
 import About from "./About";
 import Contact from "./Contact";
 import { ContactForm } from "@/components/site/ContactForm";
+import { momentFromParam } from "@/components/brief/briefStorage";
 import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
@@ -63,7 +64,7 @@ describe("Services page", () => {
     expect(titles).toEqual(["Launch", "Raise capital", "Grow / scale", "Reposition"]);
   });
 
-  it("lists what we do in every moment and links each to the brief with an encoded seed", () => {
+  it("lists what we do in every moment and links each to the brief with its moment pre-answered", () => {
     render(Services, "/services");
     const sections = Array.from(main().querySelectorAll<HTMLElement>("section.moment"));
     expect(sections).toHaveLength(4);
@@ -72,8 +73,10 @@ describe("Services page", () => {
       expect(section.querySelectorAll(".moment__list li").length).toBeGreaterThan(0);
       const links = Array.from(section.querySelectorAll<HTMLAnchorElement>('a[href^="/brief"]'));
       expect(links).toHaveLength(1);
-      expect(links[0].getAttribute("href")).toBe(`/brief?seed=${encodeURIComponent(moment.seed)}`);
-      expect(new URL(links[0].href, "https://x.test").searchParams.get("seed")).toBe(moment.seed);
+      expect(links[0].getAttribute("href")).toBe(`/brief?moment=${encodeURIComponent(moment.brief)}`);
+      const param = new URL(links[0].href, "https://x.test").searchParams.get("moment");
+      // The param resolves to the brief option with the same name as the section.
+      expect(momentFromParam(param)).toBe(moment.title);
     });
   });
 

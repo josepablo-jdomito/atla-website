@@ -4,6 +4,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { SITE_CITIES } from "@/components/site/SiteFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
+import { CONTACT_PAGE_SCHEMA } from "@/lib/sitePageSchema";
 import { CONTACT_EMAIL, formatMetaTitle, SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const copy = siteCopy.contact;
@@ -16,6 +17,7 @@ export default function Contact() {
         description={copy.metaDescription}
         pathname="/contact"
         image="/figmaAssets/about-hero.jpg"
+        structuredData={CONTACT_PAGE_SCHEMA}
       />
       <div className="site-page-body">
         <header className="page-intro">

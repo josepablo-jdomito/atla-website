@@ -13,7 +13,7 @@ import {
 import { BRIEF_QUESTION_IDS, briefContactSchema, nextFixedQuestion, type BriefContact, type BriefQuestion } from "@shared/brief";
 import { siteCopy } from "@/content/siteCopy";
 import { fetchNextStep, submitBrief } from "./briefApi";
-import { clearBrief, loadBrief, saveBrief, type BriefStep, type SavedBrief } from "./briefStorage";
+import { clearBrief, loadBrief, momentFromParam, saveBrief, type BriefStep, type SavedBrief } from "./briefStorage";
 
 const copy = siteCopy.brief;
 
@@ -47,8 +47,8 @@ function cleanSeed(seed: string | null | undefined): string | undefined {
   return value ? value : undefined;
 }
 
-function freshBrief(seed: string | undefined): SavedBrief {
-  return { seed, answers: {}, submissionId: newSubmissionId(), path: [], index: 0 };
+function freshBrief(seed: string | undefined, moment?: string): SavedBrief {
+  return { seed, answers: moment ? { moment } : {}, submissionId: newSubmissionId(), path: [], index: 0 };
 }
 
 function stepKey(brief: SavedBrief): string {
@@ -60,12 +60,16 @@ function isBookable(url: string | undefined): url is string {
   return !!url && /^https:\/\//.test(url);
 }
 
-/** Screens in the whole brief. The seed answers "What are you building?", so that one is skipped. */
+/**
+ * Screens in the whole brief. The seed answers "What are you building?" and a `?moment=` link answers
+ * "What is the moment?", so those are skipped. A moment answered on screen is still counted.
+ */
 function totalSteps(brief: SavedBrief): number {
-  return BRIEF_QUESTION_IDS.length - (brief.seed ? 1 : 0);
+  const momentPreset = !!brief.answers.moment && !brief.path.some((step) => step.id === "moment");
+  return BRIEF_QUESTION_IDS.length - (brief.seed ? 1 : 0) - (momentPreset ? 1 : 0);
 }
 
-export function BriefFlow({ seed }: { seed?: string | null }) {
+export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: string | null }) {
   const [brief, setBrief] = useState<SavedBrief | null>(null);
   const [pending, setPending] = useState(false);
   const [direction, setDirection] = useState<Direction>("forward");
@@ -95,8 +99,8 @@ export function BriefFlow({ seed }: { seed?: string | null }) {
   );
 
   const start = useCallback(
-    (seedText: string | undefined) => {
-      const fresh = freshBrief(seedText);
+    (seedText: string | undefined, momentOption?: string) => {
+      const fresh = freshBrief(seedText, momentOption);
       if (seedText) {
         commit(fresh);
         void appendNextStep(fresh);
@@ -111,13 +115,16 @@ export function BriefFlow({ seed }: { seed?: string | null }) {
 
   useEffect(() => {
     const seedText = cleanSeed(seed);
+    const momentOption = momentFromParam(moment);
     const saved = loadBrief();
-    if (saved && (!seedText || seedText === saved.seed)) setBrief(saved);
-    else start(seedText);
+    const sameSeed = !seedText || seedText === saved?.seed;
+    const sameMoment = !momentOption || momentOption === saved?.answers.moment;
+    if (saved && sameSeed && sameMoment) setBrief(saved);
+    else start(seedText, momentOption);
     return () => {
       request.current++;
     };
-    // Runs once per mount: a new seed in the URL is a new visit to the page.
+    // Runs once per mount: a new seed or moment in the URL is a new visit to the page.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

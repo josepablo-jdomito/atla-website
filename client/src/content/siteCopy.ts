@@ -159,13 +159,13 @@ export const siteCopy = {
     lead: "Pick the moment you are in. Each one lists what we do there.",
     listLabel: "What we do",
     cta: "Start a brief",
-    // `seed` pre-fills the brief's first answer ("What are you building?").
+    // `brief` is the /brief?moment= value: it pre-answers "What is the moment?" (briefStorage momentFromParam).
     moments: [
       {
         id: "launch",
         title: "Launch",
         line: "A new company gets one first impression. We make sure it is the right one.",
-        seed: "Launching a new brand",
+        brief: "launch",
         items: [
           "Brand strategy and positioning",
           "Naming direction",
@@ -180,7 +180,7 @@ export const siteCopy = {
         id: "raise-capital",
         title: "Raise capital",
         line: "Investors judge the company before they read the deck. The brand has to carry the story.",
-        seed: "Raising capital",
+        brief: "raise",
         items: [
           "Positioning statement",
           "Messaging architecture",
@@ -194,7 +194,7 @@ export const siteCopy = {
         id: "grow-scale",
         title: "Grow / scale",
         line: "More products, more markets, more people making things. One brand that holds.",
-        seed: "Growing or scaling the brand",
+        brief: "grow",
         items: [
           "Brand stewardship as the company grows",
           "Brand guidelines your team can run",
@@ -210,7 +210,7 @@ export const siteCopy = {
         id: "reposition",
         title: "Reposition",
         line: "The company has moved on and the brand has not. We start from what your customers already say.",
-        seed: "Repositioning the brand",
+        brief: "reposition",
         items: [
           "Brand Diagnostic: customer reviews, team interviews, every touchpoint",
           "Leadership workshop and roadmap",
@@ -275,7 +275,7 @@ export const siteCopy = {
     metaDescription:
       "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
     title: "Tell us what you are building.",
-    lead: "A few short questions about what you are building. We read every brief ourselves and reply by email.",
+    lead: "A few short questions. We read every brief ourselves and reply by email.",
     cta: "Start a brief",
     emailLabel: "Email",
     socialLabel: "Elsewhere",

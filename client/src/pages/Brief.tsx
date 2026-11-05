@@ -6,7 +6,9 @@ import { siteCopy } from "@/content/siteCopy";
 import { formatMetaTitle } from "@shared/siteSeo";
 
 export default function Brief() {
-  const seed = new URLSearchParams(useSearch()).get("seed");
+  const params = new URLSearchParams(useSearch());
+  const seed = params.get("seed");
+  const moment = params.get("moment");
   return (
     <PageShell>
       <SeoHead
@@ -14,7 +16,7 @@ export default function Brief() {
         description={siteCopy.brief.metaDescription}
         pathname="/brief"
       />
-      <BriefFlow seed={seed} />
+      <BriefFlow seed={seed} moment={moment} />
     </PageShell>
   );
 }
