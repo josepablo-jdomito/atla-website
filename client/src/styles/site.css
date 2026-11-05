@@ -1206,22 +1206,24 @@ html body {
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
+/* Spacing is set between siblings (no gap), so a subtitle sits close to its paragraph and far from the one before. */
 .site-root .longform-section__body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
   min-width: 0;
 }
+.site-root .longform-section__body > * + * { margin-top: 14px; }
+.site-root .longform-section__body > * + .longform-subtitle,
+.site-root .longform-section__body > .longform-faq + .longform-faq { margin-top: 28px; }
 .site-root .longform-subtitle {
-  margin: 10px 0 -8px;
+  margin: 0;
   font-size: 17px;
   font-weight: 600;
   line-height: 1.4;
 }
-.site-root .longform-section__body > .longform-subtitle:first-child { margin-top: 0; }
-.site-root .longform-faq { display: flex; flex-direction: column; gap: 14px; }
-.site-root .longform-faq + .longform-faq { margin-top: 6px; }
+.site-root .longform-subtitle + .longform-text { margin-top: 4px; }
+.site-root .longform-faq { display: flex; flex-direction: column; gap: 4px; }
 
 /* Inline links: ink text, a thin yellow underline as the only accent. */
 .site-root .longform-link,
@@ -1492,3 +1494,32 @@ html body {
   transition: opacity 160ms var(--site-ease);
 }
 .site-root .not-found__home:hover { opacity: 0.6; }
+
+/* Skip link: visually hidden (still read and focusable) until it has focus, then a pill top-left above the header. */
+.site-root .site-skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.site-root .site-skip-link:focus {
+  top: 12px;
+  left: var(--site-gutter);
+  z-index: 60;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 10px 16px;
+  overflow: visible;
+  clip-path: none;
+  border-radius: 999px;
+  background: var(--site-ink);
+  color: var(--site-bg);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.site-root .site-main:focus { outline: none; }

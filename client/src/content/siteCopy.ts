@@ -13,6 +13,7 @@ export const siteCopy = {
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
+    skipLink: "Skip to content",
   },
   footer: {
     navLabel: "Footer",

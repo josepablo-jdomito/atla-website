@@ -72,8 +72,9 @@ const PROGRAM_LEVELS: NumberedItem[] = [
   },
   {
     title: "Integral",
+    // PENDING JP APPROVAL: "six months of" removed (v2 rule: no numbers or deadlines promised).
     description:
-      "Everything in Complete, plus rollout across multiple US markets and six months of Brand Stewardship included.",
+      "Everything in Complete, plus rollout across multiple US markets, with Brand Stewardship included after launch.",
   },
 ];
 
@@ -203,9 +204,10 @@ export default function AtlaPrograms() {
             You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
             you that too.
           </p>
+          {/* PENDING JP APPROVAL: "within 60 days" removed (v2 rule: no numbers or deadlines promised). */}
           <p className="longform-text">
             The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
-            Atla Brand Program if you continue within 60 days.
+            Atla Brand Program when you continue with us.
           </p>
         </SectionRow>
 

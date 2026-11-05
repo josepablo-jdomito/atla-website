@@ -2,7 +2,7 @@ import { SITE_ORIGIN } from "../../../shared/siteSeo.ts";
 import { buildBreadcrumbList } from "./seoSchema.ts";
 
 /**
- * Case-study text helpers shared by AtlaProject (runtime) and script/build.ts (prerender),
+ * Case-study text helpers shared by pages/Project.tsx (runtime, via lib/projectPage.ts) and script/build.ts (prerender),
  * so meta descriptions and the narrative sections read the same in both.
  */
 

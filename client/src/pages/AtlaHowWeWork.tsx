@@ -17,11 +17,12 @@ export default function AtlaHowWeWork() {
     description:
       "Atla's process from discovery through strategy, identity, and launch implementation with clear phase outputs.",
     url: `${SITE_ORIGIN}/how-we-work`,
+    // PENDING JP APPROVAL: week ranges removed from the phase names (v2 rule: no numbers or deadlines promised).
     step: [
-      { "@type": "HowToStep", name: "Discovery (Weeks 1–2)" },
-      { "@type": "HowToStep", name: "Strategy (Weeks 3–4)" },
-      { "@type": "HowToStep", name: "Identity design (Weeks 5–8)" },
-      { "@type": "HowToStep", name: "Application and launch (Weeks 9–12+)" },
+      { "@type": "HowToStep", name: "Discovery" },
+      { "@type": "HowToStep", name: "Strategy" },
+      { "@type": "HowToStep", name: "Identity design" },
+      { "@type": "HowToStep", name: "Application and launch" },
     ],
     publisher: {
       "@type": "Organization",
@@ -53,7 +54,7 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Phase 1 — Discovery (Weeks 1–2)">
+      <LongformSection title="Phase 1 — Discovery">
         <LongformSubTitle>What happens</LongformSubTitle>
         <LongformParagraph>
           We map business context, market dynamics, audience behavior, and operating constraints.
@@ -67,7 +68,7 @@ export default function AtlaHowWeWork() {
         <LongformParagraph>Discovery brief that feeds strategy development.</LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Phase 2 — Strategy (Weeks 3–4)">
+      <LongformSection title="Phase 2 — Strategy">
         <LongformSubTitle>What happens</LongformSubTitle>
         <LongformParagraph>
           Discovery is converted into strategic decisions: positioning, audience definition, messaging architecture, and
@@ -87,7 +88,7 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Phase 3 — Identity design (Weeks 5–8)">
+      <LongformSection title="Phase 3 — Identity design">
         <LongformSubTitle>What happens</LongformSubTitle>
         <LongformParagraph>
           Strategy becomes visual and verbal identity: logo, typography, color, iconography, photography direction, and
@@ -107,7 +108,7 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Phase 4 — Application and launch (Weeks 9–12+)">
+      <LongformSection title="Phase 4 — Application and launch">
         <LongformSubTitle>What happens</LongformSubTitle>
         <LongformParagraph>
           Identity is applied across the operational touchpoints that matter for launch and growth.
@@ -140,11 +141,12 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      {/* PENDING JP APPROVAL: price removed (v2 rule: no prices anywhere); heading and paragraph rewritten. */}
+      {/* PENDING JP APPROVAL: price and week ranges removed (v2 rule: no prices, numbers or deadlines); heading and
+          paragraphs rewritten. */}
       <LongformSection title="Timelines and scope">
         <LongformParagraph>
-          Typical ranges: full branding engagement 10–16 weeks, strategy-only 4–6 weeks, identity-only 6–10 weeks,
-          packaging systems 6–8 weeks.
+          A full branding engagement takes longer than strategy-only, identity-only or packaging work. We set the
+          timeline with you during scoping, phase by phase.
         </LongformParagraph>
         <LongformParagraph>
           Every engagement is sized to its scope and timeline complexity, and we scope it before work starts. No hourly

@@ -5,7 +5,6 @@ import { Router } from "wouter";
 import type { JournalArticle, JournalCategory } from "@shared/journal";
 import type { Project } from "@shared/schema";
 import { AppRouter } from "./AppRouter";
-import { ThemeProvider } from "./components/theme/ThemeProvider";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -91,32 +90,30 @@ export function renderPrerenderedRoute(
 
   const appHtml = renderToString(
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <Router ssrPath={pathname}>
-          <AppRouter
-            NotFound={NotFound}
-            ProjectsAdmin={ProjectsAdmin}
-            About={About}
-            Contact={Contact}
-            Services={Services}
-            Home={Home}
-            Project={ProjectPage}
-            AtlaJournal={AtlaJournal}
-            AtlaArticle={AtlaArticle}
-            AtlaPrivacy={AtlaPrivacy}
-            AtlaTerms={AtlaTerms}
-            AtlaHospitality={AtlaHospitality}
-            AtlaHospitalityBranding={AtlaHospitalityBranding}
-            AtlaCpgBranding={AtlaCpgBranding}
-            AtlaWellnessBranding={AtlaWellnessBranding}
-            AtlaSaasBranding={AtlaSaasBranding}
-            AtlaBrandStrategy={AtlaBrandStrategy}
-            AtlaHowWeWork={AtlaHowWeWork}
-            AtlaPrograms={AtlaPrograms}
-            Brief={Brief}
-          />
-        </Router>
-      </ThemeProvider>
+      <Router ssrPath={pathname}>
+        <AppRouter
+          NotFound={NotFound}
+          ProjectsAdmin={ProjectsAdmin}
+          About={About}
+          Contact={Contact}
+          Services={Services}
+          Home={Home}
+          Project={ProjectPage}
+          AtlaJournal={AtlaJournal}
+          AtlaArticle={AtlaArticle}
+          AtlaPrivacy={AtlaPrivacy}
+          AtlaTerms={AtlaTerms}
+          AtlaHospitality={AtlaHospitality}
+          AtlaHospitalityBranding={AtlaHospitalityBranding}
+          AtlaCpgBranding={AtlaCpgBranding}
+          AtlaWellnessBranding={AtlaWellnessBranding}
+          AtlaSaasBranding={AtlaSaasBranding}
+          AtlaBrandStrategy={AtlaBrandStrategy}
+          AtlaHowWeWork={AtlaHowWeWork}
+          AtlaPrograms={AtlaPrograms}
+          Brief={Brief}
+        />
+      </Router>
     </QueryClientProvider>,
   );
 

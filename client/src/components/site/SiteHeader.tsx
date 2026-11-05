@@ -5,6 +5,9 @@ import { siteCopy } from "@/content/siteCopy";
 
 const { header } = siteCopy;
 
+/** The id of PageShell's <main>, the skip link's target. */
+export const MAIN_CONTENT_ID = "main";
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
@@ -31,6 +34,10 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
+      {/* First focusable element on every page: jumps past the nav to PageShell's <main id="main">. */}
+      <a href={`#${MAIN_CONTENT_ID}`} className="site-skip-link">
+        {header.skipLink}
+      </a>
       <nav className="site-header__bar" aria-label={header.navLabel}>
         <div className="site-header__left">
           <ul className="site-header__links">

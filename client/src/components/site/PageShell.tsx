@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation } from "wouter";
-import { SiteHeader } from "@/components/site/SiteHeader";
+import { MAIN_CONTENT_ID, SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -23,7 +23,7 @@ export function PageShell({ children }: { children: ReactNode }) {
   return (
     <div className="site-root">
       <SiteHeader />
-      <main id="main" className="site-main">
+      <main id={MAIN_CONTENT_ID} className="site-main" tabIndex={-1}>
         <AnimatePresence initial={fadeOnMount && !reduced}>
           <motion.div
             key={location}

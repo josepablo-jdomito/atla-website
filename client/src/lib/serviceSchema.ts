@@ -61,8 +61,9 @@ export const INDUSTRY_SERVICE_PAGES = {
     faqItems: [
       {
         question: "How long does a full hospitality branding project take?",
+        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer:
-          "Most projects run 8–14 weeks from kickoff to final delivery. Larger properties or multi-location rollouts may take longer depending on the number of touchpoints and approval layers.",
+          "It depends on the number of touchpoints, locations and approval layers. We set the timeline with you during scoping, before work starts.",
       },
       {
         question: "Do you work with properties that are already open?",
@@ -104,8 +105,9 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
       {
         question: "How do you handle line extensions?",
+        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer:
-          "The initial system is built for extensibility so adding new variants takes days instead of weeks.",
+          "The initial system is built for extensibility, so a new variant extends it instead of reopening it.",
       },
     ],
   },
@@ -160,8 +162,9 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
       {
         question: "How fast can you move?",
+        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer:
-          "Most SaaS branding engagements run 6–10 weeks. For pre-launch or fundraising pressure windows, we can scope focused sprints.",
+          "We scope the engagement around your launch or fundraising window, and run focused sprints when timing is tight.",
       },
     ],
   },
