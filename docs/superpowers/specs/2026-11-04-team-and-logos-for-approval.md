@@ -56,3 +56,8 @@ Date: 2026-11-04 · Status: waiting on JP · Nothing here is published until JP 
 Fill `siteCopy.about.team` and the home logo row in one follow-up commit. While the list stays empty, the row stays hidden (`LogoRow` renders nothing).
 
 Decision: JP approves the team list and picks how the client row shows.
+
+## JP's answers (2026-11-05)
+- Team: all 7 exactly as on the current site, Paola included.
+- Logos: JP sends the real logo files (SVG). The row stays hidden until they arrive.
+- Clients: JP picks which ones; the logos he sends are the list.
