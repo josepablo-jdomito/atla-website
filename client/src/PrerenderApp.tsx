@@ -11,7 +11,7 @@ import AtlaAbout from "./pages/AtlaAbout";
 import AtlaContact from "./pages/AtlaContact";
 import AtlaServices from "./pages/AtlaServices";
 import Home from "./pages/Home";
-import AtlaProject from "./pages/AtlaProject";
+import ProjectPage from "./pages/Project";
 import AtlaJournal from "./pages/AtlaJournal";
 import AtlaArticle from "./pages/AtlaArticle";
 import AtlaPrivacy from "./pages/AtlaPrivacy";
@@ -100,7 +100,7 @@ export function renderPrerenderedRoute(
             AtlaContact={AtlaContact}
             AtlaServices={AtlaServices}
             Home={Home}
-            AtlaProject={AtlaProject}
+            Project={ProjectPage}
             AtlaJournal={AtlaJournal}
             AtlaArticle={AtlaArticle}
             AtlaPrivacy={AtlaPrivacy}

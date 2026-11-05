@@ -8,12 +8,11 @@ import { IdeaBlocks } from "@/components/site/IdeaBlocks";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { LogoRow } from "@/components/site/LogoRow";
 import { Archive } from "@/components/site/Archive";
-import { featuredProjects, useSiteProjects } from "@/components/site/siteProjects";
+import { HOME_FEATURED_LIMIT, featuredProjects, useSiteProjects } from "@/components/site/siteProjects";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
 
 const { home } = siteCopy;
-const FEATURED_LIMIT = 8;
 /** The first two featured projects run large, the rest in a three-up grid. */
 const FEATURE_COUNT = 2;
 const PHRASES = [...home.phrases];
@@ -21,7 +20,7 @@ const PHRASES = [...home.phrases];
 export default function Home() {
   const [location] = useLocation();
   const { projects } = useSiteProjects();
-  const featured = useMemo(() => featuredProjects(projects, FEATURED_LIMIT), [projects]);
+  const featured = useMemo(() => featuredProjects(projects, HOME_FEATURED_LIMIT), [projects]);
 
   // `/work` renders the same page; `/` is the canonical one.
   const isRoot = location === "/";

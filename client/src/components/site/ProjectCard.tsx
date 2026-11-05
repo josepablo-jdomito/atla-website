@@ -13,7 +13,8 @@ export type CardProject = {
   videos?: string[];
 };
 
-type Size = "feature" | "grid";
+/** feature and grid sit in the home grid; next is the full-width card that closes a project page. */
+type Size = "feature" | "grid" | "next";
 
 // React 18 warns on the camelCase `fetchPriority` prop; the lowercase attribute is what the browser reads.
 const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
@@ -21,12 +22,14 @@ const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
 const WIDTHS: Record<Size, number[]> = {
   feature: [480, 720, 960, 1280, 1600, 2000],
   grid: [320, 480, 640, 800, 1000, 1200],
+  next: [640, 960, 1280, 1600, 2000, 2400],
 };
 
-// The grid is 2 columns at feature size and 3 at grid size on desktop; 1 and 2 on phones.
+// The grid is 2 columns at feature size and 3 at grid size on desktop; 1 and 2 on phones. Next runs full width.
 const SIZES: Record<Size, string> = {
   feature: "(min-width: 768px) 50vw, 100vw",
   grid: "(min-width: 768px) 33vw, 50vw",
+  next: "100vw",
 };
 
 /**

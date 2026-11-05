@@ -104,6 +104,14 @@ export const siteCopy = {
     },
   ],
   // PENDING JP APPROVAL
+  project: {
+    ctaTitle: "Building something like this?",
+    ctaLabel: "Start a brief",
+    nextLabel: "Next project",
+    // Pre-fills the brief's first answer: /brief?seed=Like <title>
+    seed: (title: string) => `Like ${title}`,
+  },
+  // PENDING JP APPROVAL
   brief: {
     metaTitle: "Start a brief",
     metaDescription: "A few short questions about what you are building. We read every brief and reply by email.",
