@@ -1,5 +1,7 @@
 import {
   AtlaLongformLayout,
+  LongformAction,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -29,26 +31,7 @@ export default function AtlaHospitalityBranding() {
           "We build identity systems that hold. Strategy, visual identity, digital design, and environmental guidelines are developed together so your team can execute without second-guessing what on-brand means.",
         ]}
         cta={
-          <a
-            href="/contact"
-            className="atla-link"
-            style={{
-              fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: 0.4,
-              lineHeight: "1.2",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              color: "#222",
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 4px",
-            }}
-          >
-            Start a project →
-          </a>
+          <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
@@ -80,25 +63,25 @@ export default function AtlaHospitalityBranding() {
         <LongformParagraph>
           <strong>The Bridge</strong> — Hospitality brand identity for a Bali-based hotel and restaurant concept. Refined,
           travel-forward visual system with editorial sensibility.{" "}
-          <a href="/projects/the-bridge" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/the-bridge" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pax &amp; Beneficia</strong> —{" "}
-          <a href="/projects/pax-and-beneficia" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/pax-and-beneficia" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Alma Brava</strong> —{" "}
-          <a href="/projects/alma-brava" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/alma-brava" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Tequila Unido</strong> —{" "}
-          <a href="/projects/tequila-unido" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/tequila-unido" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
@@ -114,7 +97,7 @@ export default function AtlaHospitalityBranding() {
         <LongformParagraph>
           We do not start with mood boards. We start with positioning, competitive context, and guest journey mapping.
           The visual decisions come after the strategic ones are locked. See{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/brand-strategy" className="longform-link">
             our brand strategy process
           </a>
           .
@@ -123,7 +106,7 @@ export default function AtlaHospitalityBranding() {
         <LongformParagraph>
           You get brand guidelines your team can actually use: templates, asset libraries, and execution rules that
           scale with your operation. The full delivery model is documented on{" "}
-          <a href="/how-we-work" className="atla-link" style={{ color: "#222" }}>
+          <a href="/how-we-work" className="longform-link">
             how we work
           </a>
           .
@@ -136,28 +119,28 @@ export default function AtlaHospitalityBranding() {
 
       <LongformSection title="Common questions from hospitality teams">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
       <LongformSection title="Related reads and references">
         <LongformParagraph>
           Read the category deep dive in{" "}
-          <a href="/journal/hospitality-branding-guide" className="atla-link" style={{ color: "#222" }}>
+          <a href="/journal/hospitality-branding-guide" className="longform-link">
             the hospitality branding guide
           </a>
           .
         </LongformParagraph>
         <LongformParagraph>
           Compare this category against the broader{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             services overview
           </a>{" "}
           and the full{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/" className="longform-link">
             work archive
           </a>
           .

@@ -1,5 +1,7 @@
 import {
   AtlaLongformLayout,
+  LongformAction,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -29,26 +31,7 @@ export default function AtlaWellnessBranding() {
           "We build strategy, identity, packaging, and digital systems that balance warmth with authority and hold across every touchpoint.",
         ]}
         cta={
-          <a
-            href="/contact"
-            className="atla-link"
-            style={{
-              fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: 0.4,
-              lineHeight: "1.2",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              color: "#222",
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 4px",
-            }}
-          >
-            Start a project →
-          </a>
+          <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
@@ -77,31 +60,31 @@ export default function AtlaWellnessBranding() {
       <LongformSection title="Selected wellness and health work">
         <LongformParagraph>
           <strong>Conscious Care Co</strong> — Wellness identity system built around intentional, mindful care.{" "}
-          <a href="/projects/conscious-care-co" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/conscious-care-co" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pathize Health</strong> —{" "}
-          <a href="/projects/pathize-health" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/pathize-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Peachy Patients</strong> —{" "}
-          <a href="/projects/peachy-patients" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/peachy-patients" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Ando</strong> —{" "}
-          <a href="/projects/ando" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/ando" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Bovi Health</strong> —{" "}
-          <a href="/projects/bovi-health" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/bovi-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
@@ -130,28 +113,28 @@ export default function AtlaWellnessBranding() {
 
       <LongformSection title="Common questions from wellness teams">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
       <LongformSection title="Related reads and references">
         <LongformParagraph>
           Read{" "}
-          <a href="/journal/brand-strategy-vs-brand-identity" className="atla-link" style={{ color: "#222" }}>
+          <a href="/journal/brand-strategy-vs-brand-identity" className="longform-link">
             brand strategy vs brand identity
           </a>{" "}
           for a full strategic narrative lens.
         </LongformParagraph>
         <LongformParagraph>
           Pair this with{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/brand-strategy" className="longform-link">
             brand strategy
           </a>{" "}
           and the full{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             service scope
           </a>
           .

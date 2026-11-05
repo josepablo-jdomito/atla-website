@@ -1172,3 +1172,75 @@ body {
   .site-root .team-list__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .site-root .contact-details { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 }
+
+/* ---- Longform: the six SEO landings, legal pages, journal article (v2) ---- */
+/* Body text: 17px, 1.6 line-height, 68ch. */
+.site-root .longform-text,
+.site-root .longform-prose p,
+.site-root .longform-prose li {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.site-root .longform-intro__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.site-root .longform-intro__body .longform-text { color: var(--site-muted); }
+.site-root .longform-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+.site-root .longform-section__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.site-root .longform-section__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+.site-root .longform-subtitle {
+  margin: 10px 0 -8px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.site-root .longform-section__body > .longform-subtitle:first-child { margin-top: 0; }
+.site-root .longform-faq { display: flex; flex-direction: column; gap: 14px; }
+.site-root .longform-faq + .longform-faq { margin-top: 6px; }
+
+/* Inline links: ink text, a thin yellow underline as the only accent. */
+.site-root .longform-link,
+.site-root .longform-prose a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--site-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: opacity 160ms var(--site-ease);
+}
+.site-root .longform-link:hover,
+.site-root .longform-prose a:hover { opacity: 0.6; }
+.site-root .longform-link--action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .site-root .longform-section__title { font-size: 28px; }
+}

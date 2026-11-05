@@ -80,7 +80,7 @@ export default function AtlaHowWeWork() {
         <LongformSubTitle>Output</LongformSubTitle>
         <LongformParagraph>
           Brand strategy document used as the decision framework for all creative work. See{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/brand-strategy" className="longform-link">
             the full strategy methodology
           </a>
           .
@@ -100,7 +100,7 @@ export default function AtlaHowWeWork() {
         <LongformSubTitle>Output</LongformSubTitle>
         <LongformParagraph>
           Complete identity system and implementation guidance aligned with{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             service scope
           </a>
           .
@@ -120,7 +120,7 @@ export default function AtlaHowWeWork() {
         <LongformSubTitle>Output</LongformSubTitle>
         <LongformParagraph>
           Launch-ready assets with consistent strategic and visual quality. See live examples in{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/" className="longform-link">
             selected work
           </a>
           .
@@ -140,14 +140,15 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Timelines and pricing">
+      {/* PENDING JP APPROVAL: price removed (v2 rule: no prices anywhere); heading and paragraph rewritten. */}
+      <LongformSection title="Timelines and scope">
         <LongformParagraph>
           Typical ranges: full branding engagement 10–16 weeks, strategy-only 4–6 weeks, identity-only 6–10 weeks,
           packaging systems 6–8 weeks.
         </LongformParagraph>
         <LongformParagraph>
-          Investment starts at $25K for focused projects and scales by scope and timeline complexity. We scope before
-          work starts. No hourly drift and no hidden expansion.
+          Every engagement is sized to its scope and timeline complexity, and we scope it before work starts. No hourly
+          drift and no hidden expansion.
         </LongformParagraph>
       </LongformSection>
 
@@ -164,7 +165,7 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
         <LongformParagraph>
           For teams documenting outcomes after launch, we also provide a reusable{" "}
-          <a href="/journal/how-to-brief-a-branding-agency" className="atla-link" style={{ color: "#222" }}>
+          <a href="/journal/how-to-brief-a-branding-agency" className="longform-link">
             project briefing guide
           </a>
           .

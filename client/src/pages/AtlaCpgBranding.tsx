@@ -1,5 +1,7 @@
 import {
   AtlaLongformLayout,
+  LongformAction,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -28,26 +30,7 @@ export default function AtlaCpgBranding() {
           "We build CPG identities engineered for recognition at speed. Strategy, visual identity, packaging, and digital launch assets are developed as one system so nothing gets lost between strategy and retail execution.",
         ]}
         cta={
-          <a
-            href="/contact"
-            className="atla-link"
-            style={{
-              fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: 0.4,
-              lineHeight: "1.2",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              color: "#222",
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 4px",
-            }}
-          >
-            Start a project →
-          </a>
+          <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
@@ -75,31 +58,31 @@ export default function AtlaCpgBranding() {
       <LongformSection title="Selected CPG work">
         <LongformParagraph>
           <strong>Ando</strong> — Brand identity and packaging for a gummy supplement line built for retail visibility.{" "}
-          <a href="/projects/ando" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/ando" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>TigreTigre</strong> —{" "}
-          <a href="/projects/tigretigre" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/tigretigre" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Reggie</strong> —{" "}
-          <a href="/projects/reggie" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/reggie" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Oxylife</strong> —{" "}
-          <a href="/projects/oxylife" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/oxylife" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Bovi Health</strong> —{" "}
-          <a href="/projects/bovi-health" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/bovi-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
@@ -115,7 +98,7 @@ export default function AtlaCpgBranding() {
         <LongformParagraph>
           Strategy, identity, packaging, and digital are scoped as one engagement so the launch looks and feels coherent
           across channels. The planning process is documented on{" "}
-          <a href="/how-we-work" className="atla-link" style={{ color: "#222" }}>
+          <a href="/how-we-work" className="longform-link">
             how we work
           </a>
           .
@@ -132,28 +115,28 @@ export default function AtlaCpgBranding() {
 
       <LongformSection title="Common questions from CPG teams">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
       <LongformSection title="Related reads and references">
         <LongformParagraph>
           Start with the strategic framing in{" "}
-          <a href="/journal/brand-audit-framework" className="atla-link" style={{ color: "#222" }}>
+          <a href="/journal/brand-audit-framework" className="longform-link">
             the brand audit framework
           </a>
           .
         </LongformParagraph>
         <LongformParagraph>
           For strategic framing before design, review{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/brand-strategy" className="longform-link">
             brand strategy
           </a>{" "}
           and the broader{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             service model
           </a>
           .

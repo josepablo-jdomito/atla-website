@@ -1,5 +1,7 @@
 import {
   AtlaLongformLayout,
+  LongformAction,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -29,26 +31,7 @@ export default function AtlaSaasBranding() {
           "We build systems that are immediately recognizable and flexible enough to scale with the business.",
         ]}
         cta={
-          <a
-            href="/contact"
-            className="atla-link"
-            style={{
-              fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: 0.4,
-              lineHeight: "1.2",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              color: "#222",
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 4px",
-            }}
-          >
-            Start a project →
-          </a>
+          <LongformAction href="/contact">Start a project →</LongformAction>
         }
       />
 
@@ -77,19 +60,19 @@ export default function AtlaSaasBranding() {
       <LongformSection title="Selected SaaS and digital work">
         <LongformParagraph>
           <strong>Anything AI</strong> — Brand identity and digital design for an AI creative platform.{" "}
-          <a href="/projects/anything-ai" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/anything-ai" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>PuppyPy</strong> —{" "}
-          <a href="/projects/puppypy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/puppypy" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pathize Health</strong> —{" "}
-          <a href="/projects/pathize-health" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/pathize-health" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
@@ -103,7 +86,7 @@ export default function AtlaSaasBranding() {
         <LongformSubTitle>Strategy-first execution</LongformSubTitle>
         <LongformParagraph>
           We start with market positioning and decision criteria, then translate into design. Learn the framework on{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          <a href="/brand-strategy" className="longform-link">
             our strategy pillar
           </a>
           .
@@ -122,28 +105,28 @@ export default function AtlaSaasBranding() {
 
       <LongformSection title="Common questions from SaaS teams">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
       <LongformSection title="Related reads and references">
         <LongformParagraph>
           Review{" "}
-          <a href="/how-we-work" className="atla-link" style={{ color: "#222" }}>
+          <a href="/how-we-work" className="longform-link">
             how we work
           </a>{" "}
           for timeline and engagement structure.
         </LongformParagraph>
         <LongformParagraph>
           Compare examples in the full{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/" className="longform-link">
             work archive
           </a>{" "}
           and service scope on{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             services
           </a>
           .

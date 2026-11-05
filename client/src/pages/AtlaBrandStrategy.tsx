@@ -1,6 +1,7 @@
 import { ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
 import {
   AtlaLongformLayout,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -12,8 +13,9 @@ import {
 const FAQ_ITEMS = [
   {
     question: "How much does brand strategy cost?",
+    // PENDING JP APPROVAL: price range removed (v2 rule: no prices anywhere).
     answer:
-      "Atla strategy engagements typically range from $15K–$40K depending on scope, company complexity, and audience depth.",
+      "It depends on scope, company complexity, and audience depth. We scope every strategy engagement before work starts.",
   },
   {
     question: "Can we run strategy and design at the same time?",
@@ -132,7 +134,7 @@ export default function AtlaBrandStrategy() {
         </LongformParagraph>
         <LongformParagraph>
           <strong>Brand attributes and principles:</strong> the behavioral standard that informs{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             identity design, verbal identity, and digital design
           </a>
           .
@@ -153,7 +155,7 @@ export default function AtlaBrandStrategy() {
         <LongformParagraph>
           Final strategy document, stakeholder presentation, and written rationale for each major decision so your team
           can maintain consistency after handoff. Full process detail is on{" "}
-          <a href="/how-we-work" className="atla-link" style={{ color: "#222" }}>
+          <a href="/how-we-work" className="longform-link">
             how we work
           </a>
           .
@@ -166,8 +168,7 @@ export default function AtlaBrandStrategy() {
           Start with strategy first. For an operational walkthrough, read{" "}
           <a
             href="/journal/how-to-select-a-branding-agency"
-            className="atla-link"
-            style={{ color: "#222" }}
+            className="longform-link"
           >
             how to select a branding agency
           </a>
@@ -199,30 +200,30 @@ export default function AtlaBrandStrategy() {
       <LongformSection title="Examples and internal references">
         <LongformParagraph>
           See strategy translated into execution in{" "}
-          <a href="/projects/the-bridge" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/the-bridge" className="longform-link">
             The Bridge
           </a>
           ,{" "}
-          <a href="/projects/ando" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/ando" className="longform-link">
             Ando
           </a>
           , and{" "}
-          <a href="/projects/conscious-care-co" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects/conscious-care-co" className="longform-link">
             Conscious Care Co
           </a>
           .
         </LongformParagraph>
         <LongformParagraph>
           Explore vertical execution paths in{" "}
-          <a href="/hospitality-branding" className="atla-link" style={{ color: "#222" }}>
+          <a href="/hospitality-branding" className="longform-link">
             hospitality branding
           </a>{" "}
           and{" "}
-          <a href="/cpg-branding" className="atla-link" style={{ color: "#222" }}>
+          <a href="/cpg-branding" className="longform-link">
             CPG branding
           </a>
           . Browse all examples in the{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/" className="longform-link">
             work archive
           </a>
           .
@@ -231,10 +232,10 @@ export default function AtlaBrandStrategy() {
 
       <LongformSection title="Common questions about brand strategy">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
