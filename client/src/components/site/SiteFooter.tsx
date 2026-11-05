@@ -6,7 +6,8 @@ import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const { footer } = siteCopy;
 
-const CITIES = [
+/** Studio cities, in footer order. Also listed on /about and /contact. */
+export const SITE_CITIES = [
   { label: "Austin", timeZone: "America/Chicago" },
   { label: "Mexico City", timeZone: "America/Mexico_City" },
   { label: "Barcelona", timeZone: "Europe/Madrid" },
@@ -15,7 +16,7 @@ const CITIES = [
 ] as const;
 
 function getCityTimes() {
-  return CITIES.map((city) => ({
+  return SITE_CITIES.map((city) => ({
     ...city,
     time: new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",

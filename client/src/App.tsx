@@ -8,9 +8,9 @@ import { AppRouter } from "./AppRouter";
 
 const NotFound = lazy(() => import("@/pages/not-found"));
 const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
-const AtlaAbout = lazy(() => import("@/pages/AtlaAbout"));
-const AtlaContact = lazy(() => import("@/pages/AtlaContact"));
-const AtlaServices = lazy(() => import("@/pages/AtlaServices"));
+const About = lazy(() => import("@/pages/About"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Services = lazy(() => import("@/pages/Services"));
 const Home = lazy(() => import("@/pages/Home"));
 const Project = lazy(() => import("@/pages/Project"));
 const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
@@ -51,9 +51,9 @@ function Router() {
       <AppRouter
         NotFound={NotFound}
         ProjectsAdmin={ProjectsAdmin}
-        AtlaAbout={AtlaAbout}
-        AtlaContact={AtlaContact}
-        AtlaServices={AtlaServices}
+        About={About}
+        Contact={Contact}
+        Services={Services}
         Home={Home}
         Project={Project}
         AtlaJournal={AtlaJournal}

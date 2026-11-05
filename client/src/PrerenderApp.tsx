@@ -7,9 +7,9 @@ import type { Project } from "@shared/schema";
 import { AppRouter } from "./AppRouter";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
-import AtlaAbout from "./pages/AtlaAbout";
-import AtlaContact from "./pages/AtlaContact";
-import AtlaServices from "./pages/AtlaServices";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Services from "./pages/Services";
 import Home from "./pages/Home";
 import ProjectPage from "./pages/Project";
 import AtlaJournal from "./pages/AtlaJournal";
@@ -96,9 +96,9 @@ export function renderPrerenderedRoute(
           <AppRouter
             NotFound={NotFound}
             ProjectsAdmin={ProjectsAdmin}
-            AtlaAbout={AtlaAbout}
-            AtlaContact={AtlaContact}
-            AtlaServices={AtlaServices}
+            About={About}
+            Contact={Contact}
+            Services={Services}
             Home={Home}
             Project={ProjectPage}
             AtlaJournal={AtlaJournal}

@@ -149,6 +149,140 @@ export const siteCopy = {
     bookCall: "Book a call",
     restart: "Start a new brief",
   },
+  // PENDING JP APPROVAL. Deliverables are regrouped from the current /services page and the SEO landings
+  // (/brand-strategy, /how-we-work, /hospitality-branding, /cpg-branding, /saas-branding). Nothing new.
+  services: {
+    metaTitle: "Brand Strategy, Identity, and Digital Design Services",
+    metaDescription:
+      "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
+    title: "Services, arranged by where your company is.",
+    lead: "Pick the moment you are in. Each one lists what we do there.",
+    listLabel: "What we do",
+    cta: "Start a brief",
+    // `seed` pre-fills the brief's first answer ("What are you building?").
+    moments: [
+      {
+        id: "launch",
+        title: "Launch",
+        line: "A new company gets one first impression. We make sure it is the right one.",
+        seed: "Launching a new brand",
+        items: [
+          "Brand strategy and positioning",
+          "Naming direction",
+          "Identity system: logo, typography, color, iconography",
+          "Tone of voice",
+          "Website design and dev-ready handoff",
+          "Packaging and label systems",
+          "Social templates and launch-ready assets",
+        ],
+      },
+      {
+        id: "raise-capital",
+        title: "Raise capital",
+        line: "Investors judge the company before they read the deck. The brand has to carry the story.",
+        seed: "Raising capital",
+        items: [
+          "Positioning statement",
+          "Messaging architecture",
+          "Pitch decks and one-pagers",
+          "Investor and sales collateral",
+          "Identity system",
+          "Website design and conversion architecture",
+        ],
+      },
+      {
+        id: "grow-scale",
+        title: "Grow / scale",
+        line: "More products, more markets, more people making things. One brand that holds.",
+        seed: "Growing or scaling the brand",
+        items: [
+          "Brand stewardship as the company grows",
+          "Brand guidelines your team can run",
+          "Packaging systems across SKUs",
+          "Art direction and content standards",
+          "Creative direction for campaigns and content",
+          "Motion: brand animation, social content, UI motion",
+          "Copywriting",
+          "Strategy for entering a new market",
+        ],
+      },
+      {
+        id: "reposition",
+        title: "Reposition",
+        line: "The company has moved on and the brand has not. We start from what your customers already say.",
+        seed: "Repositioning the brand",
+        items: [
+          "Brand Diagnostic: customer reviews, team interviews, every touchpoint",
+          "Leadership workshop and roadmap",
+          "Competitive landscape and territory map",
+          "Audience profiles",
+          "Brand strategy reset",
+          "Identity redesign",
+          "Tone of voice",
+        ],
+      },
+    ],
+  },
+  // PENDING JP APPROVAL. Team names and roles come from the current /about page (AtlaAbout.tsx TEAM).
+  // Per-person cities are not on record anywhere in the repo, so they are left out. Task 11 brings JP the list.
+  about: {
+    metaTitle: "About Atla",
+    metaSuffix: "Senior-Led Branding Studio, US and LatAm",
+    metaDescription:
+      "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
+    title: "A senior branding studio across the US and Latin America.",
+    lead: "Small by design. Senior creatives, direct access, no account managers between you and the work.",
+    howLabel: "How we work",
+    howLead: "Machines do the legwork. People make the calls.",
+    how: [
+      {
+        title: "Read the market",
+        body: "AI gathers and sorts what customers and competitors say in public. A strategist reads what it finds.",
+      },
+      {
+        title: "Talk to your people",
+        body: "Interviews across leadership, sales, product and service. People run these, not software.",
+      },
+      {
+        title: "Decide the position",
+        body: "AI drafts options and tests them against the research. Your leadership and our team choose, in one workshop.",
+      },
+      {
+        title: "Design the system",
+        body: "AI handles first passes, variations and production. A creative director decides what ships.",
+      },
+      {
+        title: "Hand it over",
+        body: "Guidelines your team can run, and a team that stays on as the company grows.",
+      },
+    ],
+    teamLabel: "Team",
+    team: [
+      { name: "José Pablo Domínguez", role: "Founder & Creative Director" },
+      { name: "Paola Díaz", role: "COO" },
+      { name: "Levi Ramírez", role: "Head of Growth" },
+      { name: "Mariela Alata", role: "Project Manager" },
+      { name: "Tais Kahatt", role: "Art Director" },
+      { name: "Adriana Méndez", role: "Brand Designer" },
+      { name: "José Aceves Covarrubias", role: "Brand Designer" },
+    ] as ReadonlyArray<{ name: string; role: string; city?: string }>,
+    citiesLabel: "Where we are",
+  },
+  // PENDING JP APPROVAL
+  contact: {
+    metaTitle: "Contact Atla",
+    metaSuffix: "Start a Branding or Digital Project",
+    metaDescription:
+      "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
+    title: "Tell us what you are building.",
+    lead: "A few short questions about what you are building. We read every brief ourselves and reply by email.",
+    cta: "Start a brief",
+    emailLabel: "Email",
+    socialLabel: "Elsewhere",
+    citiesLabel: "Cities",
+    formTitle: "Or write to us directly.",
+    formLead: "What the business is, what feels misaligned right now, and what has to happen next.",
+  },
 } as const;
 
 export type SiteCopy = typeof siteCopy;
