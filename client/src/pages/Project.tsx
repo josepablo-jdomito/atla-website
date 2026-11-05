@@ -18,6 +18,7 @@ import {
   type ProjectApi,
   type ProjectMediaMosaicItem,
 } from "@/lib/projectPage";
+import { consumePopNav } from "@/lib/navType";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
@@ -142,13 +143,10 @@ export default function Project() {
   );
   const next = useMemo(() => nextProjectInSiteOrder(projects, slug), [projects, slug]);
 
-  // wouter does not reset scroll; a project opened from the bottom of another should start at its top.
-  // Only on a slug change, not on mount, so Back keeps the position the browser restores.
-  const shownSlug = useRef(slug);
+  // wouter does not reset scroll. A project reached by a push (a card, the next link) starts at its
+  // top; one reached with Back/Forward keeps the position the browser restores.
   useEffect(() => {
-    if (shownSlug.current === slug) return;
-    shownSlug.current = slug;
-    window.scrollTo(0, 0);
+    if (!consumePopNav()) window.scrollTo(0, 0);
   }, [slug]);
 
   useEffect(() => {

@@ -206,10 +206,17 @@ describe("Project page", () => {
     }
   });
 
-  it("scrolls to the top only when the slug changes, not on first mount", () => {
+  it("starts at the top after a push navigation, on mount and on a slug change", () => {
     render("archive-b");
-    expect(window.scrollTo).not.toHaveBeenCalled();
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    vi.mocked(window.scrollTo).mockClear();
     act(() => location.navigate("/projects/feat-one"));
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  it("keeps the restored position after Back (popstate)", () => {
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    render("archive-b");
+    expect(window.scrollTo).not.toHaveBeenCalled();
   });
 });
