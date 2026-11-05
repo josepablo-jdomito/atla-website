@@ -10,11 +10,11 @@ export function buildServicesStructuredData(): Array<Record<string, unknown>> {
     "@type": "BreadcrumbList",
     itemListElement: [{ "@type": "ListItem", position: 1, name: "Services", item: `${SITE_ORIGIN}/services` }],
   };
-  const services = siteCopy.services.moments.map((moment) => ({
+  const services = siteCopy.services.disciplines.map((discipline) => ({
     "@context": "https://schema.org",
     "@type": "Service",
-    name: moment.title,
-    description: `${moment.line} ${moment.items.join(". ")}.`,
+    name: discipline.title,
+    description: `${discipline.line} ${discipline.includes.join(". ")}.`,
     provider: { "@type": "Organization", name: ORGANIZATION_NAME, url: SITE_ORIGIN },
     areaServed: ["United States", "Latin America"],
   }));

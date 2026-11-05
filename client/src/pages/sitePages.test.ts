@@ -57,27 +57,32 @@ function render(Page: ComponentType, path: string) {
 const main = () => container.querySelector("main")!;
 
 describe("Services page", () => {
-  it("has one h1 and the four moments as h2 sections, in order", () => {
+  it("has one h1, the four moments on top, and the disciplines as h2 rows", () => {
     render(Services, "/services");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
-    const titles = Array.from(main().querySelectorAll("section.moment > h2")).map((h) => h.textContent);
-    expect(titles).toEqual(["Launch", "Raise capital", "Grow / scale", "Reposition"]);
+    const moments = Array.from(main().querySelectorAll(".moments-strip__item")).map((b) => b.textContent);
+    expect(moments).toEqual([siteCopy.services.allMoments, ...siteCopy.services.moments.map((m) => m.title)]);
+    const titles = Array.from(main().querySelectorAll("section.discipline > h2")).map((h) => h.textContent);
+    expect(titles).toEqual(siteCopy.services.disciplines.map((d) => d.title));
   });
 
-  it("lists what we do in every moment and links each to the brief with its moment pre-answered", () => {
+  it("every discipline lists what is included and links to the brief; a moment pre-answers it", () => {
     render(Services, "/services");
-    const sections = Array.from(main().querySelectorAll<HTMLElement>("section.moment"));
-    expect(sections).toHaveLength(4);
-    sections.forEach((section, i) => {
-      const moment = siteCopy.services.moments[i];
-      expect(section.querySelectorAll(".moment__list li").length).toBeGreaterThan(0);
-      const links = Array.from(section.querySelectorAll<HTMLAnchorElement>('a[href^="/brief"]'));
-      expect(links).toHaveLength(1);
-      expect(links[0].getAttribute("href")).toBe(`/brief?moment=${encodeURIComponent(moment.brief)}`);
-      const param = new URL(links[0].href, "https://x.test").searchParams.get("moment");
-      // The param resolves to the brief option with the same name as the section.
-      expect(momentFromParam(param)).toBe(moment.title);
-    });
+    const sections = Array.from(main().querySelectorAll<HTMLElement>("section.discipline"));
+    expect(sections.length).toBe(siteCopy.services.disciplines.length);
+    for (const section of sections) {
+      expect(section.querySelectorAll(".discipline__list li").length).toBeGreaterThan(0);
+      expect(section.querySelector<HTMLAnchorElement>("a.discipline__cta")?.getAttribute("href")).toBe("/brief");
+    }
+    const raise = siteCopy.services.moments.find((m) => m.id === "raise")!;
+    const button = Array.from(main().querySelectorAll<HTMLButtonElement>(".moments-strip__item")).find((b) => b.textContent === raise.title)!;
+    act(() => button.click());
+    const narrowed = Array.from(main().querySelectorAll<HTMLElement>("section.discipline"));
+    expect(narrowed.length).toBe(siteCopy.services.disciplines.filter((d) => (d.moments as readonly string[]).includes("raise")).length);
+    const href = narrowed[0].querySelector<HTMLAnchorElement>("a.discipline__cta")!.getAttribute("href")!;
+    expect(href).toBe(`/brief?moment=${encodeURIComponent(raise.brief)}`);
+    const param = new URL(href, "https://x.test").searchParams.get("moment");
+    expect(momentFromParam(param)).toBe(raise.title);
   });
 
   it("shows no prices", () => {
