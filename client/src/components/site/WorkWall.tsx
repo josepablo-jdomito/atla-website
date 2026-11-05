@@ -93,8 +93,14 @@ function VideoTile({ tile, reduced }: { tile: WallTile; reduced: boolean }) {
   );
 }
 
-function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean; reduced: boolean }) {
+/** Exported for tests. */
+export function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean; reduced: boolean }) {
   const [loaded, setLoaded] = useState(tile.kind === "video");
+  // A search or filter rebuilds the wall and remounts every tile. An image the browser already has
+  // must not fade in from zero again (the "blink", motion pass 2026-11-05): it mounts as loaded.
+  const markIfCached = (img: HTMLImageElement | null) => {
+    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
+  };
   const [failed, setFailed] = useState(false);
   const dims = getImageDimensions(tile.src);
   if (failed) return null;
@@ -104,6 +110,7 @@ function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean; reduce
         <VideoTile tile={tile} reduced={reduced} />
       ) : (
         <img
+          ref={markIfCached}
           src={getOptimizedImageUrl(tile.src, { width: 640, quality: 82 }) || tile.src}
           srcSet={buildImageSrcSet(tile.src, WIDTHS, { quality: 82 })}
           sizes={SIZES}
