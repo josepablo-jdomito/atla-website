@@ -32,6 +32,12 @@ export function isClientWork(project: Pick<SiteProject, "slug" | "client" | "tit
   return !NOT_CLIENT_PATTERN.test(project.client) && !NOT_CLIENT_PATTERN.test(project.title);
 }
 
+/** The Sanity asset id in a URL (`…/7cc46aa6…-2616x1445.png` → `7cc46aa6…`), or the file name. */
+export function assetKey(src: string) {
+  const file = src.split("?")[0].split("/").pop() ?? src;
+  return file.replace(/-\d+x\d+\.[a-z0-9]+$/i, "").replace(/\.[a-z0-9]+$/i, "");
+}
+
 export function coverRatio(src: string) {
   const dims = getImageDimensions(src);
   return dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;

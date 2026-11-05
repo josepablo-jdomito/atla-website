@@ -128,26 +128,27 @@ function render(slug: string) {
 describe("Project page", () => {
   it("shows client, year and services (not tags) in the header line", () => {
     render("archive-b");
-    const parts = Array.from(container.querySelector(".project-head")!.children).map((el) => el.textContent);
-    expect(parts).toEqual(["Rústico", "2023", "Branding, Website"]);
+    // The title is the project name; the facts line names the client only when it differs from the title.
+    expect(container.querySelector("h1")?.textContent).toBe("Rústico & Co / Tulum");
+    expect(container.querySelector(".story-head__facts")?.textContent).toBe("Rústico  ·  2023  ·  Branding, Website");
   });
 
   it("links the brief with the title as an encoded seed", () => {
     render("archive-b");
-    const cta = container.querySelector<HTMLAnchorElement>(".project-cta a");
+    const cta = container.querySelector<HTMLAnchorElement>(".story-cta a");
     expect(cta?.getAttribute("href")).toBe(`/brief?seed=${encodeURIComponent("Like Rústico & Co / Tulum")}`);
     expect(new URL(cta!.href, "https://x.test").searchParams.get("seed")).toBe("Like Rústico & Co / Tulum");
   });
 
   it("sends the last project in site order to the first", () => {
     render("archive-b");
-    const next = container.querySelector<HTMLAnchorElement>(".project-next a");
+    const next = container.querySelector<HTMLAnchorElement>(".story-next a");
     expect(next?.getAttribute("href")).toBe("/projects/feat-one");
   });
 
   it("renders the media in order, cover first", () => {
     render("archive-b");
-    const sources = Array.from(container.querySelectorAll(".project-media img")).map((img) => img.getAttribute("src"));
+    const sources = Array.from(container.querySelectorAll(".story-media img")).map((img) => img.getAttribute("src"));
     expect(sources).toHaveLength(3);
     expect(sources[0]).toContain("archive-b");
     expect(sources[1]).toContain("b1");
@@ -158,10 +159,10 @@ describe("Project page", () => {
     API.push(raw({ slug: "bare", title: "Bare", coverImage: "", images: [] }));
     try {
       render("bare");
-      expect(container.querySelector(".project-media")).toBeNull();
-      expect(container.querySelector(".project-head")?.textContent).toContain("Bare");
-      expect(container.querySelector(".project-cta a")?.getAttribute("href")).toBe("/brief?seed=Like%20Bare");
-      expect(container.querySelector(".project-next a")?.getAttribute("href")).toBe("/projects/feat-one");
+      expect(container.querySelector(".story-media")).toBeNull();
+      expect(container.querySelector(".story-head")?.textContent).toContain("Bare");
+      expect(container.querySelector(".story-cta a")?.getAttribute("href")).toBe("/brief?seed=Like%20Bare");
+      expect(container.querySelector(".story-next a")?.getAttribute("href")).toBe("/projects/feat-one");
     } finally {
       API.pop();
     }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
-import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
+import { assetKey, buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
 import {
   ALL as ALL_VALUE,
@@ -99,7 +99,12 @@ function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean; reduce
   const dims = getImageDimensions(tile.src);
   if (failed) return null;
   return (
-    <Link href={`/projects/${tile.slug}`} className="wall-tile" aria-label={tile.title} data-loaded={loaded}>
+    <Link
+      href={`/projects/${tile.slug}?at=${encodeURIComponent(assetKey(tile.src))}`}
+      className="wall-tile"
+      aria-label={tile.title}
+      data-loaded={loaded}
+    >
       {tile.kind === "video" ? (
         <VideoTile tile={tile} reduced={reduced} />
       ) : (

@@ -64,6 +64,9 @@ export const siteCopy = {
     ctaTitle: "Building something like this?",
     ctaLabel: "Start a project",
     nextLabel: "Next",
+    lightboxClose: "Close",
+    lightboxPrev: "Previous image",
+    lightboxNext: "Next image",
     // Pre-fills the brief's first answer: /brief?seed=Like <title>
     seed: (title: string) => `Like ${title}`,
   },
@@ -233,6 +236,13 @@ export const siteCopy = {
     citiesLabel: "Cities",
     formTitle: "Or just write.",
     formLead: "What the business is, what feels off, and what has to happen next.",
+  },
+  // JP, 2026-11-05: client marks above the footer, like Cosmos. The files are the ones JP sends
+  // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.
+  logos: {
+    label: "Clients",
+    line: "Brands we have built with.",
+    items: [] as ReadonlyArray<{ name: string; src: string }>,
   },
   // JP, 2026-11-05: a quiet page. Names and one line each, no detail, no logos.
   ventures: {

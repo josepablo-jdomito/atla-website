@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { MAIN_CONTENT_ID, SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ClientLogos } from "@/components/site/ClientLogos";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const FADE = { duration: 0.2, ease: [0.23, 1, 0.32, 1] as const };
@@ -36,6 +37,7 @@ export function PageShell({ children }: { children: ReactNode }) {
           </motion.div>
         </AnimatePresence>
       </main>
+      <ClientLogos />
       <SiteFooter />
     </div>
   );
