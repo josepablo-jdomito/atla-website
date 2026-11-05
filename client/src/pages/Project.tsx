@@ -249,14 +249,21 @@ export default function Project() {
     if (consumePopNav()) return;
     if (!at) window.scrollTo(0, 0);
   }, [slug, at]);
+  // The landing is a jump, not a glide (the visitor clicked this image a moment ago), and it is
+  // checked again once the images above have their height, in case the first jump was early.
   useEffect(() => {
     if (!at || !project || landedRef.current === `${slug}:${at}`) return;
     const target = document.querySelector<HTMLElement>(`[data-asset="${CSS.escape(at)}"]`);
     if (!target) return;
     landedRef.current = `${slug}:${at}`;
-    const top = target.getBoundingClientRect().top + window.scrollY - HEADER - 16;
-    window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
-  }, [at, project, slug, reduced]);
+    const land = () => {
+      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - HEADER - 16);
+      if (Math.abs(window.scrollY - top) > 8) window.scrollTo({ top, behavior: "auto" });
+    };
+    land();
+    const timers = [250, 900].map((ms) => window.setTimeout(land, ms));
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [at, project, slug]);
 
   useEffect(() => {
     if (!project) return;
