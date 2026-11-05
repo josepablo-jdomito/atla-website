@@ -62,7 +62,15 @@ html body {
   flex-direction: column;
   font-family: "Libre Franklin", Helvetica, Arial, sans-serif;
 }
+
 .site-main { flex: 1; }
+/* Route change: the page fades in over 200 ms in CSS, off the main thread, while the new page's images
+   decode (motion pass 2026-11-05; was framer-motion). The landing paint (prerendered) does not fade. */
+.site-page { animation: site-page-in 200ms var(--site-ease) both; }
+.site-page[data-first-paint] { animation: none; }
+@keyframes site-page-in {
+  from { opacity: 0; }
+}
 
 .site-link {
   color: inherit;
@@ -134,6 +142,11 @@ html body {
   overflow-y: auto;
 }
 .site-sheet[hidden] { display: none; }
+/* Opens once per phone visit: a 160 ms fade in. Browsers without @starting-style show it instantly. */
+.site-sheet { opacity: 1; transition: opacity 160ms var(--site-ease); }
+@starting-style {
+  .site-sheet:not([hidden]) { opacity: 0; }
+}
 .site-sheet ul { list-style: none; margin: 0; padding: 0; }
 .site-sheet__link {
   display: block;
@@ -259,13 +272,15 @@ html body {
   width: 100%;
   height: auto;
   opacity: 0;
-  transition: opacity 480ms var(--site-ease);
+  /* Soft arrival as each image decodes (motion pass 2026-11-05: 480 ms read as lag on cached passes). */
+  transition: opacity 320ms var(--site-ease);
 }
 .wall-tile[data-loaded="true"] img { opacity: 1; }
 .wall-tile video { display: block; width: 100%; height: auto; object-fit: cover; }
 .work-wall__empty { margin: 48px 0; font-size: 15px; color: var(--site-muted); }
 @media (hover: hover) and (pointer: fine) {
-  .wall-tile img { transition: opacity 480ms var(--site-ease), filter 320ms var(--site-ease); }
+  /* Hover is tens of times a visit: shortest budget, plain `ease` for a color change. */
+  .wall-tile img { transition: opacity 320ms var(--site-ease), filter 160ms ease; }
   .wall-tile:hover img { filter: brightness(0.94); }
 }
 @media (min-width: 768px) {
@@ -1244,7 +1259,21 @@ html body {
   padding: 16px 24px 24px;
   border-radius: 16px;
   transform-origin: bottom center;
-  animation: site-explore-in 200ms var(--site-ease);
+  /* Grows from the pill. A transition, not a keyframe, so a blur and refocus retargets from where it is.
+     Enter 200 ms; a pointer close runs the same path back in 120 ms (data-state="closing"); Escape and
+     Enter close instantly (keyboard never animates). */
+  opacity: 1;
+  transform: none;
+  transition: opacity 200ms var(--site-ease), transform 200ms var(--site-ease);
+}
+@starting-style {
+  .site-explore__panel { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+.site-explore__panel[data-state="closing"] {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition-duration: 120ms;
+  pointer-events: none;
 }
 .site-explore__head {
   display: flex;
@@ -1267,9 +1296,6 @@ html body {
   color: var(--site-ink);
   font: inherit;
   cursor: pointer;
-}
-@keyframes site-explore-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
 }
 
 .site-filters {
@@ -1326,8 +1352,10 @@ html body {
   .ask-bar__submit,
   .site-explore,
   .site-explore__pill { transition: none; }
-  .ask-results__grid > li,
-  .site-explore__panel { animation: none; }
+  .ask-results__grid > li { animation: none; }
+  .site-explore__panel { transition: none; }
+  .site-page { animation: none; }
+  .site-sheet { transition: none; }
   .ask-bar__spinner { animation: none; }
   .project-card:hover .project-card__media,
   .idea-block:active,
