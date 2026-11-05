@@ -1,6 +1,7 @@
 import express, { type Request, type Response, type NextFunction } from "express";
 import { createServer } from "http";
 import { registerRoutes } from "./routes.ts";
+import { apiLogLine, isPrivateApiPath } from "./apiLog.ts";
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,20 +21,19 @@ app.use((req, res, next) => {
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
+  // Visitor free text (search bar, brief) is never captured, so it cannot reach the log.
+  if (!isPrivateApiPath(path)) {
+    const originalResJson = res.json;
+    res.json = function (bodyJson, ...args) {
+      capturedJsonResponse = bodyJson;
+      return originalResJson.apply(res, [bodyJson, ...args]);
+    };
+  }
 
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-      console.log(logLine);
+      console.log(apiLogLine(req.method, path, res.statusCode, duration, capturedJsonResponse));
     }
   });
 

@@ -4,8 +4,8 @@
  *
  * A query token scores against each project field it appears in: title 3,
  * industry 3, services 2, tags 2, region 1. When nothing scores, the visitor
- * still gets work back: the 6 projects whose industry or services overlap the
- * query (through a small synonym map), else the 6 most recent, flagged
+ * still gets work back: the 6 projects whose industry, services or tags overlap
+ * the query (through a small synonym map), else the 6 most recent, flagged
  * `closest` so the UI can label them "Closest work".
  */
 
@@ -31,23 +31,26 @@ const STOPWORDS = new Set([
   "brand", "branding", "agency", "studio", "project", "projects", "work", "company",
 ]);
 
-const SYNONYMS: Record<string, string> = {
-  hotel: "hospitality",
-  restaurant: "hospitality",
-  cafe: "hospitality",
-  coffee: "hospitality",
-  food: "consumer",
-  drink: "consumer",
-  beverage: "consumer",
-  beauty: "consumer",
-  fintech: "tech",
-  ai: "tech",
-  software: "tech",
-  saas: "tech",
-  "real estate": "lifestyle",
-  residence: "lifestyle",
-  fashion: "lifestyle",
-  retail: "lifestyle",
+// Query words mapped to the industry and service words the live portfolio actually uses
+// (industries: Hospitality, Food & Beverage, Consumer Goods, SaaS, Digital;
+// services: Branding, Art Direction, Packaging, Website).
+const SYNONYMS: Record<string, string[]> = {
+  hotel: ["hospitality"],
+  restaurant: ["hospitality", "food", "beverage"],
+  cafe: ["hospitality", "food", "beverage"],
+  coffee: ["hospitality", "food", "beverage"],
+  food: ["food", "beverage", "consumer"],
+  drink: ["food", "beverage", "consumer"],
+  beverage: ["food", "beverage", "consumer"],
+  beauty: ["consumer"],
+  fintech: ["saas", "digital"],
+  ai: ["saas", "digital"],
+  software: ["saas", "digital"],
+  saas: ["saas", "digital"],
+  "real estate": ["hospitality"],
+  residence: ["hospitality"],
+  fashion: ["consumer"],
+  retail: ["consumer"],
 };
 
 // Whitespace, ASCII punctuation, Latin-1 punctuation and general punctuation; letters of any script survive.
@@ -92,14 +95,15 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
     return { projects: matched.map((entry) => entry.project), closest: false };
   }
 
-  // Closest work: overlap on industry and services, query words widened by the synonym map.
+  // Closest work: overlap on industry, services and tags, query words widened by the synonym map.
+  // Recency only orders ties, so with no overlap at all it is the 6 most recent.
   const joined = ` ${queryWords.join(" ")} `;
   const wanted = new Set(queryTokens);
-  for (const [term, target] of Object.entries(SYNONYMS)) {
-    if (joined.includes(` ${term} `)) wanted.add(target);
+  for (const [term, targets] of Object.entries(SYNONYMS)) {
+    if (joined.includes(` ${term} `)) targets.forEach((target) => wanted.add(target));
   }
   const overlap = (project: ProjectLite) => {
-    const facets = tokenSet([project.industry, ...project.services]);
+    const facets = tokenSet([project.industry, ...project.services, ...project.tags]);
     let count = 0;
     wanted.forEach((token) => {
       if (facets.has(token)) count += 1;

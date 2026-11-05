@@ -52,15 +52,30 @@ describe("rankProjects", () => {
   it("closest uses the synonym map before recency", () => {
     const { projects, closest } = rankProjects("a cafe in Lisbon", FIXTURES);
     expect(closest).toBe(true);
-    expect(projects.slice(0, 2).map((x) => x.slug)).toEqual(["the-bridge", "old-table"]);
+    // cafe -> Food & Beverage (two words overlap) and Hospitality (one), then recency.
+    expect(projects.slice(0, 3).map((x) => x.slug)).toEqual(["pax-and-beneficia", "the-bridge", "old-table"]);
     expect(projects).toHaveLength(6);
   });
 
   it("maps the two-word synonym real estate", () => {
-    const withLifestyle = [...FIXTURES, p("casa", "Lifestyle", ["Branding"], [], 2018)];
-    const { projects, closest } = rankProjects("real estate developer", withLifestyle);
+    const { projects, closest } = rankProjects("real estate developer", FIXTURES);
     expect(closest).toBe(true);
-    expect(projects[0].slug).toBe("casa");
+    expect(projects.slice(0, 2).map((x) => x.slug)).toEqual(["the-bridge", "old-table"]);
+  });
+
+  it("fintech with no direct hit returns the tech industries first", () => {
+    const { projects, closest } = rankProjects("fintech", FIXTURES);
+    expect(closest).toBe(true);
+    // SaaS and Digital are the live tech-ish industries.
+    expect(projects.slice(0, 2).map((x) => x.industry)).toEqual(["SaaS", "Digital"]);
+    expect(projects.slice(0, 2).map((x) => x.slug)).toEqual(["nova", "kin"]);
+  });
+
+  it("counts tag overlap in the closest fallback", () => {
+    // "residence" maps to hospitality; only a tag says so here.
+    const tagged = [...FIXTURES, p("casa-norte", "Unspecified", ["Branding"], ["hospitality"], 2010)];
+    const { projects } = rankProjects("a residence", tagged);
+    expect(projects.slice(0, 3).map((x) => x.slug)).toContain("casa-norte");
   });
 
   it("empty or junk query returns closest without throwing", () => {
