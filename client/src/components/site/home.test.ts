@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Project } from "@shared/schema";
 import { featuredProjects, toSiteProject, type SiteProject } from "./siteProjects";
 import { playableVideo } from "./ProjectCard";
-import { buildFacetOptions, matchesFilters } from "./Archive";
+import { buildFacetOptions, matchesFilters } from "./workFilters";
 
 const COVER = "https://cdn.sanity.io/images/p/production/abc-1400x868.jpg";
 

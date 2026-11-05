@@ -224,6 +224,8 @@ html body {
   transition: opacity 480ms var(--site-ease);
 }
 .wall-tile[data-loaded="true"] img { opacity: 1; }
+.wall-tile video { display: block; width: 100%; height: auto; object-fit: cover; }
+.work-wall__empty { margin: 48px 0; font-size: 15px; color: var(--site-muted); }
 @media (hover: hover) and (pointer: fine) {
   .wall-tile img { transition: opacity 480ms var(--site-ease), filter 320ms var(--site-ease); }
   .wall-tile:hover img { filter: brightness(0.94); }

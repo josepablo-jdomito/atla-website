@@ -11,12 +11,10 @@ const { home } = siteCopy;
 
 export function WorkExplore({
   activeCount,
-  resultCount,
   visible,
   children,
 }: {
   activeCount: number;
-  resultCount: number;
   /** The pill only shows while the archive is on screen. */
   visible: boolean;
   children: ReactNode;
@@ -60,7 +58,7 @@ export function WorkExplore({
       {open ? (
         <div id={panelId} role="dialog" aria-label={home.exploreDialog} className="site-explore__panel">
           <div className="site-explore__head">
-            <p>{home.project(resultCount)}</p>
+            <p>{home.exploreDialog}</p>
             <button type="button" onClick={() => setOpen(false)}>
               {home.close}
             </button>

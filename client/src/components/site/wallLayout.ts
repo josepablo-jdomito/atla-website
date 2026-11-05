@@ -3,10 +3,11 @@ import { siteOrder } from "@/components/site/siteProjects";
 import { getImageDimensions } from "@shared/imageDelivery";
 
 /**
- * The home wall: every client cover, once per pass, placed like Cosmos
- * (fixed columns, native ratios, shortest column first). The pool loops, so
- * repeats are intentional; each pass starts one tile later than the last so a
- * cover never lands in the same column twice in a row.
+ * The home wall: every image of every client project, placed like Cosmos
+ * (fixed columns, native ratios, shortest column first). JP, 2026-11-05: it
+ * has to look alive and varied, never repetitive, so the pool is the whole
+ * gallery (235 pieces today), every project spread across the whole wall,
+ * and no project sits next to itself. The pool loops only once it runs out.
  * Rule: docs/superpowers/specs/2026-11-05-home-masonry-research.md, section 6.
  */
 
@@ -14,7 +15,11 @@ export type WallTile = {
   slug: string;
   title: string;
   src: string;
-  /** width / height of the cover, read from the Sanity URL; 1.5 when unknown. */
+  /** gif and image tiles are <img>; a direct mp4/webm loops muted. */
+  kind: "image" | "video";
+  /** Poster for a video tile: the project cover. */
+  poster?: string;
+  /** width / height; 1.5 when unknown. */
   ratio: number;
 };
 
@@ -32,60 +37,82 @@ export function coverRatio(src: string) {
   return dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;
 }
 
+/** Only direct files loop in a <video>; Vimeo player URLs need an iframe and stay off the wall. */
+export function directVideo(src: string) {
+  return /\.(mp4|webm|m4v|mov)(\?|#|$)/i.test(src) || /cdn\.sanity\.io\/files\//i.test(src);
+}
+
+function tilesOf(project: SiteProject): WallTile[] {
+  const base = { slug: project.slug, title: project.title };
+  const images = [project.coverImage, ...project.images].map((src) => ({
+    ...base,
+    src,
+    kind: "image" as const,
+    ratio: coverRatio(src),
+  }));
+  const videos = project.videos.filter(directVideo).map((src) => ({
+    ...base,
+    src,
+    kind: "video" as const,
+    poster: project.coverImage,
+    ratio: 16 / 9,
+  }));
+  // The first video plays second, right after the cover, so motion shows up early.
+  return videos.length > 0 ? [images[0], videos[0], ...images.slice(1), ...videos.slice(1)] : images;
+}
+
 /**
- * The reading sequence for one pass: the site order split into portraits and
- * landscapes, then merged so a portrait lands every (total / portraits) slots
- * and never next to another portrait.
+ * The reading sequence: every piece of every client project, spread evenly.
+ * At each slot the project that is furthest behind (fewest of its pieces
+ * shown, as a share) goes next, so a 16-image project is dealt across the
+ * whole wall instead of bunching at the end. A project never follows itself
+ * and the ratio alternates whenever a candidate allows it.
  */
 export function buildWallSequence(projects: SiteProject[]): WallTile[] {
-  const pool = siteOrder(projects)
+  const decks = siteOrder(projects)
     .filter(isClientWork)
-    .map((project) => ({
-      slug: project.slug,
-      title: project.title,
-      src: project.coverImage,
-      ratio: coverRatio(project.coverImage),
-    }));
-  const portraits = pool.filter((tile) => tile.ratio < 1);
-  const landscapes = pool.filter((tile) => tile.ratio >= 1);
-  if (portraits.length === 0 || landscapes.length === 0) return pool;
-
-  const step = pool.length / portraits.length;
+    .map(tilesOf)
+    .filter((deck) => deck.length > 0);
+  const cursors = decks.map(() => 0);
+  const total = decks.reduce((sum, deck) => sum + deck.length, 0);
   const sequence: WallTile[] = [];
-  let next = step - 1; // the first portrait closes the first row rather than opening it
-  let p = 0;
-  let l = 0;
-  for (let slot = 0; slot < pool.length; slot += 1) {
-    const lastWasPortrait = sequence[slot - 1] ? sequence[slot - 1].ratio < 1 : false;
-    const portraitDue = slot >= next && p < portraits.length && !lastWasPortrait;
-    const landscapesLeft = l < landscapes.length;
-    if (portraitDue || !landscapesLeft) {
-      sequence.push(portraits[p]);
-      p += 1;
-      next += step;
-    } else {
-      sequence.push(landscapes[l]);
-      l += 1;
-    }
+  while (sequence.length < total) {
+    const last = sequence[sequence.length - 1];
+    const candidates = decks
+      .map((deck, i) => ({ i, progress: cursors[i] / deck.length, tile: deck[cursors[i]] }))
+      .filter((c) => c.tile)
+      .sort((a, b) => a.progress - b.progress);
+    const others = candidates.filter((c) => !last || c.tile.slug !== last.slug);
+    const wantPortrait = last ? last.ratio >= 1 : false;
+    // Only the least-shown third may jump the queue for a better ratio; spread beats rhythm.
+    const window = others.slice(0, Math.max(1, Math.ceil(others.length / 3)));
+    const pick = window.find((c) => c.tile.ratio < 1 === wantPortrait) ?? others[0] ?? candidates[0];
+    sequence.push(pick.tile);
+    cursors[pick.i] += 1;
   }
   return sequence;
 }
 
-/** Pass `n` of the wall: the sequence rotated `n` tiles, so every cover shifts a column. */
+/** Pass `n` of the wall: the sequence rotated `n` tiles, so every piece shifts a column. */
 export function wallPass(sequence: WallTile[], pass: number): WallTile[] {
   if (sequence.length === 0) return [];
-  const shift = pass % sequence.length;
+  const shift = (pass * 7) % sequence.length;
   return [...sequence.slice(shift), ...sequence.slice(0, shift)];
 }
 
-/** Shortest-column-first placement. Heights are in column widths, so no measurement is needed. */
-export function placeInColumns<T extends { ratio: number }>(tiles: T[], columns: number): T[][] {
+/**
+ * Shortest-column-first placement. Heights are in column widths, so no
+ * measurement is needed. A tile never lands directly under its own project:
+ * when the shortest column ends in the same slug, the next shortest takes it.
+ */
+export function placeInColumns<T extends { ratio: number; slug?: string }>(tiles: T[], columns: number): T[][] {
   const count = Math.max(1, columns);
   const heights = new Array<number>(count).fill(0);
   const placed: T[][] = Array.from({ length: count }, () => []);
   for (const tile of tiles) {
-    let target = 0;
-    for (let i = 1; i < count; i += 1) if (heights[i] < heights[target]) target = i;
+    const byHeight = heights.map((h, i) => i).sort((a, b) => heights[a] - heights[b] || a - b);
+    const target =
+      byHeight.find((i) => !tile.slug || placed[i][placed[i].length - 1]?.slug !== tile.slug) ?? byHeight[0];
     placed[target].push(tile);
     heights[target] += 1 / tile.ratio;
   }
