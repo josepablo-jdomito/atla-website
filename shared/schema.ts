@@ -69,4 +69,7 @@ export type ProjectMediaAsset =
 
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
-export type Project = typeof projects.$inferSelect;
+export type Project = typeof projects.$inferSelect & {
+  /** Sanity-only: position among featured projects on the home page (1 = first). */
+  homeOrder?: number;
+};

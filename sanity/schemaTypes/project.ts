@@ -407,6 +407,14 @@ export const projectType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "homeOrder",
+      title: "Home order (featured only, 1 = first)",
+      type: "number",
+      group: "content",
+      validation: (Rule) => Rule.integer().min(1),
+      hidden: ({ document }) => !document?.featured,
+    }),
+    defineField({
       name: "status",
       title: "Status",
       type: "string",

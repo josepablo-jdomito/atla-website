@@ -36,6 +36,7 @@ type SanityProject = {
   content?: unknown;
   caseStudy?: unknown;
   featured: boolean;
+  homeOrder?: number | null;
   status?: string;
   coverImage?: string;
   gallery?: string[];
@@ -121,7 +122,7 @@ export type PortfolioProjectAuditReport = {
 };
 
 const PROJECT_QUERY = `
-  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(year, _createdAt) desc, _createdAt desc) {
+  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc) {
     _id,
     "slug": slug.current,
     "title": coalesce(title, name, "Untitled project"),
@@ -170,6 +171,7 @@ const PROJECT_QUERY = `
     content,
     caseStudy,
     "featured": coalesce(featured, featuredOnHomepage, false),
+    homeOrder,
     "status": status,
     "coverImage": coalesce(coverImage.asset->url, mainImage.asset->url, heroImage.asset->url, thumbnail.asset->url),
     "gallery": array::unique(array::compact([
@@ -184,7 +186,7 @@ const PROJECT_QUERY = `
 `;
 
 const PROJECT_AUDIT_QUERY = `
-  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(year, _createdAt) desc, _createdAt desc) {
+  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc) {
     _id,
     "slug": slug.current,
     "title": coalesce(title, name, "Untitled project"),
@@ -382,9 +384,21 @@ export async function fetchProjectsFromSanity(options?: { featured?: boolean }) 
   const client = getJournalSanityClient();
   const projects = await client.fetch<SanityProject[]>(PROJECT_QUERY);
 
-  return projects
+  const normalized = projects
     .filter((project) => (options?.featured ? project.featured : true))
     .map(normalizeProject);
+
+  return options?.featured ? sortFeatured(normalized) : normalized;
+}
+
+// Featured projects: explicit homeOrder first (1 = first), then newest year.
+// Array.prototype.sort is stable, so ties keep the GROQ order.
+export function sortFeatured<T extends { homeOrder?: number | null; year?: number | string | null }>(
+  projects: T[],
+): T[] {
+  const order = (project: T) => project.homeOrder ?? 999;
+  const year = (project: T) => Number(project.year) || 0;
+  return [...projects].sort((a, b) => order(a) - order(b) || year(b) - year(a));
 }
 
 export async function fetchProjectBySlugOrIdFromSanity(slugOrId: string) {
@@ -536,6 +550,7 @@ function normalizeProject(project: SanityProject): Project {
     videoFiles,
     mediaItems,
     featured: Boolean(project.featured),
+    homeOrder: typeof project.homeOrder === "number" ? project.homeOrder : undefined,
     status: project.status === "draft" ? "draft" : "published",
     createdAt: new Date(),
     locationName,
