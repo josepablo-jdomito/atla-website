@@ -34,7 +34,9 @@
   }
 }
 
-body {
+/* `html body` outranks the Tailwind base `body { bg-background }` in index.css, so the page canvas
+   (overscroll, anything outside .site-root) follows the v2 tokens and the system dark mode. */
+html body {
   background: var(--site-bg);
   color: var(--site-ink);
   font-family: "Libre Franklin", Helvetica, Arial, sans-serif;

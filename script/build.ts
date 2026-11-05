@@ -756,7 +756,7 @@ async function prerenderRoutes() {
   }
 
   for (const project of projects) {
-    // Same builder as AtlaProject's SeoHead, so the prerendered and hydrated descriptions match.
+    // Same builder as the Project page's SeoHead (lib/projectPage.ts), so the prerendered and hydrated descriptions match.
     const projectMetaDescription = buildProjectMetaDescription({
       title: project.title,
       client: project.client,

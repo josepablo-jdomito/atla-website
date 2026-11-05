@@ -41,8 +41,6 @@ html,
 body,
 #root {
   min-height: 100%;
-  background: #fafafa;
-  color: #222;
 }
 
 body {
@@ -70,15 +68,6 @@ body {
 .atla-link {
   min-height: 48px;
   min-width: 48px;
-}
-
-@media (prefers-color-scheme: dark) {
-  html,
-  body,
-  #root {
-    background: #fafafa;
-    color: #222;
-  }
 }
 
 html.atla-dark,
@@ -573,7 +562,7 @@ html.atla-dark .atla-dark-surface .atla-theme-preserve {
   color: #f6c428;
 }
 
-/* Skip link (AtlaNav): off-screen until keyboard focus. */
+/* Skip link (old AtlaNav, deleted in Task 12; unused until the v2 shell adds one): off-screen until keyboard focus. */
 .atla-skip-link {
   position: fixed;
   top: 8px;
