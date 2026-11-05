@@ -51,8 +51,9 @@ export default function AtlaPrivacy() {
           </Section>
 
           <Section title="Cookies and storage">
+            {/* PENDING JP APPROVAL: storage paragraph rewritten 2026-11-05 to match the code (lib/ga.ts, brief/briefStorage.ts, AtlaHospitality.tsx). */}
             <p className="longform-text">
-              The site stores a few preferences in your browser's local storage: your light or dark theme, your analytics cookie choice, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.
+              The site keeps your analytics cookie choice in your browser's local storage. While you fill in the project brief, your answers are kept in the tab's session storage so you can go back a step or try again, and they are cleared when you close the tab. The hospitality page keeps how you arrived (campaign tags and the referring site) in session storage for the same tab and sends it with that page's form. Light or dark appearance follows your device setting and is not stored. You can clear this storage from your browser at any time.
             </p>
             <p className="longform-text">
               Google Analytics sets the _ga cookies described above, unless you decline them or, in the European Economic Area, the United Kingdom, or Switzerland, until you accept them.
@@ -75,6 +76,10 @@ export default function AtlaPrivacy() {
           <Section title="Third parties">
             <p className="longform-text">
               The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.
+            </p>
+            {/* PENDING JP APPROVAL: Anthropic paragraph, drafted 2026-11-05 against Anthropic's Commercial Terms and API retention docs and server/ai/claude.ts. Report: .superpowers/sdd/2026-11-04-atla-site-v2/task-13-report.md */}
+            <p className="longform-text">
+              Some of what you type on the site is processed by Anthropic, the company behind the Claude AI models, to answer your request. When a search on the work page is a full sentence, its text may be sent to Anthropic to work out what you are looking for. In the project brief, your first message and your answers so far are sent to Anthropic to choose and word the next question, exactly as you wrote them. Your name, email address, company, website and phone number are never sent to Anthropic, and no identifier for you goes with these requests. Under Anthropic's commercial terms, Anthropic may not train its models on this content. Anthropic deletes it within 30 days, unless its safety systems flag a request as breaking its usage policy, in which case it may keep it for up to two years.
             </p>
           </Section>
 
