@@ -2,90 +2,14 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { JournalPortableTextBlock } from "@shared/journal";
 import { expandMarkdownLinks, isExternalHref, isSafeHref } from "@/lib/markdownLinks";
 
-const PARAGRAPH: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 16,
-  fontWeight: 500,
-  letterSpacing: 0.16,
-  lineHeight: "1.6",
-  color: "#222",
-  margin: 0,
-};
-
-const LABEL: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  color: "#8e8e8e",
-  textTransform: "uppercase",
-  margin: 0,
-};
-
+// Styles live in client/src/styles/site.css under .longform-prose (v2 tokens, 17px / 1.6 / 68ch).
 const components: PortableTextComponents = {
   block: {
-    normal: ({ children }) => <p style={PARAGRAPH}>{children}</p>,
-    h2: ({ children }) => (
-      <h2
-        style={{
-          fontFamily: "Helvetica, sans-serif",
-          fontSize: 36,
-          fontWeight: 400,
-          lineHeight: "1.1",
-          color: "#222",
-          margin: 0,
-          paddingTop: 20,
-        }}
-      >
-        {children}
-      </h2>
-    ),
-    h3: ({ children }) => (
-      <h3
-        style={{
-          fontFamily: "Helvetica, sans-serif",
-          fontSize: 28,
-          fontWeight: 400,
-          lineHeight: "1.15",
-          color: "#222",
-          margin: 0,
-          paddingTop: 12,
-        }}
-      >
-        {children}
-      </h3>
-    ),
-    h4: ({ children }) => (
-      <h4
-        style={{
-          fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-          fontSize: 18,
-          fontWeight: 600,
-          lineHeight: "1.3",
-          color: "#222",
-          margin: 0,
-          paddingTop: 8,
-          textTransform: "uppercase",
-        }}
-      >
-        {children}
-      </h4>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote
-        style={{
-          ...PARAGRAPH,
-          borderLeft: "1px solid #222",
-          paddingLeft: 20,
-          margin: 0,
-          fontStyle: "italic",
-          color: "#4f4f4f",
-        }}
-      >
-        {children}
-      </blockquote>
-    ),
+    normal: ({ children }) => <p>{children}</p>,
+    h2: ({ children }) => <h2 className="prose-h2">{children}</h2>,
+    h3: ({ children }) => <h3 className="prose-h3">{children}</h3>,
+    h4: ({ children }) => <h4 className="prose-h4">{children}</h4>,
+    blockquote: ({ children }) => <blockquote className="prose-quote">{children}</blockquote>,
   },
   types: {
     image: ({ value }) => {
@@ -100,7 +24,7 @@ const components: PortableTextComponents = {
       if (!url) return null;
 
       return (
-        <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+        <figure className="prose-figure">
           <img
             src={url}
             alt={alt}
@@ -108,20 +32,15 @@ const components: PortableTextComponents = {
             height={height}
             loading="lazy"
             decoding="async"
-            style={{
-              width: "100%",
-              display: "block",
-              objectFit: "cover",
-              aspectRatio: aspectRatio ? String(aspectRatio) : undefined,
-            }}
+            style={{ aspectRatio: aspectRatio ? String(aspectRatio) : undefined }}
           />
-          {caption ? <figcaption style={LABEL}>{caption}</figcaption> : null}
+          {caption ? <figcaption className="home-section-label">{caption}</figcaption> : null}
         </figure>
       );
     },
   },
   marks: {
-    strong: ({ children }) => <strong style={{ fontWeight: 700 }}>{children}</strong>,
+    strong: ({ children }) => <strong>{children}</strong>,
     em: ({ children }) => <em>{children}</em>,
     link: ({ children, value }) => {
       const href = normalizeHref(typeof value?.href === "string" ? value.href : "");
@@ -133,11 +52,6 @@ const components: PortableTextComponents = {
           href={href && isSafeHref(href) ? href : "#"}
           target={openBlank ? "_blank" : undefined}
           rel={openBlank || external ? "noopener noreferrer" : undefined}
-          style={{
-            color: "#222",
-            textDecoration: "underline",
-            textUnderlineOffset: 3,
-          }}
         >
           {children}
         </a>
@@ -168,15 +82,7 @@ export function JournalPortableText({ value }: { value: JournalPortableTextBlock
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 640,
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
-      }}
-    >
+    <div className="prose-stack">
       {chunks.map((chunk, index) => (
         <PortableText key={index} value={chunk} components={components} />
       ))}

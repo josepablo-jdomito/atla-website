@@ -8,35 +8,14 @@ import {
 } from "@shared/siteSeo";
 import { useRoute } from "wouter";
 import { trackEvent } from "@/hooks/use-analytics";
-import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { PageShell } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticles, fetchJournalCategories } from "@/lib/journalApi";
 import { articleDescription, articlePublishedIso } from "@/lib/journalSeo";
 import { formatJournalMetaTitle } from "@/lib/seoSchema";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
+import { getImageDimensions } from "@shared/imageDelivery";
 
-const BODY: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.1",
-  margin: 0,
-};
-
-const LABEL: React.CSSProperties = {
-  ...BODY,
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  textTransform: "uppercase",
-};
-
-const MUTED_TEXT = "#6f6f6f";
 const DEFAULT_PAGE_DESCRIPTION =
   "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.";
 const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
@@ -70,7 +49,6 @@ function ensureDescriptionLength(description: string) {
 }
 
 export default function AtlaJournal() {
-  const isMobile = useIsMobile();
   const [, categoryParams] = useRoute("/journal/category/:slug");
   const activeCategorySlug = categoryParams?.slug ?? null;
 
@@ -104,7 +82,6 @@ export default function AtlaJournal() {
   const featured = filteredArticles.slice(0, 3);
   const cards = filteredArticles.slice(0, 6);
   const heroArticle = featured[0] ?? articles[0];
-  const heroImage = heroArticle?.heroImage || heroArticle?.coverImage || "";
   const pathname = activeCategory ? `/journal/category/${activeCategory.slug}` : "/journal";
   const pageTitle = activeCategory
     ? formatJournalMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`)
@@ -120,14 +97,6 @@ export default function AtlaJournal() {
       `Use this category as a more specific way into the journal if you are trying to solve one problem at a time rather than browse the full archive.`,
     ]
     : [];
-  const heroImageDimensions = getImageDimensions(heroImage);
-  const heroImageSrc = heroImage
-    ? getOptimizedImageUrl(heroImage, { width: isMobile ? 1200 : 2000, quality: 90 }) || heroImage
-    : "";
-  const heroImageSrcSet = heroImage
-    ? buildImageSrcSet(heroImage, isMobile ? [800, 1200] : [1200, 1600, 2000], { quality: 90 })
-    : "";
-
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": activeCategory ? "CollectionPage" : "Blog",
@@ -154,7 +123,7 @@ export default function AtlaJournal() {
   };
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+    <PageShell>
       <SeoHead
         title={pageTitle}
         description={pageDescription}
@@ -162,122 +131,48 @@ export default function AtlaJournal() {
         image={heroArticle?.coverImage || undefined}
         structuredData={collectionSchema}
       />
-      <div className="atla-dark-surface">
-      <main style={{ width: "100%", position: "relative" }}>
-        <div style={{ position: "relative", minHeight: 750, backgroundColor: "#222", overflow: "hidden" }}>
-          {heroImage ? (
-            <img
-              src={heroImageSrc}
-              srcSet={heroImageSrcSet}
-              sizes="100vw"
-              alt={heroTitle}
-              width={heroImageDimensions?.width}
-              height={heroImageDimensions?.height}
-              fetchPriority="high"
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.64 }}
-            />
+      <div className="site-page-body journal">
+        <header className="page-intro journal-intro">
+          <p className="home-section-label">{activeCategory ? "Journal category" : "Journal"}</p>
+          <h1 className="page-intro__title journal-intro__title">{heroTitle}</h1>
+          {heroDescription ? <p className="page-intro__lead">{heroDescription}</p> : null}
+          {categorySupportCopy.map((paragraph) => (
+            <p key={paragraph} className="longform-text journal-intro__support">
+              {paragraph}
+            </p>
+          ))}
+          {!activeCategory ? (
+            <p className="longform-text journal-intro__support">
+              Use the journal as both an archive and a working reference. Some pieces are short and tactical, others are
+              longer frameworks, but they all aim to make brand, strategy, and digital decisions easier to evaluate before
+              teams commit time, budget, or attention in the wrong direction.
+            </p>
           ) : null}
-          <AtlaNav inverted />
+        </header>
 
-          <div
-            className="atla-enter"
-            style={{
-              padding: isMobile ? "80px 10px 40px" : "100px 20px 20px",
-              minHeight: 750,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              position: "relative",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {activeCategory ? (
-                  <p style={{ ...LABEL, color: "#d8d1c6" }}>Journal category</p>
-                ) : null}
-                <h1
-                  style={{
-                    fontFamily: "Helvetica, sans-serif",
-                    fontSize: isMobile ? 40 : 64,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: "#e2dbd1",
-                    margin: 0,
-                    maxWidth: isMobile ? 366 : 928,
-                  }}
-                >
-                  {heroTitle}
-                </h1>
-                {heroDescription ? (
-                  <p style={{ ...BODY, color: "#d8d1c6", maxWidth: 560, lineHeight: "1.5" }}>
-                    {heroDescription}
-                  </p>
-                ) : null}
-                {categorySupportCopy.map((paragraph) => (
-                  <p key={paragraph} style={{ ...BODY, color: "#cfc5b8", maxWidth: 640, lineHeight: "1.55" }}>
-                    {paragraph}
-                  </p>
-                ))}
-                {!activeCategory ? (
-                  <p style={{ ...BODY, color: "#cfc5b8", maxWidth: 640, lineHeight: "1.55" }}>
-                    Use the journal as both an archive and a working reference. Some pieces are short and tactical,
-                    others are longer frameworks, but they all aim to make brand, strategy, and digital decisions easier
-                    to evaluate before teams commit time, budget, or attention in the wrong direction.
-                  </p>
-                ) : null}
-              </div>
+        <nav className="journal-categories" aria-label="Journal categories">
+          <a href="/journal" className="journal-category" aria-current={activeCategory ? undefined : "page"}>
+            All
+          </a>
+          {categories.map((category) => (
+            <a
+              key={category.slug}
+              href={`/journal/category/${category.slug}`}
+              className="journal-category"
+              aria-current={activeCategorySlug === category.slug ? "page" : undefined}
+            >
+              {category.title}
+            </a>
+          ))}
+        </nav>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center" }}>
+        {featured.length > 0 ? (
+          <ul className="journal-featured">
+            {featured.map((article) => (
+              <li key={article.slug} className="journal-featured__item">
                 <a
-                  href="/journal"
-                  className="atla-link"
-                  style={{
-                    ...LABEL,
-                    fontSize: 14,
-                    color: "#d8d1c6",
-                    textDecoration: "none",
-                    borderBottom: activeCategory ? "1px solid transparent" : "1px solid #d8d1c6",
-                    padding: "14px 4px",
-                    minHeight: 52,
-                    display: "inline-flex",
-                    alignItems: "center",
-                  }}
-                >
-                  All
-                </a>
-                {categories.map((category) => {
-                  const isActive = activeCategorySlug === category.slug;
-                  return (
-                    <a
-                      key={category.slug}
-                      href={`/journal/category/${category.slug}`}
-                      className="atla-link"
-                    style={{
-                        ...LABEL,
-                        fontSize: 14,
-                        color: "#d3cabd",
-                        textDecoration: "none",
-                        borderBottom: isActive ? "1px solid #d8d1c6" : "1px solid transparent",
-                        padding: "14px 4px",
-                        minHeight: 52,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        opacity: isActive ? 1 : 0.88,
-                      }}
-                    >
-                      {category.title}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: 20 }}>
-              {(isMobile ? featured.slice(0, 1) : featured).map((article) => (
-                <a
-                  key={article.slug}
                   href={`/journal/${article.slug}`}
-                  className="atla-card"
+                  className="journal-featured__link"
                   onClick={() =>
                     trackEvent("journal_cta_click", {
                       page: pathname,
@@ -285,111 +180,73 @@ export default function AtlaJournal() {
                       article_category: article.category,
                       cta_type: "hero_card",
                     })}
-                  style={{ color: "#fafafa", textDecoration: "none", display: "flex", flexDirection: "column", gap: 32 }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    <p style={{ ...LABEL, color: "#d8d1c6" }}>{article.category}</p>
-                    <p style={{ ...BODY, color: "#e2dbd1" }}>{article.title}</p>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <p style={{ ...BODY, color: "#d8d1c6" }}>{article.date.toUpperCase()}</p>
-                    <div style={{ width: "100%", height: 1, backgroundColor: "rgba(250,250,250,0.2)" }} />
-                  </div>
+                  <span className="home-section-label">{article.category}</span>
+                  <span className="journal-featured__title">{article.title}</span>
+                  <span className="journal-card__date">{article.date.toUpperCase()}</span>
                 </a>
-              ))}
-            </div>
-          </div>
-        </div>
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
-        <div
-          style={{
-            padding: isMobile ? "100px 10px" : "200px 20px",
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
-            gap: isMobile ? 64 : 20,
-            rowGap: isMobile ? 64 : 80,
-          }}
-        >
-          {activeCategory ? (
-            <div style={{ gridColumn: isMobile ? "auto" : "1 / span 3", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
-              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
-                Category pages are designed to be useful on their own, not just as filters. Each one brings together essays that solve a related problem, whether that is repositioning a company, planning a rebrand, structuring a launch, or improving how a website communicates value.
-              </p>
-              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
-                If you are comparing articles, start with the most practical piece first and then move into the longer framework essays. That usually gives enough context to understand not just what to change, but why the change matters operationally.
-              </p>
-              <p style={{ ...BODY, color: MUTED_TEXT, lineHeight: "1.55", maxWidth: 640 }}>
-                Use this archive as a decision aid: identify the scenario that matches your current stage, then map the recommended sequence from strategy through execution. The objective is to reduce guesswork and help teams move from reading to actionable next steps without losing coherence.
-              </p>
-            </div>
-          ) : null}
-          {cards.length > 0 ? cards.map((article) => (
-            <a
-              key={article.slug}
-              href={`/journal/${article.slug}`}
-              className="atla-card"
-              onClick={() =>
-                trackEvent("journal_cta_click", {
-                  page: pathname,
-                  article_slug: article.slug,
-                  article_category: article.category,
-                  cta_type: "grid_card",
-                })}
-              style={{ textDecoration: "none", color: "#222", display: "flex", flexDirection: "column", gap: 20 }}
-            >
-              <div style={{ width: "100%", aspectRatio: "380 / 331.63", overflow: "hidden", backgroundColor: "#efefef" }}>
-                {article.coverImage ? (
-                  <img
-                    src={article.coverImage}
-                    alt={article.title}
-                    width={getImageDimensions(article.coverImage)?.width}
-                    height={getImageDimensions(article.coverImage)?.height}
-                    loading="lazy"
-                    decoding="async"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : null}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <p style={{ ...LABEL, color: MUTED_TEXT }}>{article.category}</p>
-                <h2
-                  style={{
-                    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                    fontSize: isMobile ? 24 : 32,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: "#222",
-                    margin: 0,
-                  }}
-                >
-                  {article.title}
-                </h2>
-                <p style={{ ...BODY, color: MUTED_TEXT, maxWidth: 304 }}>{article.excerpt}</p>
-                <p style={{ ...BODY, paddingTop: 10 }}>{article.date}</p>
-              </div>
-            </a>
-          )) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <p
-                style={{
-                  fontFamily: "Helvetica, sans-serif",
-                  fontSize: isMobile ? 32 : 48,
-                  lineHeight: "1.1",
-                  color: "#222",
-                  margin: 0,
-                }}
+        {activeCategory ? (
+          <div className="journal-category-notes">
+            <p className="longform-text">
+              Category pages are designed to be useful on their own, not just as filters. Each one brings together essays that solve a related problem, whether that is repositioning a company, planning a rebrand, structuring a launch, or improving how a website communicates value.
+            </p>
+            <p className="longform-text">
+              If you are comparing articles, start with the most practical piece first and then move into the longer framework essays. That usually gives enough context to understand not just what to change, but why the change matters operationally.
+            </p>
+            <p className="longform-text">
+              Use this archive as a decision aid: identify the scenario that matches your current stage, then map the recommended sequence from strategy through execution. The objective is to reduce guesswork and help teams move from reading to actionable next steps without losing coherence.
+            </p>
+          </div>
+        ) : null}
+
+        {cards.length > 0 ? (
+          <div className="journal-grid">
+            {cards.map((article) => (
+              <a
+                key={article.slug}
+                href={`/journal/${article.slug}`}
+                className="journal-card"
+                onClick={() =>
+                  trackEvent("journal_cta_click", {
+                    page: pathname,
+                    article_slug: article.slug,
+                    article_category: article.category,
+                    cta_type: "grid_card",
+                  })}
               >
-                Nothing here yet.
-              </p>
-              <p style={{ ...BODY, maxWidth: 420 }}>
-                We&apos;ll publish articles in this category soon. Browse the full archive from All.
-              </p>
-            </div>
-          )}
-        </div>
-      </main>
+                <div className="journal-card__media">
+                  {article.coverImage ? (
+                    <img
+                      src={article.coverImage}
+                      alt={article.title}
+                      width={getImageDimensions(article.coverImage)?.width}
+                      height={getImageDimensions(article.coverImage)?.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : null}
+                </div>
+                <div className="journal-card__text">
+                  <p className="home-section-label">{article.category}</p>
+                  <h2 className="journal-card__title">{article.title}</h2>
+                  <p className="journal-card__excerpt">{article.excerpt}</p>
+                  <p className="journal-card__date">{article.date}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="journal-empty">
+            <p className="journal-empty__title">Nothing here yet.</p>
+            <p className="longform-text">We&apos;ll publish articles in this category soon. Browse the full archive from All.</p>
+          </div>
+        )}
       </div>
-      <AtlaFooter />
-    </div>
+    </PageShell>
   );
 }
