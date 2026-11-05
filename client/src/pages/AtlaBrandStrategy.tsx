@@ -15,27 +15,27 @@ const FAQ_ITEMS = [
     question: "How much does brand strategy cost?",
     // PENDING JP APPROVAL: price range removed (v2 rule: no prices anywhere).
     answer:
-      "It depends on scope, company complexity, and audience depth. We scope every strategy engagement before work starts.",
+      "It depends on the scope, how complex the company is and how many audiences it serves. We scope every strategy engagement before work starts.",
   },
   {
     question: "Can we run strategy and design at the same time?",
     answer:
-      "We do not recommend it. Strategy decisions change creative direction. Running both in parallel usually forces avoidable rework.",
+      "We do not recommend it. Strategy decisions change the creative direction, so running both at once usually means doing the work twice.",
   },
   {
     question: "What if we already have a strategy?",
     answer:
-      "We review it first. If it is actionable, we can move into design. If it has gaps, we scope a focused sprint to close them.",
+      "We review it first. If it is usable, we move into design. If it has gaps, we scope a focused sprint to close them.",
   },
   {
     question: "Do you do strategy without design?",
     answer:
-      "Yes. Strategy-only engagements are standard when teams have internal design capacity or incumbent partners.",
+      "Yes. Teams with their own designers, or a design partner they already trust, often hire us for strategy only.",
   },
   {
     question: "How is this different from consulting output?",
     answer:
-      "We produce strategy built to be executed in design and language, not strategy slides disconnected from implementation realities.",
+      "Our strategy is written to be designed and spoken. It does not end as a slide deck nobody can execute.",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function AtlaBrandStrategy() {
     "@type": "Article",
     headline: "Brand strategy: the decisions that make design work",
     description:
-      "How brand strategy works in practice: positioning, messaging, audience definition, and competitive framing before identity design starts.",
+      "How brand strategy works at Atla: positioning, messaging, audience and competitive framing, decided before identity design starts.",
     author: {
       "@type": "Organization",
       name: ORGANIZATION_NAME,
@@ -79,61 +79,59 @@ export default function AtlaBrandStrategy() {
       structuredData={[articleSchema, faqSchema, buildBreadcrumbSchema("/brand-strategy", "Brand Strategy")]}
     >
       <LongformHero
-        eyebrow="Brand Strategy"
+        eyebrow="Brand strategy"
         h1="Brand strategy: the decisions that make design work"
         paragraphs={[
-          "Brand strategy is the set of decisions that determine how a company is understood in its market. Not the logo. Not the palette. Not the tagline. The strategic layer underneath all of them.",
-          "When strategy is strong, design decisions become faster and defensible. When strategy is missing, teams default to subjective debates without a shared framework.",
-          "This page documents exactly how Atla approaches strategy: what it includes, what it does not include, and what the process produces.",
+          "Brand strategy is the set of decisions that shape how a company is understood in its market. It is the layer under the logo, the palette and the tagline.",
+          "With a strong strategy, design decisions get faster and easier to defend. Without one, every review turns into a debate about taste.",
+          "This page lays out how Atla does strategy: what it includes, what it leaves out and what you get at the end.",
         ]}
       />
 
-      <LongformSection title="What brand strategy actually is">
+      <LongformSection title="What brand strategy is">
         <LongformParagraph>
-          Strategy is a structured decision process that answers five questions before creative production begins.
+          Strategy answers five questions before any creative work starts.
         </LongformParagraph>
         <LongformSubTitle>1. What does this company stand for?</LongformSubTitle>
         <LongformParagraph>
-          The core point of view that separates this company from lookalike competitors. This is positioning, and it is
-          the primary strategic decision.
+          The point of view that separates the company from competitors who look the same. This is positioning, and it
+          is the first decision.
         </LongformParagraph>
         <LongformSubTitle>2. Who is the audience, specifically?</LongformSubTitle>
         <LongformParagraph>
-          Not broad demographics. Actionable audience segments with motivations, objections, and decision patterns.
+          Demographics are not enough. We define segments by what moves them, what stops them and how they decide.
         </LongformParagraph>
         <LongformSubTitle>3. How should the brand speak?</LongformSubTitle>
         <LongformParagraph>
-          Messaging hierarchy with priority statements, supporting proof, and language constraints.
+          A messaging hierarchy: what to say first, the proof behind it and the words to avoid.
         </LongformParagraph>
-        <LongformSubTitle>4. What does the competitive landscape look like?</LongformSubTitle>
+        <LongformSubTitle>4. Where can the company win?</LongformSubTitle>
         <LongformParagraph>
-          A territory map of crowded spaces, whitespace, and ownable ground where the company can credibly compete.
+          A map of the crowded ground, the open ground and the ground the company can credibly own.
         </LongformParagraph>
         <LongformSubTitle>5. What does success look like?</LongformSubTitle>
         <LongformParagraph>
-          Strategic choices tied to measurable business outcomes and operating metrics.
+          Strategic choices tied to business results you can measure.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="What brand strategy produces">
+      <LongformSection title="What you get">
         <LongformParagraph>
-          <strong>Positioning statement:</strong> clear articulation of what the company does, for whom, and why it
-          matters.
+          <strong>Positioning statement:</strong> what the company does, for whom, and why it matters.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Messaging architecture:</strong> priority narrative, proof points, and differentiators by audience and
-          context.
+          <strong>Messaging architecture:</strong> the main story, the proof points and the differentiators, by audience
+          and context.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Audience profiles:</strong> practical segment profiles with motivations, objections, and decision
-          criteria.
+          <strong>Audience profiles:</strong> each segment's motivations, objections and way of deciding.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Competitive landscape:</strong> written + visual positioning analysis showing strengths, weakness, and
-          unclaimed territory.
+          <strong>Competitive map:</strong> a written and visual analysis of strengths, weaknesses and the territory
+          nobody has claimed.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Brand attributes and principles:</strong> the behavioral standard that informs{" "}
+          <strong>Brand attributes and principles:</strong> the standard behind{" "}
           <a href="/services" className="longform-link">
             identity design, verbal identity, and digital design
           </a>
@@ -141,21 +139,22 @@ export default function AtlaBrandStrategy() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="How the strategy process works at Atla">
+      <LongformSection title="How the process works">
         {/* PENDING JP APPROVAL: week ranges removed (no deadline promises) */}
         <LongformSubTitle>Discovery</LongformSubTitle>
         <LongformParagraph>
-          Stakeholder interviews, competitive audit, audience research, and category analysis. We map real constraints,
-          not aspirational ones.
+          Stakeholder interviews, a competitive audit, audience research and category analysis. We map the constraints
+          you actually have.
         </LongformParagraph>
-        <LongformSubTitle>Strategic development</LongformSubTitle>
+        <LongformSubTitle>Strategy</LongformSubTitle>
         <LongformParagraph>
-          Synthesis, positioning options, and messaging frameworks. We present strategic directions with clear tradeoffs.
+          We pull it together and present positioning options and messaging frameworks, each with its tradeoffs spelled
+          out.
         </LongformParagraph>
         <LongformSubTitle>Documentation and handoff</LongformSubTitle>
         <LongformParagraph>
-          Final strategy document, stakeholder presentation, and written rationale for each major decision so your team
-          can maintain consistency after handoff. Full process detail is on{" "}
+          The strategy document, a presentation for your stakeholders and the reasoning behind each major decision, so
+          your team stays consistent after we hand it over. The full process is on{" "}
           <a href="/how-we-work" className="longform-link">
             how we work
           </a>
@@ -165,8 +164,8 @@ export default function AtlaBrandStrategy() {
 
       <LongformSection title="When companies need brand strategy">
         <LongformParagraph>
-          <strong>Before a rebrand:</strong> redesigning identity without strategic reset usually preserves old confusion.
-          Start with strategy first. For an operational walkthrough, read{" "}
+          <strong>Before a rebrand:</strong> a new identity on top of an old strategy keeps the old confusion. Start with
+          strategy. For the practical side, read{" "}
           <a
             href="/journal/how-to-select-a-branding-agency"
             className="longform-link"
@@ -176,31 +175,30 @@ export default function AtlaBrandStrategy() {
           .
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Before a launch:</strong> early-stage brands that skip strategy often ship a clean look that does not
-          differentiate.
+          <strong>Before a launch:</strong> young brands that skip strategy often ship a clean look nobody can tell apart.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>When growth stalls:</strong> rising CAC with flat conversion can signal a positioning and messaging
-          problem, not a product problem.
+          <strong>When growth stalls:</strong> rising CAC with flat conversion often points to positioning and messaging.
+          The product may be fine.
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Before entering a new market:</strong> expansion requires strategic adaptation, not only translation.
+          <strong>Before entering a new market:</strong> the strategy has to be adapted. Translating it is not enough.
         </LongformParagraph>
       </LongformSection>
 
       <LongformSection title="What brand strategy is not">
         <LongformParagraph>
-          It is not a mood board, not a brand book, and not a mission statement. Those can be outputs or expressions,
-          but they are not the strategy itself.
+          It is not a mood board, a brand book or a mission statement. Those can come out of it. They are not the
+          strategy.
         </LongformParagraph>
         <LongformParagraph>
-          It is also not one-and-done. Strategy should be revisited when market, product, or audience conditions change.
+          It is also not done once. Revisit it when the market, the product or the audience changes.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Examples and internal references">
+      <LongformSection title="Examples">
         <LongformParagraph>
-          See strategy translated into execution in{" "}
+          See strategy turned into design in{" "}
           <a href="/projects/the-bridge" className="longform-link">
             The Bridge
           </a>
@@ -215,7 +213,7 @@ export default function AtlaBrandStrategy() {
           .
         </LongformParagraph>
         <LongformParagraph>
-          Explore vertical execution paths in{" "}
+          By industry:{" "}
           <a href="/hospitality-branding" className="longform-link">
             hospitality branding
           </a>{" "}
@@ -223,7 +221,7 @@ export default function AtlaBrandStrategy() {
           <a href="/cpg-branding" className="longform-link">
             CPG branding
           </a>
-          . Browse all examples in the{" "}
+          . Everything else is in the{" "}
           <a href="/" className="longform-link">
             work archive
           </a>
@@ -231,7 +229,7 @@ export default function AtlaBrandStrategy() {
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Common questions about brand strategy">
+      <LongformSection title="Questions about brand strategy">
         {FAQ_ITEMS.map((item) => (
           <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
@@ -242,7 +240,7 @@ export default function AtlaBrandStrategy() {
 
       <LongformCta
         title="Start with strategy"
-        description="If you are unsure whether you need strategy, design, or both, start here. We can scope the right engagement sequence."
+        description="Not sure if you need strategy, design or both? Start here. We will scope the right order."
         actions={[
           { href: "/contact", label: "Start a project →" },
           { href: "/how-we-work", label: "See process →" },

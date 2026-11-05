@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import { useSiteProjects } from "@/components/site/siteProjects";
 import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
-import { NO_FILTERS, WorkFilters, activeFilterCount, matchesFilters, type Filters } from "@/components/site/workFilters";
+import { WorkFilters, activeFilterCount, filtersFromSearch, matchesFilters, searchFromFilters, type Filters } from "@/components/site/workFilters";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { siteCopy } from "@/content/siteCopy";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
@@ -116,7 +116,9 @@ export function WorkWall() {
   const { projects } = useSiteProjects();
   const columns = useColumns();
   const reduced = useReducedMotion();
-  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  // The URL is the filter state: /?industry=Hospitality is shareable and the header peek links to it.
+  const search = useSearch();
+  const filters = useMemo(() => filtersFromSearch(search), [search]);
   const [shown, setShown] = useState(PAGE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -141,7 +143,8 @@ export function WorkWall() {
   const eagerKeys = useMemo(() => new Set(tiles.slice(0, EAGER).map((tile) => tile.key)), [tiles]);
 
   const changeFilters = (next: Filters) => {
-    setFilters(next);
+    window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next)}`);
+    window.dispatchEvent(new PopStateEvent("popstate"));
     setShown(PAGE);
     window.scrollTo({ top: 0 });
   };

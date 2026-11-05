@@ -2,6 +2,7 @@
 import { siteCopy } from "@/content/siteCopy";
 import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PageShell } from "./PageShell";
 
@@ -31,7 +32,12 @@ afterEach(() => {
 
 describe("skip link", () => {
   it("is the first focusable element and targets PageShell's main content", () => {
-    act(() => root.render(createElement(PageShell, null, createElement("p", null, "Page body"))));
+    const client = new QueryClient();
+    act(() =>
+      root.render(
+        createElement(QueryClientProvider, { client }, createElement(PageShell, null, createElement("p", null, "Page body"))),
+      ),
+    );
 
     const first = container.querySelector<HTMLElement>("a[href], button, input, select, textarea, [tabindex]:not([tabindex='-1'])");
     expect(first?.className).toBe("site-skip-link");

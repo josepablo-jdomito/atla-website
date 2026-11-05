@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { siteCopy } from "@/content/siteCopy";
+import { WorkPeek } from "@/components/site/WorkPeek";
 
 const { header } = siteCopy;
 
@@ -41,13 +42,17 @@ export function SiteHeader() {
       <nav className="site-header__bar" aria-label={header.navLabel}>
         <div className="site-header__left">
           <ul className="site-header__links">
-            {header.links.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="site-link">
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {header.links.map((link) =>
+              link.href === "/" ? (
+                <WorkPeek key={link.href} href={link.href} label={link.label} />
+              ) : (
+                <li key={link.href}>
+                  <Link href={link.href} className="site-link">
+                    {link.label}
+                  </Link>
+                </li>
+              ),
+            )}
           </ul>
           <button
             ref={buttonRef}

@@ -13,7 +13,7 @@ export const PROGRAMS_META_DESCRIPTION =
 const HERO_COPY = "When your brand has to change, start here.";
 
 const HERO_SUPPORT =
-  "A new leader, new capital, a new brand in the house, a new market. These are the moments a brand either earns its next chapter or gets left behind.";
+  "A new leader, new capital, a new brand in the house, a new market. At moments like these the brand moves with the company, or the company outgrows it.";
 
 type NumberedItem = { title: string; description: string; href?: string };
 
@@ -30,7 +30,7 @@ const PATH: NumberedItem[] = [
   },
   {
     title: "Brand Stewardship",
-    description: "We stay on after launch so the brand holds its shape as the company grows.",
+    description: "We stay on after launch so the brand keeps its shape as the company grows.",
   },
 ];
 
@@ -81,12 +81,14 @@ const PROGRAM_LEVELS: NumberedItem[] = [
 const PROOF: NumberedItem[] = [
   {
     title: "Persona",
-    description: "A pioneer in personalized vitamins with more than 5 million users.",
+    // PENDING JP APPROVAL: user count removed (v2 rule: no counts).
+    description: "The personalized vitamin company.",
     href: "/projects/persona",
   },
   {
     title: "Anything",
-    description: "The vibe-coding company valued at $100M.",
+    // PENDING JP APPROVAL: valuation removed (v2 rule: no dollar figures).
+    description: "The vibe-coding company.",
     href: "/projects/anything-ai",
   },
 ];
@@ -185,7 +187,7 @@ export default function AtlaPrograms() {
           <p className="page-intro__lead">{HERO_SUPPORT}</p>
         </header>
 
-        <SectionRow id="programs-path" title="The Path">
+        <SectionRow id="programs-path" title="The path">
           <p className="longform-text">
             One sequence, three steps. We read the evidence before we design anything, build only what it calls for, and
             stay close once the brand is live.
@@ -195,7 +197,7 @@ export default function AtlaPrograms() {
 
         <SectionRow id="programs-diagnose" title="Diagnose">
           <p className="longform-text">
-            The Loved or Lost Diagnostic. We read what your customers actually say about you, at scale, and find where
+            The Loved or Lost Diagnostic. We read what your customers say about you, at scale, and find where
             they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit with
             your leadership and decide what the brand must keep, and what it must stop saying.
           </p>

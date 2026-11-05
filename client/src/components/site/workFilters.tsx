@@ -41,6 +41,37 @@ export function matchesFilters(project: SiteProject, filters: Filters) {
   return true;
 }
 
+const FILTER_KEYS: Array<keyof Filters> = ["region", "industry", "service", "year"];
+
+/** `/?industry=Hospitality&year=2025` → Filters. Unknown keys and empty values are ignored. */
+export function filtersFromSearch(search: string): Filters {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const filters = { ...NO_FILTERS };
+  for (const key of FILTER_KEYS) {
+    const value = params.get(key)?.trim();
+    if (value) filters[key] = value;
+  }
+  return filters;
+}
+
+/** Filters → the query string for the wall, "" when nothing is active. */
+export function searchFromFilters(filters: Filters): string {
+  const params = new URLSearchParams();
+  for (const key of FILTER_KEYS) if (filters[key] !== ALL) params.set(key, filters[key]);
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+/** The four facets with their values, for the header peek and the Explore panel. */
+export function facetOptions(projects: SiteProject[]) {
+  return {
+    region: [...REGION_OPTIONS],
+    industry: buildFacetOptions(projects.map((p) => p.industry), INDUSTRY_ORDER),
+    service: buildFacetOptions(projects.map((p) => p.service), SERVICE_ORDER),
+    year: [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)],
+  };
+}
+
 export function activeFilterCount(filters: Filters) {
   return Object.values(filters).filter((value) => value !== ALL).length;
 }
