@@ -223,6 +223,36 @@ describe("POST /api/brief/submit", () => {
     expect(logged).toMatch(/Attio 503/);
     expect(logged).toMatch(/Resend 500/);
     expect(logged).toContain(formatBriefSummary(answeredState()));
+    const briefLogs = errorSpy.mock.calls.filter((call) => call.join(" ").includes(formatBriefSummary(answeredState())));
+    expect(briefLogs).toHaveLength(1);
+  });
+
+  it("honeypot answers ok and delivers nothing", async () => {
+    const { submit, deps } = await start();
+    const { status, json } = await submit({
+      state: answeredState(),
+      submissionId: "aaaaaaaa-bbbb-4ccc-8ddd-333333333333",
+      _gotcha: "http://spam.example",
+    });
+    expect(status).toBe(200);
+    expect(json).toEqual({ ok: true, calendlyUrl: CALENDLY });
+    expect(deps.deliverToAttio).not.toHaveBeenCalled();
+    expect(deps.sendEmail).not.toHaveBeenCalled();
+    expect(deps.incrWithExpiry).not.toHaveBeenCalled();
+    expect(deps.rateLimit).toHaveBeenCalledWith(expect.any(String), "submit");
+  });
+
+  it("rate-limits submits per address with 429", async () => {
+    let calls = 0;
+    const rateLimit = vi.fn(async (_ip: string, bucket: string) => bucket === "submit" && ++calls <= 5);
+    const { submit, deps } = await start({ rateLimit });
+    const statuses: number[] = [];
+    for (let i = 0; i < 6; i++) {
+      statuses.push((await submit({ state: answeredState(), submissionId: `aaaaaaaa-bbbb-4ccc-8ddd-44444444444${i}` })).status);
+    }
+    expect(statuses).toEqual([200, 200, 200, 200, 200, 429]);
+    expect(deps.deliverToAttio).toHaveBeenCalledTimes(5);
+    expect(deps.incrWithExpiry).toHaveBeenCalledTimes(5);
   });
 
   it("idempotent submit", async () => {
@@ -281,7 +311,17 @@ describe("brief delivery helpers", () => {
 
   it("builds the Calendly URL, or an empty string without CALENDLY_URL", () => {
     process.env.CALENDLY_URL = "https://calendly.com/atla/intro";
-    expect(briefCalendlyUrl(CONTACT)).toBe(CALENDLY);
+    const plain = new URL(briefCalendlyUrl(CONTACT));
+    expect(plain.origin + plain.pathname).toBe("https://calendly.com/atla/intro");
+    expect(plain.searchParams.get("name")).toBe("Ana Ruiz");
+    expect(plain.searchParams.get("email")).toBe("ana@example.com");
+    process.env.CALENDLY_URL = "https://calendly.com/atla/intro?hide_gdpr_banner=1";
+    const withQuery = new URL(briefCalendlyUrl(CONTACT));
+    expect(withQuery.searchParams.get("hide_gdpr_banner")).toBe("1");
+    expect(withQuery.searchParams.get("name")).toBe("Ana Ruiz");
+    expect(withQuery.searchParams.get("email")).toBe("ana@example.com");
+    process.env.CALENDLY_URL = "not a url";
+    expect(briefCalendlyUrl(CONTACT)).toBe("");
     delete process.env.CALENDLY_URL;
     expect(briefCalendlyUrl(CONTACT)).toBe("");
     expect(errorSpy.mock.calls.join(" ")).toMatch(/CALENDLY_URL/);

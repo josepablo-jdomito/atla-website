@@ -8,7 +8,7 @@ import { addPersonNote, findOrCreatePerson, singleLine } from "../contact.ts";
  *
  * - Attio: find or create the Person by email, then a note "Brief · atla.design".
  * - Resend: a plain-text email to BRIEF_TO_EMAIL (plain fetch, no SDK).
- * - Calendly: a prefilled scheduling URL, or "" when CALENDLY_URL is not set.
+ * - Calendly: a prefilled scheduling URL, or "" when CALENDLY_URL is not set or invalid.
  */
 
 export type SubmittedBrief = BriefState & { contact: BriefContact };
@@ -107,12 +107,21 @@ export async function sendBriefEmail(brief: SubmittedBrief): Promise<void> {
   if (!response.ok) throw new Error(`Resend answered ${response.status}`);
 }
 
-/** CALENDLY_URL prefilled with the visitor's name and email; "" (and one error log) when it is not set. */
+/** CALENDLY_URL prefilled with the visitor's name and email (kept alongside any query it already has); "" and one error log when it is missing or invalid. */
 export function briefCalendlyUrl(contact: BriefContact): string {
   const base = process.env.CALENDLY_URL || "";
   if (!base) {
     console.error("[brief] CALENDLY_URL is not set; the confirmation will not offer a call");
     return "";
   }
-  return `${base}?name=${encodeURIComponent(singleLine(contact.name))}&email=${encodeURIComponent(singleLine(contact.email))}`;
+  let url: URL;
+  try {
+    url = new URL(base);
+  } catch {
+    console.error("[brief] CALENDLY_URL is not a valid URL; the confirmation will not offer a call");
+    return "";
+  }
+  url.searchParams.set("name", singleLine(contact.name));
+  url.searchParams.set("email", singleLine(contact.email));
+  return url.toString();
 }

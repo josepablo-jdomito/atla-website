@@ -11,6 +11,7 @@ import { getCount, incrWithExpiry } from "./store.ts";
 const RATE_LIMITS = {
   ask: { max: 30, windowSeconds: 10 * 60 },
   brief: { max: 20, windowSeconds: 10 * 60 },
+  submit: { max: 5, windowSeconds: 10 * 60 },
 } as const;
 
 const DEFAULT_AI_MONTHLY_CALL_CAP = 3000;

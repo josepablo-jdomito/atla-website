@@ -26,9 +26,11 @@ import { briefCalendlyUrl, deliverBriefToAttio, formatBriefSummary, sendBriefEma
  *   Once the bank is answered the flow goes to contact, then done, without AI.
  *
  * POST /api/brief/submit  { state, submissionId } → { ok: true, calendlyUrl }
- *   Attio and the email are best-effort and independent: a failure is logged
- *   with the formatted brief (so the lead is never lost) and the visitor still
- *   gets ok. The same submissionId within 24 h skips delivery.
+ *   Attio and the email are best-effort and independent: if either fails, the
+ *   failures and the formatted brief are logged once (so the lead is never
+ *   lost) and the visitor still gets ok. The same submissionId within 24 h
+ *   skips delivery. A filled honeypot (`_gotcha`) gets ok and delivers nothing;
+ *   more than 5 submits per address in 10 min get 429.
  *
  * Request bodies stay out of the request log (server/apiLog.ts).
  */
@@ -38,6 +40,7 @@ const MAX_MULTI_ITEMS = 10;
 const MAX_ANSWER_KEYS = 20;
 const MAX_SEED_CHARS = 300;
 const SUBMISSION_TTL_SECONDS = 24 * 60 * 60;
+const HONEYPOT_FIELD = "_gotcha";
 
 const MAX_PROMPT_CHARS = 200;
 const MAX_OPTION_CHARS = 80;
@@ -78,7 +81,7 @@ type SubmitAnswer = { ok: true; calendlyUrl: string };
 
 export type BriefDeps = {
   ai: (opts: ClaudeJsonOptions) => Promise<unknown>;
-  rateLimit: (ip: string, bucket: "brief") => Promise<boolean>;
+  rateLimit: (ip: string, bucket: "brief" | "submit") => Promise<boolean>;
   aiBudgetAvailable: () => Promise<boolean>;
   incrWithExpiry: (key: string, ttlSeconds: number) => Promise<number>;
   deliverToAttio: (brief: SubmittedBrief) => Promise<void>;
@@ -217,6 +220,20 @@ export function registerBriefRoutes(app: Express, deps: BriefDeps = defaultDeps)
     const brief: SubmittedBrief = parsed.data.state;
     const answer = (body: SubmitAnswer) => res.json(body);
     const calendlyUrl = deps.calendlyUrl(brief.contact);
+    const ip = clientIp(req);
+
+    // Honeypot filled in: pretend success so bots learn nothing. Counted like a delivery.
+    const honeypot = (req.body as Record<string, unknown>)[HONEYPOT_FIELD];
+    if (typeof honeypot === "string" && honeypot.trim()) {
+      await deps.rateLimit(ip, "submit");
+      console.warn(`[brief] honeypot hit from ${ip}`);
+      return answer({ ok: true, calendlyUrl });
+    }
+
+    // Before the idempotency mark, so a refused submit can still be delivered on a later retry.
+    if (!(await deps.rateLimit(ip, "submit"))) {
+      return res.status(429).json({ error: "Too many briefs from this address. Try again in a few minutes." });
+    }
 
     if (await alreadySubmitted(deps, parsed.data.submissionId)) return answer({ ok: true, calendlyUrl });
 
@@ -225,11 +242,14 @@ export function registerBriefRoutes(app: Express, deps: BriefDeps = defaultDeps)
       ["email", deps.sendEmail],
     ] as const;
     const results = await Promise.allSettled(steps.map(([, deliver]) => deliver(brief)));
-    results.forEach((result, i) => {
-      if (result.status === "fulfilled") return;
+    const failures = results.flatMap((result, i) => {
+      if (result.status === "fulfilled") return [];
       const reason = result.reason instanceof Error ? result.reason.message : String(result.reason);
-      console.error(`[brief] ${steps[i][0]} delivery failed: ${reason}\n--- brief ---\n${formatBriefSummary(brief)}\n--- end brief ---`);
+      return [`${steps[i][0]}: ${reason}`];
     });
+    if (failures.length) {
+      console.error(`[brief] delivery failed (${failures.join("; ")})\n--- brief ---\n${formatBriefSummary(brief)}\n--- end brief ---`);
+    }
 
     return answer({ ok: true, calendlyUrl });
   });
