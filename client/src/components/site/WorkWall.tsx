@@ -183,7 +183,7 @@ export function WorkWall() {
       fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: urlQuery }),
+        body: JSON.stringify({ q: urlQuery }),
         signal: controller.signal,
       })
         .then((res) => (res.ok ? res.json() : null))

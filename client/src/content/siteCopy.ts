@@ -8,7 +8,7 @@ export const siteCopy = {
     links: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
-      { label: "About", href: "/about" },
+      { label: "Why Atla", href: "/about" },
     ],
     // JP, 2026-10-04: the header reads "Start a project". It opens the brief.
     cta: { label: "Start a project", href: "/brief" },
@@ -22,7 +22,7 @@ export const siteCopy = {
     links: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
-      { label: "About", href: "/about" },
+      { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
       { label: "Contact", href: "/contact" },
       { label: "Journal", href: "/journal" },
@@ -145,12 +145,21 @@ export const siteCopy = {
         brief: "reposition",
       },
     ],
+    // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.
+    engagementsTitle: "Working with a company your size",
+    engagementsLead: "Four ways in. All of them senior from day one, and none of them a layer between you and the work.",
+    engagements: [
+      { title: "Audit", line: "Two weeks inside your brand. Findings ranked by what to fix first, and a roadmap." },
+      { title: "Brand system", line: "Strategy, identity and guidelines, built by one team so nothing is lost between them." },
+      { title: "Full build", line: "The system plus the content to launch it: website, decks, social, packaging." },
+      { title: "Fractional brand director", line: "A creative director on your team by the month. Decisions, reviews, standards." },
+    ],
     // `project` is the slug whose cover sits beside the row. JP can swap any of them.
     disciplines: [
       {
         id: "strategy",
         title: "Strategy",
-        line: "What the brand stands for, said in a way the whole company can repeat.",
+        line: "One position the whole company can repeat, so every team and agency builds on the same thing.",
         includes: [
           "Brand strategy and positioning",
           "Messaging",
@@ -166,7 +175,7 @@ export const siteCopy = {
       {
         id: "naming",
         title: "Naming and voice",
-        line: "The name, and the way the brand talks once it has one.",
+        line: "A name that clears legal, and a voice that holds from the pitch deck to the shelf.",
         includes: ["Naming", "Tone of voice", "Copy"],
         moments: ["launch", "reposition"],
         project: "sexto-abismo",
@@ -174,7 +183,7 @@ export const siteCopy = {
       {
         id: "identity",
         title: "Identity",
-        line: "A system your team can run without us: logo, type, color, the rules.",
+        line: "A system that still looks like one brand in the hands of your third agency and your newest hire.",
         includes: [
           "Identity: logo, type, color, iconography",
           "Identity redesign",
@@ -188,7 +197,7 @@ export const siteCopy = {
       {
         id: "packaging",
         title: "Packaging",
-        line: "The brand where it is held, opened and kept.",
+        line: "Packaging that is recognized at arm's length, in a thumbnail, and across the whole range.",
         includes: ["Packaging and labels", "Packaging across the whole range"],
         moments: ["launch", "grow"],
         project: "reggie",
@@ -196,7 +205,7 @@ export const siteCopy = {
       {
         id: "website",
         title: "Website and decks",
-        line: "The places the brand has to convince someone on its own.",
+        line: "Websites and decks that make the case when nobody from your team is in the room.",
         includes: [
           "Website, designed and ready for development",
           "Website built to convert",
@@ -210,21 +219,42 @@ export const siteCopy = {
       {
         id: "motion",
         title: "Motion and campaigns",
-        line: "The brand in movement: the logo, the feed, the product.",
+        line: "The brand in movement, from the logo to the feed to the product, without a second system.",
         includes: ["Motion: logo animation, social, product UI", "Creative direction for campaigns"],
         moments: ["launch", "grow"],
         project: "bond-and-bloom",
       },
     ],
   },
-  // Team names and roles come from the current /about page; JP confirmed the list of seven on 2026-11-05.
+  // Why Atla (JP, 2026-11-05, "si soy un CMO de Starbucks no veo por qué contratarte"): the argument,
+  // on one page, at /about. PENDING JP APPROVAL. Proof lines come from the hospitality page and the
+  // ventures; selected clients from JP's 2026-10-04 list.
   about: {
-    metaTitle: "About Atla",
-    metaSuffix: "Senior-Led Branding Studio, US and LatAm",
+    metaTitle: "Why Atla",
+    metaSuffix: "A Senior-Led Branding Studio for the Next Few Years",
     metaDescription:
-      "Atla is a small branding studio with senior people, working from Austin, Mexico City, Barcelona, Lima and Caracas.",
-    title: "A small studio. Senior people. US and Latin America.",
-    lead: "You talk to the people who make the work. There is no account manager in between.",
+      "Atla builds brands for the years after the launch: senior people, AI for the slow parts, identities that read to people and to the machines that now shop for them.",
+    title: "Most brands are built for the launch. We build them for the years after.",
+    lead: "A small studio of senior people, working from Austin, Mexico City, Barcelona, Lima and Caracas. We use AI for the slow parts and keep every decision about taste with a person.",
+    thesisLabel: "What we believe",
+    thesis: [
+      {
+        title: "Taste is the job.",
+        body: "Research, options and production are getting cheap. Choosing well is not. A creative director decides what ships, every time.",
+      },
+      {
+        title: "Your next customer may not be a person.",
+        body: "Assistants and agents now compare, book and buy. We build identities that read clearly to people and to the machines in between.",
+      },
+      {
+        title: "A brand has to survive its third agency.",
+        body: "We write the rules so your team, your next agency and your newest hire keep making the same brand.",
+      },
+      {
+        title: "We run brands too.",
+        body: "Sexto Abismo, TigreTigre, Persona. We know what a system has to take once the launch is over.",
+      },
+    ],
     howLabel: "How we work",
     howLead: "Machines do the legwork. People make the calls.",
     how: [
@@ -249,6 +279,15 @@ export const siteCopy = {
         body: "Guidelines your team can use without us. And we stay on if you want us to.",
       },
     ],
+    proofLabel: "Proof",
+    proof: [
+      "MICHELIN Key, Casa Las Tortugas, a brand we built.",
+      "MICHELIN Green Star, Acre, a brand we rebuilt.",
+      "Three companies we design for are companies we own.",
+    ],
+    clientsLabel: "Selected clients",
+    clients: ["Aimee Kestenberg", "PrettyBoy", "Temakase", "Acre", "Pax & Beneficia", "Persona", "Brick", "Anything"],
+    engagementsLabel: "Ways to work with us",
     teamLabel: "Team",
     team: [
       { name: "José Pablo Domínguez", role: "Founder & Creative Director" },
@@ -260,6 +299,7 @@ export const siteCopy = {
       { name: "José Aceves Covarrubias", role: "Brand Designer" },
     ] as ReadonlyArray<{ name: string; role: string; city?: string }>,
     citiesLabel: "Where we are",
+    cta: "Start a project",
   },
   contact: {
     metaTitle: "Contact Atla",

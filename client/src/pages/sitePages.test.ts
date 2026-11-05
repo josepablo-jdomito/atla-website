@@ -97,8 +97,14 @@ describe("About page", () => {
     render(About, "/about");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
     const h2s = Array.from(main().querySelectorAll("h2")).map((h) => h.textContent);
-    expect(h2s).toEqual([siteCopy.about.howLabel, siteCopy.about.teamLabel]);
-    const steps = main().querySelectorAll(".how-step");
+    expect(h2s).toEqual([
+      siteCopy.about.thesisLabel,
+      siteCopy.about.howLabel,
+      siteCopy.about.proofLabel,
+      siteCopy.about.engagementsLabel,
+      siteCopy.about.teamLabel,
+    ]);
+    const steps = main().querySelectorAll("[aria-labelledby='about-how'] .how-step");
     expect(steps.length).toBeGreaterThanOrEqual(4);
     expect(steps.length).toBeLessThanOrEqual(5);
     for (const step of Array.from(steps)) expect(step.textContent).not.toMatch(/\d/);

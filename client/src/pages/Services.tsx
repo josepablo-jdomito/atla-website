@@ -161,6 +161,24 @@ export default function Services() {
             ) : null}
           </aside>
         </div>
+
+        <section className="engagements" aria-labelledby="engagements-title">
+          <h2 id="engagements-title" className="engagements__title">
+            {copy.engagementsTitle}
+          </h2>
+          <p className="engagements__lead">{copy.engagementsLead}</p>
+          <ol className="how-steps">
+            {copy.engagements.map((item) => (
+              <li key={item.title} className="how-step">
+                <h3 className="how-step__title">{item.title}</h3>
+                <p className="how-step__body">{item.line}</p>
+              </li>
+            ))}
+          </ol>
+          <Link href="/brief" className="site-link discipline__cta">
+            {copy.cta}
+          </Link>
+        </section>
       </div>
     </PageShell>
   );

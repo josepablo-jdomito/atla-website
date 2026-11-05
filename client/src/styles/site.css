@@ -1000,6 +1000,21 @@ html body {
   .moments-strip { margin-top: 0; }
 }
 
+/* Why Atla + engagements (2026-11-05) */
+.site-root .why-intro__title { max-width: 18ch; }
+.site-root .why-thesis__title { font-family: var(--site-serif); font-size: 24px; font-weight: 400; letter-spacing: -0.01em; }
+.site-root .why-proof { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 17px; line-height: 1.5; }
+.site-root .why-clients { margin: 0; font-size: 15px; line-height: 1.6; color: var(--site-muted); }
+.site-root .why-cta { display: inline-block; margin-top: 20px; font-weight: 500; }
+.site-root .engagements { margin-top: 72px; padding-top: 40px; border-top: 1px solid var(--site-line); display: grid; gap: 16px; }
+.site-root .engagements__title { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; max-width: 20ch; }
+.site-root .engagements__lead { margin: 0 0 8px; max-width: 52ch; font-size: 16px; line-height: 1.5; color: var(--site-muted); }
+@media (min-width: 768px) {
+  .site-root .why-thesis__title { font-size: 28px; }
+  .site-root .engagements { margin-top: 112px; }
+  .site-root .engagements__title { font-size: 36px; }
+}
+
 /* ---- Project as a story column (v2, 2026-11-05) ---- */
 .story {
   width: min(100% - 2 * var(--site-gutter), 880px);
