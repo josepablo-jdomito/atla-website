@@ -15,10 +15,12 @@ import {
 } from "../server/sanity/journalService.ts";
 import { fetchProjectsFromSanity } from "../server/sanity/projectService.ts";
 import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/lib/journalSeo.ts";
-import { buildProjectBreadcrumb, buildProjectMetaDescription } from "../client/src/lib/projectSeo.ts";
+import { buildProjectPageView, buildProjectSeoHead } from "../client/src/lib/projectPage.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
 import { buildServicesStructuredData, CONTACT_PAGE_SCHEMA } from "../client/src/lib/sitePageSchema.ts";
+import { siteCopy } from "../client/src/content/siteCopy.ts";
+import { withSelectedWork } from "../client/src/lib/llmsTxt.ts";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -342,46 +344,6 @@ function resolveProjectHeroImage(project: Project) {
   return project.coverImage || project.images[0] || DEFAULT_OG_IMAGE_URL;
 }
 
-function toVimeoEmbedUrl(rawValue: string) {
-  const value = rawValue.trim().replace(/&amp;/gi, "&");
-  const iframeSrc = value.match(/<iframe[^>]+src=["']([^"']+)["']/i)?.[1]?.trim();
-  const source = (iframeSrc || value).replace(/^\/\//, "https://");
-
-  try {
-    const parsed = new URL(
-      /^https?:\/\//i.test(source) ? source : `https://${source.replace(/^\/+/, "")}`,
-    );
-    const host = parsed.hostname.toLowerCase();
-
-    if (host.includes("player.vimeo.com")) {
-      const match = parsed.pathname.match(/\/video\/(\d+)/i);
-      if (!match) return null;
-      return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
-    }
-
-    if (host === "vimeo.com" || host.endsWith(".vimeo.com")) {
-      const match = parsed.pathname.match(/\/(\d+)(?:$|\/)/i) || parsed.pathname.match(/\/(\d+)\b/i);
-      if (match) return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
-    }
-  } catch {
-    // Fallback regex parsing below.
-  }
-
-  const playerMatch = source.match(/player\.vimeo\.com\/video\/(\d+)(\?[^"'\s>]*)?/i);
-  if (playerMatch) return `https://player.vimeo.com/video/${playerMatch[1]}${playerMatch[2] || ""}`;
-
-  const directMatch = source.match(/vimeo\.com\/(?:.*\/)?(\d+)/i);
-  if (directMatch) return `https://player.vimeo.com/video/${directMatch[1]}`;
-
-  return null;
-}
-
-function toVimeoWatchUrl(embedUrl: string) {
-  const match = embedUrl.match(/player\.vimeo\.com\/video\/(\d+)/i);
-  if (!match) return "https://vimeo.com";
-  return `https://vimeo.com/${match[1]}`;
-}
-
 function buildResponsiveImagePreload(
   src: string | undefined,
   widths: number[],
@@ -603,6 +565,14 @@ async function prerenderRoutes() {
       structuredData: CONTACT_PAGE_SCHEMA,
     },
     {
+      pathname: "/brief",
+      // Same title and description as the Brief page's SeoHead.
+      title: formatMetaTitle(siteCopy.brief.metaTitle, "Atla"),
+      description: siteCopy.brief.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
       pathname: "/services",
       title: formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla"),
       description: "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
@@ -763,63 +733,9 @@ async function prerenderRoutes() {
   }
 
   for (const project of projects) {
-    // Same builder as the Project page's SeoHead (lib/projectPage.ts), so the prerendered and hydrated descriptions match.
-    const projectMetaDescription = buildProjectMetaDescription({
-      title: project.title,
-      client: project.client,
-      category: project.category === "Uncategorized" ? "" : project.category,
-      services: project.tags,
-      description: project.description,
-    });
-    const parsedProjectYear = Number.parseInt(String(project.year), 10);
-    const videoUploadDate = Number.isFinite(parsedProjectYear) ? `${parsedProjectYear}-01-01T00:00:00.000Z` : undefined;
-    const videoStructuredData = (project.videos ?? [])
-      .map((videoUrl, index) => {
-        const embedUrl = toVimeoEmbedUrl(videoUrl);
-        if (!embedUrl) return null;
-        const watchUrl = toVimeoWatchUrl(embedUrl);
-        return {
-          "@context": "https://schema.org",
-          "@type": "VideoObject",
-          name: `${project.title} video ${index + 1}`,
-          description: `${project.title} case study video ${index + 1} from Atla.`,
-          mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
-          embedUrl,
-          contentUrl: watchUrl,
-          url: watchUrl,
-          thumbnailUrl: project.images[index] || resolveProjectHeroImage(project),
-          ...(videoUploadDate ? { uploadDate: videoUploadDate } : {}),
-          inLanguage: "en",
-          isFamilyFriendly: true,
-          publisher: {
-            "@type": "Organization",
-            name: ORGANIZATION_NAME,
-            url: SITE_ORIGIN,
-            logo: {
-              "@type": "ImageObject",
-              url: ORGANIZATION_LOGO_URL,
-            },
-          },
-        };
-      })
-      .filter((item): item is Record<string, unknown> => Boolean(item));
-
-    const structuredDataBlocks: Array<Record<string, unknown>> = [{
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      name: project.title,
-      description: projectMetaDescription,
-      image: resolveProjectHeroImage(project),
-      url: `${SITE_ORIGIN}/projects/${project.slug}`,
-      creator: {
-        "@type": "Organization",
-        name: ORGANIZATION_NAME,
-      },
-    }, buildProjectBreadcrumb(project)];
-
-    if (videoStructuredData.length > 0) {
-      structuredDataBlocks.push(...videoStructuredData);
-    }
+    // The Project page's own SeoHead builder (lib/projectPage.ts), so the prerendered head and the
+    // hydrated one carry the same title, description and JSON-LD (CreativeWork, breadcrumb, videos).
+    const seoHead = buildProjectSeoHead(buildProjectPageView(project, projects));
 
     const pathname = `/projects/${project.slug}`;
     const projectGalleryPreloads = buildImagePreloadEntries(
@@ -834,8 +750,8 @@ async function prerenderRoutes() {
       replaceHead(
         template,
         createHeadMarkup({
-          title: formatMetaTitle(`${project.title} ${project.category} Case Study`, "Atla"),
-          description: projectMetaDescription,
+          title: seoHead.title,
+          description: seoHead.description,
           pathname,
           image: resolveProjectHeroImage(project),
           ...buildResponsiveImagePreload(
@@ -845,7 +761,7 @@ async function prerenderRoutes() {
             "(max-width: 767px) 100vw, 55vw",
           ),
           preloadImages: projectGalleryPreloads,
-          structuredData: structuredDataBlocks,
+          structuredData: seoHead.structuredData,
         }),
       ),
       pathname,
@@ -900,6 +816,14 @@ async function prerenderRoutes() {
     categories,
   });
   await writeFile(path.resolve("dist/public/sitemap.xml"), sitemapXml, "utf8");
+
+  // llms.txt ships from client/public; the featured work is added here from the same projects the prerender used.
+  const llmsPath = path.resolve("dist/public/llms.txt");
+  const llmsTxt = withSelectedWork(await readFile(llmsPath, "utf8"), projects);
+  await writeFile(llmsPath, llmsTxt, "utf8");
+  if (!llmsTxt.includes("## Selected work")) {
+    console.warn("[llms.txt] no featured projects in the prerender content; Selected work was not written");
+  }
 
   const notFoundHtml = await injectPrerenderedApp(
     replaceHead(

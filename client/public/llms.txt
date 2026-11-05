@@ -9,6 +9,24 @@
 - [How we work](https://www.atla.design/how-we-work): the engagement model from discovery to launch
 - [Brand strategy](https://www.atla.design/brand-strategy): how Atla approaches positioning and messaging
 
+## Services
+
+Six disciplines, one team. Each link opens that discipline on the services page.
+
+- [Strategy](https://www.atla.design/services#strategy): What the brand stands for, said in a way the whole company can repeat.
+- [Naming and voice](https://www.atla.design/services#naming): The name, and the way the brand talks once it has one.
+- [Identity](https://www.atla.design/services#identity): A system your team can run without us: logo, type, color, the rules.
+- [Packaging](https://www.atla.design/services#packaging): The brand where it is held, opened and kept.
+- [Website and decks](https://www.atla.design/services#website): The places the brand has to convince someone on its own.
+- [Motion and campaigns](https://www.atla.design/services#motion): The brand in movement: the logo, the feed, the product.
+
+The moments Atla is hired for. Each link starts a brief with that moment answered:
+
+- [Launch](https://www.atla.design/brief?moment=launch)
+- [Raise capital](https://www.atla.design/brief?moment=raise)
+- [Grow / scale](https://www.atla.design/brief?moment=grow)
+- [Reposition](https://www.atla.design/brief?moment=reposition)
+
 ## Work by industry
 
 - [Hospitality branding](https://www.atla.design/hospitality-branding)
@@ -22,8 +40,13 @@
 - [Journal](https://www.atla.design/journal): essays and guides on branding, strategy and agency selection
 - [How much does branding cost](https://www.atla.design/journal/how-much-does-branding-cost)
 - [Brand audit framework](https://www.atla.design/journal/brand-audit-framework)
+- [Ventures](https://www.atla.design/ventures): Sexto Abismo, TigreTigre, Persona and WeLoveDaily, companies Atla is involved in beyond client work
+
+## Start a project
+
+- [Start a project](https://www.atla.design/brief): a short brief, one question at a time; José Pablo reads every brief and replies by email
 
 ## Contact
 
-- [Start a project](https://www.atla.design/contact)
+- [Contact](https://www.atla.design/contact)
 - [Guided start](https://start.atla.design): helps a team choose between a Branding Analysis, a full identity engagement, or a narrower first step

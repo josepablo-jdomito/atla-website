@@ -13,6 +13,7 @@ import {
   getNextProject,
   projectBodySections,
 } from "@/lib/projectSeo";
+import { creativeWorkSchema } from "@/lib/seoSchema";
 
 /** Stand-in hero when a project has no image at all. */
 export const PROJECT_PLACEHOLDER_IMAGE = "/figmaAssets/media.png";
@@ -407,25 +408,18 @@ export function buildProjectSeoHead(project: ProjectPageView) {
   const videoUploadDate = Number.isFinite(parsedYear) ? `${parsedYear}-01-01T00:00:00.000Z` : undefined;
   const uploadedVideos = project.videoFiles;
   const videoEmbeds = projectVimeoEmbeds(project);
-  const creativeWorkSchema = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: `${project.title} case study`,
+  const creativeWork = creativeWorkSchema({
+    slug: project.slug,
+    title: project.title,
     description,
-    url: `${SITE_ORIGIN}${pathname}`,
-    image: [project.heroImage, ...project.gallery.slice(0, 7)],
-    creator: {
-      "@type": "Organization",
-      name: ORGANIZATION_NAME,
-      url: SITE_ORIGIN,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: ORGANIZATION_NAME,
-      url: SITE_ORIGIN,
-    },
-    about: [project.category, project.client, project.region, ...project.services].filter(Boolean),
-  };
+    heroImage: project.heroImage,
+    gallery: project.gallery,
+    year: project.dateLabel,
+    industry: project.category,
+    client: project.client,
+    region: project.region,
+    services: project.services,
+  });
   const videoPublisherSchema = {
     "@type": "Organization",
     name: ORGANIZATION_NAME,
@@ -476,7 +470,7 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     pathname,
     image: project.heroImage,
     preloadImages,
-    structuredData: [creativeWorkSchema, buildProjectBreadcrumb(project), ...videoStructuredData],
+    structuredData: [creativeWork, buildProjectBreadcrumb(project), ...videoStructuredData],
     videoStructuredData,
   };
 }

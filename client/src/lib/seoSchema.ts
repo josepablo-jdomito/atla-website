@@ -86,3 +86,37 @@ export function buildArticleAuthor(authorName?: string) {
     worksFor: ORGANIZATION_REF,
   };
 }
+
+export type CreativeWorkInput = {
+  slug: string;
+  title: string;
+  description: string;
+  heroImage: string;
+  gallery: string[];
+  /** The project year as shown on the page; dateCreated is left out when it is not a year. */
+  year: string;
+  industry: string;
+  client: string;
+  region: string;
+  services: string[];
+};
+
+/**
+ * schema.org CreativeWork for a case study. Built by buildProjectSeoHead
+ * (lib/projectPage.ts), which both the Project page and the prerender use.
+ */
+export function creativeWorkSchema(project: CreativeWorkInput) {
+  const year = Number.parseInt(project.year, 10);
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: `${project.title} case study`,
+    description: project.description,
+    url: `${SITE_ORIGIN}/projects/${project.slug}`,
+    image: [project.heroImage, ...project.gallery.slice(0, 7)].filter(Boolean),
+    ...(Number.isFinite(year) ? { dateCreated: String(year) } : {}),
+    creator: ORGANIZATION_REF,
+    publisher: ORGANIZATION_REF,
+    about: [project.industry, project.client, project.region, ...project.services].filter(Boolean),
+  };
+}
