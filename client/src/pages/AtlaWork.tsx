@@ -10,6 +10,7 @@ import {
 import type { Project } from "@shared/schema";
 import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { AtlaNav } from "@/components/atla/AtlaNav";
+import { WorkExplore } from "@/components/atla/WorkExplore";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { portfolioFallbackProjects } from "@/data/atlaContent";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -892,42 +893,9 @@ export default function AtlaWork() {
     [filteredProjects],
   );
 
-  return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: surfaceColor,
-        ["--atla-surface-color" as string]: surfaceColor,
-        ["--atla-text-color" as string]: primaryTextColor,
-      }}
-    >
-      <SeoHead
-        title={pageTitle}
-        description={pageDescription}
-        pathname={canonicalPath}
-        robots={robots}
-        image={filteredProjects[0]?.coverImage || undefined}
-        preloadImages={lcpPreloadImages}
-        structuredData={structuredData}
-      />
-      <div className="atla-dark-surface">
-      <AtlaNav commandProjects={projects} currentSearch={searchQuery} showCommandTrigger={false} />
-      <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
-        <div
-          className="atla-enter"
-          style={{
-            padding: isMobile
-              ? `4px ${WORK_PAGE_GUTTER_MOBILE}px 12px`
-              : isListView
-                ? `0 ${WORK_PAGE_GUTTER_DESKTOP}px 56px`
-                : `0 ${WORK_PAGE_GUTTER_DESKTOP}px 56px`,
-            display: "flex",
-            flexDirection: "column",
-            gap: isMobile ? 20 : isListView ? 112 : 12,
-          }}
-        >
+  const activeFilterCount = [region, industry, service, year].filter((value) => value !== "All").length;
+
+  const filterPanel = (
           <div
             style={{
               display: "grid",
@@ -936,7 +904,7 @@ export default function AtlaWork() {
               rowGap: isMobile ? FILTER_ROW_GAP_MOBILE : FILTER_ROW_GAP_DESKTOP,
               width: "100%",
               maxWidth: "none",
-              margin: isMobile ? "0 auto" : isListView ? "200px 0 0" : "8px auto 0",
+              margin: 0,
             }}
           >
             {isListView ? (
@@ -1126,6 +1094,42 @@ export default function AtlaWork() {
               </>
             ) : null}
           </div>
+  );
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: surfaceColor,
+        ["--atla-surface-color" as string]: surfaceColor,
+        ["--atla-text-color" as string]: primaryTextColor,
+      }}
+    >
+      <SeoHead
+        title={pageTitle}
+        description={pageDescription}
+        pathname={canonicalPath}
+        robots={robots}
+        image={filteredProjects[0]?.coverImage || undefined}
+        preloadImages={lcpPreloadImages}
+        structuredData={structuredData}
+      />
+      <div className="atla-dark-surface">
+      <AtlaNav commandProjects={projects} currentSearch={searchQuery} showCommandTrigger={false} />
+      <main style={{ width: "100%", position: "relative", minHeight: 750 }}>
+        <div
+          className="atla-enter"
+          style={{
+            padding: isMobile
+              ? `24px ${WORK_PAGE_GUTTER_MOBILE}px 96px`
+              : `48px ${WORK_PAGE_GUTTER_DESKTOP}px 120px`,
+            display: "flex",
+            flexDirection: "column",
+            gap: isMobile ? 20 : isListView ? 112 : 12,
+          }}
+        >
 
           <div id="atla-work-results" style={{ width: "100%", maxWidth: "none", margin: 0 }}>
           <h1 className="sr-only">Atla work archive: branding, packaging and websites</h1>
@@ -1313,8 +1317,8 @@ export default function AtlaWork() {
             >
               <div
                 style={{
-                  columnCount: isMobile ? 1 : 5,
-                  columnGap: isMobile ? 10 : 14,
+                  columnCount: isMobile ? 2 : 4,
+                  columnGap: isMobile ? 10 : 20,
                   width: "100%",
                 }}
               >
@@ -1336,7 +1340,7 @@ export default function AtlaWork() {
                       style={{
                         display: "inline-block",
                         width: "100%",
-                        marginBottom: isMobile ? 10 : 14,
+                        marginBottom: isMobile ? 10 : 20,
                         textDecoration: "none",
                         breakInside: "avoid",
                         backgroundColor: surfaceColor,
@@ -1490,6 +1494,9 @@ export default function AtlaWork() {
         </div>
       </main>
       </div>
+      <WorkExplore activeCount={activeFilterCount} resultCount={filteredProjects.length}>
+        {filterPanel}
+      </WorkExplore>
       <AtlaFooter />
     </div>
   );
