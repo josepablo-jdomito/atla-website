@@ -1462,3 +1462,31 @@ body {
   .site-root .journal-card__media img { transition: none; }
   .site-root .journal-card:hover .journal-card__media img { transform: none; }
 }
+
+/* ---- Privacy, Terms (v2) ---- */
+.site-root .legal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 68ch;
+  padding-top: 32px;
+  border-top: 1px solid var(--site-line);
+}
+.site-root .legal-section { display: flex; flex-direction: column; gap: 14px; }
+.site-root .legal-section__body { display: flex; flex-direction: column; gap: 14px; }
+
+/* ---- 404 (v2) ---- */
+.site-root .not-found .page-intro { min-height: 50vh; justify-content: center; }
+.site-root .not-found__home {
+  color: inherit;
+  font-size: clamp(36px, 3vw + 20px, 64px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-decoration-line: underline;
+  text-decoration-color: var(--site-accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+  transition: opacity 160ms var(--site-ease);
+}
+.site-root .not-found__home:hover { opacity: 0.6; }
