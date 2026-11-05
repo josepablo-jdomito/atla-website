@@ -142,16 +142,17 @@ export default function AtlaBrandStrategy() {
       </LongformSection>
 
       <LongformSection title="How the strategy process works at Atla">
-        <LongformSubTitle>Week 1–2: Discovery</LongformSubTitle>
+        {/* PENDING JP APPROVAL: week ranges removed (no deadline promises) */}
+        <LongformSubTitle>Discovery</LongformSubTitle>
         <LongformParagraph>
           Stakeholder interviews, competitive audit, audience research, and category analysis. We map real constraints,
           not aspirational ones.
         </LongformParagraph>
-        <LongformSubTitle>Week 3–4: Strategic development</LongformSubTitle>
+        <LongformSubTitle>Strategic development</LongformSubTitle>
         <LongformParagraph>
           Synthesis, positioning options, and messaging frameworks. We present strategic directions with clear tradeoffs.
         </LongformParagraph>
-        <LongformSubTitle>Week 5–6: Documentation and handoff</LongformSubTitle>
+        <LongformSubTitle>Documentation and handoff</LongformSubTitle>
         <LongformParagraph>
           Final strategy document, stakeholder presentation, and written rationale for each major decision so your team
           can maintain consistency after handoff. Full process detail is on{" "}
