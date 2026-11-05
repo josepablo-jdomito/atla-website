@@ -10,6 +10,7 @@ type AppRouterProps = {
   AtlaAbout: RouteComponent;
   AtlaContact: RouteComponent;
   AtlaServices: RouteComponent;
+  AtlaHome: RouteComponent;
   AtlaWork: RouteComponent;
   AtlaProject: RouteComponent;
   AtlaJournal: RouteComponent;
@@ -32,6 +33,7 @@ export function AppRouter({
   AtlaAbout,
   AtlaContact,
   AtlaServices,
+  AtlaHome,
   AtlaWork,
   AtlaProject,
   AtlaJournal,
@@ -49,7 +51,8 @@ export function AppRouter({
 }: AppRouterProps) {
   return (
     <Switch>
-      <Route path="/" component={AtlaWork} />
+      <Route path="/" component={AtlaHome} />
+      <Route path="/projects" component={AtlaWork} />
       <Route path="/work" component={AtlaWork} />
       <Route path="/about" component={AtlaAbout} />
       <Route path="/contact" component={AtlaContact} />

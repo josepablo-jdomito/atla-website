@@ -861,14 +861,14 @@ export default function AtlaWork() {
               ? 3
               : 2
         : 4;
-  const isRootRoute = location === "/";
+  const isRootRoute = location === "/projects";
   const pageTitle = isRootRoute
     ? formatMetaTitle("Atla", "Strategy-Led Branding Studio")
     : formatMetaTitle("Selected Branding, Packaging, and Digital Work", "Atla");
   const pageDescription = isRootRoute
     ? HOME_META_DESCRIPTION
     : "Browse selected Atla work across branding, packaging, art direction, and digital design for hospitality, consumer, and technology clients.";
-  const canonicalPath = "/";
+  const canonicalPath = "/projects";
   const robots = isRootRoute ? "index,follow" : "noindex,follow";
   const isListView = view === "List";
   // Memoized so SeoHead's effect (which rewrites head tags) does not re-run on every masonry batch.

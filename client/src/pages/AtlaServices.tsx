@@ -500,7 +500,7 @@ export default function AtlaServices() {
                 how we work
               </a>
               . If you need proof of execution, browse{" "}
-              <a href="/" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+              <a href="/projects" className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
                 selected work
               </a>
               .

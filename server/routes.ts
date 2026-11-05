@@ -19,8 +19,8 @@ const ADMIN_COOKIE_NAME = "atla_admin_session";
 const LEGACY_PROJECTS_ADMIN_MESSAGE =
   "Legacy projects admin has been retired. Projects are managed in Sanity Studio.";
 const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [
-  { from: "/work", to: "/" },
-  { from: "/work/", to: "/" },
+  { from: "/work", to: "/projects" },
+  { from: "/work/", to: "/projects" },
   { from: "/blog", to: "/journal" },
   { from: "/blog/", to: "/journal" },
   { from: "/blog/10-successful-rebranding-examples-that-changed-the-game", to: "/journal/why-most-startups-rebrand-too-late" },
@@ -36,8 +36,8 @@ const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [
   { from: "/blog/the-bridge-hospitality-branding-case-study", to: "/journal/hospitality-branding-guide" },
   { from: "/blog/ando-cpg-packaging-case-study", to: "/journal/brand-audit-framework" },
   { from: "/blog/conscious-care-co-wellness-branding-case-study", to: "/journal/brand-strategy-vs-brand-identity" },
-  { from: "/portfolio", to: "/" },
-  { from: "/portfolio/", to: "/" },
+  { from: "/portfolio", to: "/projects" },
+  { from: "/portfolio/", to: "/projects" },
   { from: "/top-branding-agencies-for-startups", to: "/journal/how-to-select-a-branding-agency" },
   { from: "/best-startup-branding-agencies", to: "/journal/how-to-select-a-branding-agency" },
   { from: "/how-to-edit-a-website-page", to: "/journal" },
@@ -132,7 +132,7 @@ export async function registerRoutes(
   });
 
   app.get(/^\/portfolio\/.+$/, (_req, res) => {
-    res.redirect(301, "/");
+    res.redirect(301, "/projects");
   });
 
   registerContactRoute(app);

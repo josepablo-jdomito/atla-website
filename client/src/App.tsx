@@ -11,6 +11,7 @@ const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
 const AtlaAbout = lazy(() => import("@/pages/AtlaAbout"));
 const AtlaContact = lazy(() => import("@/pages/AtlaContact"));
 const AtlaServices = lazy(() => import("@/pages/AtlaServices"));
+const AtlaHome = lazy(() => import("@/pages/AtlaHome"));
 const AtlaWork = lazy(() => import("@/pages/AtlaWork"));
 const AtlaProject = lazy(() => import("@/pages/AtlaProject"));
 const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
@@ -53,6 +54,7 @@ function Router() {
         AtlaAbout={AtlaAbout}
         AtlaContact={AtlaContact}
         AtlaServices={AtlaServices}
+        AtlaHome={AtlaHome}
         AtlaWork={AtlaWork}
         AtlaProject={AtlaProject}
         AtlaJournal={AtlaJournal}

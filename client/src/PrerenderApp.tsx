@@ -10,6 +10,7 @@ import ProjectsAdmin from "./pages/ProjectsAdmin";
 import AtlaAbout from "./pages/AtlaAbout";
 import AtlaContact from "./pages/AtlaContact";
 import AtlaServices from "./pages/AtlaServices";
+import AtlaHome from "./pages/AtlaHome";
 import AtlaWork from "./pages/AtlaWork";
 import AtlaProject from "./pages/AtlaProject";
 import AtlaJournal from "./pages/AtlaJournal";
@@ -98,6 +99,7 @@ export function renderPrerenderedRoute(
             AtlaAbout={AtlaAbout}
             AtlaContact={AtlaContact}
             AtlaServices={AtlaServices}
+            AtlaHome={AtlaHome}
             AtlaWork={AtlaWork}
             AtlaProject={AtlaProject}
             AtlaJournal={AtlaJournal}

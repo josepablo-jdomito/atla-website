@@ -550,7 +550,7 @@ function getStaticRoutePrerenderData(
     categories: JournalCategory[];
   },
 ): PrerenderRouteData {
-  if (pathname === "/" || pathname === "/work") {
+  if (pathname === "/" || pathname === "/projects") {
     return { projects: content.projects };
   }
 
@@ -572,6 +572,14 @@ async function prerenderRoutes() {
     {
       pathname: "/",
       title: formatMetaTitle("Atla", "Strategy-Led Branding Studio"),
+      description: HOME_META_DESCRIPTION,
+      image: workFeaturedImage,
+      includeInSitemap: true,
+      structuredData: ORGANIZATION_SCHEMA,
+    },
+    {
+      pathname: "/projects",
+      title: formatMetaTitle("Work", "Atla Branding Projects"),
       description: HOME_META_DESCRIPTION,
       image: workFeaturedImage,
       includeInSitemap: true,

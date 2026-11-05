@@ -120,7 +120,7 @@ export default function AtlaHowWeWork() {
         <LongformSubTitle>Output</LongformSubTitle>
         <LongformParagraph>
           Launch-ready assets with consistent strategic and visual quality. See live examples in{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects" className="atla-link" style={{ color: "#222" }}>
             selected work
           </a>
           .

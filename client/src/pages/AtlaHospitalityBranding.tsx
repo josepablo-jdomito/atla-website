@@ -157,7 +157,7 @@ export default function AtlaHospitalityBranding() {
             services overview
           </a>{" "}
           and the full{" "}
-          <a href="/" className="atla-link" style={{ color: "#222" }}>
+          <a href="/projects" className="atla-link" style={{ color: "#222" }}>
             work archive
           </a>
           .
