@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
@@ -26,6 +26,10 @@ const MEDIA_WIDTHS = [640, 960, 1280, 1600, 2000, 2400];
 // React 18 warns on the camelCase `fetchPriority` prop; the lowercase attribute is what the browser reads.
 const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
 
+/** Feeds the 88vh cap in site.css: width / height of the media. */
+const ratioStyle = (width?: number, height?: number) =>
+  width && height ? ({ "--media-ratio": width / height } as CSSProperties) : undefined;
+
 type MediaItem = ProjectMediaMosaicItem | { type: "image"; src: string; sourceIndex?: number };
 
 function ProjectImage({ src, alt, priority }: { src: string; alt: string; priority: boolean }) {
@@ -39,6 +43,7 @@ function ProjectImage({ src, alt, priority }: { src: string; alt: string; priori
       alt={alt}
       width={dimensions?.width}
       height={dimensions?.height}
+      style={ratioStyle(dimensions?.width, dimensions?.height)}
       loading={priority ? "eager" : "lazy"}
       {...(priority ? PRIORITY_ATTRS : null)}
       decoding="async"
@@ -49,6 +54,7 @@ function ProjectImage({ src, alt, priority }: { src: string; alt: string; priori
 /** Muted, looping and inline; plays while on screen. Under reduced motion it never starts on its own and shows controls. */
 function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: string; title: string; reduced: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 
   useEffect(() => {
     const video = ref.current;
@@ -81,6 +87,10 @@ function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: s
       preload="metadata"
       disablePictureInPicture
       aria-label={title}
+      style={ratioStyle(size?.width, size?.height)}
+      onLoadedMetadata={(event) =>
+        setSize({ width: event.currentTarget.videoWidth, height: event.currentTarget.videoHeight })
+      }
     />
   );
 }
@@ -133,7 +143,11 @@ export default function Project() {
   const next = useMemo(() => nextProjectInSiteOrder(projects, slug), [projects, slug]);
 
   // wouter does not reset scroll; a project opened from the bottom of another should start at its top.
+  // Only on a slug change, not on mount, so Back keeps the position the browser restores.
+  const shownSlug = useRef(slug);
   useEffect(() => {
+    if (shownSlug.current === slug) return;
+    shownSlug.current = slug;
     window.scrollTo(0, 0);
   }, [slug]);
 

@@ -60,16 +60,34 @@ describe("siteOrder", () => {
 });
 
 let container: HTMLDivElement;
+let location: ReturnType<typeof memoryLocation>;
 let root: Root;
 
+let reducedMotion = true;
+let observerCallbacks: IntersectionObserverCallback[] = [];
+
 class StubObserver {
+  constructor(callback: IntersectionObserverCallback) {
+    observerCallbacks.push(callback);
+  }
   observe() {}
   disconnect() {}
 }
 
+/** Fires every observer as if its target scrolled into (or out of) view. */
+function intersect(isIntersecting: boolean) {
+  act(() => {
+    for (const callback of observerCallbacks) {
+      callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver);
+    }
+  });
+}
+
 beforeEach(() => {
+  reducedMotion = true;
+  observerCallbacks = [];
   window.matchMedia = ((query: string) => ({
-    matches: query.includes("reduce"),
+    matches: query.includes("reduce") ? reducedMotion : false,
     media: query,
     addEventListener: () => undefined,
     removeEventListener: () => undefined,
@@ -95,7 +113,7 @@ function render(slug: string) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
   client.setQueryData(["/api/projects"], API);
   client.setQueryData(["project", slug], API.find((p) => p.slug === slug) ?? null);
-  const location = memoryLocation({ path: `/projects/${slug}` });
+  location = memoryLocation({ path: `/projects/${slug}` });
   act(() =>
     root.render(
       createElement(
@@ -149,16 +167,49 @@ describe("Project page", () => {
     }
   });
 
-  it("does not autoplay video under reduced motion", () => {
-    API.push(raw({ slug: "with-video", title: "With Video", videoFiles: [{ url: "https://cdn.sanity.io/files/p/production/loop.mp4" }] }));
+  const VIDEO_PROJECT = raw({
+    slug: "with-video",
+    title: "With Video",
+    videoFiles: [{ url: "https://cdn.sanity.io/files/p/production/loop.mp4" }],
+  });
+
+  it("never plays video under reduced motion and shows controls instead", () => {
+    API.push(VIDEO_PROJECT);
     try {
       render("with-video");
-      const video = container.querySelector("video");
-      expect(video).not.toBeNull();
-      expect(video!.autoplay).toBe(false);
-      expect(video!.muted).toBe(true);
+      const video = container.querySelector("video")!;
+      intersect(true);
+      expect(video.controls).toBe(true);
+      expect(video.muted).toBe(true);
+      expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
     } finally {
       API.pop();
     }
+  });
+
+  it("plays muted video while on screen and pauses it off screen", () => {
+    reducedMotion = false;
+    API.push(VIDEO_PROJECT);
+    try {
+      render("with-video");
+      const video = container.querySelector("video")!;
+      expect(video.controls).toBe(false);
+      expect(video.muted).toBe(true);
+      expect(video.loop).toBe(true);
+      expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+      intersect(true);
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
+      intersect(false);
+      expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled();
+    } finally {
+      API.pop();
+    }
+  });
+
+  it("scrolls to the top only when the slug changes, not on first mount", () => {
+    render("archive-b");
+    expect(window.scrollTo).not.toHaveBeenCalled();
+    act(() => location.navigate("/projects/feat-one"));
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
   });
 });

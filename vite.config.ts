@@ -27,6 +27,11 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
+  // Pre-bundled up front: discovered mid-session, it triggers a re-optimization whose mixed chunks
+  // load two React copies ("Invalid hook call" in AnimatePresence).
+  optimizeDeps: {
+    include: ["framer-motion"],
+  },
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
