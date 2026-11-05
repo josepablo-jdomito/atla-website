@@ -110,60 +110,6 @@ html body {
 .site-header__brand { display: block; width: 56px; color: inherit; }
 .site-header__cta { font-weight: 500; }
 
-/* Work peek: the facets under "Work", text only. Appears from an already-visible default (the link). */
-.work-peek { position: relative; }
-.work-peek__panel {
-  position: absolute;
-  top: calc(100% + 18px);
-  left: -8px;
-  z-index: 60;
-  display: grid;
-  grid-template-columns: repeat(4, max-content);
-  gap: 0 40px;
-  padding: 18px 16px 20px;
-  background: var(--site-bg);
-  border-top: 1px solid var(--site-line);
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 120ms var(--site-ease), transform 120ms var(--site-ease);
-}
-.work-peek__panel[hidden] { display: none; }
-@starting-style {
-  .work-peek__panel { opacity: 0; transform: translateY(-2px); }
-}
-.work-peek__label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: var(--site-muted);
-}
-.work-peek__list { list-style: none; margin: 0; padding: 0; }
-.work-peek__link {
-  display: block;
-  padding: 3px 0;
-  color: var(--site-muted);
-  font-size: 14px;
-  line-height: 1.5;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 120ms var(--site-ease);
-}
-.work-peek__link:hover,
-.work-peek__link:focus-visible,
-.work-peek__link[aria-current="true"] { color: var(--site-ink); }
-.work-peek__link[aria-current="true"] {
-  text-decoration: underline;
-  text-decoration-color: var(--site-accent);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-}
-/* The bar is 64px; bridge the gap so the pointer can travel from the link to the lines. */
-.work-peek[data-open="true"]::after {
-  content: "";
-  position: absolute;
-  inset: 100% -8px auto -8px;
-  height: 20px;
-}
 .site-pill {
   display: inline-flex;
   align-items: center;
