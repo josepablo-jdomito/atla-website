@@ -3,7 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
 import { ProjectCard } from "@/components/site/ProjectCard";
-import { nextProjectInSiteOrder, toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
+import { moreLikeThis, nextProjectInSiteOrder, toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
+import { wallHrefFor } from "@/components/site/workFilters";
+import { DISCIPLINE_ON_ALL, STAGES } from "@shared/projectFacets";
 import { assetKey } from "@/components/site/wallLayout";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
@@ -40,6 +42,8 @@ const HALF_SIZES = "(min-width: 1200px) 434px, (min-width: 768px) 40vw, 50vw";
 const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
 /** Below this width / height, a piece is a portrait and pairs with its neighbour. */
 const PORTRAIT_BELOW = 1.15;
+/** Between facets on the project line; the dot stays with the word before it when the line wraps. */
+const FACET_SEPARATOR = "\u00a0\u00a0·  ";
 /** Sticky header height, so a landing scroll leaves the image clear of it. */
 const HEADER = 64;
 
@@ -225,6 +229,9 @@ export default function Project() {
     [allProjects, projectData],
   );
   const next = useMemo(() => nextProjectInSiteOrder(projects, slug), [projects, slug]);
+  // The facets (sector, disciplines, place, stage) come with the project; the related block reads the wall's list.
+  const site = useMemo(() => (projectData ? toSiteProject(projectData) : null), [projectData]);
+  const related = useMemo(() => (site ? moreLikeThis(projects, site) : []), [projects, site]);
 
   const media: MediaItem[] = useMemo(
     () =>
@@ -281,8 +288,17 @@ export default function Project() {
 
   const seoHead = buildProjectSeoHead(project);
   const year = Number.parseInt(project.dateLabel, 10) > 0 ? project.dateLabel : "";
-  const services = (projectData && toSiteProject(projectData)?.services) || [];
-  const facts = [project.client !== project.title ? project.client : "", year, services.join(", ")].filter(Boolean);
+  const facts = [project.client !== project.title ? project.client : "", year].filter(Boolean);
+  // One quiet line of facets, each a link into the wall filtered to it (proposal 3.3). Brand Identity
+  // is on every project and filters nothing, so it is plain text; Stage prints only when it says something.
+  const facetLinks: Array<{ key: "sector" | "discipline" | "place"; value: string }> = site
+    ? [
+        ...(site.sector ? [{ key: "sector" as const, value: site.sector }] : []),
+        ...site.disciplines.map((value) => ({ key: "discipline" as const, value })),
+        ...(site.place ? [{ key: "place" as const, value: site.place }] : []),
+      ]
+    : [];
+  const stage = site?.stage && site.stage !== STAGES[0] ? site.stage : "";
   let imageIndex = -1;
   let paragraphIndex = 0;
 
@@ -301,6 +317,26 @@ export default function Project() {
         <header className="story-head">
           <h1 className="story-head__title">{project.title}</h1>
           {facts.length > 0 ? <p className="story-head__facts">{facts.join("  ·  ")}</p> : null}
+          {facetLinks.length > 0 ? (
+            <p className="story-head__facets" aria-label={copy.facetsLabel}>
+              {facetLinks.map((facet, index) => (
+                <span key={`${facet.key}:${facet.value}`}>
+                  {index > 0 ? <span aria-hidden="true">{facetLinks[index - 1].key === facet.key ? ", " : FACET_SEPARATOR}</span> : null}
+                  {facet.key === "discipline" && facet.value === DISCIPLINE_ON_ALL ? (
+                    facet.value
+                  ) : (
+                    <Link href={wallHrefFor(facet.key, facet.value)}>{facet.value}</Link>
+                  )}
+                </span>
+              ))}
+              {stage ? (
+                <span>
+                  <span aria-hidden="true">{FACET_SEPARATOR}</span>
+                  {stage}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
           {project.intro ? <p className="story-head__lead">{project.intro}</p> : null}
         </header>
 
@@ -369,6 +405,21 @@ export default function Project() {
             {copy.ctaLabel}
           </Link>
         </section>
+
+        {related.length > 0 ? (
+          <section className="story-more" aria-labelledby="project-more-label">
+            <h2 id="project-more-label" className="story-more__label">
+              {copy.moreLabel}
+            </h2>
+            <ul className="story-more__grid">
+              {related.map((item) => (
+                <li key={item.slug}>
+                  <ProjectCard project={item} size="grid" />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {next ? (
           <section className="story-next" aria-labelledby="project-next-label">
