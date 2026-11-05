@@ -34,6 +34,76 @@ export const siteCopy = {
     rights: "Atla. All rights reserved.",
   },
   // PENDING JP APPROVAL
+  home: {
+    // The headline reads `${headlineLead} ${phrase}`; one phrase per industry, in portfolio order:
+    // hospitality, food & beverage, consumer goods, software.
+    //
+    // Three alternative structures for JP to pick from (same four industries):
+    // A. Noun first, studio last. Lead empty, phrases carry it:
+    //    "The hotel guests come back for." / "The restaurant with a waiting list." /
+    //    "The product people pick up twice." / "The software that looks as good as it works."
+    //    followed by a quiet second line: "Brands by Atla."
+    // B. A question the bar answers. Headline: "What are you building?"
+    //    The phrases rotate as the bar's placeholder instead: "A hotel in Tulum", "A natural wine bar",
+    //    "A skincare line", "A fintech app".
+    // C. Verb first, outcome led. Lead "We make" + phrases:
+    //    "hotels feel like a destination." / "restaurants worth the reservation." /
+    //    "products worth the shelf." / "software people trust on sight."
+    headlineLead: "Brand identities for",
+    phrases: [
+      "hotels guests cross oceans for.",
+      "restaurants with a waiting list.",
+      "products that earn the shelf.",
+      "software people trust on sight.",
+    ],
+    askLabel: "Search the work or describe your project",
+    askPlaceholder: "Search the work, or tell us what you are building",
+    askPlaceholderShort: "Search, or describe a project",
+    askSubmit: "Search",
+    askPending: "Searching",
+    results: {
+      label: "Results",
+      closest: "Closest work",
+      count: (n: number) => (n === 1 ? "1 project" : `${n} projects`),
+      empty: "Nothing yet. Tell us about it instead.",
+      error: "Search is offline. Showing what we have.",
+      startBrief: "Start a brief",
+      clear: "Clear",
+    },
+    featuredLabel: "Selected work",
+    archiveLabel: "Archive",
+    explore: "Explore",
+    exploreDialog: "Filter the archive",
+    filters: { region: "Region", industry: "Industry", service: "Service", year: "Year", all: "All" },
+    project: (n: number) => (n === 1 ? "1 project" : `${n} projects`),
+    showMore: "Show more",
+    close: "Close",
+    logosLabel: "Clients",
+    // PENDING JP APPROVAL: Task 11 gathers logos. The row stays hidden while this is empty. Never invent logos.
+    logos: [] as ReadonlyArray<{ name: string; src: string }>,
+  },
+  // PENDING JP APPROVAL
+  blocks: [
+    {
+      label: "How we use AI",
+      title: "Machines do the legwork. People make the calls.",
+      body: "AI handles research, sorting and first passes. Every decision about taste stays with a designer.",
+      href: "/about",
+    },
+    {
+      label: "Brands for agents",
+      title: "Your next customer may not be a person.",
+      body: "Identities that read clearly to people and to the AI agents that now compare, book and buy for them.",
+      href: "/services",
+    },
+    {
+      label: "Services by moment",
+      title: "Launching, growing or starting over.",
+      body: "Services arranged around where your company is, not a menu of deliverables.",
+      href: "/services",
+    },
+  ],
+  // PENDING JP APPROVAL
   brief: {
     metaTitle: "Start a brief",
     metaDescription: "A few short questions about what you are building. We read every brief and reply by email.",
