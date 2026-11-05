@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "wouter";
 import { OPEN_CONSENT_EVENT } from "@/components/atla/AnalyticsConsent";
 import { siteCopy } from "@/content/siteCopy";
@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const { footer } = siteCopy;
 
-/** Studio cities, in footer order. Also listed on /about and /contact. */
+/** Studio cities, in footer order. Also listed on /about and /contact. No clocks: no numbers on the site. */
 export const SITE_CITIES = [
   { label: "Austin", timeZone: "America/Chicago" },
   { label: "Mexico City", timeZone: "America/Mexico_City" },
@@ -15,29 +15,12 @@ export const SITE_CITIES = [
   { label: "Caracas", timeZone: "America/Caracas" },
 ] as const;
 
-function getCityTimes() {
-  return SITE_CITIES.map((city) => ({
-    ...city,
-    time: new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: city.timeZone,
-    }).format(new Date()),
-  }));
-}
-
 export function SiteFooter() {
-  const [cityTimes, setCityTimes] = useState(getCityTimes);
   const year = useMemo(() => new Date().getFullYear(), []);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setCityTimes(getCityTimes()), 30_000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   return (
     <footer className="site-footer">
+      <p className="site-footer__line">{footer.line}</p>
       <div className="site-footer__grid">
         <nav aria-label={footer.navLabel}>
           <ul className="site-footer__list">
@@ -67,11 +50,8 @@ export function SiteFooter() {
           </ul>
         </div>
         <ul className="site-footer__list site-footer__cities" aria-label={footer.citiesLabel}>
-          {cityTimes.map((city) => (
-            <li key={city.label}>
-              <span>{city.label}</span>
-              <span className="site-footer__time">{city.time}</span>
-            </li>
+          {SITE_CITIES.map((city) => (
+            <li key={city.label}>{city.label}</li>
           ))}
         </ul>
       </div>

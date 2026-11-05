@@ -64,7 +64,7 @@ export function SiteHeader() {
           <AtlaWordmark title="Atla" style={{ width: "100%", height: "auto" }} />
         </Link>
         <div className="site-header__right">
-          <Link href={header.cta.href} className="site-pill">
+          <Link href={header.cta.href} className="site-link site-header__cta">
             {header.cta.label}
           </Link>
         </div>

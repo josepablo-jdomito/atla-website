@@ -1,10 +1,12 @@
 /* atla.design v2 tokens. Additive: old pages keep using index.css rules. */
 :root {
-  --site-bg: #fbfaf8;
-  --site-ink: #16181d;
-  --site-muted: #6b6f78;
-  --site-line: rgba(22, 24, 29, 0.1);
-  --site-surface: #ffffff;
+  /* Paper and ink, warm: the editorial palette JP approved on /hospitality (2026-10-23). */
+  --site-bg: #f6f3ec;
+  --site-ink: #1b1a17;
+  --site-muted: #6f6a61;
+  --site-line: rgba(27, 26, 23, 0.12);
+  --site-surface: #fcfaf5;
+  --site-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   --site-accent: #f6c428;
   --site-error: #b3261e;
   --site-ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -13,11 +15,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --site-bg: #111214;
-    --site-ink: #f2f1ee;
-    --site-muted: #9a9da4;
-    --site-line: rgba(242, 241, 238, 0.12);
-    --site-surface: #1a1b1e;
+    --site-bg: #151412;
+    --site-ink: #efeae0;
+    --site-muted: #9c968a;
+    --site-line: rgba(239, 234, 224, 0.14);
+    --site-surface: #1d1b18;
     --site-error: #f2b8b5;
   }
 }
@@ -106,6 +108,7 @@ html body {
 }
 .site-header__menu { display: inline-block; }
 .site-header__brand { display: block; width: 56px; color: inherit; }
+.site-header__cta { font-weight: 500; }
 .site-pill {
   display: inline-flex;
   align-items: center;
@@ -153,25 +156,24 @@ html body {
   padding: 56px var(--site-gutter) 24px;
   margin-top: 96px;
 }
+/* The one line the studio says for itself (JP, 2026-10-04). Serif, like the hospitality page. */
+.site-footer__line {
+  margin: 0 0 56px;
+  font-family: var(--site-serif);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 18ch;
+}
+.site-footer__cities li { font-size: 14px; line-height: 1.6; }
 .site-footer__grid {
   display: grid;
   gap: 32px;
   grid-template-columns: 1fr;
 }
 .site-footer__list { list-style: none; margin: 0; padding: 0; }
-.site-footer__cities li {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  max-width: 240px;
-  font-size: 14px;
-  line-height: 1.6;
-}
-.site-footer__time {
-  font-family: "Roboto Mono", monospace;
-  font-variant-numeric: tabular-nums;
-  color: var(--site-muted);
-}
 .site-footer__base {
   display: flex;
   flex-wrap: wrap;
@@ -188,6 +190,49 @@ html body {
 
 @media (min-width: 768px) {
   .site-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .site-footer__line { font-size: 44px; margin-bottom: 72px; }
+}
+
+/* ---- Work wall: the home (v2, 2026-11-05) ---- */
+/* 2 columns on phones, 3 on tablets, 4 from 1200. Gutter = outer margin, like Cosmos. */
+.work-wall {
+  --wall-gap: 16px;
+  padding: 8px var(--wall-gap) 0;
+}
+.work-wall__columns {
+  display: grid;
+  grid-template-columns: repeat(var(--wall-columns, 2), minmax(0, 1fr));
+  gap: var(--wall-gap);
+  align-items: start;
+}
+.work-wall__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wall-gap);
+  min-width: 0;
+}
+.wall-tile {
+  display: block;
+  background: var(--site-line);
+  line-height: 0;
+}
+.wall-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transition: opacity 480ms var(--site-ease);
+}
+.wall-tile[data-loaded="true"] img { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .wall-tile img { transition: opacity 480ms var(--site-ease), filter 320ms var(--site-ease); }
+  .wall-tile:hover img { filter: brightness(0.94); }
+}
+@media (min-width: 768px) {
+  .work-wall { --wall-gap: 24px; padding-top: 12px; }
+}
+@media (min-width: 1200px) {
+  .work-wall { --wall-gap: 32px; padding-top: 16px; }
 }
 
 /* ---- Brief (v2) ---- */

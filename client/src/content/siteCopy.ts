@@ -9,7 +9,8 @@ export const siteCopy = {
       { label: "Services", href: "/services" },
       { label: "About", href: "/about" },
     ],
-    cta: { label: "Start a brief", href: "/brief" },
+    // JP, 2026-10-04: the header CTA reads "Start a project". It opens the brief.
+    cta: { label: "Start a project", href: "/brief" },
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
@@ -31,7 +32,9 @@ export const siteCopy = {
       { label: "Terms", href: "/terms" },
     ],
     cookiesLabel: "Analytics cookies",
-    citiesLabel: "Studio hours",
+    citiesLabel: "Studio cities",
+    // JP, 2026-10-04: the footer line, verbatim.
+    line: "When your brand has to change, start here.",
     rights: "Atla. All rights reserved.",
   },
   // PENDING JP APPROVAL
