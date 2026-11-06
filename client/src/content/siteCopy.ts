@@ -209,7 +209,7 @@ export const siteCopy = {
           "The name has to clear legal, and the website has to explain a company nobody has heard of.",
         ],
         project: "rustico",
-        projectLine: "A new brand in Mexico, designed for its first impression.",
+        projectLine: "An open-fire dinner at Acre, given a brand for its first season.",
       },
       {
         id: "raise",
@@ -229,7 +229,7 @@ export const siteCopy = {
           "Different teams and agencies each take the brand their own way.",
         ],
         project: "casa-colora",
-        projectLine: "A heritage leather house from Upstate New York, rebuilt for the way it sells today.",
+        projectLine: "A name and a house of color for a kids' creative space in Monterrey.",
       },
       {
         id: "reposition",
@@ -239,7 +239,7 @@ export const siteCopy = {
           "Your customers already say something about you that the brand does not.",
         ],
         project: "hanks-leather",
-        projectLine: "An identity for dinners under the stars.",
+        projectLine: "A heritage leather house from Upstate New York, rebuilt for the way it sells today.",
       },
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.

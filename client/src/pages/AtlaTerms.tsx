@@ -26,7 +26,7 @@ export default function AtlaTerms() {
         </header>
         <div className="legal-body">
           <p className="longform-text">
-            These terms govern access to and use of the Atla website. By using this site, you agree to these terms.
+            This site is operated by Atla &amp; WeLoveDaily, LLC. These terms govern access to and use of the Atla website. By using this site, you agree to these terms.
           </p>
 
           <Section title="Use of site">
@@ -86,6 +86,14 @@ export default function AtlaTerms() {
               If you contact the studio with briefs, decks, references, or other materials, you confirm that you have
               the right to share them for discussion purposes. Sending materials does not create a confidential,
               fiduciary, employment, or agency relationship unless both parties agree otherwise in writing.
+            </p>
+          </Section>
+
+          <Section title="Governing law">
+            <p className="longform-text">
+              These terms are governed by the laws of the State of Texas, without regard to its conflict of law rules.
+              Any dispute about these terms or the use of this site will be heard in the state or federal courts located
+              in Austin, Texas.
             </p>
           </Section>
 

@@ -196,16 +196,16 @@ export default function AtlaBrandStrategy() {
       <LongformSection title="Examples">
         <LongformParagraph>
           See strategy turned into design in{" "}
-          <a href="/projects/the-bridge" className="longform-link">
-            The Bridge
+          <a href="/projects/rustico" className="longform-link">
+            Rústico
           </a>
           ,{" "}
           <a href="/projects/ando" className="longform-link">
             Ando
           </a>
           , and{" "}
-          <a href="/projects/conscious-care-co" className="longform-link">
-            Conscious Care Co
+          <a href="/projects/angeles-wellness" className="longform-link">
+            Angeles Wellness
           </a>
           .
         </LongformParagraph>

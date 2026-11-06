@@ -18,6 +18,7 @@ import {
 } from "@shared/brief";
 import { Link } from "wouter";
 import { siteCopy } from "@/content/siteCopy";
+import { useNoindex } from "@/components/seo/SeoHead";
 import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
 import { submitBrief } from "./briefApi";
 import { clearBrief, loadBrief, saveBrief, takeSeedFromUrl, type BriefStep, type SavedBrief } from "./briefStorage";
@@ -413,6 +414,7 @@ function ContactScreen({
 }
 
 function DoneScreen({ calendlyUrl, headingRef }: { calendlyUrl: string | undefined; headingRef: RefObject<HTMLHeadingElement> }) {
+  useNoindex(true);
   return (
     <div className="brief-form">
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">

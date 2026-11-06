@@ -57,8 +57,8 @@ export default function AtlaWellnessBranding() {
 
       <LongformSection title="Selected wellness and health work">
         <LongformParagraph>
-          <strong>Conscious Care Co</strong>. Wellness identity built around mindful care.{" "}
-          <a href="/projects/conscious-care-co" className="longform-link">
+          <strong>Angeles Wellness</strong>. An herbal wellness system, rebranded so anyone can follow what the products do.{" "}
+          <a href="/projects/angeles-wellness" className="longform-link">
             View project →
           </a>
         </LongformParagraph>

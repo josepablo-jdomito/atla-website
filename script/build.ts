@@ -661,7 +661,8 @@ async function prerenderRoutes() {
       // Same title and description as the Services page's SeoHead.
       title: formatMetaTitle(siteCopy.services.metaTitle, "Atla"),
       description: siteCopy.services.metaDescription,
-      image: "/figmaAssets/about-hero.jpg",
+      // The page's SeoHead passes no image, so it shares the default, like here.
+      image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
       // Same JSON-LD as the live page's SeoHead: breadcrumb + one Service per moment.
       structuredData: buildServicesStructuredData(),

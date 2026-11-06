@@ -12,7 +12,7 @@ import {
 } from "@shared/brandCheck";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
-import { SeoHead } from "@/components/seo/SeoHead";
+import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
 import { submitBrandCheck } from "@/components/brandCheck/brandCheckApi";
 import { siteCopy } from "@/content/siteCopy";
 import { trackBrandCheckComplete, trackCalendlyClick } from "@/lib/ga";
@@ -72,6 +72,7 @@ export default function BrandCheck() {
   const doneHeading = useRef<HTMLHeadingElement>(null);
   const sending = status === "sending";
   const fieldId = (key: Field) => `${baseId}-${key}`;
+  useNoindex(done !== null);
 
   useEffect(() => {
     if (done) doneHeading.current?.focus();

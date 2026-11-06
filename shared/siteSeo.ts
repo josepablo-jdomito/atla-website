@@ -2,7 +2,7 @@ export const SITE_ORIGIN = "https://www.atla.design";
 export const SITE_NAME = "Atla";
 export const ORGANIZATION_NAME = "Atla";
 export const ORGANIZATION_LOGO_URL = `${SITE_ORIGIN}/figmaAssets/logo.svg`;
-export const DEFAULT_OG_IMAGE_URL = `${SITE_ORIGIN}/figmaAssets/about-hero.jpg`;
+export const DEFAULT_OG_IMAGE_URL = `${SITE_ORIGIN}/share/default.png`;
 export const MAX_META_TITLE_LENGTH = 60;
 
 /** Public studio inbox. Also mirrored by hand in client/public/security.txt. */

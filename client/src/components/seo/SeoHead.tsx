@@ -121,3 +121,16 @@ export function SeoHead({
 
   return null;
 }
+
+/** While `active`, the page asks crawlers not to index it (a thank-you state at the form's own URL). */
+export function useNoindex(active: boolean) {
+  useEffect(() => {
+    if (!active) return;
+    const meta = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    const previous = meta?.getAttribute("content") ?? null;
+    upsertMeta('meta[name="robots"]', { name: "robots" }, "noindex,follow");
+    return () => {
+      if (previous !== null) upsertMeta('meta[name="robots"]', { name: "robots" }, previous);
+    };
+  }, [active]);
+}

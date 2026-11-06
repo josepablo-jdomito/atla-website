@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { trackEvent } from "@/hooks/use-analytics";
 import { ga4Event } from "@/lib/ga";
 import { siteCopy } from "@/content/siteCopy";
+import { useNoindex } from "@/components/seo/SeoHead";
 import { CONTACT_EMAIL } from "@shared/siteSeo";
 
 // No budget question (no prices on the site); /api/contact defaults budget to "".
@@ -73,6 +74,7 @@ export function ContactForm() {
 
   const isSubmitting = status.state === "submitting";
   const isSent = status.state === "sent";
+  useNoindex(isSent);
   const notice =
     status.state === "offline"
       ? {

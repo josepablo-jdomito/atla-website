@@ -60,8 +60,8 @@ export default function AtlaHospitalityBranding() {
 
       <LongformSection title="Selected hospitality work">
         <LongformParagraph>
-          <strong>The Bridge</strong>. Identity for a hotel and restaurant concept in Bali.{" "}
-          <a href="/projects/the-bridge" className="longform-link">
+          <strong>Rústico</strong>. An open-fire dinner at Acre, a resort and farm in San José del Cabo, given a brand for its first season.{" "}
+          <a href="/projects/rustico" className="longform-link">
             View project →
           </a>
         </LongformParagraph>
