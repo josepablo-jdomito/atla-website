@@ -221,3 +221,48 @@ describe("Project page", () => {
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
 });
+
+describe("Lightbox keyboard (fix wave 2026-11-05)", () => {
+  const press = (key: string, shiftKey = false) => {
+    const event = new KeyboardEvent("keydown", { key, shiftKey, bubbles: true, cancelable: true });
+    act(() => {
+      window.dispatchEvent(event);
+    });
+    return event;
+  };
+
+  it("keeps Tab inside the dialog and gives focus back to the image that opened it", () => {
+    render("archive-b");
+    const opener = container.querySelectorAll<HTMLButtonElement>(".story-media__button")[1];
+    act(() => opener.focus());
+    act(() => opener.click());
+    const dialog = document.querySelector<HTMLElement>('.lightbox[role="dialog"]')!;
+    const stops = Array.from(dialog.querySelectorAll<HTMLButtonElement>("button:not([tabindex='-1'])"));
+    expect(stops.map((b) => b.className)).toEqual([
+      "lightbox__control lightbox__control--close",
+      "lightbox__control lightbox__control--prev",
+      "lightbox__control lightbox__control--next",
+    ]);
+    expect(document.activeElement).toBe(stops[0]);
+    // Tab from the last control wraps to the first; Shift+Tab from the first wraps to the last.
+    act(() => stops[2].focus());
+    expect(press("Tab").defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(stops[0]);
+    expect(press("Tab", true).defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(stops[2]);
+    // Escape closes and returns focus to the opener.
+    press("Escape");
+    expect(document.querySelector('.lightbox')).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
+
+  it("returns focus after the Close button too", () => {
+    render("archive-b");
+    const opener = container.querySelector<HTMLButtonElement>(".story-media__button")!;
+    act(() => opener.focus());
+    act(() => opener.click());
+    const close = document.querySelector<HTMLButtonElement>(".lightbox__control--close")!;
+    act(() => close.click());
+    expect(document.activeElement).toBe(opener);
+  });
+});

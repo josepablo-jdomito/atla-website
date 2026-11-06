@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { siteCopy } from "@/content/siteCopy";
+import { focusablesIn, trapTab } from "@/components/site/focusTrap";
 
 const { header } = siteCopy;
 
@@ -12,8 +13,22 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setOpen(false), [location]);
+
+  // The sheet only exists below 768 px. Crossing that width closes it, so the body scroll lock
+  // (below) is released and nothing invisible is left open on a desktop.
+  useEffect(() => {
+    if (!open || typeof window.matchMedia !== "function") return;
+    const wide = window.matchMedia("(min-width: 768px)");
+    const onChange = () => {
+      if (wide.matches) setOpen(false);
+    };
+    onChange();
+    wide.addEventListener?.("change", onChange);
+    return () => wide.removeEventListener?.("change", onChange);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -21,6 +36,11 @@ export function SiteHeader() {
       if (event.key === "Escape") {
         setOpen(false);
         buttonRef.current?.focus();
+      }
+      // Tab cycles through the sheet's links and the Close button, never into the page behind.
+      if (event.key === "Tab") {
+        const button = buttonRef.current;
+        trapTab(event, button ? [button, ...focusablesIn(sheetRef.current)] : focusablesIn(sheetRef.current));
       }
     };
     const previous = document.body.style.overflow;
@@ -69,7 +89,15 @@ export function SiteHeader() {
           </Link>
         </div>
       </nav>
-      <div id="site-menu-sheet" className="site-sheet" data-open={open} hidden={!open}>
+      <div
+        ref={sheetRef}
+        id="site-menu-sheet"
+        role="dialog"
+        aria-label={header.menuOpen}
+        className="site-sheet"
+        data-open={open}
+        hidden={!open}
+      >
         <ul>
           {header.links.map((link) => (
             <li key={link.href}>

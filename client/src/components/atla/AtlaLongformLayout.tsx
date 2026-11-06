@@ -77,7 +77,7 @@ export function LongformHero({
 }) {
   return (
     <header className="page-intro longform-intro">
-      {eyebrow ? <p className="home-section-label">{eyebrow}</p> : null}
+      {eyebrow ? <p className="site-label">{eyebrow}</p> : null}
       <h1 className="page-intro__title">{h1}</h1>
       <div className="longform-intro__body">
         {paragraphs.map((paragraph, index) => (

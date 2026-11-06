@@ -10,6 +10,7 @@ import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
 import { articleBodyText, articleDescription, buildArticleBreadcrumb, buildBlogPostingSchema } from "@/lib/journalSeo";
 import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { getImageDimensions } from "@shared/imageDelivery";
+import { ownCovers } from "@/lib/journalCovers";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
 
 export default function AtlaArticle() {
@@ -24,6 +25,8 @@ export default function AtlaArticle() {
     queryFn: fetchJournalArticles,
   });
   const articles = useMemo(() => articlesData ?? [], [articlesData]);
+  // Only a cover no other article shares is shown (see journalCovers.ts).
+  const covers = useMemo(() => ownCovers(articles), [articles]);
   const article = useMemo(
     () => articleData ?? articles.find((item) => item.slug === slug) ?? null,
     [articleData, articles, slug],
@@ -59,7 +62,9 @@ export default function AtlaArticle() {
     article.bodySections.find((section) => Boolean(section.image))?.image ||
     article.bodySections.find((section) => Boolean(section.wideImage))?.wideImage ||
     DEFAULT_OG_IMAGE_URL;
-  const articleImage = article.coverImage || article.heroImage || fallbackBodyImage;
+  // A cover shared with other articles is the placeholder, not this article's picture (journalCovers.ts).
+  const articleImage = covers.get(article.slug) || fallbackBodyImage;
+  const showHero = articleImage !== DEFAULT_OG_IMAGE_URL;
   const hasPortableTextBody = article.body.length > 0;
   const hasLegacyBody = article.introParagraphs.length > 0 || article.bodySections.some(
     (section) => section.paragraphs.length > 0 || Boolean(section.image) || Boolean(section.wideImage),
@@ -85,13 +90,13 @@ export default function AtlaArticle() {
       />
       <article className="site-page-body article">
         <header className="page-intro article-intro">
-          <p className="home-section-label">
-            {article.category} · {article.date.toUpperCase()}
+          <p className="site-label">
+            {article.category} · {article.date}
           </p>
           <h1 className="page-intro__title">{article.title}</h1>
         </header>
 
-        {articleImage ? (
+        {showHero ? (
           <div className="article-hero">
             <img
               src={articleImage}
@@ -148,11 +153,11 @@ export default function AtlaArticle() {
           {!hasPortableTextBody && !hasLegacyBody ? null : (
             <dl className="article-credits">
               <div>
-                <dt className="home-section-label">Source:</dt>
+                <dt className="site-label">Source:</dt>
                 <dd>{article.sourceName || "Atla Journal"}</dd>
               </div>
               <div>
-                <dt className="home-section-label">Author:</dt>
+                <dt className="site-label">Author:</dt>
                 <dd>{article.authorName || "Atla"}</dd>
               </div>
             </dl>
@@ -160,7 +165,7 @@ export default function AtlaArticle() {
         </div>
 
         <section className="page-section article-more" aria-labelledby="article-more">
-          <h2 id="article-more" className="home-section-label">
+          <h2 id="article-more" className="site-label">
             More from the journal
           </h2>
           <div className="page-section__body">
@@ -178,20 +183,20 @@ export default function AtlaArticle() {
                       cta_type: "related_article",
                     })}
                 >
-                  <div className="journal-card__media">
-                    {item.coverImage ? (
+                  {covers.has(item.slug) ? (
+                    <div className="journal-card__media">
                       <img
-                        src={item.coverImage}
+                        src={covers.get(item.slug)}
                         alt={item.title}
-                        width={getImageDimensions(item.coverImage)?.width}
-                        height={getImageDimensions(item.coverImage)?.height}
+                        width={getImageDimensions(covers.get(item.slug)!)?.width}
+                        height={getImageDimensions(covers.get(item.slug)!)?.height}
                         loading="lazy"
                         decoding="async"
                       />
-                    ) : null}
-                  </div>
+                    </div>
+                  ) : null}
                   <div className="journal-card__text">
-                    <p className="home-section-label">{item.category}</p>
+                    <p className="site-label">{item.category}</p>
                     <h3 className="journal-card__title">{item.title}</h3>
                     <p className="journal-card__excerpt">{item.excerpt}</p>
                     <p className="journal-card__date">{item.date}</p>

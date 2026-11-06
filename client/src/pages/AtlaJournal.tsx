@@ -15,6 +15,7 @@ import { fetchJournalArticles, fetchJournalCategories } from "@/lib/journalApi";
 import { articleDescription, articlePublishedIso } from "@/lib/journalSeo";
 import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { getImageDimensions } from "@shared/imageDelivery";
+import { ownCovers } from "@/lib/journalCovers";
 
 const DEFAULT_PAGE_DESCRIPTION =
   "Atla Journal: essays and notes on branding, strategy and design from Atla, a senior-led branding studio working across the US and Latin America.";
@@ -46,6 +47,8 @@ export default function AtlaJournal() {
   });
 
   const articles = useMemo(() => articlesData ?? [], [articlesData]);
+  // Only a cover no other article shares is shown (see journalCovers.ts).
+  const covers = useMemo(() => ownCovers(articles), [articles]);
   const categories = useMemo(() => categoriesData ?? [], [categoriesData]);
   const activeCategory = useMemo(
     () => categories.find((category) => category.slug === activeCategorySlug) ?? null,
@@ -63,9 +66,8 @@ export default function AtlaJournal() {
   const filteredArticles = activeCategory
     ? articles.filter((article) => article.categorySlug === activeCategory.slug)
     : articles;
-  const featured = filteredArticles.slice(0, 3);
   const cards = filteredArticles.slice(0, 6);
-  const heroArticle = featured[0] ?? articles[0];
+  const heroCover = cards.map((article) => covers.get(article.slug)).find(Boolean);
   const pathname = activeCategory ? `/journal/category/${activeCategory.slug}` : "/journal";
   const pageTitle = activeCategory
     ? formatJournalMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`)
@@ -98,7 +100,7 @@ export default function AtlaJournal() {
       "@type": "BlogPosting",
       headline: article.title,
       url: `${SITE_ORIGIN}/journal/${article.slug}`,
-      image: article.coverImage || undefined,
+      image: covers.get(article.slug) || undefined,
       description: articleDescription(article),
       datePublished: article.publishedAt || articlePublishedIso(article.date),
       articleSection: article.category,
@@ -111,12 +113,11 @@ export default function AtlaJournal() {
         title={pageTitle}
         description={pageDescription}
         pathname={pathname}
-        image={heroArticle?.coverImage || undefined}
+        image={heroCover}
         structuredData={collectionSchema}
       />
       <div className="site-page-body journal">
         <header className="page-intro journal-intro">
-          <p className="home-section-label">{activeCategory ? "Journal category" : "Journal"}</p>
           <h1 className="page-intro__title journal-intro__title">{heroTitle}</h1>
           {heroDescription ? <p className="page-intro__lead">{heroDescription}</p> : null}
           {categorySupportCopy.map((paragraph) => (
@@ -142,29 +143,6 @@ export default function AtlaJournal() {
           ))}
         </nav>
 
-        {featured.length > 0 ? (
-          <ul className="journal-featured">
-            {featured.map((article) => (
-              <li key={article.slug} className="journal-featured__item">
-                <a
-                  href={`/journal/${article.slug}`}
-                  className="journal-featured__link"
-                  onClick={() =>
-                    trackEvent("journal_cta_click", {
-                      page: pathname,
-                      article_slug: article.slug,
-                      article_category: article.category,
-                      cta_type: "hero_card",
-                    })}
-                >
-                  <span className="home-section-label">{article.category}</span>
-                  <span className="journal-featured__title">{article.title}</span>
-                  <span className="journal-card__date">{article.date.toUpperCase()}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : null}
 
 
         {cards.length > 0 ? (
@@ -182,20 +160,20 @@ export default function AtlaJournal() {
                     cta_type: "grid_card",
                   })}
               >
-                <div className="journal-card__media">
-                  {article.coverImage ? (
+                {covers.has(article.slug) ? (
+                  <div className="journal-card__media">
                     <img
-                      src={article.coverImage}
+                      src={covers.get(article.slug)}
                       alt={article.title}
-                      width={getImageDimensions(article.coverImage)?.width}
-                      height={getImageDimensions(article.coverImage)?.height}
+                      width={getImageDimensions(covers.get(article.slug)!)?.width}
+                      height={getImageDimensions(covers.get(article.slug)!)?.height}
                       loading="lazy"
                       decoding="async"
                     />
-                  ) : null}
-                </div>
+                  </div>
+                ) : null}
                 <div className="journal-card__text">
-                  <p className="home-section-label">{article.category}</p>
+                  <p className="site-label">{article.category}</p>
                   <h2 className="journal-card__title">{article.title}</h2>
                   <p className="journal-card__excerpt">{article.excerpt}</p>
                   <p className="journal-card__date">{article.date}</p>

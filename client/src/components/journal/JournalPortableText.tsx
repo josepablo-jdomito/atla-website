@@ -34,7 +34,7 @@ const components: PortableTextComponents = {
             decoding="async"
             style={{ aspectRatio: aspectRatio ? String(aspectRatio) : undefined }}
           />
-          {caption ? <figcaption className="home-section-label">{caption}</figcaption> : null}
+          {caption ? <figcaption className="site-label">{caption}</figcaption> : null}
         </figure>
       );
     },

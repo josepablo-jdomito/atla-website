@@ -10,7 +10,14 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { BRIEF_QUESTION_IDS, briefContactSchema, nextFixedQuestion, type BriefContact, type BriefQuestion } from "@shared/brief";
+import {
+  BRIEF_QUESTIONS,
+  BRIEF_QUESTION_IDS,
+  briefContactSchema,
+  nextFixedQuestion,
+  type BriefContact,
+  type BriefQuestion,
+} from "@shared/brief";
 import { siteCopy } from "@/content/siteCopy";
 import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
 import { fetchNextStep, submitBrief } from "./briefApi";
@@ -139,7 +146,17 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
     trackBriefStart(seededVisit.current);
   }, [brief]);
 
-  if (!brief) return <BriefFrame progress={0} pending={false} />;
+  // Before the saved brief is read (and in the prerendered HTML) the page still has its heading:
+  // the first question, which is where a fresh brief starts.
+  if (!brief) {
+    return (
+      <BriefFrame progress={0} pending={false}>
+        <div className="brief-form">
+          <h1 className="brief-prompt">{BRIEF_QUESTIONS[0].prompt}</h1>
+        </div>
+      </BriefFrame>
+    );
+  }
 
   const total = totalSteps(brief);
   const done = brief.calendlyUrl !== undefined;
@@ -202,19 +219,11 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
       progress={progress}
       pending={pending}
       meta={
-        done ? null : (
-          <>
-            {brief.index > 0 ? (
-              <button type="button" className="brief-back" onClick={back} disabled={pending || submitStatus === "sending"}>
-                <span aria-hidden="true">←</span> {copy.back}
-              </button>
-            ) : (
-              <span className="brief-meta__label">{copy.label}</span>
-            )}
-            <span className="brief-meta__count">
-              {String(brief.index + 1).padStart(2, "0")} {copy.stepSeparator} {String(total).padStart(2, "0")}
-            </span>
-          </>
+        // Back is the only thing up here: no label, no step count (no numbers on the site).
+        done || brief.index === 0 ? null : (
+          <button type="button" className="brief-back" onClick={back} disabled={pending || submitStatus === "sending"}>
+            {copy.back}
+          </button>
         )
       }
     >
@@ -328,9 +337,17 @@ function QuestionScreen({
 }) {
   const headingId = useId();
   const hintId = useId();
+  const emptyId = useId();
   const initialText = typeof value === "string" ? value : "";
   const [text, setText] = useState(initialText);
   const [chosen, setChosen] = useState<string[]>(Array.isArray(value) ? value : []);
+  // Continue on an empty answer explains itself in one quiet line instead of doing nothing.
+  const [empty, setEmpty] = useState(false);
+  const emptyLine = empty ? (
+    <p id={emptyId} className="brief-empty" role="status">
+      {question.kind === "text" ? copy.emptyText : copy.emptyChoice}
+    </p>
+  ) : null;
 
   const heading = (
     <h1 id={headingId} ref={headingRef} tabIndex={-1} className="brief-prompt">
@@ -341,7 +358,12 @@ function QuestionScreen({
   if (question.kind === "text") {
     const trimmed = text.trim();
     const submit = () => {
-      if (trimmed && !disabled) onAnswer(trimmed);
+      if (disabled) return;
+      if (!trimmed) {
+        setEmpty(true);
+        return;
+      }
+      onAnswer(trimmed);
     };
     const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
@@ -362,22 +384,26 @@ function QuestionScreen({
           ref={fieldRef as RefObject<HTMLTextAreaElement>}
           className="brief-text"
           aria-labelledby={headingId}
-          aria-describedby={hintId}
+          aria-describedby={empty ? `${hintId} ${emptyId}` : hintId}
           placeholder={copy.textPlaceholder}
           rows={2}
           maxLength={MAX_TEXT_CHARS}
           value={text}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => {
+            setText(event.target.value);
+            if (empty && event.target.value.trim()) setEmpty(false);
+          }}
           onKeyDown={onKeyDown}
           disabled={disabled}
         />
         <div className="brief-actions">
-          <button type="submit" className="brief-primary" disabled={!trimmed || disabled}>
+          <button type="submit" className="brief-primary" disabled={disabled}>
             {copy.continue}
           </button>
           <span id={hintId} className="brief-hint brief-hint--enter">
             {copy.enterHint}
           </span>
+          {emptyLine}
         </div>
       </form>
     );
@@ -385,8 +411,10 @@ function QuestionScreen({
 
   const options = question.options ?? [];
   const multi = question.kind === "multi";
-  const toggle = (option: string) =>
+  const toggle = (option: string) => {
+    setEmpty(false);
     setChosen((current) => (current.includes(option) ? current.filter((o) => o !== option) : [...current, option]));
+  };
 
   return (
     <div className="brief-form">
@@ -409,7 +437,6 @@ function QuestionScreen({
               disabled={disabled}
               onClick={() => (multi ? toggle(option) : onAnswer(option))}
             >
-              <span className="brief-option__mark" aria-hidden="true" />
               <span className="brief-option__label">{option}</span>
             </button>
           );
@@ -420,11 +447,15 @@ function QuestionScreen({
           <button
             type="button"
             className="brief-primary"
-            disabled={chosen.length === 0 || disabled}
-            onClick={() => onAnswer(options.filter((o) => chosen.includes(o)))}
+            disabled={disabled}
+            onClick={() => {
+              if (chosen.length === 0) setEmpty(true);
+              else onAnswer(options.filter((o) => chosen.includes(o)));
+            }}
           >
             {copy.continue}
           </button>
+          {emptyLine}
         </div>
       ) : null}
     </div>

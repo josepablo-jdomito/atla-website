@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "wouter";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
 /** What a card needs. Full projects from /api/projects and ProjectLite from /api/ask both fit. */
@@ -15,9 +16,6 @@ export type CardProject = {
 
 /** feature and grid sit in the home grid; next is the full-width card that closes a project page. */
 type Size = "feature" | "grid" | "next";
-
-// React 18 warns on the camelCase `fetchPriority` prop; the lowercase attribute is what the browser reads.
-const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
 
 const WIDTHS: Record<Size, number[]> = {
   feature: [480, 720, 960, 1280, 1600, 2000],
@@ -46,24 +44,7 @@ export function playableVideo(videos?: string[]) {
 /** Plays muted and inline only while on screen; preload="none" until then. */
 function LoopVideo({ src, poster }: { src: string; poster: string }) {
   const ref = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = ref.current;
-    if (!video) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.preload = "auto";
-          void video.play().catch(() => undefined);
-        } else {
-          video.pause();
-        }
-      },
-      { rootMargin: "200px 0px" },
-    );
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  useInViewPlayback(ref, { preloadOnEnter: true });
 
   return (
     <video

@@ -6,7 +6,7 @@ export default function NotFound() {
     <PageShell>
       <div className="site-page-body not-found">
         <header className="page-intro">
-          <h1 className="home-section-label">Page not found</h1>
+          <h1 className="site-label">Page not found</h1>
           <Link href="/" className="not-found__home">
             Go to home ↘
           </Link>

@@ -3,7 +3,6 @@ import { createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { RotatingPhrase } from "./RotatingPhrase";
 import { ProjectCard } from "./ProjectCard";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -39,38 +38,12 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const PHRASES = ["one", "two", "three"];
 const VIDEO_PROJECT = {
   slug: "x",
   title: "X",
   coverImage: "https://cdn.sanity.io/images/p/production/a-100x100.jpg",
   videos: ["https://cdn.sanity.io/files/p/production/loop.mp4"],
 };
-
-describe("RotatingPhrase", () => {
-  it("is static on the first item under reduced motion", () => {
-    stubMotion(true);
-    act(() => root.render(createElement(RotatingPhrase, { items: PHRASES })));
-    act(() => vi.advanceTimersByTime(10_000));
-    expect(container.textContent).toBe("one");
-  });
-
-  it("advances every 3 s and pauses on hover", () => {
-    stubMotion(false);
-    act(() => root.render(createElement(RotatingPhrase, { items: PHRASES })));
-    const active = () => container.querySelector('[data-active="true"]')?.textContent;
-    expect(active()).toBe("one");
-    act(() => vi.advanceTimersByTime(3000));
-    expect(active()).toBe("two");
-    const phrase = container.querySelector(".rotating-phrase")!;
-    act(() => {
-      phrase.dispatchEvent(new Event("pointerover", { bubbles: true }));
-    });
-    // React maps onPointerEnter to pointerover/pointerout on the root.
-    act(() => vi.advanceTimersByTime(6000));
-    expect(active()).toBe("two");
-  });
-});
 
 describe("ProjectCard video", () => {
   it("never renders a video under reduced motion", () => {

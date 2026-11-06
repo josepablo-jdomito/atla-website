@@ -154,7 +154,7 @@ describe("site.css motion rules", () => {
   });
 
   it("switches every new transition and animation off under reduced motion", () => {
-    const block = CSS.slice(CSS.indexOf("@media (prefers-reduced-motion: reduce) {\n  .rotating-phrase__item"));
+    const block = CSS.slice(CSS.indexOf("@media (prefers-reduced-motion: reduce) {\n  .project-card__media"));
     const reduced = block.slice(0, block.indexOf("\n}\n") + 3);
     expect(reduced).toContain(".site-explore__panel { transition: none; }");
     expect(reduced).toContain(".site-page { animation: none; }");

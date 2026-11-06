@@ -110,11 +110,8 @@ function SectionRow({ id, title, children }: { id: string; title: string; childr
 function NumberedList({ items }: { items: NumberedItem[] }) {
   return (
     <ol className="numbered-list">
-      {items.map((item, index) => (
+      {items.map((item) => (
         <li key={item.title} className="numbered-list__item">
-          <span className="home-section-label" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
           <div className="numbered-list__text">
             <h3 className="numbered-list__title">
               {item.href ? (
@@ -185,7 +182,7 @@ export default function AtlaPrograms() {
       />
       <div className="site-page-body">
         <header className="page-intro">
-          <p className="home-section-label">Programs</p>
+          <p className="site-label">Programs</p>
           <h1 className="page-intro__title">{HERO_COPY}</h1>
           <p className="page-intro__lead">{HERO_SUPPORT}</p>
         </header>

@@ -29,7 +29,7 @@ export default function About() {
         </header>
 
         <section className="page-section" aria-labelledby="why-thesis">
-          <h2 id="why-thesis" className="home-section-label">
+          <h2 id="why-thesis" className="site-label">
             {copy.thesisLabel}
           </h2>
           <div className="page-section__body">
@@ -45,7 +45,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="about-how">
-          <h2 id="about-how" className="home-section-label">
+          <h2 id="about-how" className="site-label">
             {copy.howLabel}
           </h2>
           <div className="page-section__body">
@@ -62,7 +62,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="why-proof">
-          <h2 id="why-proof" className="home-section-label">
+          <h2 id="why-proof" className="site-label">
             {copy.proofLabel}
           </h2>
           <div className="page-section__body">
@@ -71,13 +71,13 @@ export default function About() {
                 <li key={line}>{line}</li>
               ))}
             </ul>
-            <h3 className="home-section-label team-cities__label">{copy.clientsLabel}</h3>
+            <h3 className="site-label team-cities__label">{copy.clientsLabel}</h3>
             <p className="why-clients">{copy.clients.join("  ·  ")}</p>
           </div>
         </section>
 
         <section className="page-section" aria-labelledby="why-ways">
-          <h2 id="why-ways" className="home-section-label">
+          <h2 id="why-ways" className="site-label">
             {copy.engagementsLabel}
           </h2>
           <div className="page-section__body">
@@ -97,7 +97,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="about-team" data-block="team">
-          <h2 id="about-team" className="home-section-label">
+          <h2 id="about-team" className="site-label">
             {copy.teamLabel}
           </h2>
           <div className="page-section__body">
@@ -110,7 +110,7 @@ export default function About() {
                 </li>
               ))}
             </ul>
-            <h3 className="home-section-label team-cities__label">{copy.citiesLabel}</h3>
+            <h3 className="site-label team-cities__label">{copy.citiesLabel}</h3>
             <ul className="city-list">
               {SITE_CITIES.map((city) => (
                 <li key={city.label}>{city.label}</li>

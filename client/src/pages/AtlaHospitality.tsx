@@ -10,9 +10,8 @@ const PATHNAME = "/hospitality";
 const DESCRIPTION =
   "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
 
-// ABC Synt is only installed locally, so visitors get Instrument Serif (Google Fonts, the deck's face) instead of Helvetica.
-const DISPLAY = "'ABC Synt Variable Unlicensed Trial', 'Instrument Serif', Georgia, serif";
-const DISPLAY_FONT_HREF = "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap";
+// The face every visitor gets (loaded site-wide in index.html). No local-only trial fonts: JP reviews what visitors see.
+const DISPLAY = "'Instrument Serif', Georgia, serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
 // v2 tokens (client/src/styles/site.css), so the page follows the system light/dark setting.
 const INK = "var(--site-ink)";
@@ -33,7 +32,7 @@ const PLATE_MUTED = "#6b6a66";
 // "Atla* Branding Agency" intro event on Calendly.
 const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
 
-// Project photography is pending; each slot renders as a placeholder labelled with what goes there.
+// Project photography is pending; a slot without a photo renders as a quiet, unlabelled block.
 // TEMPORARY (design review only): `src` points at deck and Sanity images so JP can judge the layout.
 // JP's own photos replace every one of them before this page is merged.
 type CaseImage = { alt: string; ratio: string; src?: string; position?: string };
@@ -190,7 +189,6 @@ const RESTAURANTS: HospitalityCase[] = [
 // The engagements: the same ways in as Services (Audit, Brand system, Full build), named for hospitality. No prices or durations on the page (JP's rule); proof comes from the cases below.
 const SERVICES = [
   {
-    numeral: "I",
     name: "Audit",
     forWhom: "For a property that is open and feels off, or before you commit to a rebrand.",
     body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own.",
@@ -203,7 +201,6 @@ const SERVICES = [
     example: "Casa Las Tortugas, Holbox. The audit led to its brand architecture.",
   },
   {
-    numeral: "II",
     name: "Rebranding",
     forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
     body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the guests who come back.",
@@ -217,7 +214,6 @@ const SERVICES = [
     example: "Acre Resort, Los Cabos",
   },
   {
-    numeral: "III",
     name: "Branding",
     forWhom: "For a new opening: a hotel, restaurant, spa or coffee shop.",
     body: "We build the brand before the doors open: the name, the identity and every object a guest touches on the first day, ready for the vendors who make them.",
@@ -257,13 +253,12 @@ const FAQ_ITEMS: FaqItem[] = [
 ];
 
 
+// Section labels, as on the rest of the site: small sans, sentence case, muted, no tracking.
 const labelStyle: CSSProperties = {
   fontFamily: SANS,
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: 1.6,
+  fontSize: 14,
+  fontWeight: 500,
   lineHeight: "1.4",
-  textTransform: "uppercase",
   color: MUTED,
   margin: 0,
 };
@@ -280,11 +275,11 @@ const bodyStyle: CSSProperties = {
 
 const ctaStyle: CSSProperties = {
   fontFamily: SANS,
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: 1.4,
-  textTransform: "uppercase",
-  textDecoration: "none",
+  fontSize: 15,
+  fontWeight: 500,
+  textDecoration: "underline",
+  textDecorationThickness: 2,
+  textUnderlineOffset: 6,
   color: INK,
   minHeight: 44,
   display: "inline-flex",
@@ -335,23 +330,8 @@ function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean })
       />
     );
   }
-  return (
-    <div
-      role="img"
-      aria-label={image.alt}
-      style={{
-        width: "100%",
-        aspectRatio: image.ratio,
-        backgroundColor: PLACEHOLDER,
-        display: "flex",
-        alignItems: "flex-end",
-        padding: 14,
-        boxSizing: "border-box",
-      }}
-    >
-      <span style={{ ...labelStyle, color: MUTED }}>{image.alt}</span>
-    </div>
-  );
+  // Photo still to come (JP supplies it): a quiet paper-tone block, silent to screen readers.
+  return <div aria-hidden="true" style={{ width: "100%", aspectRatio: image.ratio, backgroundColor: PLACEHOLDER }} />;
 }
 
 function BookCall({ position, inverted = false }: { position: string; inverted?: boolean }) {
@@ -518,8 +498,8 @@ function AtlasPlateView({ plate, showLabels, unit = 1 }: { plate: AtlasPlate; sh
                 <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17 * unit}>
                   {place.name.split(",")[0]}
                 </tspan>
-                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={8.5 * unit} letterSpacing={1.2 * unit} fill={PLATE_MUTED}>
-                  {place.projects.toUpperCase()}
+                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={9.5 * unit} fill={PLATE_MUTED}>
+                  {place.projects}
                 </tspan>
               </text>
             ) : null}
@@ -859,13 +839,6 @@ export default function AtlaHospitality() {
   const gutter = isMobile ? 16 : 48;
   const sectionGap = isMobile ? 72 : 120;
 
-  useEffect(() => {
-    if (document.querySelector(`link[href="${DISPLAY_FONT_HREF}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = DISPLAY_FONT_HREF;
-    document.head.appendChild(link);
-  }, []);
 
 
   return (
@@ -977,7 +950,6 @@ export default function AtlaHospitality() {
                   key={service.name}
                   style={{ display: "flex", flexDirection: "column", gap: 14, borderTop: `1px solid ${onInk(22)}`, paddingTop: 22 }}
                 >
-                  <p style={{ fontFamily: DISPLAY, fontSize: 18, color: onInk(55), margin: 0 }}>{service.numeral}</p>
                   <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 34 : 40, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
                     {service.name}
                   </h3>

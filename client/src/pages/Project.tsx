@@ -20,6 +20,8 @@ import {
   type ProjectMediaMosaicItem,
 } from "@/lib/projectPage";
 import { consumePopNav } from "@/lib/navType";
+import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
+import { trapTab } from "@/components/site/focusTrap";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
@@ -37,7 +39,6 @@ const COLUMN_WIDTHS = [640, 960, 1280, 1600, 2000];
 const HALF_WIDTHS = [320, 480, 640, 800, 1000];
 const COLUMN_SIZES = "(min-width: 1200px) 880px, (min-width: 768px) 80vw, 100vw";
 const HALF_SIZES = "(min-width: 1200px) 434px, (min-width: 768px) 40vw, 50vw";
-const PRIORITY_ATTRS = { fetchpriority: "high" } as Record<string, string>;
 /** Below this width / height, a piece is a portrait and pairs with its neighbour. */
 const PORTRAIT_BELOW = 1.15;
 /** Sticky header height, so a landing scroll leaves the image clear of it. */
@@ -106,23 +107,7 @@ function ProjectImage({
 /** Muted, looping and inline; plays while on screen. Under reduced motion it never starts on its own and shows controls. */
 function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: string; title: string; reduced: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const video = ref.current;
-    if (!video) return;
-    if (reduced) {
-      video.pause();
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) void video.play().catch(() => undefined);
-        else video.pause();
-      },
-      { rootMargin: "200px 0px" },
-    );
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, [reduced]);
+  useInViewPlayback(ref, { enabled: !reduced });
   return (
     <video
       ref={ref}
@@ -154,12 +139,21 @@ function Lightbox({
   onStep: (delta: number) => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // Focus goes back to the image button that opened the lightbox, however it closes (Escape, Close, backdrop).
   useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeRef.current?.focus();
+    return () => {
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, []);
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
       if (event.key === "ArrowRight") onStep(1);
       if (event.key === "ArrowLeft") onStep(-1);
+      if (event.key === "Tab") trapTab(event, dialogRef.current);
     };
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -172,8 +166,15 @@ function Lightbox({
   const src = images[index];
   const dims = getImageDimensions(src);
   return (
-    <div className="lightbox" role="dialog" aria-modal="true" aria-label={`${title}, image ${index + 1} of ${images.length}`}>
-      <button type="button" className="lightbox__backdrop" aria-label={copy.lightboxClose} onClick={onClose} />
+    <div
+      ref={dialogRef}
+      className="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title}, image ${index + 1} of ${images.length}`}
+    >
+      {/* The backdrop closes on click; it stays out of the Tab order (Close is the keyboard way out). */}
+      <button type="button" className="lightbox__backdrop" aria-label={copy.lightboxClose} tabIndex={-1} onClick={onClose} />
       <img
         key={src}
         className="lightbox__image"

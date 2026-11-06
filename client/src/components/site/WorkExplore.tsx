@@ -69,9 +69,11 @@ export function WorkExplore({
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
+      // Escape closes the panel only: the query stays, and focus stays on (or returns to) the field.
       if (event.key === "Escape") {
+        event.preventDefault();
         closeNow();
-        inputRef.current?.blur();
+        inputRef.current?.focus({ preventScroll: true });
       }
     };
     const onPointerDown = (event: PointerEvent) => {
@@ -137,15 +139,23 @@ export function WorkExplore({
           value={query}
           placeholder={home.explore}
           aria-label={home.askLabel}
+          // ARIA 1.2 combobox: the field owns the filter panel it opens. aria-expanded is valid on a
+          // combobox (it is not on a bare type="search" input, the Lighthouse failure).
+          role="combobox"
+          aria-haspopup="dialog"
           aria-expanded={open}
           aria-controls={open ? panelId : undefined}
+          aria-autocomplete="none"
           autoComplete="off"
           enterKeyHint="search"
           onChange={(event) => onQuery(event.target.value)}
+          onKeyDown={(event) => {
+            // A search field clears itself on Escape; here Escape never loses the visitor's words.
+            if (event.key === "Escape") event.preventDefault();
+          }}
           onFocus={openPanel}
           onClick={openPanel}
         />
-        {activeCount > 0 ? <span className="site-explore__count">{activeCount}</span> : null}
       </form>
     </div>,
     document.body,

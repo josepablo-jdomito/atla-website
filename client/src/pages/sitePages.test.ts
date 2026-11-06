@@ -121,16 +121,20 @@ describe("About page", () => {
 });
 
 describe("Contact page", () => {
-  it("shows email, socials, cities, a brief link and the fallback form", () => {
+  it("has one way in: the email line, then the form; no brief CTA, no pills, socials and cities left to the footer", () => {
     render(Contact, "/contact");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
-    expect(main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)).not.toBeNull();
-    for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).not.toBeNull();
-    expect(main().textContent).toContain("Caracas");
-    expect(main().querySelector('a[href="/brief"]')).not.toBeNull();
+    const email = main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)!;
+    expect(email).not.toBeNull();
     const form = main().querySelector("form")!;
     expect(form.getAttribute("action")).toBe("/api/contact");
     expect(form.getAttribute("method")).toBe("post");
+    // The email line sits above the form.
+    expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(main().querySelector('a[href="/brief"]')).toBeNull();
+    for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).toBeNull();
+    expect(main().querySelector(".site-pill")).toBeNull();
+    expect(form.querySelectorAll('button[type="submit"]')).toHaveLength(1);
   });
 });
 

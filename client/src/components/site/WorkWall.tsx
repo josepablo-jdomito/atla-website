@@ -3,6 +3,7 @@ import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
 import { assetKey, buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
+import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
 import {
   ALL as ALL_VALUE,
   WorkFilters,
@@ -21,10 +22,17 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
 
 const WIDTHS = [320, 480, 640, 800, 1000, 1280];
 const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw";
-/** Pieces in the first viewport load eagerly; everything after waits for the scroll. */
-const EAGER = 20;
+/** The first pieces load eagerly (about one phone screen and most of a desktop one); the rest wait for the scroll. */
+const EAGER = 8;
+/** The first few of those win the network race (fetchpriority="high"). */
+const PRIORITY = 3;
 /** How many pieces one pass shows at most; the next pass arrives as the visitor nears the end. */
 const PAGE = 72;
+/**
+ * Auto-loading stops after this many passes so the footer can be reached (critique H2, 2026-11-05).
+ * After that a quiet "More" text link loads one pass at a time.
+ */
+const AUTO_PASSES = 3;
 /**
  * Column count follows the viewport, like Cosmos (8 columns on a wide desktop,
  * JP 2026-11-05): a column is about 240 px plus the gutter, between 2 and 8.
@@ -65,21 +73,7 @@ function useColumns() {
 function VideoTile({ tile, reduced }: { tile: WallTile; reduced: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const poster = getOptimizedImageUrl(tile.poster || "", { width: 640, quality: 82 }) || tile.poster;
-  useEffect(() => {
-    const video = ref.current;
-    if (!video || reduced) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.preload = "auto";
-          void video.play().catch(() => undefined);
-        } else video.pause();
-      },
-      { rootMargin: "200px 0px" },
-    );
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, [reduced]);
+  useInViewPlayback(ref, { enabled: !reduced, preloadOnEnter: true });
   return (
     <video
       ref={ref}
@@ -97,7 +91,17 @@ function VideoTile({ tile, reduced }: { tile: WallTile; reduced: boolean }) {
 }
 
 /** Exported for tests. */
-export function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean; reduced: boolean }) {
+export function Tile({
+  tile,
+  eager,
+  priority = false,
+  reduced,
+}: {
+  tile: WallTile;
+  eager: boolean;
+  priority?: boolean;
+  reduced: boolean;
+}) {
   const [loaded, setLoaded] = useState(tile.kind === "video");
   // A search or filter rebuilds the wall and remounts every tile. An image the browser already has
   // must not fade in from zero again (the "blink", motion pass 2026-11-05): it mounts as loaded.
@@ -127,6 +131,7 @@ export function Tile({ tile, eager, reduced }: { tile: WallTile; eager: boolean;
           height={dims?.height}
           style={{ aspectRatio: `${tile.ratio}` }}
           loading={eager ? "eager" : "lazy"}
+          {...(priority ? PRIORITY_ATTRS : null)}
           decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
@@ -148,6 +153,10 @@ export function WorkWall() {
   const [draft, setDraft] = useState(urlQuery);
   const [shown, setShown] = useState(PAGE);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  // Set after hydration. The fade-in on load only applies from then on, so the prerendered tiles
+  // paint as soon as their bytes arrive instead of waiting for the bundle (site.css, [data-fade]).
+  const [fade, setFade] = useState(false);
+  useEffect(() => setFade(true), []);
 
   // One fresh shuffle per page load; the prerender (no window) keeps the site order.
   const [seed] = useState(() => (typeof window === "undefined" ? 0 : 1 + Math.floor(Math.random() * 2 ** 31)));
@@ -207,6 +216,10 @@ export function WorkWall() {
   }, [sequence, shown, urlQuery]);
   const placed = useMemo(() => placeInColumns(tiles, columns), [tiles, columns]);
   const eagerKeys = useMemo(() => new Set(tiles.slice(0, EAGER).map((tile) => tile.key)), [tiles]);
+  const priorityKeys = useMemo(() => new Set(tiles.slice(0, PRIORITY).map((tile) => tile.key)), [tiles]);
+  // Whether more exists past what is shown: a search ends with its last match; the open wall loops.
+  const hasMore = sequence.length > 0 && (urlQuery ? shown < sequence.length : true);
+  const autoLoad = hasMore && shown < PAGE * AUTO_PASSES;
 
   const changeFilters = (next: Filters) => {
     window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next, urlQuery)}`);
@@ -217,7 +230,7 @@ export function WorkWall() {
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel || sequence.length === 0) return;
+    if (!sentinel || !autoLoad) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setShown((current) => current + PAGE);
@@ -226,12 +239,12 @@ export function WorkWall() {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [sequence.length, shown]);
+  }, [autoLoad, shown]);
 
   if (projects.length === 0) return null;
 
   return (
-    <section className="work-wall" aria-label="Work">
+    <section className="work-wall" aria-label="Work" data-fade={fade ? "" : undefined}>
       {urlQuery && ranked.closest && sequence.length > 0 ? (
         <p className="work-wall__note" aria-live="polite">
           {siteCopy.home.results.closest}
@@ -244,13 +257,26 @@ export function WorkWall() {
           {placed.map((column, index) => (
             <div className="work-wall__column" key={index}>
               {column.map((tile) => (
-                <Tile key={tile.key} tile={tile} eager={eagerKeys.has(tile.key)} reduced={reduced} />
+                <Tile
+                  key={tile.key}
+                  tile={tile}
+                  eager={eagerKeys.has(tile.key)}
+                  priority={priorityKeys.has(tile.key)}
+                  reduced={reduced}
+                />
               ))}
             </div>
           ))}
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
+      {hasMore && !autoLoad ? (
+        <div className="work-wall__more">
+          <button type="button" className="site-link work-wall__more-link" onClick={() => setShown((current) => current + PAGE)}>
+            {siteCopy.home.results.more}
+          </button>
+        </div>
+      ) : null}
       <WorkExplore
         query={draft}
         onQuery={(value) => {

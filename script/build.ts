@@ -95,7 +95,6 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
-  await writeFontLoaderScript();
   await prerenderRoutes();
 
   console.log("building server...");
@@ -264,6 +263,7 @@ function createHeadMarkup({
     href: string;
     srcSet?: string;
     sizes?: string;
+    fetchPriority?: "high";
   }>;
   type?: string;
   robots?: string;
@@ -314,6 +314,10 @@ function createHeadMarkup({
 
       if (preload.sizes) {
         preloadAttrs.push(`imagesizes="${escapeHtml(preload.sizes)}"`);
+      }
+
+      if ("fetchPriority" in preload && preload.fetchPriority === "high") {
+        preloadAttrs.push(`fetchpriority="high"`);
       }
 
       return `<link ${preloadAttrs.join(" ")}>`;
@@ -394,26 +398,22 @@ async function writeHydrationScript(pathname: string, dehydratedState: unknown) 
   );
 }
 
-async function writeFontLoaderScript() {
-  await writeFile(
-    path.resolve("dist/public/font-loader.js"),
-    `(()=>{const link=document.getElementById("atla-fonts-stylesheet");if(link){link.media="all";}})();`,
-    "utf8",
-  );
-}
-
 const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 
-/** Preload entries for every <img loading="eager"> in rendered markup, in document order. */
+/**
+ * Preload hints for the home: only the images the markup marks fetchpriority="high" (the first few
+ * wall tiles), with the same priority. The other eager tiles are found by the parser on their own;
+ * twenty hints used to compete with the CSS and JS on a phone (web quality audit 4.2).
+ */
 function eagerImagePreloads(html: string) {
-  const entries: Array<{ href: string; srcSet?: string; sizes?: string }> = [];
-  for (const tag of html.match(/<img\b[^>]*\bloading="eager"[^>]*>/g) ?? []) {
+  const entries: Array<{ href: string; srcSet?: string; sizes?: string; fetchPriority: "high" }> = [];
+  for (const tag of html.match(/<img\b[^>]*\bfetchpriority="high"[^>]*>/g) ?? []) {
     const attr = (name: string) => {
       const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
       return match ? unescapeAttr(match[1]) : undefined;
     };
     const href = attr("src");
-    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes") });
+    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes"), fetchPriority: "high" });
   }
   return entries;
 }
@@ -513,7 +513,8 @@ function getStaticRoutePrerenderData(
     categories: JournalCategory[];
   },
 ): PrerenderRouteData {
-  if (pathname === "/" || pathname === "/work") {
+  // /ventures shows each venture's project cover, so its prerender carries the projects too.
+  if (pathname === "/" || pathname === "/work" || pathname === "/ventures") {
     return { projects: content.projects };
   }
 
@@ -694,7 +695,7 @@ async function prerenderRoutes() {
       route.pathname,
       getStaticRoutePrerenderData(route.pathname, { projects, articles, categories }),
     );
-    // The home preloads exactly the images its markup loads eagerly, so the hints always match a real request.
+    // The home preloads exactly the images its markup marks high priority, so the hints always match a real request.
     const preloadImages = route.pathname === "/" ? eagerImagePreloads(body) : route.preloadImages;
     await writeRoutePage(route.pathname, replaceHead(body, createHeadMarkup({ ...route, preloadImages })));
   }

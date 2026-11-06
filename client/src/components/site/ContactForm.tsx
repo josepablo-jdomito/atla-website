@@ -147,9 +147,6 @@ export function ContactForm() {
             <button type="submit" disabled={isSubmitting} className="brief-primary">
               {isSubmitting ? "Sending…" : "Send message"}
             </button>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="contact-form__email">
-              or email {CONTACT_EMAIL}
-            </a>
           </div>
         </form>
       )}

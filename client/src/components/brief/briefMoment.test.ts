@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 import { act, createElement } from "react";
+import { renderToString } from "react-dom/server";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextFixedQuestion, type BriefState } from "@shared/brief";
 import { BriefFlow } from "./BriefFlow";
 import { loadBrief, momentFromParam } from "./briefStorage";
+import { siteCopy } from "@/content/siteCopy";
 
 // The API's own fallback: the fixed order. Keeps the flow deterministic and off the network.
 vi.mock("./briefApi", () => ({
@@ -81,22 +83,42 @@ async function renderFlow(props: { seed?: string; moment?: string }) {
 }
 
 const prompt = () => container.querySelector(".brief-prompt")?.textContent;
-const count = () => container.querySelector(".brief-meta__count")?.textContent?.replace(/\s+/g, " ").trim();
+/** The progress line's value (0 to 100). It is a bar for assistive tech; no digits are shown. */
+const progress = () => Number(container.querySelector('[role="progressbar"]')?.getAttribute("aria-valuenow"));
+/** Everything the visitor can read outside the question: never a step count. */
+const meta = () => container.querySelector(".brief-meta")?.textContent ?? "";
+
+/** Answers the text question on screen and waits for the next one. */
+async function answerText(value: string) {
+  const textarea = container.querySelector<HTMLTextAreaElement>("textarea")!;
+  await act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!;
+    setter.call(textarea, value);
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await act(async () => {
+    container.querySelector<HTMLButtonElement>("button.brief-primary")!.click();
+  });
+}
 
 describe("BriefFlow with ?moment=", () => {
   it("pre-answers the moment and still asks what they are building", async () => {
     await renderFlow({ moment: "launch" });
     expect(prompt()).toBe("What are you building?");
     expect(loadBrief()?.answers).toEqual({ moment: "Launch" });
-    // Seven screens (six questions + contact) minus the preset moment.
-    expect(count()).toBe("01 / 06");
+    expect(progress()).toBe(0);
+    expect(meta()).not.toMatch(/\d/);
+    // Seven screens (six questions + contact) minus the preset moment: one answered is a sixth of the line.
+    await answerText("A hotel");
+    expect(progress()).toBe(Math.round(100 / 6));
   });
 
   it("ignores an unknown moment", async () => {
     await renderFlow({ moment: "rocket" });
     expect(prompt()).toBe("What are you building?");
     expect(loadBrief()?.answers).toEqual({});
-    expect(count()).toBe("01 / 07");
+    await answerText("A hotel");
+    expect(progress()).toBe(Math.round(100 / 7));
   });
 
   it("leaves the seed path unchanged", async () => {
@@ -105,7 +127,7 @@ describe("BriefFlow with ?moment=", () => {
     expect(saved.seed).toBe("A hotel in Tulum");
     expect(saved.answers).toEqual({});
     expect(saved.path.map((step) => step.id)).toEqual(["industry"]);
-    expect(count()).toBe("01 / 06");
+    expect(progress()).toBe(0);
   });
 
   it("combines a seed and a moment: both questions are skipped", async () => {
@@ -113,6 +135,51 @@ describe("BriefFlow with ?moment=", () => {
     const saved = loadBrief()!;
     expect(saved.answers).toEqual({ moment: "Reposition" });
     expect(saved.path.map((step) => step.id)).toEqual(["industry"]);
-    expect(count()).toBe("01 / 05");
+    expect(meta()).not.toMatch(/\d/);
+  });
+});
+
+describe("BriefFlow screens (fix wave 2026-11-05)", () => {
+  it("Continue on an empty answer shows one quiet line and stays on the question", async () => {
+    await renderFlow({});
+    const before = prompt();
+    const button = container.querySelector<HTMLButtonElement>("button.brief-primary")!;
+    expect(button.disabled).toBe(false);
+    await act(async () => button.click());
+    expect(prompt()).toBe(before);
+    expect(container.querySelector(".brief-empty")?.textContent).toBe(siteCopy.brief.emptyText);
+    // Typing clears the line.
+    await answerText("A hotel");
+    expect(container.querySelector(".brief-empty")).toBeNull();
+  });
+
+  it("a multi question asks for a pick instead of moving on empty", async () => {
+    await renderFlow({ seed: "A hotel in Tulum" });
+    // Walk the single-choice questions until a multi one is on screen.
+    for (let guard = 0; guard < 6 && !container.querySelector('.brief-option[data-kind="multi"]'); guard += 1) {
+      const option = container.querySelector<HTMLButtonElement>(".brief-option");
+      if (!option) break;
+      await act(async () => option.click());
+    }
+    expect(container.querySelector('.brief-option[data-kind="multi"]')).not.toBeNull();
+    const continueButton = container.querySelector<HTMLButtonElement>("button.brief-primary")!;
+    const before = prompt();
+    await act(async () => continueButton.click());
+    expect(prompt()).toBe(before);
+    expect(container.querySelector(".brief-empty")?.textContent).toBe(siteCopy.brief.emptyChoice);
+  });
+
+  it("shows Back as a plain text button after the first screen, no arrow glyph, no count", async () => {
+    await renderFlow({});
+    expect(container.querySelector(".brief-back")).toBeNull();
+    await answerText("A hotel");
+    const back = container.querySelector(".brief-back")!;
+    expect(back.textContent).toBe(siteCopy.brief.back);
+    expect(meta()).not.toMatch(/\d|←/);
+  });
+
+  it("the server HTML has the page heading before any script runs", () => {
+    const html = renderToString(createElement(BriefFlow, {}));
+    expect(html).toMatch(/<h1[^>]*>What are you building\?<\/h1>/);
   });
 });
