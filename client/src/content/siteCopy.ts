@@ -73,7 +73,7 @@ export const siteCopy = {
     cookiesLabel: "Analytics cookies",
     pagesLabel: "Atla",
     socialsLabel: "Socials",
-    citiesLabel: "Where we are",
+    citiesLabel: "Global Team",
     emailLabel: "Email",
     // The same sentence the site already uses to describe itself (index.html og:description).
     line: "Strategy, identity and creative direction for companies that take their brand seriously.",
