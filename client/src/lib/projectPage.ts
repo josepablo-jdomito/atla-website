@@ -522,10 +522,10 @@ export const FILM_QUALITY = 85;
 /** The blurred fill behind a whole (uncropped) piece: a few pixels are enough under a 40px blur. */
 export const FILM_FILL_WIDTH = 64;
 /**
- * About two lines of the caption bar at its widest (72ch), three on a phone: a longer paragraph splits
- * at a sentence end, and a sentence longer than that at a clause.
+ * The longest sentence the caption bar takes: about two lines at its widest (72ch), three on a phone.
+ * A longer sentence is never cut; its paragraph reads whole in an end frame.
  */
-export const CAPTION_MAX = 140;
+export const CAPTION_MAX = 160;
 /** The most text a text frame carries before the next paragraph opens another one. */
 export const TEXT_FRAME_MAX = 560;
 
@@ -541,75 +541,38 @@ export function filmImageSizes(ratio: number): string {
 
 const SENTENCE_BREAK = /(?<=[.!?]["'”’)\]]?)\s+(?=["'“‘(¿¡]?[A-ZÀ-ÖØ-Þ0-9])/;
 
-/**
- * A sentence too long for the bar, cut at its clauses (after ; : or a comma), each piece as long as
- * fits, the way film subtitles run one sentence over two cards. Words are never cut, nothing is added
- * or dropped: joined with spaces, the pieces are the sentence. A sentence with no clause break stays whole.
- */
-function splitClauses(sentence: string, max: number): string[] {
-  if (sentence.length <= max) return [sentence];
-  const breaks: number[] = [];
-  const clause = /[,;:](?=\s)/g;
-  for (let match = clause.exec(sentence); match; match = clause.exec(sentence)) breaks.push(match.index + 1);
-  // The latest break that keeps the first piece within the line, else the first break there is.
-  const fit = breaks.filter((at) => at <= max);
-  const at = fit.length > 0 ? fit[fit.length - 1] : breaks[0];
-  if (at === undefined || at >= sentence.length - 1) return [sentence];
-  const head = sentence.slice(0, at).trim();
-  const tail = sentence.slice(at).trim();
-  if (!head || !tail) return [sentence];
-  return [head, ...splitClauses(tail, max)];
-}
-
-/**
- * A paragraph as caption lines: whole when it fits two lines, else split at sentence ends into lines
- * that each fit (and a sentence too long on its own at its clauses). Nothing is cut mid-word.
- */
-export function splitCaption(text: string, max = CAPTION_MAX): string[] {
+/** A paragraph's sentences, in order, whitespace collapsed. Never cut inside a sentence. */
+export function captionSentences(text: string): string[] {
   const clean = text.replace(/\s+/g, " ").trim();
-  if (!clean) return [];
-  if (clean.length <= max) return [clean];
-  const lines: string[] = [];
-  let line = "";
-  for (const sentence of clean.split(SENTENCE_BREAK).flatMap((part) => splitClauses(part, max))) {
-    if (line && line.length + 1 + sentence.length > max) {
-      lines.push(line);
-      line = sentence;
-    } else {
-      line = line ? `${line} ${sentence}` : sentence;
-    }
-  }
-  if (line) lines.push(line);
-  return lines;
+  return clean ? clean.split(SENTENCE_BREAK) : [];
 }
 
 export type FilmTextPlan = {
   /** One caption per media frame, in order; "" means the bar shows the title alone. */
   captions: string[];
-  /** The story that found no frame, as text frames after the last piece: each holds whole paragraphs. */
+  /** The paragraphs that did not become captions, as end frames after the last piece: whole paragraphs. */
   textFrames: string[][];
 };
 
 /**
- * Who says what in the caption bar. A frame with its own line in Sanity keeps it. The others take the
- * story in order: the intro first, then the paragraphs one by one, a long one split at a sentence
- * across consecutive frames. Frames past the story carry no caption (nothing is invented). Story left
- * when the pieces run out is never dropped: it closes the film as text frames, paragraphs whole.
+ * Who says what in the caption bar (coordinator rule, 2026-11-06). A frame with its own line in Sanity
+ * keeps it. The story (the intro, then the paragraphs) is walked in order, and each paragraph is either
+ * captions or an end frame, never both: when all its sentences fit the image frames still free (one
+ * sentence per frame, none over CAPTION_MAX), they become those frames' captions; otherwise the whole
+ * paragraph goes to the end frames, which close the film. Frames past the captions carry the title
+ * alone. Nothing is invented, nothing is dropped, no sentence is cut.
  */
 export function planFilmText(ownCaptions: Array<string | undefined>, intro: string, paragraphs: string[]): FilmTextPlan {
-  const queue = [intro, ...paragraphs].flatMap((text, unit) => splitCaption(text).map((line) => ({ unit, line })));
-  const captions = ownCaptions.map((own) => {
-    const mine = own?.replace(/\s+/g, " ").trim();
-    if (mine) return mine;
-    return queue.shift()?.line ?? "";
-  });
-  // The rest, regrouped into its paragraphs (the one cut short keeps its remaining sentences).
+  const captions = ownCaptions.map((own) => own?.replace(/\s+/g, " ").trim() ?? "");
+  const free = captions.flatMap((caption, index) => (caption ? [] : [index]));
+  let next = 0;
   const rest: string[] = [];
-  let lastUnit = -1;
-  for (const { unit, line } of queue) {
-    if (unit === lastUnit) rest[rest.length - 1] += ` ${line}`;
-    else rest.push(line);
-    lastUnit = unit;
+  for (const paragraph of [intro, ...paragraphs]) {
+    const sentences = captionSentences(paragraph);
+    if (sentences.length === 0) continue;
+    const fits = sentences.length <= free.length - next && sentences.every((sentence) => sentence.length <= CAPTION_MAX);
+    if (fits) for (const sentence of sentences) captions[free[next++]] = sentence;
+    else rest.push(sentences.join(" "));
   }
   const textFrames: string[][] = [];
   let size = 0;
