@@ -2,7 +2,7 @@
 
 Finding: 16 of the 20 candidate clients have a real vector wordmark in Google Drive; they are staged in `client/public/logos-v2/` and listed in `siteCopy.logos.items`. Four are missing (Aimee Kestenberg, PrettyBoy, Casa Colora, Reggie) and stay out until JP sends files.
 
-Decision: JP approves the sheet, removes names, or sends better files. Nothing ships without his word.
+Decision: JP approved all 16 on 2026-11-05 ("Approve all 16"). The four missing marks join when he sends files.
 
 Permission basis, once for all: every client below is already shown as a case study on the live site (atla.design/projects), so showing the mark in the client band adds no new disclosure. No mark was redrawn or generated; each file is the client's own vector, set to one black fill and trimmed to its content box.
 
@@ -54,4 +54,4 @@ The mark box used `aspect-ratio: 3 / 1` with `display: inline-grid` and the imag
 - `npx tsc --noEmit`: clean. `npx vitest run`: 22 files, 140 tests passed.
 - Browser at 1440 and 390 on the dev server (port 5057): all 16 SVGs load, band renders two rows, both rows carry `client-logos-left`/`client-logos-right` at 60 s, `playState: running`. The reduced-motion block (`animation: none`, rows wrap, second track hidden) is present in the stylesheet. Drift smoothness could not be watched because the browser pane was hidden during the check, which pauses CSS animations in that tab.
 
-Decision: JP approves all, removes some, or sends better files.
+Decision: none. JP approved all 16 on 2026-11-05; the band is ready to merge into feat/site-v2.
