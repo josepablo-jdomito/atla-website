@@ -395,6 +395,7 @@ export const siteCopy = {
       { name: "Tais Kahatt", role: "Art Director" },
       { name: "Adriana Méndez", role: "Brand Designer" },
       { name: "José Aceves Covarrubias", role: "Brand Designer" },
+      { name: "Aldo Jaramillo", role: "Motion Designer" },
     ] as ReadonlyArray<{ name: string; role: string; city?: string }>,
     citiesLabel: "Where we are",
     cta: "Start a project",
