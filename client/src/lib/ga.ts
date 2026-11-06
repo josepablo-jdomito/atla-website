@@ -109,7 +109,7 @@ export function likelyNeedsConsentPrompt() {
  * typed search into `?q=` and old links carry `?seed=`; gtag would otherwise read both from
  * document.location for every event.
  */
-export function cleanPageLocation(href?: string): { page_location: string; page_path: string } {
+export function cleanPageLocation(href?: string): { page_location: string; page_path: string; page_referrer?: string } {
   const base = typeof window === "undefined" ? "https://atla.design/" : window.location.href;
   let url: URL;
   try {
@@ -117,7 +117,19 @@ export function cleanPageLocation(href?: string): { page_location: string; page_
   } catch {
     url = new URL(base);
   }
-  return { page_location: `${url.origin}${url.pathname}`, page_path: url.pathname };
+  const referrer = cleanReferrer();
+  return { page_location: `${url.origin}${url.pathname}`, page_path: url.pathname, ...(referrer ? { page_referrer: referrer } : {}) };
+}
+
+/** The referrer the same way: a reload after a search would otherwise hand GA the previous `?q=`. */
+function cleanReferrer(): string {
+  if (typeof document === "undefined" || !document.referrer) return "";
+  try {
+    const url = new URL(document.referrer);
+    return `${url.origin}${url.pathname}`;
+  } catch {
+    return "";
+  }
 }
 
 /** Every event carries a clean page_location and page_path; a caller's own value is cleaned too. */
