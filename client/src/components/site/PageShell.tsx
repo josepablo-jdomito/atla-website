@@ -80,7 +80,6 @@ export function PageError({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="site-page-body site-error" role="alert">
       <h1 className="site-error__title">{siteCopy.states.error}</h1>
-      <p className="site-error__body">{siteCopy.states.errorBody}</p>
       <p className="site-error__actions">
         <button type="button" className="site-action site-error__action" onClick={onRetry}>
           {siteCopy.states.retry}

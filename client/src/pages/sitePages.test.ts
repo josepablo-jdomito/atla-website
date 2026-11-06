@@ -178,16 +178,15 @@ describe("Services page, one route per moment", () => {
     }
   });
 
-  it("two doors side by side: Start a project to /brief and Ask for a brand check to /brand-check, each with its line", () => {
+  it("two doors in one row, no lines under them: Start a project (the action) and the free brand check (a text button)", () => {
     show("?moment=grow");
-    const doors = Array.from(main().querySelectorAll(".services-door"));
-    expect(doors).toHaveLength(2);
-    expect(doors.map((d) => d.querySelector("a")?.textContent)).toEqual(["Start a project", "Ask for a brand check"]);
-    expect(doors.map((d) => d.querySelector("a")?.getAttribute("href"))).toEqual(["/brief", "/brand-check"]);
-    for (const [i, door] of doors.entries()) expect(door.querySelector(".services-door__line")?.textContent).toBe(services.doors[i].line);
-    for (const a of Array.from(main().querySelectorAll<HTMLAnchorElement>("a")).filter((a) => a.textContent === services.cta)) {
-      expect(a.getAttribute("href")).toBe("/brief");
-    }
+    const doors = Array.from(main().querySelectorAll(".services-doors a"));
+    expect(doors.map((d) => d.textContent)).toEqual(["Start a project", "Ask for a free brand check"]);
+    expect(doors.map((d) => d.getAttribute("href"))).toEqual(["/brief", "/brand-check"]);
+    expect(doors[0].classList.contains("site-action")).toBe(true);
+    expect(doors[1].classList.contains("site-text-button")).toBe(true);
+    expect(main().querySelector(".services-door__line")).toBeNull();
+    expect(main().querySelector(".page-intro__lead")).toBeNull();
   });
 
   it("arriving with ?moment= pre-selects it; an unknown moment reads as any moment", () => {
@@ -279,8 +278,7 @@ describe("Services copy read through a moment", () => {
     ...services.moments.flatMap((m) => m.happens.map((line, i) => [`happens.${m.id}.${i}`, line] as const)),
     ...services.moments.map((m) => [`project.${m.id}`, m.projectLine] as const),
     ...services.happensAny.map((line, i) => [`happensAny.${i}`, line] as const),
-    ...services.doors.map((door) => [`door.${door.href}`, `${door.label} ${door.line}`] as const),
-    ["lead", services.lead] as const,
+    ...services.doors.map((door) => [`door.${door.href}`, door.label] as const),
     ["index", services.indexTitle] as const,
   ];
 
@@ -315,6 +313,7 @@ describe("About page", () => {
       siteCopy.about.thesisLabel,
       siteCopy.about.howLabel,
       siteCopy.about.proofLabel,
+      siteCopy.about.clientsLabel,
       siteCopy.about.engagementsLabel,
       siteCopy.about.teamLabel,
     ]);
@@ -330,12 +329,14 @@ describe("About page", () => {
     expect(team.querySelectorAll("img, picture, svg image")).toHaveLength(0);
     const names = Array.from(team.querySelectorAll(".team-list__name")).map((el) => el.textContent);
     expect(names).toEqual(siteCopy.about.team.map((m) => m.name));
-    expect(team.textContent).toContain("Mexico City");
+    // The cities are said once, in the page lead (and the footer), not again under the team.
+    expect(team.textContent).not.toContain("Mexico City");
+    expect(main().querySelector(".page-intro__lead")?.textContent).toContain("Mexico City");
   });
 });
 
 describe("Contact page", () => {
-  it("has one way in: the email line with the socials and cities beside it, then the form; no brief CTA, no pills", () => {
+  it("has one way in: the email and the socials under the title, then the form; no labels, no lead, no brief CTA, no pills", () => {
     render(Contact, "/contact");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
     const email = main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)!;
@@ -346,9 +347,10 @@ describe("Contact page", () => {
     // The email line sits above the form.
     expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(main().querySelector('a[href="/brief"]')).toBeNull();
-    // UX interview 31: email, cities, socials, the form. The footer is one line and no longer carries the socials.
     for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).not.toBeNull();
-    expect(main().textContent).toContain("Austin, Mexico City, Barcelona, Lima, Caracas");
+    // The cities live in the footer; the page carries no lead and no field labels beyond one per field.
+    expect(main().querySelector(".page-intro__lead")).toBeNull();
+    expect(main().textContent).not.toMatch(/optional|Elsewhere|Where we are/i);
     expect(email.compareDocumentPosition(main().querySelector(`a[href="${SOCIAL_PROFILES[0].href}"]`)!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(main().querySelector(".site-pill")).toBeNull();

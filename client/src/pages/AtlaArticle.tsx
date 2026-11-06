@@ -180,18 +180,22 @@ export default function AtlaArticle() {
             </>
           )}
 
-          {!hasPortableTextBody && !hasLegacyBody ? null : (
+          {(hasPortableTextBody || hasLegacyBody) && (article.sourceName || article.authorName) ? (
             <dl className="article-credits">
-              <div>
-                <dt className="site-label">Source:</dt>
-                <dd>{article.sourceName || "Atla Journal"}</dd>
-              </div>
-              <div>
-                <dt className="site-label">Author:</dt>
-                <dd>{article.authorName || "Atla"}</dd>
-              </div>
+              {article.sourceName ? (
+                <div>
+                  <dt className="site-label">Source:</dt>
+                  <dd>{article.sourceName}</dd>
+                </div>
+              ) : null}
+              {article.authorName ? (
+                <div>
+                  <dt className="site-label">Author:</dt>
+                  <dd>{article.authorName}</dd>
+                </div>
+              ) : null}
             </dl>
-          )}
+          ) : null}
         </div>
 
         <section className="page-section article-more" aria-labelledby="article-more">

@@ -4,9 +4,7 @@ import { ga4Event } from "@/lib/ga";
 import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_EMAIL } from "@shared/siteSeo";
 
-// Extracted from AtlaContact.tsx (Task 10). Fields, payload, endpoint, analytics and messages are
-// unchanged except one ruling: the budget question is gone (no budget questions or prices on v2).
-// /api/contact treats budget as optional (default ""), so the payload stays valid without it.
+// No budget question (no prices on the site); /api/contact defaults budget to "".
 
 const SUCCESS_TEXT = siteCopy.contact.sent;
 
@@ -39,7 +37,9 @@ export function ContactForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const payload = Object.fromEntries(Array.from(data.entries(), ([key, value]) => [key, typeof value === "string" ? value : ""]));
+    const payload = Object.fromEntries(
+      Array.from(data.entries(), ([key, value]) => [key, typeof value === "string" ? value : ""]),
+    );
 
     setStatus({ state: "submitting" });
     try {
@@ -75,7 +75,12 @@ export function ContactForm() {
   const isSent = status.state === "sent";
   const notice =
     status.state === "offline"
-      ? { text: "The form is offline right now. Send your note to", tail: " and we will pick it up there.", tone: "muted", email: true }
+      ? {
+          text: "The form is offline right now. Send your note to",
+          tail: " and we will pick it up there.",
+          tone: "muted",
+          email: true,
+        }
       : status.state === "invalid"
         ? { text: status.message, tail: "", tone: "error", email: false }
         : status.state === "error"
@@ -86,14 +91,7 @@ export function ContactForm() {
     <div className="contact-form">
       {/* Always mounted so assistive tech announces the change; receives focus once the message is saved. */}
       <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} className="contact-form__status">
-        {isSent ? (
-          <div className="contact-form__sent">
-            <p className="contact-form__sent-title">{SUCCESS_TEXT}</p>
-            <p className="contact-form__note">
-              {siteCopy.contact.sentUrgent} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
-            </p>
-          </div>
-        ) : null}
+        {isSent ? <p className="contact-form__sent-title">{SUCCESS_TEXT}</p> : null}
       </div>
 
       {isSent ? null : (
@@ -102,14 +100,22 @@ export function ContactForm() {
             <input name="name" type="text" required maxLength={120} autoComplete="name" className="brief-input" />
           </Field>
           <Field label="Email">
-            <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" className="brief-input" />
+            <input
+              name="email"
+              type="email"
+              required
+              maxLength={200}
+              autoComplete="email"
+              inputMode="email"
+              className="brief-input"
+            />
           </Field>
-          <Field label="Company or website (optional)">
+          <Field label="Company or website">
             <input name="company" type="text" maxLength={160} autoComplete="organization" className="brief-input" />
           </Field>
-          <Field label="Timeline (optional)">
+          <Field label="Timeline">
             <select name="timeline" defaultValue="" className="brief-input contact-form__select">
-              <option value="">Select one</option>
+              <option value="" aria-label="No timeline chosen"></option>
               {/* The brief's own wording (shared/brief.ts q5), so both forms ask the same way. */}
               <option value="this-month">As soon as we can</option>
               <option value="1-3-months">Soon, with room to do it well</option>
@@ -117,8 +123,15 @@ export function ContactForm() {
               <option value="exploring">No fixed timeline</option>
             </select>
           </Field>
-          <Field label="What is the business, what feels misaligned, and what has to happen next?">
-            <textarea name="message" required minLength={10} maxLength={4000} rows={6} className="brief-input contact-form__message" />
+          <Field label="Message">
+            <textarea
+              name="message"
+              required
+              minLength={10}
+              maxLength={4000}
+              rows={6}
+              className="brief-input contact-form__message"
+            />
           </Field>
           {/* Honeypot. Named and labelled so browser autofill and password managers have nothing to match. */}
           <div aria-hidden="true" className="brief-hp">
@@ -142,7 +155,7 @@ export function ContactForm() {
           ) : null}
 
           <p className="contact-form__note">
-            {siteCopy.contact.formNotice} <a href="/privacy">{siteCopy.contact.formNoticeLink}</a>
+            {siteCopy.contact.formNotice} <a href="/privacy">{siteCopy.brief.contact.privacyLink}</a>
           </p>
           <div className="brief-actions">
             <button type="submit" disabled={isSubmitting} className="site-action">

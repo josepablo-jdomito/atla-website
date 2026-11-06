@@ -80,7 +80,7 @@ One easing, `--site-ease: cubic-bezier(0.23, 1, 0.32, 1)`. Durations: `--d-hover
 - **Text link** `.site-link`: `--t-ui` 400 ink, no underline, hover opacity 0.55. Nav, footer, meta.
 - **The one action** `.site-action`: `--t-ui` 500 ink, a 1px ink underline at 4px offset that turns accent on hover, 44px hit area, disabled 0.4. One per page or form, the same look everywhere: "Start a project" in the header, Services and the empty wall; every form submit (Send the brief, Send message, Ask for a brand check); Accept on the consent notice; Book a call; Try again; More in a journal category. The 404's way back is this look at `--t-body`.
 - **Text button** `.site-text-button`: `--t-ui` 400 muted, no underline, hover ink, 44px. The quiet second choice: Back, Decline, Clear, Any moment, More work, Start over, See the work on a load error, the brand-check door.
-- **Inline link** `.site-inline-link` (and prose links): inherits the text, 1px underline in the text colour, accent on hover. Never yellow at rest.
+- **Inline link** (prose and privacy links): inherits the text, 1px underline in the text colour, accent on hover. Never yellow at rest.
 - **Includes** (`details` summary on Services): `--t-ui` 500 with a 1px underline, accent on hover; muted with no underline when open.
 - **Chip / filter option**: `--t-ui` 400 muted; the current one is ink with a 2px accent underline. 44px on touch.
 - **Label** `.site-label`: `--t-ui` 500 muted. A card's category, a sub-list name, the picker's question.

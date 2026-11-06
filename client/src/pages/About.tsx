@@ -1,6 +1,5 @@
 import { Link } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
-import { SITE_CITIES } from "@/components/site/SiteFooter";
 import { useSiteProjects } from "@/components/site/siteProjects";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
@@ -57,7 +56,6 @@ export default function About() {
             {copy.howLabel}
           </h2>
           <div className="page-section__body">
-            <p className="page-section__lead">{copy.howLead}</p>
             <ol className="how-steps">
               {copy.how.map((step) => (
                 <li key={step.title} className="how-step">
@@ -90,7 +88,14 @@ export default function About() {
                 );
               })}
             </ul>
-            <h3 className="site-label team-cities__label">{copy.clientsLabel}</h3>
+          </div>
+        </section>
+
+        <section className="page-section" aria-labelledby="why-clients">
+          <h2 id="why-clients" className="site-section-title">
+            {copy.clientsLabel}
+          </h2>
+          <div className="page-section__body">
             <p className="why-clients">{copy.clients.join("  ·  ")}</p>
           </div>
         </section>
@@ -100,7 +105,6 @@ export default function About() {
             {copy.engagementsLabel}
           </h2>
           <div className="page-section__body">
-            <p className="page-section__lead">{engagements.engagementsLead}</p>
             <ol className="how-steps">
               {engagements.engagements.map((item) => (
                 <li key={item.title} className="how-step">
@@ -109,9 +113,6 @@ export default function About() {
                 </li>
               ))}
             </ol>
-            <Link href="/brief" className="site-action why-cta">
-              {copy.cta}
-            </Link>
           </div>
         </section>
 
@@ -125,14 +126,7 @@ export default function About() {
                 <li key={member.name} className="team-list__row">
                   <span className="team-list__name">{member.name}</span>
                   <span className="team-list__role">{member.role}</span>
-                  {member.city ? <span className="team-list__city">{member.city}</span> : null}
                 </li>
-              ))}
-            </ul>
-            <h3 className="site-label team-cities__label">{copy.citiesLabel}</h3>
-            <ul className="city-list">
-              {SITE_CITIES.map((city) => (
-                <li key={city.label}>{city.label}</li>
               ))}
             </ul>
           </div>

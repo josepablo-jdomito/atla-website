@@ -13,7 +13,6 @@ import {
 const FAQ_ITEMS = [
   {
     question: "How much does brand strategy cost?",
-    // PENDING JP APPROVAL: price range removed (v2 rule: no prices anywhere).
     answer:
       "It depends on the scope, how complex the company is and how many audiences it serves. We scope every strategy engagement before work starts.",
   },
@@ -139,7 +138,6 @@ export default function AtlaBrandStrategy() {
       </LongformSection>
 
       <LongformSection title="How the process works">
-        {/* PENDING JP APPROVAL: week ranges removed (no deadline promises) */}
         <LongformSubTitle>Discovery</LongformSubTitle>
         <LongformParagraph>
           Stakeholder interviews, a competitive audit, audience research and category analysis. We map the constraints

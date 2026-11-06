@@ -70,7 +70,7 @@ export function AnalyticsConsent() {
   return (
     <div ref={dialogRef} role="dialog" aria-label={copy.label} aria-describedby={textId} className="consent">
       <p id={textId} className="consent__text">
-        {hasThirdPartyTags() ? copy.bodyAll : copy.bodyGa}{" "}
+        {copy.body}{" "}
         <a href="/privacy" className="consent__link">
           {copy.privacy}
         </a>

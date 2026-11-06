@@ -4,7 +4,6 @@ import {
   useRef,
   useState,
   type FormEvent,
-  type KeyboardEvent,
   type MutableRefObject,
   type ReactNode,
   type RefObject,
@@ -26,7 +25,6 @@ import { clearBrief, loadBrief, saveBrief, takeSeedFromUrl, type BriefStep, type
 const copy = siteCopy.brief;
 
 const MAX_SEED_CHARS = 300;
-const MAX_TEXT_CHARS = 1000;
 const EMPTY_CONTACT: BriefContact = { name: "", email: "", company: "", website: "", phone: "" };
 const CONTACT_FIELDS = [
   { key: "name", type: "text", autoComplete: "name", required: true },
@@ -100,9 +98,13 @@ export function BriefFlow() {
     // The seed (/brief?seed=Like <title>) is taken out of the URL here and travels with the submission; it answers nothing.
     const seedText = cleanSeed(takeSeedFromUrl());
     seededVisit.current = Boolean(seedText);
+    // A sent brief is not reopened: coming back to /brief starts a new one.
     const saved = loadBrief();
-    if (saved && (!seedText || seedText === saved.seed)) setBrief(saved);
-    else start(seedText);
+    if (saved && saved.calendlyUrl === undefined && (!seedText || seedText === saved.seed)) setBrief(saved);
+    else {
+      if (saved) clearBrief();
+      start(seedText);
+    }
     // Runs once per mount: a new seed in the URL is a new visit to the page.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,19 +170,6 @@ export function BriefFlow() {
     setSubmitStatus(result.status);
   };
 
-  const restart = () => {
-    userMoved.current = true;
-    clearBrief();
-    seededVisit.current = false;
-    startTracked.current = false;
-    setSubmitStatus("idle");
-    setDirection("forward");
-    if (typeof window !== "undefined" && window.location.search) {
-      window.history.replaceState(window.history.state, "", window.location.pathname);
-    }
-    start(undefined);
-  };
-
   return (
     <BriefFrame
       progress={progress}
@@ -196,7 +185,7 @@ export function BriefFlow() {
       <BriefScreen key={stepKey(brief)} direction={direction} focusOnMount={userMoved}>
         {(headingRef, fieldRef) =>
           done ? (
-            <DoneScreen headingRef={headingRef} calendlyUrl={brief.calendlyUrl} onRestart={restart} />
+            <DoneScreen headingRef={headingRef} calendlyUrl={brief.calendlyUrl} />
           ) : !step ? null : step.id === "contact" ? (
             <ContactScreen
               headingRef={headingRef}
@@ -209,7 +198,6 @@ export function BriefFlow() {
           ) : (
             <QuestionScreen
               headingRef={headingRef}
-              fieldRef={fieldRef}
               question={step as BriefQuestion}
               value={brief.answers[step.id]}
               onAnswer={(value) => answer(step.id, value)}
@@ -283,144 +271,37 @@ function BriefScreen({
   );
 }
 
+/** A question: the prompt and its options as rows. Every question is single choice; a choice answers it. */
 function QuestionScreen({
   question,
   value,
-  disabled = false,
   onAnswer,
   headingRef,
-  fieldRef,
 }: {
   question: BriefQuestion;
   value: Answer | undefined;
-  disabled?: boolean;
   onAnswer: (value: Answer) => void;
   headingRef: RefObject<HTMLHeadingElement>;
-  fieldRef: RefObject<HTMLElement>;
 }) {
   const headingId = useId();
-  const hintId = useId();
-  const emptyId = useId();
-  const initialText = typeof value === "string" ? value : "";
-  const [text, setText] = useState(initialText);
-  const [chosen, setChosen] = useState<string[]>(Array.isArray(value) ? value : []);
-  // Continue on an empty answer explains itself in one quiet line instead of doing nothing.
-  const [empty, setEmpty] = useState(false);
-  const emptyLine = empty ? (
-    <p id={emptyId} className="brief-empty" role="status">
-      {question.kind === "text" ? copy.emptyText : copy.emptyChoice}
-    </p>
-  ) : null;
-
-  const heading = (
-    <h1 id={headingId} ref={headingRef} tabIndex={-1} className="brief-prompt">
-      {question.prompt}
-    </h1>
-  );
-
-  if (question.kind === "text") {
-    const trimmed = text.trim();
-    const submit = () => {
-      if (disabled) return;
-      if (!trimmed) {
-        setEmpty(true);
-        return;
-      }
-      onAnswer(trimmed);
-    };
-    const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
-        event.preventDefault();
-        submit();
-      }
-    };
-    return (
-      <form
-        className="brief-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          submit();
-        }}
-      >
-        {heading}
-        <textarea
-          ref={fieldRef as RefObject<HTMLTextAreaElement>}
-          className="brief-text"
-          aria-labelledby={headingId}
-          aria-describedby={empty ? `${hintId} ${emptyId}` : hintId}
-          placeholder={copy.textPlaceholder}
-          rows={2}
-          maxLength={MAX_TEXT_CHARS}
-          value={text}
-          onChange={(event) => {
-            setText(event.target.value);
-            if (empty && event.target.value.trim()) setEmpty(false);
-          }}
-          onKeyDown={onKeyDown}
-          disabled={disabled}
-        />
-        <div className="brief-actions">
-          <button type="submit" className="site-action" disabled={disabled}>
-            {copy.continue}
-          </button>
-          <span id={hintId} className="brief-hint brief-hint--enter">
-            {copy.enterHint}
-          </span>
-          {emptyLine}
-        </div>
-      </form>
-    );
-  }
-
-  const options = question.options ?? [];
-  const multi = question.kind === "multi";
-  const toggle = (value: string) => {
-    setEmpty(false);
-    setChosen((current) => (current.includes(value) ? current.filter((v) => v !== value) : [...current, value]));
-  };
-
   return (
     <div className="brief-form">
-      {heading}
-      {multi ? (
-        <p id={hintId} className="brief-hint">
-          {copy.multiHint}
-        </p>
-      ) : null}
-      <div className="brief-options" role="group" aria-labelledby={headingId} aria-describedby={multi ? hintId : undefined}>
-        {options.map((option) => {
-          const selected = multi ? chosen.includes(option.value) : value === option.value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              className="brief-option"
-              data-kind={question.kind}
-              aria-pressed={selected}
-              disabled={disabled}
-              onClick={() => (multi ? toggle(option.value) : onAnswer(option.value))}
-            >
-              <span className="brief-option__label">{option.label}</span>
-            </button>
-          );
-        })}
-      </div>
-      {multi ? (
-        <div className="brief-actions">
+      <h1 id={headingId} ref={headingRef} tabIndex={-1} className="brief-prompt">
+        {question.prompt}
+      </h1>
+      <div className="brief-options" role="group" aria-labelledby={headingId}>
+        {(question.options ?? []).map((option) => (
           <button
+            key={option.value}
             type="button"
-            className="site-action"
-            disabled={disabled}
-            onClick={() => {
-              if (chosen.length === 0) setEmpty(true);
-              else onAnswer(options.filter((o) => chosen.includes(o.value)).map((o) => o.value));
-            }}
+            className="brief-option"
+            aria-pressed={value === option.value}
+            onClick={() => onAnswer(option.value)}
           >
-            {copy.continue}
+            <span className="brief-option__label">{option.label}</span>
           </button>
-          {emptyLine}
-        </div>
-      ) : null}
+        ))}
+      </div>
     </div>
   );
 }
@@ -478,7 +359,6 @@ function ContactScreen({
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">
         {copy.contact.prompt}
       </h1>
-      <p className="brief-lead brief-lead--muted">{copy.contact.body}</p>
       <div className="brief-fields">
         {CONTACT_FIELDS.map((field, i) => {
           const id = `${baseId}-${field.key}`;
@@ -487,7 +367,6 @@ function ContactScreen({
             <div key={field.key} className="brief-field" data-field={field.key}>
               <label htmlFor={id} className="brief-field__label">
                 {copy.contact.fields[field.key]}
-                {field.required ? null : <span className="brief-field__optional">{copy.contact.optional}</span>}
               </label>
               <input
                 id={id}
@@ -533,33 +412,20 @@ function ContactScreen({
   );
 }
 
-function DoneScreen({
-  calendlyUrl,
-  onRestart,
-  headingRef,
-}: {
-  calendlyUrl: string | undefined;
-  onRestart: () => void;
-  headingRef: RefObject<HTMLHeadingElement>;
-}) {
-  const bookable = isBookable(calendlyUrl);
+function DoneScreen({ calendlyUrl, headingRef }: { calendlyUrl: string | undefined; headingRef: RefObject<HTMLHeadingElement> }) {
   return (
     <div className="brief-form">
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">
         {copy.doneTitle}
       </h1>
       <p className="brief-lead">{copy.done}</p>
-      {bookable ? <p className="brief-lead brief-lead--muted">{copy.callLead}</p> : null}
-      <div className="brief-actions">
-        {bookable ? (
+      {isBookable(calendlyUrl) ? (
+        <div className="brief-actions">
           <a className="site-action" href={calendlyUrl} target="_blank" rel="noopener noreferrer" onClick={trackCalendlyClick}>
             {copy.bookCall}
           </a>
-        ) : null}
-        <button type="button" className="site-text-button" onClick={onRestart}>
-          {copy.restart}
-        </button>
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -61,7 +61,6 @@ export const INDUSTRY_SERVICE_PAGES = {
     faqItems: [
       {
         question: "How long does a full hospitality branding project take?",
-        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer:
           "It depends on how many touchpoints, locations and approval layers there are. We set the timeline with you during scoping, before work starts.",
       },
@@ -104,7 +103,6 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
       {
         question: "How do you handle line extensions?",
-        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer: "We build the first system to stretch. A new variant extends it instead of reopening it.",
       },
     ],
@@ -159,7 +157,6 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
       {
         question: "How fast can you move?",
-        // PENDING JP APPROVAL: duration removed (v2 rule: no numbers or deadlines promised).
         answer: "We scope the work around your launch or your raise, and run focused sprints when timing is tight.",
       },
     ],

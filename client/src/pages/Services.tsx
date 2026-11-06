@@ -9,12 +9,11 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
 import { formatMetaTitle } from "@shared/siteSeo";
 
 /**
- * Services as one route per moment (JP, 2026-11-06). The visitor says where they are ("Where are
- * you?", a radiogroup; the choice lives in `?moment=`), and the page becomes that moment's route:
- * what usually happens, the three or four disciplines that matter (rows with an Includes list and a
- * real project cover that follows the row in view, after tbp.studio), the engagements that fit, one
- * project, two doors (the brief and the brand check), then the full index of every discipline.
- * With no moment chosen each act shows its general version; nothing is ever empty.
+ * Services as one route per moment. The visitor says where they are (a radiogroup; the choice lives in
+ * `?moment=`), and the page becomes that moment's route: what usually happens, the disciplines that
+ * matter (rows with an Includes list and a project cover that follows the row in view), the engagements
+ * that fit, one project, two doors, then the index of every discipline. With no moment chosen each act
+ * shows its general version; nothing is ever empty.
  */
 
 const copy = siteCopy.services;
@@ -193,7 +192,6 @@ export default function Services() {
       <div className="site-page-body services">
         <header className="page-intro services-intro">
           <h1 className="page-intro__title">{copy.title}</h1>
-          <p className="page-intro__lead">{copy.lead}</p>
         </header>
 
         <section className="services-picker" aria-labelledby="services-picker-title">
@@ -247,7 +245,7 @@ export default function Services() {
         {/* The moment's route. Keyed by the moment so a change remounts it and fades it in once. */}
         <div key={moment || "any"} className={["services-route", changed ? "services-fade" : ""].filter(Boolean).join(" ")} data-moment={moment || "any"}>
           <section className="services-act services-happens" aria-labelledby="services-happens-title">
-            <h2 id="services-happens-title" className="site-label services-act__label">
+            <h2 id="services-happens-title" className="site-hidden">
               {copy.happensTitle}
             </h2>
             <div className="services-happens__lines">
@@ -285,9 +283,7 @@ export default function Services() {
                       height={getImageDimensions(example.coverImage)?.height}
                       decoding="async"
                     />
-                    <span className="discipline__example-name">
-                      {copy.exampleLabel}: {example.title}
-                    </span>
+                    <span className="discipline__example-name">{example.title}</span>
                   </Link>
                 ) : null}
               </aside>
@@ -299,9 +295,7 @@ export default function Services() {
               {copy.engagementsTitle}
             </h2>
             <div className="engagements__body">
-              <p className={["engagements__lead", moment ? "engagements__lead--moment" : ""].filter(Boolean).join(" ")}>
-                {moment ? copy.engagementsByMoment[moment] : copy.engagementsLead}
-              </p>
+              {moment ? <p className="engagements__lead">{copy.engagementsByMoment[moment]}</p> : null}
               <ol className="how-steps" data-count={engagements.length}>
                 {engagements.map((item) => (
                   <li key={item.title} className="how-step">
@@ -315,7 +309,7 @@ export default function Services() {
 
           {featured ? (
             <section className="services-act services-work" aria-labelledby="services-work-title">
-              <h2 id="services-work-title" className="site-label services-act__label">
+              <h2 id="services-work-title" className="site-hidden">
                 {copy.workTitle}
               </h2>
               <Link href={`/projects/${featured.slug}`} className="services-work__link">
@@ -341,12 +335,9 @@ export default function Services() {
 
         <nav className="services-doors" aria-label={copy.doorsLabel}>
           {copy.doors.map((door, index) => (
-            <div key={door.href} className="services-door">
-              <Link href={door.href} className={`${index === 0 ? "site-action" : "site-text-button"} services-door__link`}>
-                {door.label}
-              </Link>
-              <p className="services-door__line">{door.line}</p>
-            </div>
+            <Link key={door.href} href={door.href} className={`${index === 0 ? "site-action" : "site-text-button"} services-door__link`}>
+              {door.label}
+            </Link>
           ))}
         </nav>
 

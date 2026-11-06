@@ -76,13 +76,15 @@ async function submit() {
 }
 
 describe("Brand check page", () => {
-  it("asks the question in one h1, says what you get without a number, and its capacity line", () => {
+  it("is the question in one h1 and the form, nothing else: no lead, no facts, no form title, no number", () => {
     const h1s = main().querySelectorAll("h1");
     expect(h1s).toHaveLength(1);
     expect(h1s[0].textContent).toBe(copy.title);
-    expect(main().querySelector(".page-intro__lead")?.textContent).toBe(copy.lead);
-    expect(Array.from(main().querySelectorAll(".bcheck-facts__item")).map((li) => li.textContent)).toEqual(copy.facts);
-    expect(main().querySelector(".bcheck-capacity")?.textContent).toBe(copy.capacity);
+    expect(main().querySelector(".page-intro__lead")).toBeNull();
+    expect(main().querySelectorAll("h2")).toHaveLength(0);
+    expect(main().querySelectorAll("form")).toHaveLength(1);
+    expect(main().querySelector("[placeholder]")).toBeNull();
+    expect(main().textContent).not.toMatch(/optional/i);
     const text = main().textContent ?? "";
     expect(text).not.toMatch(/\d/);
     expect(text).not.toMatch(/—|–/);

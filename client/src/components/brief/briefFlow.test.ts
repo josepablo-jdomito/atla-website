@@ -85,7 +85,10 @@ describe("BriefFlow: the waitlist's questions", () => {
       q5: "1_3_months",
     });
     expect(prompt()).toBe(siteCopy.brief.contact.prompt);
-    expect(container.querySelector(".brief-lead")?.textContent).toBe(siteCopy.brief.contact.body);
+    // One label per field, no lead and no Optional tags.
+    expect(container.querySelector(".brief-lead")).toBeNull();
+    expect(container.textContent).not.toMatch(/optional/i);
+    expect(container.querySelectorAll("label.brief-field__label")).toHaveLength(5);
     expect(container.querySelector("button.site-action")?.textContent).toBe("Send the brief");
   });
 

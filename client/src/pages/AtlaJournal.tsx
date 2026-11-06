@@ -112,9 +112,7 @@ export default function AtlaJournal() {
     : "Notes on brands, design and how we work.";
   const heroDescription = activeCategory?.description;
   const categorySupportCopy = activeCategory
-    ? CATEGORY_SUPPORT_COPY[activeCategory.slug] || [
-      `Notes filed under ${activeCategory.title}.`,
-    ]
+    ? CATEGORY_SUPPORT_COPY[activeCategory.slug] || []
     : [];
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -218,7 +216,6 @@ export default function AtlaJournal() {
         ) : (
           <div className="journal-empty">
             <h2 className="site-section-title journal-empty__title">{JOURNAL_EMPTY.title}</h2>
-            <p className="longform-text">{JOURNAL_EMPTY.body}</p>
           </div>
         )}
       </div>

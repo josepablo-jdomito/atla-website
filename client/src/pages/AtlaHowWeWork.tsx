@@ -17,7 +17,7 @@ export default function AtlaHowWeWork() {
     description:
       "How Atla runs a project, step by step: read the market, talk to your people, pick the position, design the system, hand it over.",
     url: `${SITE_ORIGIN}/how-we-work`,
-    // PENDING JP APPROVAL: the steps are the five on Why Atla (siteCopy.about.how), the canonical process.
+    // The steps are the five on Why Atla (siteCopy.about.how), the canonical process.
     step: [
       { "@type": "HowToStep", name: "Read the market" },
       { "@type": "HowToStep", name: "Talk to your people" },
@@ -153,8 +153,6 @@ export default function AtlaHowWeWork() {
         </LongformParagraph>
       </LongformSection>
 
-      {/* PENDING JP APPROVAL: price and week ranges removed (v2 rule: no prices, numbers or deadlines); heading and
-          paragraphs rewritten. */}
       <LongformSection title="Timelines and scope">
         <LongformParagraph>
           We set the timeline with you during scoping, step by step.

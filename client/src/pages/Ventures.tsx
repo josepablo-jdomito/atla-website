@@ -9,7 +9,7 @@ import { formatMetaTitle, ORGANIZATION_SCHEMA } from "@shared/siteSeo";
 
 const copy = siteCopy.ventures;
 
-const COVER_WIDTHS = [480, 720, 960, 1280];
+const COVER_WIDTHS = [160, 320, 480];
 
 /** The project slug a venture links to, when it links to a project page here. */
 function projectSlug(href: string) {
@@ -18,8 +18,8 @@ function projectSlug(href: string) {
 }
 
 /**
- * A quiet page (JP, 2026-11-05): a name and one line each. A venture with a project page
- * here shows that project's cover and links to it; one without (WeLoveDaily) shows no image.
+ * A quiet page on one screen: a name and one line each. A venture with a project page here shows a
+ * small cover and links to it; one without (WeLoveDaily) shows no image.
  */
 export default function Ventures() {
   const { projects } = useSiteProjects();
@@ -35,7 +35,6 @@ export default function Ventures() {
       <div className="site-page-body">
         <header className="page-intro">
           <h1 className="page-intro__title">{copy.title}</h1>
-          <p className="page-intro__lead">{copy.lead}</p>
         </header>
         <ul className="ventures-list">
           {copy.items.map((item, index) => {
@@ -52,9 +51,9 @@ export default function Ventures() {
                 {project ? (
                   <img
                     className="ventures-list__cover"
-                    src={getOptimizedImageUrl(project.coverImage, { width: 960, quality: 82 }) || project.coverImage}
+                    src={getOptimizedImageUrl(project.coverImage, { width: 320, quality: 82 }) || project.coverImage}
                     srcSet={buildImageSrcSet(project.coverImage, COVER_WIDTHS, { quality: 82 })}
-                    sizes="(min-width: 768px) 40vw, 100vw"
+                    sizes="160px"
                     alt=""
                     width={dims?.width}
                     height={dims?.height}

@@ -5,9 +5,8 @@ import { PageShell } from "@/components/site/PageShell";
 
 // Copy source: marketing-plans/atla/oferta-A.md, sections 3, 4 and 6 (offer approved by JP, 2026-10-13).
 // No prices and no durations on this page by design.
-// PENDING JP APPROVAL (2026-11-05 content wave): offer names aligned to the Services vocabulary
-// (Audit, Brand system, Full build, Fractional brand director). Loved or Lost Diagnostic, Core/Complete/Integral
-// and Brand Stewardship were the oferta-A names; the steps follow the five on Why Atla.
+// Offer names follow the Services vocabulary (Audit, Brand system, Full build, Fractional brand director);
+// the steps follow the five on Why Atla.
 
 export const PROGRAMS_META_TITLE = formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla");
 export const PROGRAMS_META_DESCRIPTION =
@@ -75,7 +74,6 @@ const PROGRAM_LEVELS: NumberedItem[] = [
   },
   {
     title: "Full build across markets",
-    // PENDING JP APPROVAL: "six months of" removed (v2 rule: no numbers or deadlines promised).
     description:
       "Everything in the full build, plus rollout across US markets, with a fractional brand director after launch.",
   },
@@ -84,13 +82,11 @@ const PROGRAM_LEVELS: NumberedItem[] = [
 const PROOF: NumberedItem[] = [
   {
     title: "Persona",
-    // PENDING JP APPROVAL: user count removed (v2 rule: no counts).
     description: "The personalized vitamin company.",
     href: "/projects/persona",
   },
   {
     title: "Anything",
-    // PENDING JP APPROVAL: valuation removed (v2 rule: no dollar figures).
     description: "The vibe-coding company.",
     href: "/projects/anything-ai",
   },
@@ -206,7 +202,6 @@ export default function AtlaPrograms() {
             You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
             you that too.
           </p>
-          {/* PENDING JP APPROVAL: "within 60 days" removed (v2 rule: no numbers or deadlines promised). */}
           <p className="longform-text">
             The audit is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
             build when you continue with us.

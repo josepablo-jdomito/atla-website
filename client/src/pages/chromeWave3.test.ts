@@ -119,14 +119,10 @@ describe("Chrome copy (fix wave 3, group C)", () => {
   it("says one thing about what happens to a message: we reply by email and manage the inquiry, no durations", () => {
     const { contact } = siteCopy.brief;
     expect(contact.privacyNotice).toBe(siteCopy.contact.formNotice);
-    expect(contact.body).toBe(
-      "Every brief gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
-    );
-    for (const text of [contact.body, contact.privacyNotice, siteCopy.contact.lead, siteCopy.contact.formNotice, siteCopy.contact.sent, siteCopy.brief.done]) {
+    for (const text of [contact.privacyNotice, siteCopy.contact.formNotice, siteCopy.contact.sent, siteCopy.brief.done]) {
       expect(text).not.toMatch(/\d|\bhours?\b|\bdays?\b|\bweeks?\b|\byears?\b/i);
     }
-    expect(siteCopy.contact.lead).toContain("replies by email");
-    expect(siteCopy.contact.lead).not.toMatch(/one at a time/i);
+    expect(siteCopy.contact.sent).toContain("replies by email");
     // The policy says the same sentence, and no longer says "for nothing else" next to a longer list of uses.
     const privacy = read("src/pages/AtlaPrivacy.tsx");
     expect(privacy).toContain("We use it to reply to you and to manage your inquiry.");

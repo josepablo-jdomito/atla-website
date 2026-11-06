@@ -271,9 +271,7 @@ export function WorkExplore({
                   {askCopy.ask}
                 </button>
               </div>
-            ) : (
-              <p>{home.exploreDialog}</p>
-            )}
+            ) : null}
             <div className="site-explore__head-actions">
               {asking ? null : tools}
               {!asking && (query || activeCount > 0) ? (
