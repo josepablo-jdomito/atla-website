@@ -6,7 +6,7 @@ import { Router } from "wouter";
 import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Project, { buildFilm } from "./Project";
-import { buildProjectPageView, CAPTION_MAX, captionSentences, filmFrameScrollY, filmImageSizes, filmPosition, filmStep, planFilmText } from "@/lib/projectPage";
+import { CAPTION_MAX, filmFrameScrollY, filmImageSizes, filmPosition, filmStep, planFilmText, splitCaption } from "@/lib/projectPage";
 import { nextProjectInSiteOrder, siteOrder, toSiteProject } from "@/components/site/siteProjects";
 import type { Project as ProjectRecord } from "@shared/schema";
 import { siteCopy } from "@/content/siteCopy";
@@ -51,74 +51,67 @@ const API = [
 ];
 
 describe("Scroll film text: who says what in the caption bar (2026-11-06)", () => {
-  const free = (n: number) => Array<string | undefined>(n).fill(undefined);
-  const LONG_SENTENCE = "We kept the wordmark calm, a deep teal serif with a macron over the last A, and let the warmth come from drawings in thin orange line: palms, faces, people holding hands.";
+  const long =
+    "Acre already had a brand and a whole family of things under it. Rústico had to read as Acre's, the baby brother of a bigger restaurant. A place like that cannot out-shout its setting. It has to disappear into it.";
 
-  it("reads a paragraph as its whole sentences, in order, never cut inside one", () => {
-    expect(captionSentences("One. Two, with a comma. Three?")).toEqual(["One.", "Two, with a comma.", "Three?"]);
-    expect(captionSentences("  ")).toEqual([]);
-    expect(LONG_SENTENCE.length).toBeGreaterThan(CAPTION_MAX);
+  it("keeps a caption that fits two lines whole, and splits a longer paragraph at sentence ends, in order", () => {
+    expect(splitCaption("One short line.")).toEqual(["One short line."]);
+    const lines = splitCaption(long);
+    expect(lines.length).toBeGreaterThan(1);
+    // Nothing added, nothing dropped, the order kept.
+    expect(lines.join(" ")).toBe(long);
+    for (const line of lines) {
+      expect(line.length).toBeLessThanOrEqual(CAPTION_MAX);
+      expect(line).toMatch(/[.!?]$/);
+    }
   });
 
-  it("gives the first frame the intro, then each paragraph one sentence per frame, in order", () => {
-    const plan = planFilmText(free(6), "The intro.", ["First. Second.", "Third."]);
-    expect(plan.captions).toEqual(["The intro.", "First.", "Second.", "Third.", "", ""]);
+  it("cuts a sentence too long for the bar at a clause, never mid-word, and leaves one with no clause whole", () => {
+    const sentence =
+      "In the empty center of a circular permaculture garden, the owners were running an open-fire dinner as a pop-up: private buyouts, winemaker dinners, a dark sky above and a long table under it.";
+    const lines = splitCaption(sentence);
+    expect(lines.length).toBeGreaterThan(1);
+    expect(lines.join(" ")).toBe(sentence);
+    expect(lines.slice(0, -1).every((line) => /[,;:]$/.test(line))).toBe(true);
+    const unbroken = "A".repeat(80) + " " + "b".repeat(80) + ".";
+    expect(splitCaption(unbroken)).toEqual([unbroken]);
+    expect(splitCaption("   ")).toEqual([]);
+  });
+
+  it("gives the first frame the intro, then the paragraphs one by one, a long one across consecutive frames", () => {
+    const plan = planFilmText([undefined, undefined, undefined, undefined, undefined, undefined, undefined], "The intro.", ["First paragraph.", long, "Last paragraph."]);
+    const pieces = splitCaption(long);
+    expect(plan.captions).toEqual(["The intro.", "First paragraph.", ...pieces, "Last paragraph.", ...Array(7 - 3 - pieces.length).fill("")]);
     expect(plan.textFrames).toEqual([]);
   });
 
-  it("sends a paragraph whole to the end frames when its sentences do not fit the frames left, and goes on", () => {
-    const plan = planFilmText(free(3), "The intro.", ["One. Two. Three.", "Four."]);
-    // Three sentences, two frames left: the paragraph is never split between captions and an end frame.
-    expect(plan.captions).toEqual(["The intro.", "Four.", ""]);
-    expect(plan.textFrames).toEqual([["One. Two. Three."]]);
-  });
-
-  it("sends a paragraph whole to the end frames when one of its sentences is too long for the bar", () => {
-    const plan = planFilmText(free(5), "", [`Short one. ${LONG_SENTENCE}`, "After."]);
-    expect(plan.captions).toEqual(["After.", "", "", "", ""]);
-    expect(plan.textFrames).toEqual([[`Short one. ${LONG_SENTENCE}`]]);
-  });
-
-  it("never invents a caption: a Sanity caption is kept as written, frames past the story carry the title alone", () => {
+  it("never invents a caption: frames past the story carry the title alone, a Sanity caption is kept as written", () => {
     const plan = planFilmText([undefined, "The menu, on cream paper.", undefined, undefined], "The intro.", ["One paragraph."]);
     expect(plan.captions).toEqual(["The intro.", "The menu, on cream paper.", "One paragraph.", ""]);
-    expect(planFilmText(free(2), "", []).captions).toEqual(["", ""]);
+    expect(planFilmText([undefined, undefined], "", []).captions).toEqual(["", ""]);
+    const sources = ["The intro.", "One paragraph.", "The menu, on cream paper."].join(" ");
+    for (const caption of plan.captions) expect(sources.includes(caption)).toBe(true);
   });
 
-  it("packs end frames with whole paragraphs, a very long one on its own", () => {
-    const plan = planFilmText([], "Intro.", ["Second.", "x".repeat(600) + "."]);
-    expect(plan.captions).toEqual([]);
-    expect(plan.textFrames).toEqual([["Intro.", "Second."], ["x".repeat(600) + "."]]);
+  it("never drops the story: what finds no frame closes the film as text frames of whole paragraphs", () => {
+    const plan = planFilmText([undefined, undefined], "The intro.", ["Second.", long, "Fourth.", "x".repeat(600) + "."]);
+    expect(plan.captions).toEqual(["The intro.", "Second."]);
+    // The paragraph that started no frame stays whole; a very long one gets a text frame of its own.
+    expect(plan.textFrames).toEqual([[long, "Fourth."], ["x".repeat(600) + "."]]);
+    // A paragraph cut short by the last frame keeps its remaining sentences together.
+    const cut = planFilmText([undefined, undefined], "", [long]);
+    const lines = splitCaption(long);
+    expect(cut.captions).toEqual(lines.slice(0, 2));
+    expect(cut.textFrames).toEqual(lines.length > 2 ? [[lines.slice(2).join(" ")]] : []);
   });
 
-  it("Mundã: every paragraph is all captions or one whole end frame, and no end frame opens on a fragment", () => {
-    const view = buildProjectPageView(raw({ slug: "munda", title: "Mundã", description: "Mundã is a project of vacation and long-stay homes in La Saladita, on the coast of Guerrero, Mexico. Its full name is Mundã, Aldea del Mar, a village by the sea. The brand had to sell a way of living there, close to the waves and to the neighbors, on posters, on paper and on the wall at the entrance. We made it in 2022.", body: "The posters carry the line the brand was built on: strengthen your connection with nature, near the waves. Under it sat the values the client chose, connection with nature, fullness, community and a way of life. We kept the wordmark calm, a deep teal serif with a macron over the last A, and let the warmth come from drawings in thin orange line: palms, faces, people holding hands.\n\nThe logotype and its variants. Posters with the coastline coordinates, sunset photography and line illustrations. Envelopes, folders and business cards in deep teal, cream and burnt orange. Backlit signage for the entrance, shown in renders on a thatched gate. In 2023, animations of the mark and a looping beach scene.\n\nIn 2025 a prospective client wrote to us and named Mundã as the reference for her own brand. What she liked, in her words, was the simplicity of the brand, the people in it and its color palette, which she called interesting." }), []);
-    const story = [view.intro, ...view.bodySections];
-    // The cover and six images.
-    const plan = planFilmText(free(7), view.intro, view.bodySections);
-    const captioned = plan.captions.filter(Boolean);
-    const ended = plan.textFrames.flat();
-    for (const paragraph of story) {
-      const sentences = captionSentences(paragraph);
-      const asCaptions = sentences.every((sentence) => captioned.includes(sentence));
-      const asEnd = ended.includes(sentences.join(" "));
-      expect(asCaptions !== asEnd, paragraph.slice(0, 40)).toBe(true);
-    }
-    expect(plan.captions[0]).toBe("Mundã is a project of vacation and long-stay homes in La Saladita, on the coast of Guerrero, Mexico.");
-    // The paragraph with the long wordmark sentence reads whole at the end, from its first sentence.
-    expect(plan.textFrames[0][0].startsWith("The posters carry the line")).toBe(true);
-    expect(ended.some((paragraph) => paragraph.startsWith("palms"))).toBe(false);
-    // Every caption is a whole sentence of the story.
-    for (const caption of captioned) expect(story.some((paragraph) => captionSentences(paragraph).includes(caption))).toBe(true);
-  });
-
-  it("puts the pieces in order with their captions, then the end frames", () => {
+  it("puts the pieces in order with their captions, then the text frames", () => {
     const piece = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg` });
-    const film = buildFilm([piece("a"), piece("b")], "Intro.", ["One.", "Two. Three."]);
+    const film = buildFilm([piece("a"), piece("b")], "Intro.", ["One.", "Two.", "Three."]);
     expect(film.map((f) => (f.kind === "text" ? `text:${f.paragraphs.join("|")}` : `${f.item.src.includes("/a-") ? "a" : "b"}:${f.caption}`))).toEqual([
       "a:Intro.",
       "b:One.",
-      "text:Two. Three.",
+      "text:Two.|Three.",
     ]);
     expect(buildFilm([], "", [])).toEqual([]);
   });
