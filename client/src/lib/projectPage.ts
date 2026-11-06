@@ -15,7 +15,6 @@ import {
   projectBodySections,
 } from "@/lib/projectSeo";
 import { creativeWorkSchema } from "@/lib/seoSchema";
-import { openerFrame, openerImageUrl, type Focal } from "@/lib/openerFrame";
 
 /** Stand-in hero when a project has no image at all. */
 export const PROJECT_PLACEHOLDER_IMAGE = "/figmaAssets/media.png";
@@ -69,8 +68,6 @@ export type ProjectPageView = {
   summary: string;
   bodySections: string[];
   heroImage: string;
-  /** The cover's Sanity hotspot, only when the hero is that cover. */
-  heroFocal: Focal | null;
   storyImage?: string;
   gallery: string[];
   videos: string[];
@@ -314,7 +311,6 @@ export function buildProjectPageView(project: ProjectApi, allProjects: ProjectAp
     summary,
     bodySections,
     heroImage,
-    heroFocal: project.coverImage && heroImage === sanitizeImageUrls([project.coverImage])[0] ? project.coverFocal ?? null : null,
     storyImage: project.images[1] || heroImage,
     gallery,
     videos: project.videos.filter(Boolean),
@@ -431,10 +427,10 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     description: project.summary,
   });
   const pathname = `/projects/${project.slug}`;
-  const heroFrame = openerFrame(project.heroImage, project.heroFocal);
+  // The cover opens the page at half the column, at its own ratio (Little Plains plate, 2026-11-06).
   const preloadImages = [
-    openerImageUrl(project.heroImage, heroFrame, 960, 88),
-    openerImageUrl(project.heroImage, heroFrame, 1600, 92),
+    getOptimizedImageUrl(project.heroImage, { width: 640, quality: 88 }) || project.heroImage,
+    getOptimizedImageUrl(project.heroImage, { width: 1000, quality: 88 }) || project.heroImage,
     project.gallery[0]
       ? getOptimizedImageUrl(project.gallery[0], { width: 1400, quality: 90 }) || project.gallery[0]
       : null,

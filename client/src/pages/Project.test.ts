@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Router } from "wouter";
 import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import Project, { groupStory } from "./Project";
+import Project, { groupMedia, storyBlocks } from "./Project";
 import { nextProjectInSiteOrder, siteOrder, toSiteProject } from "@/components/site/siteProjects";
 import type { Project as ProjectRecord } from "@shared/schema";
 import { siteCopy } from "@/content/siteCopy";
@@ -49,16 +49,28 @@ const API = [
   raw({ slug: "feat-one", title: "Feature One", featured: true, homeOrder: 1 }),
 ];
 
-describe("groupStory", () => {
+describe("groupMedia and storyBlocks (Little Plains rhythm, 2026-11-06)", () => {
   const portrait = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-800x1200.jpg` });
   const landscape = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg` });
-  it("opens every project with its first piece alone in the opener frame, whatever its ratio", () => {
-    const groups = groupStory([portrait("a"), portrait("b"), portrait("c"), landscape("d")]);
-    expect(groups[0]).toEqual({ kind: "opener", items: [portrait("a")] });
-    expect(groups.slice(1).map((group) => group.kind)).toEqual(["pair", "full"]);
+  const shape = (blocks: ReturnType<typeof storyBlocks>) => blocks.map((b) => (b.kind === "text" ? b.text : b.group.kind)).join(" ");
+
+  it("pairs consecutive portraits and runs landscapes and a lone portrait alone, in order", () => {
+    const groups = groupMedia([portrait("a"), portrait("b"), portrait("c"), landscape("d")]);
+    expect(groups.map((group) => group.kind)).toEqual(["pair", "full", "full"]);
+    expect(groups.flatMap((group) => group.items)).toEqual([portrait("a"), portrait("b"), portrait("c"), landscape("d")]);
   });
-  it("renders nothing for a project without media", () => {
-    expect(groupStory([])).toEqual([]);
+
+  it("puts the first paragraph straight after the opening, then spreads the rest between image groups", () => {
+    const groups = groupMedia([landscape("a"), landscape("b"), landscape("c"), landscape("d")]);
+    expect(shape(storyBlocks(groups, ["one", "two"]))).toBe("one full full two full full");
+    expect(shape(storyBlocks(groups, []))).toBe("full full full full");
+  });
+
+  it("never drops a paragraph, and a project with text and no images is text only", () => {
+    const groups = groupMedia([landscape("a")]);
+    expect(shape(storyBlocks(groups, ["one", "two", "three"]))).toBe("one full two three");
+    expect(shape(storyBlocks([], ["one", "two"]))).toBe("one two");
+    expect(storyBlocks([], [])).toEqual([]);
   });
 });
 
@@ -125,7 +137,7 @@ afterEach(() => {
   container.remove();
 });
 
-function render(slug: string) {
+function render(slug: string, search = "") {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
   client.setQueryData(["/api/projects"], API);
   client.setQueryData(["project", slug], API.find((p) => p.slug === slug) ?? null);
@@ -135,7 +147,7 @@ function render(slug: string) {
       createElement(
         QueryClientProvider,
         { client },
-        createElement(Router, { hook: location.hook }, createElement(Project)),
+        createElement(Router, { hook: location.hook, searchHook: () => search }, createElement(Project)),
       ),
     ),
   );
@@ -166,9 +178,14 @@ describe("Project page", () => {
       render("thin");
       expect(container.querySelector(".story-head__lead")).toBeNull();
       expect(Array.from(container.querySelectorAll(".story-head > *")).map((el) => el.className)).toEqual([
+        "story-head__cover",
+        "story-head__copy",
+      ]);
+      // Little Plains' order beside the cover: title, the line (absent here), then the quiet metadata.
+      expect(Array.from(container.querySelectorAll(".story-head__copy > *")).map((el) => el.className)).toEqual([
         "story-head__title",
-        "story-head__facts",
         "story-head__facets",
+        "story-head__facts",
       ]);
       expect(container.querySelector(".story-text")).toBeNull();
       act(() => root.unmount());
@@ -176,6 +193,10 @@ describe("Project page", () => {
       render("wordy");
       // The line is one sentence; the rest of the description opens the story.
       expect(container.querySelector(".story-head__lead")?.textContent).toBe("A gin for the unreal.");
+      expect(container.querySelector(".story-head__title + .story-head__lead")).not.toBeNull();
+      const first = container.querySelector(".story-body > :first-child")!;
+      expect(first.classList.contains("story-block--text")).toBe(true);
+      expect(first.textContent).toBe("It was never meant for a shelf. Deep colors.");
     } finally {
       API.pop();
       API.pop();
@@ -197,23 +218,22 @@ describe("Project page", () => {
     }
   });
 
-  it("frames the opener: cropped when the image is close to 4:3, whole when it is a portrait", () => {
+  it("opens on the cover whole, at its own ratio: no 4:3 frame, no crop, even with a hotspot", () => {
     API.push(raw({ slug: "tall", title: "Tall", coverImage: "https://cdn.sanity.io/images/p/production/tall-1080x1440.png" }));
-    API.push(raw({ slug: "focal", title: "Focal", coverImage: "https://cdn.sanity.io/images/p/production/focal-1080x1440.png", coverFocal: { x: 0.5, y: 0.15 } }));
+    API.push(raw({ slug: "focal", title: "Focal", coverImage: "https://cdn.sanity.io/images/p/production/focal-1200x800.png", coverFocal: { x: 0.5, y: 0.15 } }));
     try {
-      render("archive-b");
-      expect(container.querySelector('.story-media[data-kind="opener"]')?.getAttribute("data-frame")).toBe("crop");
-      for (const [slug, frame] of [["tall", "native"], ["focal", "crop"]]) {
+      for (const [slug, w, h] of [["archive-b", "1200", "800"], ["tall", "1080", "1440"], ["focal", "1200", "800"]]) {
         act(() => root.unmount());
         root = createRoot(container);
         render(slug);
-        const opener = container.querySelector('.story-media[data-kind="opener"]')!;
-        expect(opener.getAttribute("data-frame"), slug).toBe(frame);
-        if (slug === "focal") {
-          const url = new URL(opener.querySelector("img")!.getAttribute("src")!);
-          expect(url.searchParams.get("crop")).toBe("focalpoint");
-          expect(url.searchParams.get("fp-y")).toBe("0.15");
-        }
+        const img = container.querySelector<HTMLImageElement>(".story-head__cover img")!;
+        expect(img, slug).not.toBeNull();
+        expect([img.getAttribute("width"), img.getAttribute("height")], slug).toEqual([w, h]);
+        const url = new URL(img.getAttribute("src")!);
+        expect(url.searchParams.get("fit"), slug).toBe("max");
+        expect(url.searchParams.get("h"), slug).toBeNull();
+        expect(url.searchParams.get("crop"), slug).toBeNull();
+        expect(container.querySelector("[data-frame]"), slug).toBeNull();
       }
     } finally {
       API.pop();
@@ -221,29 +241,42 @@ describe("Project page", () => {
     }
   });
 
-  it("links the brief with the title as an encoded seed", () => {
+  it("ends on the story: no call to action, no next project, no more like this (Little Plains has none)", () => {
     render("archive-b");
-    const cta = container.querySelector<HTMLAnchorElement>(".story-cta a");
-    expect(cta?.getAttribute("href")).toBe(`/brief?seed=${encodeURIComponent("Like Rústico & Co / Tulum")}`);
-    expect(new URL(cta!.href, "https://x.test").searchParams.get("seed")).toBe("Like Rústico & Co / Tulum");
+    const article = container.querySelector("article.story")!;
+    expect(Array.from(article.children).map((el) => el.className)).toEqual(["story-head", "story-body"]);
+    // The header keeps "Start a project"; the page itself adds no second one.
+    expect(article.querySelector('a[href^="/brief"]')).toBeNull();
+    expect(container.querySelector(".story-cta, .story-next, .story-more")).toBeNull();
+  });
+
+  it("keeps the context in a quiet rail, hidden from assistive tech and shown only after the opening", () => {
+    render("archive-b");
+    const rail = container.querySelector(".story-rail")!;
+    expect(rail.getAttribute("aria-hidden")).toBe("true");
+    expect(rail.getAttribute("data-shown")).toBe("no");
+    expect(rail.querySelector(".story-rail__title")?.textContent).toBe("Rústico & Co / Tulum");
+    expect(rail.querySelectorAll("a, button")).toHaveLength(0);
   });
 
   it("renders the media in order, cover first", () => {
     render("archive-b");
-    const sources = Array.from(container.querySelectorAll(".story-media img")).map((img) => img.getAttribute("src"));
+    const sources = Array.from(container.querySelectorAll(".story img")).map((img) => img.getAttribute("src"));
     expect(sources).toHaveLength(3);
     expect(sources[0]).toContain("archive-b");
+    expect(container.querySelector(".story-head__cover img")?.getAttribute("src")).toBe(sources[0]);
     expect(sources[1]).toContain("b1");
     expect(sources[2]).toContain("b2");
   });
 
-  it("renders the header and brief blocks for a project with no media", () => {
+  it("renders the title alone, without a cover slot, for a project with no media", () => {
     API.push(raw({ slug: "bare", title: "Bare", coverImage: "", images: [] }));
     try {
       render("bare");
       expect(container.querySelector(".story-media")).toBeNull();
       expect(container.querySelector(".story-head")?.textContent).toContain("Bare");
-      expect(container.querySelector(".story-cta a")?.getAttribute("href")).toBe("/brief?seed=Like%20Bare");
+      expect(container.querySelector(".story-head")?.getAttribute("data-cover")).toBe("none");
+      expect(container.querySelector(".story-head__cover")).toBeNull();
     } finally {
       API.pop();
     }
@@ -294,6 +327,33 @@ describe("Project page", () => {
     vi.mocked(window.scrollTo).mockClear();
     act(() => location.navigate("/projects/feat-one"));
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  it("lands on the image clicked on the wall (?at=), clear of the header, and checks again at 250 and 900ms", () => {
+    vi.useFakeTimers();
+    // jsdom has no CSS.escape; the asset keys are plain hex in practice.
+    const g = globalThis as { CSS?: { escape?: (value: string) => string } };
+    g.CSS = { ...(g.CSS ?? {}), escape: g.CSS?.escape ?? ((value: string) => value) };
+    let top = 1200;
+    const asset = "b2";
+    const real = Element.prototype.getBoundingClientRect;
+    const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      return this.getAttribute("data-asset") === asset ? ({ top } as DOMRect) : real.call(this);
+    });
+    try {
+      render("archive-b", `at=${asset}`);
+      expect(window.scrollTo).not.toHaveBeenCalledWith(0, 0);
+      expect(window.scrollTo).toHaveBeenCalledWith({ top: 1200 - 64 - 16, behavior: "auto" });
+      // The images above got their height late: the next check corrects the landing.
+      top = 1500;
+      act(() => vi.advanceTimersByTime(250));
+      expect(window.scrollTo).toHaveBeenLastCalledWith({ top: 1500 - 64 - 16, behavior: "auto" });
+      act(() => vi.advanceTimersByTime(650));
+      expect(window.scrollTo).toHaveBeenCalledTimes(3);
+    } finally {
+      spy.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it("keeps the restored position after Back (popstate)", () => {
