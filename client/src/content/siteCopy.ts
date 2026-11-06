@@ -1,5 +1,5 @@
 // Every string the v2 site shows. PENDING JP APPROVAL until he signs off.
-// Voice: Jose Pablo's. Short lines, plain words, specific nouns. No prices, no
+// Voice: José Pablo's. Short lines, plain words, specific nouns. No prices, no
 // durations, no counts. Nothing invented.
 
 export const siteCopy = {
@@ -72,7 +72,7 @@ export const siteCopy = {
   },
   brief: {
     metaTitle: "Start a project",
-    metaDescription: "A few questions about what you are building, one at a time. Jose Pablo reads every brief and replies by email.",
+    metaDescription: "A few questions about what you are building, one at a time. José Pablo reads every brief and replies by email.",
     label: "Brief",
     progressLabel: "Brief progress",
     stepSeparator: "/",
@@ -81,6 +81,9 @@ export const siteCopy = {
     multiHint: "Pick as many as apply.",
     textPlaceholder: "A sentence or two is plenty.",
     enterHint: "Enter to continue",
+    // Shown when Continue is pressed with nothing answered. Placeholder text: the content pass owns the wording.
+    emptyText: "A sentence is enough to start.",
+    emptyChoice: "Pick one to go on.",
     contact: {
       prompt: "Where do we write back?",
       fields: {
@@ -97,12 +100,12 @@ export const siteCopy = {
       emailError: "We need an email we can reply to.",
     },
     errors: {
-      rateLimited: "Too many tries. Give it a few minutes.",
+      rateLimited: "Too many tries. Try again soon.",
       network: "That did not go through. Your answers are still here.",
       retry: "Try again",
     },
     doneTitle: "Got it.",
-    done: "Jose Pablo reads every brief himself and replies by email.",
+    done: "José Pablo reads every brief himself and replies by email.",
     callLead: "If you would rather talk it through, pick a time.",
     bookCall: "Book a call",
     restart: "Start another",
@@ -115,7 +118,7 @@ export const siteCopy = {
     metaDescription:
       "Brand strategy, naming, identity, packaging, websites and motion from Atla, for companies launching, raising, growing or starting over.",
     title: "What we do.",
-    lead: "Six disciplines, one team. Pick the moment you are in and the list narrows to what matters now.",
+    lead: "Every discipline, one team. Pick the moment you are in and the list narrows to what matters now.",
     momentsLabel: "The moment",
     allMoments: "Any moment",
     includesLabel: "What is included",
@@ -129,13 +132,13 @@ export const siteCopy = {
       {
         id: "raise",
         title: "Raise capital",
-        line: "Investors judge the company before they open the deck. We make sure the brand holds up to that look.",
+        line: "Investors judge the company before they open the deck. We make sure the brand survives that first look.",
         brief: "raise",
       },
       {
         id: "grow",
         title: "Grow / scale",
-        line: "More products, more markets, more people touching the brand. We keep it one brand.",
+        line: "More products, more markets. Every new person touches the brand. We keep it one brand.",
         brief: "grow",
       },
       {
@@ -147,12 +150,12 @@ export const siteCopy = {
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.
     engagementsTitle: "Working with a company your size",
-    engagementsLead: "Four ways in. All of them senior from day one, and none of them a layer between you and the work.",
+    engagementsLead: "Every way in is senior-led. Nobody sits between you and the work.",
     engagements: [
-      { title: "Audit", line: "Two weeks inside your brand. Findings ranked by what to fix first, and a roadmap." },
+      { title: "Audit", line: "A look inside your brand. Findings ranked by what to fix first, and a roadmap." },
       { title: "Brand system", line: "Strategy, identity and guidelines, built by one team so nothing is lost between them." },
       { title: "Full build", line: "The system plus the content to launch it: website, decks, social, packaging." },
-      { title: "Fractional brand director", line: "A creative director on your team by the month. Decisions, reviews, standards." },
+      { title: "Fractional brand director", line: "A creative director on your team. Decisions, reviews, standards." },
     ],
     // `project` is the slug whose cover sits beside the row. JP can swap any of them.
     disciplines: [
@@ -197,7 +200,7 @@ export const siteCopy = {
       {
         id: "packaging",
         title: "Packaging",
-        line: "Packaging that is recognized at arm's length, in a thumbnail, and across the whole range.",
+        line: "Packaging you recognize at arm's length and in a thumbnail, across the whole range.",
         includes: ["Packaging and labels", "Packaging across the whole range"],
         moments: ["launch", "grow"],
         project: "reggie",
@@ -219,7 +222,7 @@ export const siteCopy = {
       {
         id: "motion",
         title: "Motion and campaigns",
-        line: "The brand in movement, from the logo to the feed to the product, without a second system.",
+        line: "The brand in movement, without a second system.",
         includes: ["Motion: logo animation, social, product UI", "Creative direction for campaigns"],
         moments: ["launch", "grow"],
         project: "bond-and-bloom",
@@ -231,28 +234,28 @@ export const siteCopy = {
   // ventures; selected clients from JP's 2026-10-04 list.
   about: {
     metaTitle: "Why Atla",
-    metaSuffix: "A Senior-Led Branding Studio for the Next Few Years",
+    metaSuffix: "Senior-led branding for the years after launch",
     metaDescription:
-      "Atla builds brands for the years after the launch: senior people, AI for the slow parts, identities that read to people and to the machines that now shop for them.",
+      "Atla builds brands for the years after launch. Senior people make the calls, AI does the slow parts, and the identity reads to people and to the assistants that shop for them.",
     title: "Most brands are built for the launch. We build them for the years after.",
     lead: "A small studio of senior people, working from Austin, Mexico City, Barcelona, Lima and Caracas. We use AI for the slow parts and keep every decision about taste with a person.",
     thesisLabel: "What we believe",
     thesis: [
       {
         title: "Taste is the job.",
-        body: "Research, options and production are getting cheap. Choosing well is not. A creative director decides what ships, every time.",
+        body: "Options are cheap now. Choosing well is not. A creative director decides what ships, every time.",
       },
       {
         title: "Your next customer may not be a person.",
-        body: "Assistants and agents now compare, book and buy. We build identities that read clearly to people and to the machines in between.",
+        body: "Assistants now compare and book for people. We build identities they can read too.",
       },
       {
         title: "A brand has to survive its third agency.",
         body: "We write the rules so your team, your next agency and your newest hire keep making the same brand.",
       },
       {
-        title: "We run brands too.",
-        body: "Sexto Abismo, TigreTigre, Persona. We know what a system has to take once the launch is over.",
+        title: "We are in business too.",
+        body: "Sexto Abismo, TigreTigre, Persona. We know what a system has to survive after launch.",
       },
     ],
     howLabel: "How we work",
@@ -268,11 +271,11 @@ export const siteCopy = {
       },
       {
         title: "Pick the position",
-        body: "AI drafts the options and checks them against the research. You and we choose one, in a room, in one session.",
+        body: "AI drafts the options and checks them against the research. You and we choose one, in a room.",
       },
       {
         title: "Design the system",
-        body: "AI does first passes, variations and production work. A creative director decides what ships.",
+        body: "AI does first passes and production work. A creative director decides what ships.",
       },
       {
         title: "Hand it over",
@@ -281,9 +284,9 @@ export const siteCopy = {
     ],
     proofLabel: "Proof",
     proof: [
-      "MICHELIN Key, Casa Las Tortugas, a brand we built.",
-      "MICHELIN Green Star, Acre, a brand we rebuilt.",
-      "Three companies we design for are companies we own.",
+      "MICHELIN Key, Casa Las Tortugas. We audited it and set its brand architecture.",
+      "MICHELIN Green Star, Acre's restaurant. We wrote Acre's brand architecture and brand book.",
+      "Some of the brands we design are ventures we are involved in.",
     ],
     clientsLabel: "Selected clients",
     clients: ["Aimee Kestenberg", "PrettyBoy", "Temakase", "Acre", "Pax & Beneficia", "Persona", "Brick", "Anything"],
@@ -304,9 +307,9 @@ export const siteCopy = {
   contact: {
     metaTitle: "Contact Atla",
     metaSuffix: "Start a Branding or Digital Project",
-    metaDescription: "Write to Atla about a launch, a raise, a growth stage or a reposition. Jose Pablo replies by email.",
+    metaDescription: "Write to Atla when you launch, raise capital, grow or reposition. José Pablo replies by email.",
     title: "Tell us what you are building.",
-    lead: "A few questions, one at a time. Jose Pablo reads every one and replies by email.",
+    lead: "A few questions, one at a time. José Pablo reads every one and replies by email.",
     cta: "Start a project",
     emailLabel: "Email",
     socialLabel: "Elsewhere",
@@ -318,7 +321,7 @@ export const siteCopy = {
   // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.
   logos: {
     label: "Clients",
-    line: "Brands we have built with.",
+    line: "Brands we have worked with.",
     items: [] as ReadonlyArray<{ name: string; src: string }>,
   },
   // JP, 2026-11-05: a quiet page. Names and one line each, no detail, no logos.

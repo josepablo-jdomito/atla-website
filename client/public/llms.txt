@@ -1,24 +1,26 @@
 # Atla
 
-> Atla is a senior-led branding studio founded by José Pablo Domínguez (Founder & Creative Director). It builds brand strategy, identity, packaging and digital systems for companies across the United States and Latin America. The team works from Austin, Mexico City, Barcelona, Lima and Caracas. The legal entity is Atla & WeLoveDaily, LLC (Austin, Texas).
+> Atla is a senior-led branding studio founded by José Pablo Domínguez (Founder & Creative Director). It builds brand strategy, identity, packaging and digital systems for companies across the United States and Latin America. The team works from Austin, Mexico City, Barcelona, Lima and Caracas. The studio is based in Austin, Texas.
 
 ## Studio
 
-- [About](https://www.atla.design/about): who Atla is, the team, services and selected clients
-- [Services](https://www.atla.design/services): brand strategy, identity design, digital design, motion, packaging, art direction, copywriting and tone of voice
-- [How we work](https://www.atla.design/how-we-work): the engagement model from discovery to launch
+- [Why Atla](https://www.atla.design/about): why a company hires Atla, how the work runs, proof, selected clients and the team
+- [Services](https://www.atla.design/services): strategy, naming and voice, identity, packaging, website and decks, motion and campaigns
+- [How we work](https://www.atla.design/how-we-work): the steps of every project: read the market, talk to your people, pick the position, design the system, hand it over
+- [Programs](https://www.atla.design/programs): the ways in for a company at a turning point: an audit, then a brand system or a full build, then a fractional brand director
+- [Hospitality](https://www.atla.design/hospitality): the same ways in, named for hotels and restaurants: audit, rebranding, branding
 - [Brand strategy](https://www.atla.design/brand-strategy): how Atla approaches positioning and messaging
 
 ## Services
 
-Six disciplines, one team. Each link opens that discipline on the services page.
+Every discipline, one team. Each link opens that discipline on the services page.
 
 - [Strategy](https://www.atla.design/services#strategy): One position the whole company can repeat, so every team and agency builds on the same thing.
 - [Naming and voice](https://www.atla.design/services#naming): A name that clears legal, and a voice that holds from the pitch deck to the shelf.
 - [Identity](https://www.atla.design/services#identity): A system that still looks like one brand in the hands of your third agency and your newest hire.
-- [Packaging](https://www.atla.design/services#packaging): Packaging that is recognized at arm's length, in a thumbnail, and across the whole range.
+- [Packaging](https://www.atla.design/services#packaging): Packaging you recognize at arm's length and in a thumbnail, across the whole range.
 - [Website and decks](https://www.atla.design/services#website): Websites and decks that make the case when nobody from your team is in the room.
-- [Motion and campaigns](https://www.atla.design/services#motion): The brand in movement, from the logo to the feed to the product, without a second system.
+- [Motion and campaigns](https://www.atla.design/services#motion): The brand in movement, without a second system.
 
 The moments Atla is hired for. Each link starts a brief with that moment answered:
 
@@ -26,6 +28,8 @@ The moments Atla is hired for. Each link starts a brief with that moment answere
 - [Raise capital](https://www.atla.design/brief?moment=raise)
 - [Grow / scale](https://www.atla.design/brief?moment=grow)
 - [Reposition](https://www.atla.design/brief?moment=reposition)
+
+The ways in, the same on every page: Audit, Brand system, Full build, Fractional brand director.
 
 ## Work by industry
 
@@ -49,4 +53,4 @@ The moments Atla is hired for. Each link starts a brief with that moment answere
 ## Contact
 
 - [Contact](https://www.atla.design/contact)
-- [Guided start](https://start.atla.design): helps a team choose between a Branding Analysis, a full identity engagement, or a narrower first step
+- [Guided start](https://start.atla.design): helps a team choose its first step with Atla

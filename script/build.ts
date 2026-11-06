@@ -549,8 +549,9 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/about",
-      title: formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm"),
-      description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
+      // Same title and description as the Why Atla page's SeoHead.
+      title: formatMetaTitle(siteCopy.about.metaTitle, siteCopy.about.metaSuffix),
+      description: siteCopy.about.metaDescription,
       // og:image only: the v2 About page renders no images, so nothing is preloaded.
       image: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
@@ -558,8 +559,9 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/contact",
-      title: formatMetaTitle("Contact Atla", "Start a Branding or Digital Project"),
-      description: "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
+      // Same title and description as the Contact page's SeoHead.
+      title: formatMetaTitle(siteCopy.contact.metaTitle, siteCopy.contact.metaSuffix),
+      description: siteCopy.contact.metaDescription,
       image: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
       structuredData: CONTACT_PAGE_SCHEMA,
@@ -574,8 +576,9 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/services",
-      title: formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla"),
-      description: "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
+      // Same title and description as the Services page's SeoHead.
+      title: formatMetaTitle(siteCopy.services.metaTitle, "Atla"),
+      description: siteCopy.services.metaDescription,
       image: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
       // Same JSON-LD as the live page's SeoHead: breadcrumb + one Service per moment.
@@ -607,7 +610,7 @@ async function prerenderRoutes() {
     {
       pathname: "/wellness-branding",
       title: formatMetaTitle("Wellness and Health Brand Design Agency", "Atla"),
-      description: "Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection.",
+      description: "Brand strategy and identity for wellness, health tech and care companies. Credible, warm, and written to stay inside the rules.",
       image: workFeaturedImage,
       includeInSitemap: true,
       structuredData: industryServiceSchemaForPath("/wellness-branding"),
@@ -623,28 +626,28 @@ async function prerenderRoutes() {
     {
       pathname: "/brand-strategy",
       title: formatMetaTitle("Brand Strategy for Growing Companies", "Process and Framework"),
-      description: "How brand strategy actually works — positioning, messaging, audience definition, and competitive framing. The strategic foundation before design begins.",
+      description: "How brand strategy works: positioning, messaging, audience and competitive framing, decided before design starts.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/how-we-work",
       title: formatMetaTitle("How We Work", "Branding Process and Engagement Model"),
-      description: "How Atla runs branding engagements — from discovery to launch. Strategy, identity, digital, and creative direction working as one system.",
+      description: "How Atla runs a project, step by step: read the market, talk to your people, pick the position, design the system, hand it over.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/programs",
       title: formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla"),
-      description: "When a brand has to change, start with the Loved or Lost Diagnostic. Then the Atla Brand Program, in three levels, and Brand Stewardship after launch.",
+      description: "When a brand has to change, start with an audit. Then a brand system or a full build, and a fractional brand director after launch.",
       image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
     {
       pathname: "/journal",
       title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
-      description: "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.",
+      description: "Atla Journal: essays and notes on branding, strategy and design from Atla, a senior-led branding studio working across the US and Latin America.",
       image: articles[0] ? resolveArticleImage(articles[0]) : DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
       structuredData: {
@@ -665,7 +668,7 @@ async function prerenderRoutes() {
     {
       pathname: "/privacy",
       title: formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data"),
-      description: "Read how Atla handles browser storage, hosting data, and information shared through direct studio inquiries across the website.",
+      description: "How Atla handles what you send through the brief and the contact form, the analytics on the site, browser storage and the providers that process data.",
       image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
@@ -678,7 +681,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/admin/projects",
-      title: "Projects Admin Retired — Atla",
+      title: "Projects admin retired | Atla",
       description: "The legacy projects admin route has been retired. Portfolio entries are managed in Sanity Studio.",
       robots: "noindex,nofollow",
       includeInSitemap: false,
@@ -829,7 +832,7 @@ async function prerenderRoutes() {
     replaceHead(
       template,
       createHeadMarkup({
-        title: "Page Not Found — Atla",
+        title: "Page not found | Atla",
         description: "The page you requested could not be found.",
         pathname: "/404",
         robots: "noindex,nofollow",

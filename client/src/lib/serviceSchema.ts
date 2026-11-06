@@ -139,7 +139,7 @@ export const INDUSTRY_SERVICE_PAGES = {
   },
   saas: {
     path: "/saas-branding",
-    name: "SaaS branding for software that needs to stand apart",
+    name: "SaaS branding that does not look like everyone else's",
     description: "Positioning, identity systems, website design and sales materials for SaaS teams.",
     faqItems: [
       {
