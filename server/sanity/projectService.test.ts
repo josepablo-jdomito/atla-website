@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { dropDraftsUnlessIncluded, includeDraftProjects, sortFeatured, toVideoSource } from "./projectService.ts";
+import {
+  dropDraftsUnlessIncluded,
+  dropHiddenProjects,
+  HIDDEN_PROJECT_SLUGS,
+  includeDraftProjects,
+  normalizeColor,
+  normalizeFocal,
+  sortFeatured,
+  toVideoSource,
+} from "./projectService.ts";
 
 describe("sortFeatured", () => {
   it("orders by homeOrder then year", () => {
@@ -52,5 +61,26 @@ describe("SANITY_INCLUDE_DRAFTS", () => {
     }
     process.env.SANITY_INCLUDE_DRAFTS = "true";
     expect(dropDraftsUnlessIncluded(items)).toHaveLength(2);
+  });
+});
+
+describe("hidden projects", () => {
+  it("WeLoveDaily never renders outside /ventures: the welove project is dropped from every query", () => {
+    expect(HIDDEN_PROJECT_SLUGS).toContain("welove");
+    const kept = dropHiddenProjects([{ slug: "rustico" }, { slug: "welove" }, { slug: "WeLove " }, { slug: "munda" }]);
+    expect(kept.map((p) => p.slug)).toEqual(["rustico", "munda"]);
+  });
+});
+
+describe("cover hints", () => {
+  it("keeps a hotspot centre only when it is a point inside the image", () => {
+    expect(normalizeFocal({ x: 0.5123456, y: 0.25, height: 0.3, width: 0.3 })).toEqual({ x: 0.512, y: 0.25 });
+    for (const bad of [null, undefined, {}, { x: "0.5", y: 0.5 }, { x: 1.2, y: 0.5 }, { x: 0.5, y: -0.1 }, { x: NaN, y: 0 }]) {
+      expect(normalizeFocal(bad), JSON.stringify(bad)).toBeNull();
+    }
+  });
+  it("keeps the dominant colour only as a hex value", () => {
+    expect(normalizeColor("#A1B2C3")).toBe("#a1b2c3");
+    for (const bad of [null, "red", "url(javascript:alert(1))", "#xyz", 12]) expect(normalizeColor(bad)).toBeNull();
   });
 });

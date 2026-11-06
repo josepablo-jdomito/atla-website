@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
 import { SITE_CITIES } from "@/components/site/SiteFooter";
+import { useSiteProjects } from "@/components/site/siteProjects";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
 import { formatMetaTitle, ORGANIZATION_SCHEMA } from "@shared/siteSeo";
@@ -12,7 +13,14 @@ import { formatMetaTitle, ORGANIZATION_SCHEMA } from "@shared/siteSeo";
 const copy = siteCopy.about;
 const engagements = siteCopy.services;
 
+/** The project page a proof line is about, when that project is on the site. */
+function proofSlug(line: string, slugs: Set<string>) {
+  return Object.entries(siteCopy.project.proof).find(([slug, text]) => text === line && slugs.has(slug))?.[0];
+}
+
 export default function About() {
+  const { projects } = useSiteProjects();
+  const slugs = new Set(projects.map((project) => project.slug));
   return (
     <PageShell>
       <SeoHead
@@ -67,9 +75,20 @@ export default function About() {
           </h2>
           <div className="page-section__body">
             <ul className="why-proof">
-              {copy.proof.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
+              {copy.proof.map((line) => {
+                const slug = proofSlug(line, slugs);
+                return (
+                  <li key={line}>
+                    {slug ? (
+                      <Link href={`/projects/${slug}`} className="why-proof__link">
+                        {line}
+                      </Link>
+                    ) : (
+                      line
+                    )}
+                  </li>
+                );
+              })}
             </ul>
             <h3 className="site-label team-cities__label">{copy.clientsLabel}</h3>
             <p className="why-clients">{copy.clients.join("  ·  ")}</p>

@@ -15,6 +15,7 @@ import {
   projectBodySections,
 } from "@/lib/projectSeo";
 import { creativeWorkSchema } from "@/lib/seoSchema";
+import { openerFrame, openerImageUrl, type Focal } from "@/lib/openerFrame";
 
 /** Stand-in hero when a project has no image at all. */
 export const PROJECT_PLACEHOLDER_IMAGE = "/figmaAssets/media.png";
@@ -35,6 +36,17 @@ export function fetchProject(slug: string) {
   };
 }
 
+/**
+ * The one line under the facets is one sentence (fix wave 3, finding 20); whatever follows it in the
+ * description moves into the story. A description with no sentence end stays whole.
+ */
+export function splitLead(text: string): { line: string; rest: string } {
+  const clean = text.trim();
+  const match = clean.match(/^(.+?[.!?])(?:["')\]]*)\s+(\S[\s\S]*)$/);
+  if (!match) return { line: clean, rest: "" };
+  return { line: match[1].trim(), rest: match[2].trim() };
+}
+
 export type ProjectPageView = {
   slug: string;
   title: string;
@@ -51,9 +63,14 @@ export type ProjectPageView = {
   place: string;
   searchTerms: string[];
   dateLabel: string;
+  /** The one-sentence line under the facets. */
   intro: string;
+  /** The whole cleaned description, for the meta description. */
+  summary: string;
   bodySections: string[];
   heroImage: string;
+  /** The cover's Sanity hotspot, only when the hero is that cover. */
+  heroFocal: Focal | null;
   storyImage?: string;
   gallery: string[];
   videos: string[];
@@ -243,11 +260,16 @@ export function buildProjectPageView(project: ProjectApi, allProjects: ProjectAp
   const country = project.country || "";
   const facets = resolveProjectFacets(project);
   const locationName = project.locationName || "";
-  const bodySections = projectBodySections(
+  const summary = cleanProjectSummary(project.description);
+  const lead = splitLead(summary);
+  const bodyOnly = projectBodySections(
     project.body,
     [project.title, project.client],
     allProjects.filter((item) => item.slug !== project.slug).map((item) => item.title),
   );
+  // What the description says after its first sentence opens the story, unless the body already says it.
+  const bodySections =
+    lead.rest && !bodyOnly.some((section) => section.includes(lead.rest.slice(0, 60))) ? [lead.rest, ...bodyOnly] : bodyOnly;
   // "Unspecified" is the import's fallback for an untagged project, not a service.
   const services = project.tags.filter((tag) => Boolean(tag) && tag.trim().toLowerCase() !== "unspecified");
   const imageGallery = sanitizeImageUrls(project.images);
@@ -288,9 +310,11 @@ export function buildProjectPageView(project: ProjectApi, allProjects: ProjectAp
     place: facets.place,
     searchTerms: facets.searchTerms,
     dateLabel: String(project.year),
-    intro: cleanProjectSummary(project.description),
+    intro: lead.line,
+    summary,
     bodySections,
     heroImage,
+    heroFocal: project.coverImage && heroImage === sanitizeImageUrls([project.coverImage])[0] ? project.coverFocal ?? null : null,
     storyImage: project.images[1] || heroImage,
     gallery,
     videos: project.videos.filter(Boolean),
@@ -404,12 +428,13 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     client: project.client,
     category: project.sector || project.category,
     services: project.disciplines.length > 0 ? project.disciplines : project.services,
-    description: project.intro,
+    description: project.summary,
   });
   const pathname = `/projects/${project.slug}`;
+  const heroFrame = openerFrame(project.heroImage, project.heroFocal);
   const preloadImages = [
-    getOptimizedImageUrl(project.heroImage, { width: 960, quality: 88 }) || project.heroImage,
-    getOptimizedImageUrl(project.heroImage, { width: 1600, quality: 92 }) || project.heroImage,
+    openerImageUrl(project.heroImage, heroFrame, 960, 88),
+    openerImageUrl(project.heroImage, heroFrame, 1600, 92),
     project.gallery[0]
       ? getOptimizedImageUrl(project.gallery[0], { width: 1400, quality: 90 }) || project.gallery[0]
       : null,

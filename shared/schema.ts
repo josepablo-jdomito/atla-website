@@ -82,4 +82,8 @@ export type Project = typeof projects.$inferSelect & {
   country?: string;
   /** Hidden search terms: ranked, never printed. */
   searchTerms?: string[];
+  /** Sanity hotspot centre of the cover (x, y in 0..1); the opener crops around it. */
+  coverFocal?: { x: number; y: number } | null;
+  /** Dominant background colour of the cover (hex), the tile's colour while the image loads. */
+  coverColor?: string | null;
 };

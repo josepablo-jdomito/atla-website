@@ -2,6 +2,11 @@
 // Voice: José Pablo's. Short lines, plain words, specific nouns. No prices, no
 // durations, no counts. Nothing invented.
 
+// The two proof lines are said once and shown twice: on Why Atla, and under the facets of the project they
+// are about (fix wave 3, red team 5). The wording is JP's; nothing here adds a claim.
+const PROOF_KEY = "MICHELIN Key, Casa Las Tortugas. We audited it and set its brand architecture.";
+const PROOF_STAR = "MICHELIN Green Star, Acre's restaurant. We wrote Acre's brand architecture and brand book.";
+
 export const siteCopy = {
   header: {
     navLabel: "Primary",
@@ -76,6 +81,15 @@ export const siteCopy = {
     lightboxClose: "Close",
     lightboxPrev: "Previous image",
     lightboxNext: "Next image",
+    /**
+     * Proof for the project pages that carry it, keyed by slug: one quiet line under the facets, and the
+     * same line on Why Atla links back here. A slug with no project in Sanity simply never renders.
+     */
+    proof: {
+      rustico: PROOF_STAR,
+      acre: PROOF_STAR,
+      "casa-las-tortugas": PROOF_KEY,
+    } as Readonly<Record<string, string>>,
     // Travels with the brief as context: /brief?seed=Like <title> (taken out of the URL on arrival; it answers nothing)
     seed: (title: string) => `Like ${title}`,
   },
@@ -292,8 +306,8 @@ export const siteCopy = {
     ],
     proofLabel: "Proof",
     proof: [
-      "MICHELIN Key, Casa Las Tortugas. We audited it and set its brand architecture.",
-      "MICHELIN Green Star, Acre's restaurant. We wrote Acre's brand architecture and brand book.",
+      PROOF_KEY,
+      PROOF_STAR,
       "Some of the brands we design are ventures we are involved in.",
     ],
     clientsLabel: "Selected clients",

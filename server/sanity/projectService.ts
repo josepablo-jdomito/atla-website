@@ -44,6 +44,10 @@ type SanityProject = {
   homeOrder?: number | null;
   status?: string;
   coverImage?: string;
+  /** The cover's Sanity hotspot (x, y in 0..1), when the editor set one. */
+  coverFocal?: { x?: unknown; y?: unknown } | null;
+  /** The cover's dominant background colour from the asset palette. */
+  coverColor?: unknown;
   gallery?: string[];
 };
 
@@ -183,6 +187,18 @@ const PROJECT_QUERY = `
     homeOrder,
     "status": status,
     "coverImage": coalesce(coverImage.asset->url, mainImage.asset->url, heroImage.asset->url, thumbnail.asset->url),
+    "coverFocal": select(
+      defined(coverImage.asset) => coverImage.hotspot{x, y},
+      defined(mainImage.asset) => mainImage.hotspot{x, y},
+      defined(heroImage.asset) => heroImage.hotspot{x, y},
+      thumbnail.hotspot{x, y}
+    ),
+    "coverColor": coalesce(
+      coverImage.asset->metadata.palette.dominant.background,
+      mainImage.asset->metadata.palette.dominant.background,
+      heroImage.asset->metadata.palette.dominant.background,
+      thumbnail.asset->metadata.palette.dominant.background
+    ),
     "gallery": array::unique(array::compact([
       ...coalesce(gallery, [])[].asset->url,
       ...coalesce(images, [])[].asset->url,
@@ -395,11 +411,20 @@ export const includeDraftProjects = () => !/^(false|0|no|off)$/i.test((process.e
 export const dropDraftsUnlessIncluded = <T extends { status?: string }>(projects: T[], include = includeDraftProjects()) =>
   include ? projects : projects.filter((project) => project.status !== "draft");
 
+/**
+ * Projects that exist in Sanity but never render on the site (JP, 2026-10-09 rule: WeLoveDaily lives only
+ * on /ventures). Applied to every project query, so the wall, the project API, next/related, the sitemap
+ * and the prerender all agree. The Sanity document stays; only the site stops listing it.
+ */
+export const HIDDEN_PROJECT_SLUGS: readonly string[] = ["welove"];
+export const dropHiddenProjects = <T extends { slug?: string | null }>(projects: T[]) =>
+  projects.filter((project) => !HIDDEN_PROJECT_SLUGS.includes(String(project.slug ?? "").trim().toLowerCase()));
+
 export async function fetchProjectsFromSanity(options?: { featured?: boolean }) {
   if (!isJournalSanityConfigured()) return [];
 
   const client = getJournalSanityClient();
-  const projects = await client.fetch<SanityProject[]>(PROJECT_QUERY);
+  const projects = dropHiddenProjects(await client.fetch<SanityProject[]>(PROJECT_QUERY));
 
   const normalized = dropDraftsUnlessIncluded(
     projects.filter((project) => (options?.featured ? project.featured : true)).map(normalizeProject),
@@ -441,7 +466,7 @@ export async function fetchPortfolioProjectAuditFromSanity(): Promise<PortfolioP
   }
 
   const client = getJournalSanityClient();
-  const projects = await client.fetch<SanityProjectAuditSource[]>(PROJECT_AUDIT_QUERY);
+  const projects = dropHiddenProjects(await client.fetch<SanityProjectAuditSource[]>(PROJECT_AUDIT_QUERY));
 
   return buildPortfolioProjectAudit(projects);
 }
@@ -576,6 +601,8 @@ function normalizeProject(project: SanityProject): Project {
     description: description || "",
     body,
     coverImage: project.coverImage || "",
+    coverFocal: normalizeFocal(project.coverFocal),
+    coverColor: normalizeColor(project.coverColor),
     images: Array.isArray(project.gallery) ? project.gallery.filter(isNonEmptyString) : [],
     videos,
     videoFiles,
@@ -588,6 +615,20 @@ function normalizeProject(project: SanityProject): Project {
     latitude,
     longitude,
   } as Project;
+}
+
+/** A Sanity hotspot centre as {x, y} in 0..1, or null when the editor set none. */
+export function normalizeFocal(value: unknown): { x: number; y: number } | null {
+  if (!value || typeof value !== "object") return null;
+  const { x, y } = value as { x?: unknown; y?: unknown };
+  if (typeof x !== "number" || typeof y !== "number") return null;
+  if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) return null;
+  return { x: Math.round(x * 1000) / 1000, y: Math.round(y * 1000) / 1000 };
+}
+
+/** The asset palette's dominant background, as a hex colour; anything else is dropped. */
+export function normalizeColor(value: unknown): string | null {
+  return typeof value === "string" && /^#[0-9a-f]{3,8}$/i.test(value.trim()) ? value.trim().toLowerCase() : null;
 }
 
 function normalizeTagValues(values: string[]) {

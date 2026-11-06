@@ -27,6 +27,7 @@ import { MotionToggle } from "@/components/site/MotionToggle";
 import { trapTab } from "@/components/site/focusTrap";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
+import { openerFrame, openerImageUrl, type OpenerFrame } from "@/lib/openerFrame";
 
 /**
  * The project page as a story column (JP, 2026-11-05, after littleplains.com/projects/revitin):
@@ -89,30 +90,41 @@ export function groupStory(items: MediaItem[]): Group[] {
   return [{ kind: "opener", items: [first] }, ...groupMedia(rest)];
 }
 
+const item0IsImage = (group: Group) => group.items[0]?.type === "image";
+
 function ProjectImage({
   src,
   alt,
   half,
   priority,
+  frame,
   onOpen,
 }: {
   src: string;
   alt: string;
   half: boolean;
   priority: boolean;
+  /** Only the opener has one: a 4:3 crop (around the hotspot when there is one) or the image whole. */
+  frame?: OpenerFrame;
   onOpen: () => void;
 }) {
   const dims = getImageDimensions(src);
+  const crop = frame?.mode === "crop" ? frame : null;
   return (
     <button type="button" className="story-media__button" onClick={onOpen} aria-label={`${alt}. Open larger`}>
       <img
         className="story-media__item"
-        src={getOptimizedImageUrl(src, { width: half ? 800 : 1280, quality: 88 }) || src}
-        srcSet={buildImageSrcSet(src, half ? HALF_WIDTHS : COLUMN_WIDTHS, { quality: 88 })}
+        src={frame ? openerImageUrl(src, frame, 1280, 88) : getOptimizedImageUrl(src, { width: half ? 800 : 1280, quality: 88 }) || src}
+        srcSet={
+          crop
+            ? buildImageSrcSet(src, COLUMN_WIDTHS, { quality: 88, fit: "crop", focal: crop.focal, ratio: crop.ratio })
+            : buildImageSrcSet(src, half ? HALF_WIDTHS : COLUMN_WIDTHS, { quality: 88 })
+        }
         sizes={half ? HALF_SIZES : COLUMN_SIZES}
         alt={alt}
-        width={dims?.width}
-        height={dims?.height}
+        width={crop ? 1280 : dims?.width}
+        height={crop ? 960 : dims?.height}
+        style={crop?.focal ? { objectPosition: `${crop.focal.x * 100}% ${crop.focal.y * 100}%` } : undefined}
         loading={priority ? "eager" : "lazy"}
         {...(priority ? PRIORITY_ATTRS : null)}
         decoding="async"
@@ -304,7 +316,10 @@ export default function Project() {
 
   const seoHead = buildProjectSeoHead(project);
   const year = Number.parseInt(project.dateLabel, 10) > 0 ? project.dateLabel : "";
-  const facts = [project.client !== project.title ? project.client : "", year].filter(Boolean);
+  // One skeleton for every project: the year is the only fact line (the client line came and went per project).
+  const facts = [year].filter(Boolean);
+  const proofLine = copy.proof[project.slug] ?? "";
+  const heroFrame = openerFrame(project.heroImage, project.heroFocal);
   // One quiet line of facets, each a link into the wall filtered to it (proposal 3.3). Brand Identity
   // is on every project and filters nothing, so it is plain text; Stage prints only when it says something.
   const facetLinks: Array<{ key: "sector" | "discipline" | "place"; value: string }> = site
@@ -353,16 +368,22 @@ export default function Project() {
               ) : null}
             </p>
           ) : null}
+          {proofLine ? <p className="story-head__proof">{proofLine}</p> : null}
           {project.intro ? <p className="story-head__lead">{project.intro}</p> : null}
-        </header>
-
-        <div className="story-body">
           {groups.some((group) => group.items.some((item) => item.type !== "image")) ? (
             <MotionToggle className="motion-toggle--story" />
           ) : null}
+        </header>
+
+        <div className="story-body">
           {groups.map((group, groupIndex) => {
             const block = (
-              <div key={`g${groupIndex}`} className="story-media" data-kind={group.kind}>
+              <div
+                key={`g${groupIndex}`}
+                className="story-media"
+                data-kind={group.kind}
+                data-frame={group.kind === "opener" ? (item0IsImage(group) ? heroFrame.mode : "native") : undefined}
+              >
                 {group.items.map((item, i) => {
                   const key = `${item.type}-${groupIndex}-${i}`;
                   if (item.type === "image") {
@@ -375,6 +396,7 @@ export default function Project() {
                           alt={`${project.title}, image ${index + 1}`}
                           half={group.kind === "pair"}
                           priority={index === 0}
+                          frame={group.kind === "opener" && item.src === project.heroImage ? heroFrame : undefined}
                           onOpen={() => setOpen(index)}
                         />
                       </figure>

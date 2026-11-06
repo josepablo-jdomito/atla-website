@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Project, { groupStory } from "./Project";
 import { nextProjectInSiteOrder, siteOrder, toSiteProject } from "@/components/site/siteProjects";
 import type { Project as ProjectRecord } from "@shared/schema";
+import { siteCopy } from "@/content/siteCopy";
 
 // Analytics reads consent from storage; the page's tracking is not under test here.
 vi.mock("@/hooks/use-analytics", () => ({ trackEvent: vi.fn() }));
@@ -141,11 +142,11 @@ function render(slug: string) {
 }
 
 describe("Project page", () => {
-  it("shows client and year in the facts line, then the facets as links into the filtered wall", () => {
+  it("shows the year in the facts line, then the facets as links into the filtered wall", () => {
     render("archive-b");
-    // The title is the project name; the facts line names the client only when it differs from the title.
+    // One skeleton for every project: the client line is on none of them, only the year.
     expect(container.querySelector("h1")?.textContent).toBe("Rústico & Co / Tulum");
-    expect(container.querySelector(".story-head__facts")?.textContent).toBe("Rústico  ·  2023");
+    expect(container.querySelector(".story-head__facts")?.textContent).toBe("2023");
     const facets = container.querySelector(".story-head__facets")!;
     expect(facets.textContent).toBe("Hospitality & Travel\u00a0\u00a0·  Website, Brand Identity\u00a0\u00a0·  Mexico\u00a0\u00a0·  Rebrand");
     const links = Array.from(facets.querySelectorAll("a")).map((a) => [a.textContent, a.getAttribute("href")]);
@@ -156,6 +157,68 @@ describe("Project page", () => {
       ["Mexico", "/?place=mexico"],
     ]);
     expect(container.querySelector(".story-head__facets")?.textContent).not.toContain("Hotel");
+  });
+
+  it("has the same head skeleton with or without a description: no empty block, nothing in its place", () => {
+    API.push(raw({ slug: "thin", title: "Thin", description: "", client: "Confidential" }));
+    API.push(raw({ slug: "wordy", title: "Wordy", description: "A gin for the unreal. It was never meant for a shelf. Deep colors." }));
+    try {
+      render("thin");
+      expect(container.querySelector(".story-head__lead")).toBeNull();
+      expect(Array.from(container.querySelectorAll(".story-head > *")).map((el) => el.className)).toEqual([
+        "story-head__title",
+        "story-head__facts",
+        "story-head__facets",
+      ]);
+      expect(container.querySelector(".story-text")).toBeNull();
+      act(() => root.unmount());
+      root = createRoot(container);
+      render("wordy");
+      // The line is one sentence; the rest of the description opens the story.
+      expect(container.querySelector(".story-head__lead")?.textContent).toBe("A gin for the unreal.");
+    } finally {
+      API.pop();
+      API.pop();
+    }
+  });
+
+  it("puts the proof line under the facets on the project it is about, and on no other", () => {
+    API.push(raw({ slug: "rustico", title: "Rústico" }));
+    try {
+      render("rustico");
+      expect(container.querySelector(".story-head__proof")?.textContent).toBe(siteCopy.project.proof.rustico);
+      expect(container.querySelector(".story-head__proof")?.textContent).toContain("MICHELIN Green Star");
+      act(() => root.unmount());
+      root = createRoot(container);
+      render("archive-b");
+      expect(container.querySelector(".story-head__proof")).toBeNull();
+    } finally {
+      API.pop();
+    }
+  });
+
+  it("frames the opener: cropped when the image is close to 4:3, whole when it is a portrait", () => {
+    API.push(raw({ slug: "tall", title: "Tall", coverImage: "https://cdn.sanity.io/images/p/production/tall-1080x1440.png" }));
+    API.push(raw({ slug: "focal", title: "Focal", coverImage: "https://cdn.sanity.io/images/p/production/focal-1080x1440.png", coverFocal: { x: 0.5, y: 0.15 } }));
+    try {
+      render("archive-b");
+      expect(container.querySelector('.story-media[data-kind="opener"]')?.getAttribute("data-frame")).toBe("crop");
+      for (const [slug, frame] of [["tall", "native"], ["focal", "crop"]]) {
+        act(() => root.unmount());
+        root = createRoot(container);
+        render(slug);
+        const opener = container.querySelector('.story-media[data-kind="opener"]')!;
+        expect(opener.getAttribute("data-frame"), slug).toBe(frame);
+        if (slug === "focal") {
+          const url = new URL(opener.querySelector("img")!.getAttribute("src")!);
+          expect(url.searchParams.get("crop")).toBe("focalpoint");
+          expect(url.searchParams.get("fp-y")).toBe("0.15");
+        }
+      }
+    } finally {
+      API.pop();
+      API.pop();
+    }
   });
 
   it("shows three More like this cards, same sector, never the project itself, before Next", () => {
