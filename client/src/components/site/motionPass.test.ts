@@ -6,7 +6,9 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { siteCopy } from "@/content/siteCopy";
 import { PageShell } from "./PageShell";
+import { WorkExplore } from "./WorkExplore";
 import { Tile } from "./WorkWall";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -39,6 +41,68 @@ afterEach(() => {
   act(() => root.unmount());
   container.remove();
   vi.useRealTimers();
+});
+
+function renderExplore() {
+  act(() =>
+    root.render(
+      createElement(
+        WorkExplore,
+        { query: "", onQuery: () => undefined, onClear: () => undefined, activeCount: 0, visible: true },
+        createElement("p", null, "filters"),
+      ),
+    ),
+  );
+  return {
+    input: () => document.querySelector<HTMLInputElement>(".site-explore__input")!,
+    panel: () => document.querySelector<HTMLElement>(".site-explore__panel"),
+  };
+}
+
+describe("Explore panel open and close", () => {
+  it("opens on focus; Escape closes at once (keyboard never animates)", () => {
+    const { input, panel } = renderExplore();
+    expect(panel()).toBeNull();
+    act(() => input().focus());
+    expect(panel()?.dataset.state).toBe("open");
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    });
+    expect(panel()).toBeNull();
+  });
+
+  it("the Close button runs the exit, then unmounts; a refocus during the exit retargets to open", () => {
+    const { input, panel } = renderExplore();
+    act(() => input().focus());
+    const close = Array.from(document.querySelectorAll<HTMLButtonElement>(".site-explore__head button")).find(
+      (button) => button.textContent === siteCopy.home.close,
+    )!;
+    act(() => close.click());
+    expect(panel()?.dataset.state).toBe("closing");
+    expect(panel()?.getAttribute("aria-hidden")).toBe("true");
+    // jsdom keeps focus on the input through the click, so the re-open comes from the click handler.
+    act(() => input().click());
+    expect(panel()?.dataset.state).toBe("open");
+    act(() => close.click());
+    act(() => {
+      panel()!.dispatchEvent(new Event("transitionend", { bubbles: true }));
+    });
+    // A non-opacity transitionend (the transform) does not end it; the timer does.
+    expect(panel()?.dataset.state).toBe("closing");
+    act(() => vi.advanceTimersByTime(250));
+    expect(panel()).toBeNull();
+  });
+
+  it("under reduced motion a pointer close unmounts at once", () => {
+    stubMotion(true);
+    const { input, panel } = renderExplore();
+    act(() => input().focus());
+    const close = Array.from(document.querySelectorAll<HTMLButtonElement>(".site-explore__head button")).find(
+      (button) => button.textContent === siteCopy.home.close,
+    )!;
+    act(() => close.click());
+    expect(panel()).toBeNull();
+  });
 });
 
 describe("wall tile", () => {
@@ -84,6 +148,7 @@ describe("site.css motion rules", () => {
   it("keeps the budgets from the motion pass", () => {
     expect(CSS).toMatch(/\.wall-tile img \{[^}]*transition: opacity 320ms var\(--site-ease\);/);
     expect(CSS).toContain("filter 160ms ease");
+    expect(CSS).toContain('.site-explore__panel[data-state="closing"]');
     expect(CSS).toContain("animation: site-page-in 200ms var(--site-ease) both");
     expect(CSS).not.toContain("@keyframes site-explore-in");
   });
@@ -91,7 +156,7 @@ describe("site.css motion rules", () => {
   it("switches every new transition and animation off under reduced motion", () => {
     const block = CSS.slice(CSS.indexOf("@media (prefers-reduced-motion: reduce) {\n  .project-card__media"));
     const reduced = block.slice(0, block.indexOf("\n}\n") + 3);
-    expect(reduced).toContain(".site-explore__input { transition: none; }");
+    expect(reduced).toContain(".site-explore__panel { transition: none; }");
     expect(reduced).toContain(".site-page { animation: none; }");
     expect(reduced).toContain(".site-sheet { transition: none; }");
   });

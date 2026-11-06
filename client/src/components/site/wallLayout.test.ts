@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SiteProject } from "./siteProjects";
-import { buildWallSequence, directVideo, isClientWork, listDrift, wallCells, wallPass } from "./wallLayout";
+import { buildWallSequence, directVideo, isClientWork, placeInColumns, wallPass } from "./wallLayout";
 
 const portrait = "https://cdn.sanity.io/images/p/production/a-1200x1600.jpg";
 const landscape = "https://cdn.sanity.io/images/p/production/b-1600x900.jpg";
@@ -116,44 +116,25 @@ describe("buildWallSequence shuffle", () => {
   });
 });
 
-describe("wallCells", () => {
-  const perRow = (cells: Array<{ row: number; col: number }>) => {
-    const rows: number[][] = [];
-    for (const cell of cells) (rows[cell.row] ??= []).push(cell.col);
-    return rows;
-  };
-
-  it("draws the Figma rows at 4 columns for the prerender: 2, 3, 3, 2, 2 cards", () => {
-    expect(perRow(wallCells(12, 4, "masonry"))).toEqual([[0, 2], [0, 1, 3], [0, 2, 3], [1, 2], [0, 3]]);
+describe("placeInColumns", () => {
+  it("puts each tile in the shortest column", () => {
+    const tiles = [{ ratio: 1.78 }, { ratio: 1.78 }, { ratio: 0.75 }, { ratio: 1.78 }, { ratio: 1.78 }];
+    const columns = placeInColumns(tiles, 2);
+    // Ties go left: column 0 takes a landscape and then the tall portrait, so the last two landscapes stack in column 1.
+    expect(columns[0].map((t) => t.ratio)).toEqual([1.78, 0.75]);
+    expect(columns[1].map((t) => t.ratio)).toEqual([1.78, 1.78, 1.78]);
   });
 
-  it("draws the tablet rows at 3 columns", () => {
-    expect(perRow(wallCells(12, 3, "masonry"))).toEqual([[0, 2], [1, 2], [0, 2], [1, 2], [0, 2], [1], [0]]);
-  });
-
-  it("keeps the counts per row with any seed, picks other cells, and never puts two cards in one cell", () => {
-    const seeded = wallCells(60, 4, "masonry", 42);
-    expect(perRow(seeded).map((row) => row.length)).toEqual(perRow(wallCells(60, 4, "masonry")).map((row) => row.length));
-    expect(new Set(seeded.map((cell) => `${cell.row}:${cell.col}`)).size).toBe(60);
-    expect(perRow(seeded)).not.toEqual(perRow(wallCells(60, 4, "masonry")));
-    // Loading more never moves a card already placed.
-    expect(wallCells(90, 4, "masonry", 42).slice(0, 60)).toEqual(seeded);
-  });
-
-  it("fills every cell in Grid and on a phone's single column", () => {
-    expect(wallCells(6, 4, "grid", 7)).toEqual([
-      { row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 1, col: 0 }, { row: 1, col: 1 },
-    ]);
-    expect(wallCells(3, 1, "masonry", 7).map((cell) => cell.row)).toEqual([0, 1, 2]);
-  });
-});
-
-describe("listDrift", () => {
-  it("follows the Figma for the prerender and never repeats the row above with a seed", () => {
-    expect(listDrift(4)).toEqual([0.2, 0.8, 0, 0.6]);
-    const drift = listDrift(40, 9);
-    for (let i = 1; i < drift.length; i += 1) expect(drift[i]).not.toBe(drift[i - 1]);
-    for (const value of drift) expect(value).toBeGreaterThanOrEqual(0);
-    for (const value of drift) expect(value).toBeLessThanOrEqual(0.8);
+  it("never stacks a project under itself", () => {
+    const tiles = [
+      { slug: "a", ratio: 1.78 },
+      { slug: "b", ratio: 1.78 },
+      { slug: "a", ratio: 0.75 },
+      { slug: "b", ratio: 1.78 },
+    ];
+    const columns = placeInColumns(tiles, 2);
+    for (const column of columns) {
+      for (let i = 1; i < column.length; i += 1) expect(column[i].slug).not.toBe(column[i - 1].slug);
+    }
   });
 });

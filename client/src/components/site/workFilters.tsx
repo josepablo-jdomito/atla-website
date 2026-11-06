@@ -1,4 +1,4 @@
-import { useId, useMemo } from "react";
+import { useMemo } from "react";
 import { siteCopy } from "@/content/siteCopy";
 import type { SiteProject } from "@/components/site/siteProjects";
 
@@ -60,25 +60,27 @@ export function queryFromSearch(search: string): string {
   return (params.get("q") ?? "").trim().slice(0, 120);
 }
 
-/** The three ways to see the work (Figma `( VIEW )`). Masonry is the default and stays out of the URL. */
-export const VIEWS = ["masonry", "grid", "list"] as const;
-export type WorkView = (typeof VIEWS)[number];
-
-/** `?view=grid` → "grid"; anything else → "masonry". */
-export function viewFromSearch(search: string): WorkView {
-  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
-  const value = params.get("view");
-  return (VIEWS as readonly string[]).includes(value ?? "") ? (value as WorkView) : "masonry";
-}
-
-/** Filters, query and view → the query string for the wall, "" when nothing is active. */
-export function searchFromFilters(filters: Filters, query = "", view: WorkView = "masonry"): string {
+/** Filters and query → the query string for the wall, "" when nothing is active. */
+export function searchFromFilters(filters: Filters, query = ""): string {
   const params = new URLSearchParams();
   if (query.trim()) params.set("q", query.trim());
   for (const key of FILTER_KEYS) if (filters[key] !== ALL) params.set(key, filters[key]);
-  if (view !== "masonry") params.set("view", view);
   const out = params.toString();
   return out ? `?${out}` : "";
+}
+
+/** The four facets with their values, for the header peek and the Explore panel. */
+export function facetOptions(projects: SiteProject[]) {
+  return {
+    region: [...REGION_OPTIONS],
+    industry: buildFacetOptions(projects.map((p) => p.industry), INDUSTRY_ORDER),
+    service: buildFacetOptions(projects.map((p) => p.service), SERVICE_ORDER),
+    year: [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)],
+  };
+}
+
+export function activeFilterCount(filters: Filters) {
+  return Object.values(filters).filter((value) => value !== ALL).length;
 }
 
 function FilterGroup({
@@ -86,20 +88,15 @@ function FilterGroup({
   options,
   value,
   onChange,
-  display = (option) => option,
 }: {
   label: string;
   options: readonly string[];
   value: string;
   onChange: (value: string) => void;
-  display?: (option: string) => string;
 }) {
-  const id = useId();
   return (
-    <div className="site-filter" role="group" aria-labelledby={id}>
-      <p id={id} className="site-filter__label">
-        ( {label} )
-      </p>
+    <fieldset className="site-filter">
+      <legend className="site-filter__label">{label}</legend>
       <div className="site-filter__options">
         {options.map((option) => (
           <button
@@ -109,48 +106,38 @@ function FilterGroup({
             aria-pressed={value === option}
             onClick={() => onChange(option)}
           >
-            {display(option)}
+            {option}
           </button>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 }
 
-/**
- * The filter index under the navbar (Figma 4423:1871): Region, Industry, Service, then View.
- * Options are text; the active one is ink, the rest stone. Facet values come from the projects on
- * the page, so no option ever empties the wall. Year stays readable from the URL but has no column.
- */
+/** The four facet groups, built from the projects on the page. */
 export function WorkFilters({
   projects,
   filters,
   onChange,
-  view,
-  onView,
 }: {
   projects: SiteProject[];
   filters: Filters;
   onChange: (filters: Filters) => void;
-  view: WorkView;
-  onView: (view: WorkView) => void;
 }) {
   const industryOptions = useMemo(() => buildFacetOptions(projects.map((p) => p.industry), INDUSTRY_ORDER), [projects]);
   const serviceOptions = useMemo(() => buildFacetOptions(projects.map((p) => p.service), SERVICE_ORDER), [projects]);
+  const yearOptions = useMemo(
+    () => [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)],
+    [projects],
+  );
   const set = (key: keyof Filters) => (value: string) => onChange({ ...filters, [key]: value });
 
   return (
-    <nav className="work-filters" aria-label={home.filtersLabel}>
+    <div className="site-filters">
       <FilterGroup label={home.filters.region} options={REGION_OPTIONS} value={filters.region} onChange={set("region")} />
       <FilterGroup label={home.filters.industry} options={industryOptions} value={filters.industry} onChange={set("industry")} />
       <FilterGroup label={home.filters.service} options={serviceOptions} value={filters.service} onChange={set("service")} />
-      <FilterGroup
-        label={home.filters.view}
-        options={VIEWS}
-        value={view}
-        onChange={(value) => onView(value as WorkView)}
-        display={(option) => home.views[option as WorkView]}
-      />
-    </nav>
+      <FilterGroup label={home.filters.year} options={yearOptions} value={filters.year} onChange={set("year")} />
+    </div>
   );
 }

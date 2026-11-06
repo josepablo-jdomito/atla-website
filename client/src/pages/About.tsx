@@ -1,54 +1,18 @@
-import { useMemo, type ReactNode } from "react";
 import { Link } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
-import { BracketLabel, ContactCard } from "@/components/site/ContactForm";
-import { useSiteProjects } from "@/components/site/siteProjects";
+import { SITE_CITIES } from "@/components/site/SiteFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
-import { getOptimizedImageUrl } from "@shared/imageDelivery";
 import { formatMetaTitle, ORGANIZATION_SCHEMA } from "@shared/siteSeo";
-import "@/styles/pages.css";
 
 /**
- * Why Atla, at /about (the URL stays for SEO), drawn as JP's Figma About frame (4423:3581):
- * the thesis line in ABC Synt, then rows with a script title on the left and the content on the
- * right. Team is names and roles only (JP's rule: no photos). Press waits until JP gives items.
+ * Why Atla, at /about (the URL stays for SEO). The argument a CMO reads before
+ * hiring: the thesis, how we work, proof, clients, ways in, the team.
  */
 const copy = siteCopy.about;
-const services = siteCopy.services;
-const CARD_PROJECT = "rustico";
-
-function Row({
-  id,
-  title,
-  first = false,
-  block,
-  children,
-}: {
-  id: string;
-  title: string;
-  first?: boolean;
-  block?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className={first ? "fp-row fp-row--first" : "fp-row"} aria-labelledby={id} data-block={block}>
-      <h2 id={id} className="fp-script">
-        {title}
-      </h2>
-      <div className="fp-row__content">{children}</div>
-    </section>
-  );
-}
+const engagements = siteCopy.services;
 
 export default function About() {
-  const { projects } = useSiteProjects();
-  const cardImage = useMemo(() => {
-    const cover = projects.find((project) => project.slug === CARD_PROJECT)?.coverImage;
-    return cover ? getOptimizedImageUrl(cover, { width: 1280, quality: 80 }) || cover : undefined;
-  }, [projects]);
-  const half = Math.ceil(copy.clients.length / 2);
-
   return (
     <PageShell>
       <SeoHead
@@ -58,96 +22,102 @@ export default function About() {
         image="/figmaAssets/about-hero.jpg"
         structuredData={ORGANIZATION_SCHEMA}
       />
-      <div className="fp why">
-        <header className="fp-hero">
-          <img
-            className="fp-hero__media"
-            src="/figmaAssets/v2/about-atlas.webp"
-            alt=""
-            width={800}
-            height={800}
-            decoding="async"
-          />
-          <div className="fp-hero__text">
-            <h1 className="fp-display">{copy.title}</h1>
-          </div>
+      <div className="site-page-body why">
+        <header className="page-intro why-intro">
+          <h1 className="page-intro__title why-intro__title">{copy.title}</h1>
+          <p className="page-intro__lead">{copy.lead}</p>
         </header>
 
-        <Row id="why-about" title={copy.rows.about} first block="about">
-          <div className="fp-paras">
-            <p className="fp-body">{copy.lead}</p>
-            {copy.thesis.map((item) => (
-              <p key={item.title} className="fp-body">
-                {item.title} {item.body}
-              </p>
-            ))}
+        <section className="page-section" aria-labelledby="why-thesis">
+          <h2 id="why-thesis" className="site-label">
+            {copy.thesisLabel}
+          </h2>
+          <div className="page-section__body">
+            <ol className="how-steps why-thesis">
+              {copy.thesis.map((item) => (
+                <li key={item.title} className="how-step">
+                  <h3 className="how-step__title why-thesis__title">{item.title}</h3>
+                  <p className="how-step__body">{item.body}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-        </Row>
+        </section>
 
-        <Row id="why-team" title={copy.rows.team} block="team">
-          <ul className="fp-team">
-            {copy.team.map((member) => (
-              <li key={member.name} className="fp-team__member">
-                <span className="fp-team__name">{member.name}</span>
-                <span className="fp-team__role">
-                  <BracketLabel muted>{member.role}</BracketLabel>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Row>
+        <section className="page-section" aria-labelledby="about-how">
+          <h2 id="about-how" className="site-label">
+            {copy.howLabel}
+          </h2>
+          <div className="page-section__body">
+            <p className="page-section__lead">{copy.howLead}</p>
+            <ol className="how-steps">
+              {copy.how.map((step) => (
+                <li key={step.title} className="how-step">
+                  <h3 className="how-step__title">{step.title}</h3>
+                  <p className="how-step__body">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
 
-        <Row id="why-services" title={copy.rows.services} block="services">
-          <ul className="fp-list">
-            {services.disciplines.map((discipline) => (
-              <li key={discipline.id}>
-                <Link href={`/services#${discipline.id}`}>{discipline.title}</Link>
-              </li>
-            ))}
-          </ul>
-        </Row>
-
-        <Row id="why-clients" title={copy.rows.clients} block="clients">
-          <div className="fp-cols2">
-            <ul>
-              {copy.clients.slice(0, half).map((name) => (
-                <li key={name}>{name}</li>
+        <section className="page-section" aria-labelledby="why-proof">
+          <h2 id="why-proof" className="site-label">
+            {copy.proofLabel}
+          </h2>
+          <div className="page-section__body">
+            <ul className="why-proof">
+              {copy.proof.map((line) => (
+                <li key={line}>{line}</li>
               ))}
             </ul>
-            <ul>
-              {copy.clients.slice(half).map((name) => (
-                <li key={name}>{name}</li>
+            <h3 className="site-label team-cities__label">{copy.clientsLabel}</h3>
+            <p className="why-clients">{copy.clients.join("  ·  ")}</p>
+          </div>
+        </section>
+
+        <section className="page-section" aria-labelledby="why-ways">
+          <h2 id="why-ways" className="site-label">
+            {copy.engagementsLabel}
+          </h2>
+          <div className="page-section__body">
+            <p className="page-section__lead">{engagements.engagementsLead}</p>
+            <ol className="how-steps">
+              {engagements.engagements.map((item) => (
+                <li key={item.title} className="how-step">
+                  <h3 className="how-step__title">{item.title}</h3>
+                  <p className="how-step__body">{item.line}</p>
+                </li>
+              ))}
+            </ol>
+            <Link href="/brief" className="site-link why-cta">
+              {copy.cta}
+            </Link>
+          </div>
+        </section>
+
+        <section className="page-section" aria-labelledby="about-team" data-block="team">
+          <h2 id="about-team" className="site-label">
+            {copy.teamLabel}
+          </h2>
+          <div className="page-section__body">
+            <ul className="team-list">
+              {copy.team.map((member) => (
+                <li key={member.name} className="team-list__row">
+                  <span className="team-list__name">{member.name}</span>
+                  <span className="team-list__role">{member.role}</span>
+                  {member.city ? <span className="team-list__city">{member.city}</span> : null}
+                </li>
+              ))}
+            </ul>
+            <h3 className="site-label team-cities__label">{copy.citiesLabel}</h3>
+            <ul className="city-list">
+              {SITE_CITIES.map((city) => (
+                <li key={city.label}>{city.label}</li>
               ))}
             </ul>
           </div>
-        </Row>
-
-        <Row id="why-honors" title={copy.rows.honors} block="honors">
-          <ul className="fp-pairs">
-            {copy.honors.map((honor) => (
-              <li key={honor.award} className="fp-pair">
-                <span>{honor.award}</span>
-                <span>{honor.for}</span>
-              </li>
-            ))}
-          </ul>
-        </Row>
-
-        <Row id="why-ways" title={copy.rows.ways} block="ways">
-          <p className="fp-body">{services.engagementsLead}</p>
-          <ul className="fp-pairs">
-            {services.engagements.map((item) => (
-              <li key={item.title} className="fp-pair">
-                <span>{item.title}</span>
-                <span className="fp-pair__b">{item.line}</span>
-              </li>
-            ))}
-          </ul>
-        </Row>
-
-        <Row id="why-contact" title={copy.rows.contact} block="contact">
-          <ContactCard title={siteCopy.contact.cardTitle} lead={siteCopy.contact.lead} cta={copy.cta} image={cardImage} />
-        </Row>
+        </section>
       </div>
     </PageShell>
   );

@@ -5,56 +5,39 @@
 export const siteCopy = {
   header: {
     navLabel: "Primary",
-    // Figma navbar 4445:471 (JP, 2026-11-05): Work About Services left, Journal Contact right.
-    left: [
+    links: [
       { label: "Work", href: "/" },
-      { label: "About", href: "/about" },
       { label: "Services", href: "/services" },
+      { label: "Why Atla", href: "/about" },
     ],
-    right: [
-      { label: "Journal", href: "/journal" },
-      { label: "Contact", href: "/contact" },
-    ],
+    // JP, 2026-10-04: the header reads "Start a project". It opens the brief.
+    cta: { label: "Start a project", href: "/brief" },
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
     skipLink: "Skip to the work",
-    themeLabel: "Color mode",
-    themeLight: "Light mode",
-    themeDark: "Dark mode",
   },
   footer: {
     navLabel: "Footer",
-    // Figma footer 4546:2280. Careers and Facebook are drawn but have no page or profile yet: left out.
-    atla: {
-      head: "Atla",
-      links: [
-        { label: "Work", href: "/" },
-        { label: "About", href: "/about" },
-        { label: "Services", href: "/services" },
-        { label: "Journal", href: "/journal" },
-        { label: "Contact", href: "/contact" },
-      ],
-    },
-    socialsHead: "Socials",
-    officesHead: "Offices",
-    // Studio cities as drawn, with their local time.
-    offices: [
-      { label: "Austin, US", timeZone: "America/Chicago" },
-      { label: "CDMX, MX", timeZone: "America/Mexico_City" },
-      { label: "Caracas, VZ", timeZone: "America/Caracas" },
-      { label: "Lima, PE", timeZone: "America/Lima" },
-      { label: "Tijuana, MX", timeZone: "America/Tijuana" },
+    links: [
+      { label: "Work", href: "/" },
+      { label: "Services", href: "/services" },
+      { label: "Why Atla", href: "/about" },
+      { label: "Ventures", href: "/ventures" },
+      { label: "Contact", href: "/contact" },
+      { label: "Journal", href: "/journal" },
+      { label: "Programs", href: "/programs" },
+      { label: "Hospitality", href: "/hospitality" },
     ],
     legal: [
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },
     ],
-    cookiesLabel: "Cookies",
+    cookiesLabel: "Analytics cookies",
+    citiesLabel: "Studio cities",
     // JP, 2026-10-04: the footer line, verbatim.
     line: "When your brand has to change, start here.",
-    rights: "Atla® All Rights Reserved.",
-    backToTop: "Back to top ↑",
+    rights: "Atla. All rights reserved.",
   },
   home: {
     // The bar lives off the home now; these strings serve it wherever it is placed.
@@ -75,28 +58,19 @@ export const siteCopy = {
       more: "More work",
     },
     explore: "Explore",
-    // The filter index (Figma 4423:1871): rendered as ( REGION ), ( INDUSTRY ), ( SERVICE ), ( VIEW ).
-    filtersLabel: "Filter the work",
-    filters: { region: "Region", industry: "Industry", service: "Service", view: "View", all: "All" },
-    views: { masonry: "Masonry", grid: "Grid", list: "List" },
+    exploreDialog: "Filter the work",
+    filters: { region: "Region", industry: "Industry", service: "Service", year: "Year", all: "All" },
+    close: "Close",
   },
   project: {
-    // Bracket labels as drawn in the Figma (Project 4423:5596); CSS sets them uppercase.
-    clientsLabel: "( Clients )",
-    serviceLabel: "( Service )",
-    brandLabel: "( The Brand )",
-    challengeLabel: "( The Challenge )",
-    resultLabel: "( The Result )",
-    creditsLabel: "( Credits )",
-    otherWorksLabel: "( Other Works )",
-    // The one way into the brief from a project page: a text link under Other Works (not in the Figma; JP asked for a conversion path).
+    ctaTitle: "Building something like this?",
     ctaLabel: "Start a project",
-    seed: (title: string) => `Like ${title}`,
-    // Shown when the project has no credits in Sanity: the Atla team line.
-    fallbackCredit: { role: "Creative Direction", names: ["José Pablo Domínguez"] },
+    nextLabel: "Next",
     lightboxClose: "Close",
     lightboxPrev: "Previous image",
     lightboxNext: "Next image",
+    // Pre-fills the brief's first answer: /brief?seed=Like <title>
+    seed: (title: string) => `Like ${title}`,
   },
   brief: {
     metaTitle: "Start a project",
@@ -137,17 +111,6 @@ export const siteCopy = {
     callLead: "If you would rather talk it through, pick a time.",
     bookCall: "Book a call",
     restart: "Start another",
-    // Bracket label over each question (Figma, 2026-11-05). Unknown ids fall back to `label`.
-    stepLabels: {
-      building: "The project",
-      industry: "The world",
-      stage: "The stage",
-      moment: "The moment",
-      deliverables: "The work",
-      timing: "The timing",
-      contact: "Contact",
-      done: "Sent",
-    } as Record<string, string>,
   },
   // Services after tbp.studio/services (JP, 2026-11-05): rows by discipline, an Includes list that
   // opens, a real project photo beside each row. The four moments sit on top and narrow the rows.
@@ -159,7 +122,6 @@ export const siteCopy = {
     title: "What we do.",
     lead: "Every discipline, one team. Pick the moment you are in and the list narrows to what matters now.",
     momentsLabel: "The moment",
-    includesTitle: "Includes",
     allMoments: "Any moment",
     includesLabel: "What is included",
     includesOpen: "See what is included",
@@ -190,8 +152,6 @@ export const siteCopy = {
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.
     engagementsTitle: "Working with a company your size",
-    // Script row title for the engagements (Figma language, 2026-11-05).
-    engagementsLabel: "Ways in",
     engagementsLead: "Every way in is senior-led. Nobody sits between you and the work.",
     engagements: [
       { title: "Audit", line: "A look inside your brand. Findings ranked by what to fix first, and a roadmap." },
@@ -331,21 +291,6 @@ export const siteCopy = {
       "Some of the brands we design are ventures we are involved in.",
     ],
     clientsLabel: "Selected clients",
-    // Script row titles, one word each, as drawn in the Figma About frame (2026-11-05).
-    rows: {
-      about: "About",
-      team: "Team",
-      services: "Services",
-      clients: "Clients",
-      honors: "Honors",
-      ways: "Ways in",
-      contact: "Contact",
-    },
-    // Honors (JP's list in the Figma brief, 2026-11-05). No counts.
-    honors: [
-      { award: "MICHELIN Key", for: "Casa Las Tortugas" },
-      { award: "MICHELIN Green Star", for: "Acre" },
-    ],
     clients: ["Aimee Kestenberg", "PrettyBoy", "Temakase", "Acre", "Pax & Beneficia", "Persona", "Brick", "Anything"],
     engagementsLabel: "Ways to work with us",
     teamLabel: "Team",
@@ -373,8 +318,6 @@ export const siteCopy = {
     citiesLabel: "Cities",
     formTitle: "Or just write.",
     formLead: "What the business is, what feels off, and what has to happen next.",
-    formLabel: "Write to us",
-    cardTitle: "Start a project",
   },
   // JP, 2026-11-05: client marks above the footer, like Cosmos. The files are the ones JP sends
   // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.

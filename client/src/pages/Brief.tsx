@@ -4,7 +4,6 @@ import { PageShell } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
 import { formatMetaTitle } from "@shared/siteSeo";
-import "@/styles/pages.css";
 
 export default function Brief() {
   const params = new URLSearchParams(useSearch());

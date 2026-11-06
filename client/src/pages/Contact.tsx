@@ -1,28 +1,13 @@
-import { useMemo } from "react";
-import { BracketLabel, ContactCard, ContactForm } from "@/components/site/ContactForm";
+import { ContactForm } from "@/components/site/ContactForm";
 import { PageShell } from "@/components/site/PageShell";
-import { useSiteProjects } from "@/components/site/siteProjects";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_PAGE_SCHEMA } from "@/lib/sitePageSchema";
-import { getOptimizedImageUrl } from "@shared/imageDelivery";
 import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
-import "@/styles/pages.css";
 
 const copy = siteCopy.contact;
-const CARD_PROJECT = "rustico";
 
-/**
- * Contact in JP's Figma language (2026-11-05): one row, the script title on the left; on the right
- * the dark card that starts a brief, then the email line and the form in the Figma type.
- */
 export default function Contact() {
-  const { projects } = useSiteProjects();
-  const cardImage = useMemo(() => {
-    const cover = projects.find((project) => project.slug === CARD_PROJECT)?.coverImage;
-    return cover ? getOptimizedImageUrl(cover, { width: 1280, quality: 80 }) || cover : undefined;
-  }, [projects]);
-
   return (
     <PageShell>
       <SeoHead
@@ -32,28 +17,23 @@ export default function Contact() {
         image="/figmaAssets/about-hero.jpg"
         structuredData={CONTACT_PAGE_SCHEMA}
       />
-      <div className="fp contact">
-        <section className="fp-row fp-row--top" aria-labelledby="contact-title">
-          <h1 id="contact-title" className="fp-script">
-            {siteCopy.about.rows.contact}
-          </h1>
-          <div className="fp-row__content fp-contact">
-            <ContactCard title={copy.cardTitle} lead={copy.lead} cta={copy.cta} image={cardImage} headingLevel={2} />
-            <section className="fp-form-block" aria-labelledby="contact-form-title">
-              <div className="fp-row__content">
-                <h2 id="contact-form-title">
-                  <BracketLabel>{copy.formLabel}</BracketLabel>
-                </h2>
-                <p className="fp-body">{copy.formLead}</p>
-                <p className="fp-email">
-                  <BracketLabel muted>{copy.emailLabel}</BracketLabel>
-                  <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-                </p>
-                <ContactForm />
-              </div>
-            </section>
-          </div>
-        </section>
+      <div className="site-page-body">
+        <header className="page-intro">
+          <h1 className="page-intro__title">{copy.title}</h1>
+          <p className="page-intro__lead">{copy.lead}</p>
+        </header>
+
+        {/* One way in: the form, with the email line above it (critique 2026-11-05, C1 to C5). */}
+        <div className="contact-way">
+          <p className="contact-way__email">
+            <span className="site-label">{copy.emailLabel}</span>{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="site-link contact-details__email">
+              {CONTACT_EMAIL}
+            </a>
+          </p>
+          <p className="page-section__lead page-section__lead--muted">{copy.formLead}</p>
+          <ContactForm />
+        </div>
       </div>
     </PageShell>
   );

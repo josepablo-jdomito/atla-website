@@ -23,10 +23,10 @@ const WIDTHS: Record<Size, number[]> = {
   next: [640, 960, 1280, 1600, 2000, 2400],
 };
 
-// Grid cards follow the index (4 columns from 1200, 3 on tablets, 1 on phones). Next runs full width.
+// The grid is 2 columns at feature size and 3 at grid size on desktop; 1 and 2 on phones. Next runs full width.
 const SIZES: Record<Size, string> = {
   feature: "(min-width: 768px) 50vw, 100vw",
-  grid: "(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 100vw",
+  grid: "(min-width: 768px) 33vw, 50vw",
   next: "100vw",
 };
 
@@ -79,7 +79,6 @@ export function ProjectCard({
   const srcSet = buildImageSrcSet(project.coverImage, widths, { quality: 80 });
   const dimensions = getImageDimensions(project.coverImage);
   const video = reduced ? null : playableVideo(project.videos);
-  // Figma card 4423:1934: the caption is the project title, in stone.
   const name = project.client || project.title;
 
   return (
@@ -93,7 +92,7 @@ export function ProjectCard({
             src={src}
             srcSet={srcSet}
             sizes={SIZES[size]}
-            alt=""
+            alt={project.title}
             width={dimensions?.width}
             height={dimensions?.height}
             loading={priority ? "eager" : "lazy"}
@@ -103,7 +102,10 @@ export function ProjectCard({
           />
         )}
       </span>
-      <span className="project-card__caption">{project.title || name}</span>
+      <span className="project-card__caption">
+        <span className="project-card__name">{name}</span>
+        {project.industry ? <span className="project-card__meta">{project.industry}</span> : null}
+      </span>
     </Link>
   );
 }

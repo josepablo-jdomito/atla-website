@@ -81,24 +81,35 @@ afterEach(() => {
 });
 
 describe("Explore field", () => {
-  function renderExplore(query = "coffee") {
+  function renderExplore(query = "coffee", activeCount = 2) {
     stubMedia();
     const onQuery = vi.fn();
-    act(() => root.render(createElement(WorkExplore, { query, onQuery, visible: true })));
+    act(() =>
+      root.render(
+        createElement(
+          WorkExplore,
+          { query, onQuery, onClear: () => undefined, activeCount, visible: true },
+          createElement("p", null, "filters"),
+        ),
+      ),
+    );
     return { input: document.querySelector<HTMLInputElement>(".site-explore__input")!, onQuery };
   }
 
-  it("is a plain search field: no panel, no popup, no count (the filter index replaced the panel)", () => {
+  it("is a combobox that owns its panel (aria-expanded is valid there), and shows no count", () => {
     const { input } = renderExplore();
-    expect(input.type).toBe("search");
-    expect(input.closest("form")?.getAttribute("role")).toBe("search");
-    expect(input.hasAttribute("aria-expanded")).toBe(false);
+    expect(input.getAttribute("role")).toBe("combobox");
+    expect(input.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(input.getAttribute("aria-expanded")).toBe("false");
     act(() => input.focus());
-    expect(document.querySelector(".site-explore__panel, [role='dialog']")).toBeNull();
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+    const panel = document.getElementById(input.getAttribute("aria-controls")!)!;
+    expect(panel.getAttribute("role")).toBe("dialog");
+    expect(document.querySelector(".site-explore__count")).toBeNull();
     expect(document.querySelector(".site-explore")!.textContent).not.toMatch(/\d/);
   });
 
-  it("Escape keeps the query and leaves focus on the field", () => {
+  it("Escape closes the panel, keeps the query and leaves focus on the field", () => {
     const { input, onQuery } = renderExplore();
     act(() => input.focus());
     const event = new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true });
@@ -106,6 +117,7 @@ describe("Explore field", () => {
       input.dispatchEvent(event);
     });
     expect(event.defaultPrevented).toBe(true);
+    expect(document.querySelector(".site-explore__panel")).toBeNull();
     expect(document.activeElement).toBe(input);
     expect(onQuery).not.toHaveBeenCalled();
     expect(input.value).toBe("coffee");
@@ -340,11 +352,9 @@ describe("Site-wide rules in the stylesheet and the document head", () => {
     expect(CSS).toMatch(/\.site-root a:focus-visible,[\s\S]*?outline: 2px solid var\(--site-ink\);\s*outline-offset: 3px;/);
   });
 
-  it("has no mono eyebrows and no pill class; uppercase only where the Figma draws it", () => {
+  it("has no mono uppercase eyebrows and no pill class", () => {
     expect(CSS).not.toContain("Roboto Mono");
-    // JP's Figma (2026-11-05): bracket labels, filter titles, the logo line and the footer bottom line.
-    const uppercase = Array.from(CSS.matchAll(/\n([^{}\n]+)\{[^}]*text-transform:\s*uppercase/g), (m) => m[1].trim());
-    expect(uppercase).toEqual([".site-label", ".site-footer__bottom", ".client-logos__line", ".site-filter__label"]);
+    expect(CSS).not.toMatch(/text-transform:\s*uppercase/);
     expect(CSS).not.toContain(".site-pill");
     expect(CSS).not.toContain(".home-section-label");
   });

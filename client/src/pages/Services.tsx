@@ -7,13 +7,11 @@ import { siteCopy } from "@/content/siteCopy";
 import { buildServicesStructuredData } from "@/lib/sitePageSchema";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 import { formatMetaTitle } from "@shared/siteSeo";
-import { BracketLabel } from "@/components/site/ContactForm";
-import "@/styles/pages.css";
 
 /**
- * Services in JP's Figma language (2026-11-05): the page title in ABC Synt, the four moments as
- * bracket-labelled text options that narrow the rows, a script title per discipline, the includes
- * under a bracket label, and a real project cover beside the rows that follows the one in view.
+ * Services after tbp.studio/services (JP, 2026-11-05): the four moments on top narrow the
+ * rows; each discipline is a row with one line and an Includes list that opens; a real
+ * project cover sits beside the rows and follows the one in view. Text links only.
  */
 
 const copy = siteCopy.services;
@@ -71,8 +69,6 @@ export default function Services() {
     };
   }, [rows]);
 
-  const momentItem = copy.moments.find((item) => item.id === moment);
-
   return (
     <PageShell>
       <SeoHead
@@ -81,71 +77,60 @@ export default function Services() {
         pathname="/services"
         structuredData={structuredData}
       />
-      <div className="fp services">
-        <header className="fp-hero">
-          <div className="fp-hero__text">
-            <h1 className="fp-display">{copy.title}</h1>
-            <p className="fp-body">{copy.lead}</p>
-            <nav className="fp-moments" aria-label={copy.momentsLabel}>
-              <BracketLabel>{copy.momentsLabel}</BracketLabel>
-              <div className="fp-moments__options">
-                <button
-                  type="button"
-                  className="fp-option moments-strip__item"
-                  aria-pressed={moment === ""}
-                  onClick={() => setMoment("")}
-                >
-                  {copy.allMoments}
-                </button>
-                {copy.moments.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="fp-option moments-strip__item"
-                    aria-pressed={moment === item.id}
-                    onClick={() => setMoment((value) => (value === item.id ? "" : item.id))}
-                  >
-                    {item.title}
-                  </button>
-                ))}
-              </div>
-              {momentItem ? (
-                <p className="fp-moments__line">
-                  {momentItem.line} <Link href={briefHref(momentItem.brief)}>{copy.cta}</Link>
-                </p>
-              ) : null}
-            </nav>
-          </div>
+      <div className="site-page-body services">
+        <header className="page-intro">
+          <h1 className="page-intro__title">{copy.title}</h1>
+          <p className="page-intro__lead">{copy.lead}</p>
         </header>
 
-        <div className="fp-svc">
-          {rows.map((row) => (
-            <section
-              key={row.id}
-              id={row.id}
-              data-discipline={row.id}
-              ref={(el) => {
-                if (el) rowRefs.current.set(row.id, el);
-                else rowRefs.current.delete(row.id);
-              }}
-              className="discipline fp-svc__row"
-              data-active={current?.id === row.id}
-              aria-labelledby={`discipline-${row.id}`}
+        <nav className="moments-strip" aria-label={copy.momentsLabel}>
+          <button type="button" className="moments-strip__item" aria-pressed={moment === ""} onClick={() => setMoment("")}>
+            {copy.allMoments}
+          </button>
+          {copy.moments.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="moments-strip__item"
+              aria-pressed={moment === item.id}
+              onClick={() => setMoment((value) => (value === item.id ? "" : item.id))}
             >
-              <h2 id={`discipline-${row.id}`} className="fp-script fp-svc__title">
-                {row.title}
-              </h2>
-              <div className="fp-svc__body">
-                <p className="fp-svc__line">{row.line}</p>
+              {item.title}
+            </button>
+          ))}
+        </nav>
+        {moment ? (
+          <p className="moments-strip__line">
+            {copy.moments.find((item) => item.id === moment)?.line}{" "}
+            <Link href={briefHref(copy.moments.find((item) => item.id === moment)?.brief ?? moment)} className="site-link moments-strip__brief">
+              {copy.cta}
+            </Link>
+          </p>
+        ) : null}
+
+        <div className="services-grid">
+          <div className="services-rows">
+            {rows.map((row) => (
+              <section
+                key={row.id}
+                id={row.id}
+                data-discipline={row.id}
+                ref={(el) => {
+                  if (el) rowRefs.current.set(row.id, el);
+                  else rowRefs.current.delete(row.id);
+                }}
+                className="discipline"
+                data-active={current?.id === row.id}
+                aria-labelledby={`discipline-${row.id}`}
+              >
+                <h2 id={`discipline-${row.id}`} className="discipline__title">
+                  {row.title}
+                </h2>
+                <p className="discipline__line">{row.line}</p>
                 {example && current?.id === row.id ? (
-                  <Link href={`/projects/${example.slug}`} className="fp-photo fp-svc__inline">
+                  <Link href={`/projects/${example.slug}`} className="discipline__example discipline__example--inline">
                     <img
-                      src={
-                        getOptimizedImageUrl(example.coverImage, {
-                          width: 720,
-                          quality: 82,
-                        }) || example.coverImage
-                      }
+                      src={getOptimizedImageUrl(example.coverImage, { width: 720, quality: 82 }) || example.coverImage}
                       srcSet={buildImageSrcSet(example.coverImage, COVER_WIDTHS, { quality: 82 })}
                       sizes="100vw"
                       alt={example.title}
@@ -154,68 +139,61 @@ export default function Services() {
                       loading="lazy"
                       decoding="async"
                     />
-                    <span className="fp-photo__name">{example.title}</span>
+                    <span className="discipline__example-name">{example.title}</span>
                   </Link>
                 ) : null}
-                <div className="fp-svc__includes">
-                  <BracketLabel>{copy.includesTitle}</BracketLabel>
-                  <ul className="fp-list discipline__list">
+                <details className="discipline__includes">
+                  <summary className="discipline__summary">{copy.includesOpen}</summary>
+                  <ul className="discipline__list">
                     {row.includes.map((item) => (
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
-                </div>
-                <Link href={moment ? briefHref(momentItem?.brief ?? moment) : "/brief"} className="fp-textlink discipline__cta">
+                </details>
+                <Link href={moment ? briefHref(moment) : "/brief"} className="site-link discipline__cta">
                   {copy.cta}
                 </Link>
-              </div>
-            </section>
-          ))}
+              </section>
+            ))}
+          </div>
 
-          <aside className="fp-svc__aside" aria-hidden="true" style={{ gridRow: `1 / span ${rows.length}` }}>
+          <aside className="services-aside" aria-hidden="true">
             {example ? (
-              <Link href={`/projects/${example.slug}`} className="fp-photo" tabIndex={-1}>
+              <Link href={`/projects/${example.slug}`} className="discipline__example" tabIndex={-1}>
                 <img
                   key={example.slug}
-                  src={
-                    getOptimizedImageUrl(example.coverImage, {
-                      width: 720,
-                      quality: 84,
-                    }) || example.coverImage
-                  }
-                  srcSet={buildImageSrcSet(example.coverImage, COVER_WIDTHS, {
-                    quality: 84,
-                  })}
-                  sizes="260px"
+                  src={getOptimizedImageUrl(example.coverImage, { width: 960, quality: 84 }) || example.coverImage}
+                  srcSet={buildImageSrcSet(example.coverImage, COVER_WIDTHS, { quality: 84 })}
+                  sizes="40vw"
                   alt=""
                   width={getImageDimensions(example.coverImage)?.width}
                   height={getImageDimensions(example.coverImage)?.height}
                   decoding="async"
                 />
-                <span className="fp-photo__name">{example.title}</span>
+                <span className="discipline__example-name">
+                  {copy.exampleLabel}: {example.title}
+                </span>
               </Link>
             ) : null}
           </aside>
         </div>
 
-        <section className="fp-row" aria-labelledby="engagements-title" data-block="ways">
-          <h2 id="engagements-title" className="fp-script">
-            {copy.engagementsLabel}
+        <section className="engagements" aria-labelledby="engagements-title">
+          <h2 id="engagements-title" className="engagements__title">
+            {copy.engagementsTitle}
           </h2>
-          <div className="fp-row__content">
-            <p className="fp-body">{copy.engagementsLead}</p>
-            <ul className="fp-pairs">
-              {copy.engagements.map((item) => (
-                <li key={item.title} className="fp-pair">
-                  <span>{item.title}</span>
-                  <span className="fp-pair__b">{item.line}</span>
-                </li>
-              ))}
-            </ul>
-            <Link href="/brief" className="fp-button">
-              {copy.cta}
-            </Link>
-          </div>
+          <p className="engagements__lead">{copy.engagementsLead}</p>
+          <ol className="how-steps">
+            {copy.engagements.map((item) => (
+              <li key={item.title} className="how-step">
+                <h3 className="how-step__title">{item.title}</h3>
+                <p className="how-step__body">{item.line}</p>
+              </li>
+            ))}
+          </ol>
+          <Link href="/brief" className="site-link discipline__cta">
+            {copy.cta}
+          </Link>
         </section>
       </div>
     </PageShell>

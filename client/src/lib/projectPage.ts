@@ -474,36 +474,3 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     videoStructuredData,
   };
 }
-
-export type ProjectCredit = { role: string; names: string[] };
-
-/**
- * The project's team credits, when the API sends them (`credits: [{ role, names | name }]`).
- * Empty when it does not; the page then shows its one fallback row.
- */
-export function projectCredits(project: ProjectApi | null | undefined): ProjectCredit[] {
-  const raw = (project as { credits?: unknown } | null | undefined)?.credits;
-  if (!Array.isArray(raw)) return [];
-  return raw.flatMap((entry): ProjectCredit[] => {
-    if (!entry || typeof entry !== "object") return [];
-    const record = entry as { role?: unknown; names?: unknown; name?: unknown };
-    const role = typeof record.role === "string" ? record.role.trim() : "";
-    const names = (Array.isArray(record.names) ? record.names : [record.name])
-      .filter((name): name is string => typeof name === "string" && name.trim().length > 0)
-      .map((name) => name.trim());
-    return role && names.length > 0 ? [{ role, names }] : [];
-  });
-}
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/**
- * "Oct 2025" when a real month is known, else "2025". The API's `createdAt` is the request time
- * (server/sanity/projectService.ts sets `new Date()`), not the project's date, so it is never read:
- * a month only shows when `month` (1–12) comes from a real Sanity date.
- */
-export function projectDateLabel(year: number | string | null | undefined, month?: number | null) {
-  const y = Number.parseInt(String(year ?? ""), 10);
-  if (!(y > 0)) return "";
-  return month && month >= 1 && month <= 12 ? `${MONTHS[month - 1]} ${y}` : String(y);
-}
