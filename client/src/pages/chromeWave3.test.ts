@@ -87,3 +87,62 @@ describe("The client marks", () => {
     expect(container.querySelector(".not-found__home")?.textContent).toBe("Go to home");
   });
 });
+
+function strings(value: unknown, out: string[] = []): string[] {
+  if (typeof value === "string") out.push(value);
+  else if (Array.isArray(value)) value.forEach((v) => strings(v, out));
+  else if (value && typeof value === "object") Object.values(value).forEach((v) => strings(v, out));
+  return out;
+}
+
+const read = (...parts: string[]) => readFileSync(path.resolve(import.meta.dirname, "../..", ...parts), "utf8");
+
+describe("Chrome copy (fix wave 3, group C)", () => {
+  it("has no em dash and none of the banned words in any site string", () => {
+    for (const text of strings(siteCopy)) {
+      expect(text).not.toMatch(/—/);
+      expect(text).not.toMatch(/\b(elevate\w*|authentic\w*|game-changer|next level|synergy|leverage\w*|robust|seamless\w*|journey|vibrant|delve|landscape\w*|tapestry|testament|unlock\w*)\b/i);
+    }
+  });
+
+  it("the document title and the seed journal titles carry no em dash", () => {
+    expect(read("index.html")).not.toMatch(/—/);
+    expect(read("index.html")).toContain("<title>Atla | Branding Studio</title>");
+    expect(read("src/data/atlaContent.ts")).not.toMatch(/—/);
+    expect(read("src/components/seo/SeoHead.tsx")).not.toMatch(/—/);
+  });
+
+  it("says one thing about what happens to a message: we reply by email and manage the inquiry, no durations", () => {
+    const { contact } = siteCopy.brief;
+    expect(contact.privacyNotice).toBe(siteCopy.contact.formNotice);
+    expect(contact.body).toBe(
+      "Every application gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
+    );
+    for (const text of [contact.body, contact.privacyNotice, siteCopy.contact.lead, siteCopy.contact.formNotice, siteCopy.contact.sent, siteCopy.brief.done]) {
+      expect(text).not.toMatch(/\d|\bhours?\b|\bdays?\b|\bweeks?\b|\byears?\b/i);
+    }
+    expect(siteCopy.contact.lead).toContain("replies by email");
+    expect(siteCopy.contact.lead).not.toMatch(/one at a time/i);
+    // The policy says the same sentence, and no longer says "for nothing else" next to a longer list of uses.
+    const privacy = read("src/pages/AtlaPrivacy.tsx");
+    expect(privacy).toContain("We use it to reply to you and to manage your inquiry.");
+    expect(privacy).not.toContain("for nothing else");
+  });
+
+  it("the contact form's timeline options read like the brief's", () => {
+    const form = read("src/components/site/ContactForm.tsx");
+    for (const label of ["In the next 30 days", "1 – 3 months", "3 – 6 months", "No fixed timeline"]) expect(form).toContain(label);
+    expect(form).not.toContain("1–3 months");
+  });
+
+  it("brief options are rows with a hairline, a 44px hit area, a mark on hover and focus, and a clear selected state", () => {
+    expect(CSS).toMatch(/\.brief-option \{[^}]*min-height: 56px;[^}]*border-top: 1px solid var\(--site-line\);/);
+    expect(CSS).toMatch(/\.brief-option::after \{[^}]*width: 16px;/);
+    expect(CSS).toMatch(/\.brief-option:hover:not\(:disabled\):not\(\[aria-pressed="true"\]\)::after \{ border-color: var\(--site-muted\); \}/);
+    expect(CSS).toContain(".brief-option:focus-visible::after");
+    expect(CSS).toMatch(/\.brief-option\[aria-pressed="true"\]::after \{[^}]*background: var\(--site-ink\);/);
+    expect(CSS).toMatch(/\.brief-prompt \{[^}]*font-family: var\(--site-display\);/);
+    // Still no boxes: no background or full border on a row.
+    expect(CSS).not.toMatch(/\.brief-option \{[^}]*border: 1px solid/);
+  });
+});

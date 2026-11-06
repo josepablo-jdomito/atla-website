@@ -3,7 +3,8 @@ import { PageShell } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_PAGE_SCHEMA } from "@/lib/sitePageSchema";
-import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
+import { SITE_CITIES } from "@/components/site/SiteFooter";
+import { CONTACT_EMAIL, SOCIAL_PROFILES, formatMetaTitle } from "@shared/siteSeo";
 
 const copy = siteCopy.contact;
 
@@ -31,7 +32,20 @@ export default function Contact() {
               {CONTACT_EMAIL}
             </a>
           </p>
-          <p className="page-section__lead page-section__lead--muted">{copy.formLead}</p>
+          <p className="contact-way__line">
+            <span className="site-label">{copy.socialLabel}</span>{" "}
+            {SOCIAL_PROFILES.map((social, index) => (
+              <span key={social.href}>
+                {index > 0 ? ", " : null}
+                <a href={social.href} target="_blank" rel="noreferrer" className="site-link">
+                  {social.label === "Linkedin" ? "LinkedIn" : social.label}
+                </a>
+              </span>
+            ))}
+          </p>
+          <p className="contact-way__line">
+            <span className="site-label">{copy.citiesLabel}</span> {SITE_CITIES.map((city) => city.label).join(", ")}
+          </p>
           <ContactForm />
         </div>
       </div>

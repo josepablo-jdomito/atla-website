@@ -228,7 +228,7 @@ export const projectShowcases: Record<string, ProjectShowcase> = {
 export const journalArticles: JournalArticle[] = [
   {
     slug: "digital-poetics-when-code-becomes-canvas",
-    title: "Digital Poetics — When Code Becomes Canvas",
+    title: "Digital Poetics: When Code Becomes Canvas",
     category: "Digital Art",
     categorySlug: "digital-art",
     date: "Oct 2025",
@@ -274,7 +274,7 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: "the-aesthetics-of-technology-designing-the-invisible",
-    title: "The Aesthetics of Technology — Designing the Invisible",
+    title: "The Aesthetics of Technology: Designing the Invisible",
     category: "Design & Tech",
     categorySlug: "design-tech",
     date: "Sep 2025",
@@ -287,7 +287,7 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: "human-machines-art-at-the-edge-of-intelligence",
-    title: "Human Machines — Art at the Edge of Intelligence",
+    title: "Human Machines: Art at the Edge of Intelligence",
     category: "Feature Article",
     categorySlug: "feature-article",
     date: "Aug 2025",
@@ -300,7 +300,7 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: "generative-design-when-creativity-becomes-autonomous",
-    title: "Generative Design — When Creativity Becomes Autonomous",
+    title: "Generative Design: When Creativity Becomes Autonomous",
     category: "Digital Art",
     categorySlug: "digital-art",
     date: "Jun 2025",
@@ -313,7 +313,7 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: "beyond-the-screen-the-future-of-digital-presence",
-    title: "Beyond the Screen — The Future of Digital Presence",
+    title: "Beyond the Screen: The Future of Digital Presence",
     category: "Digital Art",
     categorySlug: "digital-art",
     date: "May 2025",
@@ -326,7 +326,7 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: "architecture-in-motion-the-new-language-of-digital-space",
-    title: "Architecture in Motion — The New Language of Digital Space",
+    title: "Architecture in Motion: The New Language of Digital Space",
     category: "Digital Art",
     categorySlug: "digital-art",
     date: "May 2025",

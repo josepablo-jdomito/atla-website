@@ -114,7 +114,8 @@ export const siteCopy = {
     emptyChoice: "Pick one to go on.",
     contact: {
       prompt: "Where should we send our reply?",
-      body: "Every application gets a 48-hour read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
+      // No durations on this site (JP's rule), so the waitlist's promise keeps its words minus the hours.
+      body: "Every application gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
       fields: {
         name: "Name",
         email: "Email",
@@ -123,7 +124,8 @@ export const siteCopy = {
         phone: "Phone",
       },
       optional: "Optional",
-      privacyNotice: "We use this to reply and for nothing else.",
+      // The one promise, said the same way on /contact and in the policy: we reply by email and manage the inquiry.
+      privacyNotice: "We use this to reply and to manage your inquiry.",
       privacyLink: "Privacy",
       submit: "Submit application",
       sending: "Sending",
@@ -336,13 +338,17 @@ export const siteCopy = {
     metaSuffix: "Start a Branding or Digital Project",
     metaDescription: "Write to Atla when you launch, raise capital, grow or reposition. José Pablo replies by email.",
     title: "Tell us what you are building.",
-    lead: "A few questions, one at a time. José Pablo reads every one and replies by email.",
+    lead: "Write to us in a few lines. José Pablo reads every note and replies by email.",
     cta: "Start a project",
     emailLabel: "Email",
     socialLabel: "Elsewhere",
     citiesLabel: "Cities",
+    // The same sentence the brief's contact step carries; the policy says it too.
+    formNotice: "We use this to reply and to manage your inquiry.",
+    formNoticeLink: "See the privacy policy.",
+    sent: "Received. José Pablo reads every note himself and replies by email.",
+    sentUrgent: "If it is urgent, write to",
     formTitle: "Or just write.",
-    formLead: "What the business is, what feels off, and what has to happen next.",
   },
   // JP, 2026-11-05: client marks above the footer, like Cosmos. The files are the ones JP sends
   // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.

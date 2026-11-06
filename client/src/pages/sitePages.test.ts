@@ -118,7 +118,7 @@ describe("About page", () => {
 });
 
 describe("Contact page", () => {
-  it("has one way in: the email line, then the form; no brief CTA, no pills, socials and cities left to the footer", () => {
+  it("has one way in: the email line with the socials and cities beside it, then the form; no brief CTA, no pills", () => {
     render(Contact, "/contact");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
     const email = main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)!;
@@ -129,7 +129,11 @@ describe("Contact page", () => {
     // The email line sits above the form.
     expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(main().querySelector('a[href="/brief"]')).toBeNull();
-    for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).toBeNull();
+    // UX interview 31: email, cities, socials, the form. The footer is one line and no longer carries the socials.
+    for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).not.toBeNull();
+    expect(main().textContent).toContain("Austin, Mexico City, Barcelona, Lima, Caracas");
+    expect(email.compareDocumentPosition(main().querySelector(`a[href="${SOCIAL_PROFILES[0].href}"]`)!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(main().querySelector(".site-pill")).toBeNull();
     expect(form.querySelectorAll('button[type="submit"]')).toHaveLength(1);
   });

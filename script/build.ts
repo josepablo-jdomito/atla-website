@@ -6,7 +6,7 @@ import path from "path";
 import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, JOURNAL_DESCRIPTION_PAD, JOURNAL_META_DESCRIPTION, JOURNAL_TITLE_SUFFIX, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
@@ -53,7 +53,7 @@ const allowlist = [
 ];
 
 const DEFAULT_JOURNAL_CATEGORY_DESCRIPTION =
-  "Selected writing from Atla Journal on branding, strategy, digital craft, and creative direction.";
+  "Notes from the Atla studio on branding, strategy and creative direction.";
 const PRERENDER_REMOTE_TIMEOUT_MS = 12_000;
 
 function ensureDescriptionLength(description: string, fallback: string) {
@@ -651,8 +651,8 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/journal",
-      title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
-      description: "Atla Journal: essays and notes on branding, strategy and design from Atla, a senior-led branding studio working across the US and Latin America.",
+      title: formatMetaTitle("Atla Journal", JOURNAL_TITLE_SUFFIX),
+      description: JOURNAL_META_DESCRIPTION,
       image: articles[0] ? resolveArticleImage(articles[0]) : DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
       structuredData: {
@@ -709,7 +709,7 @@ async function prerenderRoutes() {
     const pathname = `/journal/category/${category.slug}`;
     const description = ensureDescriptionLength(
       category.seoDescription || category.description || DEFAULT_JOURNAL_CATEGORY_DESCRIPTION,
-      "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems."
+      JOURNAL_DESCRIPTION_PAD,
     );
     const title = formatJournalMetaTitle(category.seoTitle || `${category.title} Articles`);
 

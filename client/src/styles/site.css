@@ -361,10 +361,12 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 .brief-prompt {
   margin: 0;
+  /* The display face, like every other page title (red team 16). */
+  font-family: var(--site-display);
   font-size: clamp(30px, 2.2vw + 20px, 46px);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.08;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 .brief-prompt:focus { outline: none; }
@@ -381,19 +383,26 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 .brief-lead--muted { margin-top: -24px; color: var(--site-muted); }
 
-/* Options are text, like the Explore filters: no boxes, no marks. The chosen one carries the accent underline. */
+/* Options are rows, not paragraphs (red team 16): a hairline between them, the whole row is the hit area
+   (44px at least), and a quiet mark at the end says "pick me" on hover and focus, and "picked" when chosen.
+   Still no boxes. The mark is a ring for one answer, a square for several. */
 .brief-options {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: stretch;
+  gap: 0;
+  border-bottom: 1px solid var(--site-line);
 }
 .brief-option {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 0;
   border: 0;
+  border-top: 1px solid var(--site-line);
   background: none;
   color: var(--site-ink);
   font: inherit;
@@ -403,17 +412,32 @@ html[data-menu="open"] .site-explore { display: none; }
   cursor: pointer;
   transition: color 160ms var(--site-ease);
 }
+.brief-option::after {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
+  transition: border-color 160ms var(--site-ease), background-color 160ms var(--site-ease);
+}
+.brief-option[data-kind="multi"]::after { border-radius: 3px; }
+/* A touch screen has no hover, so the mark is always faintly there. */
+@media (hover: none) {
+  .brief-option:not([aria-pressed="true"])::after { border-color: color-mix(in srgb, var(--site-ink) 30%, transparent); }
+}
+.brief-option:focus-visible::after { border-color: var(--site-muted); }
 .brief-option:disabled { cursor: default; }
 .brief-option:disabled:not([aria-pressed="true"]) { opacity: 0.45; }
-.brief-option[aria-pressed="true"] .brief-option__label {
-  text-decoration: underline;
-  text-decoration-color: var(--site-ink);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+.brief-option[aria-pressed="true"]::after {
+  border-color: var(--site-ink);
+  background: var(--site-ink);
+  box-shadow: inset 0 0 0 3px var(--site-bg);
 }
+.brief-option[aria-pressed="true"] .brief-option__label { font-weight: 500; }
 @media (hover: hover) and (pointer: fine) {
-  .brief-option:hover:not(:disabled) { color: var(--site-muted); }
-  .brief-option[aria-pressed="true"]:hover { color: var(--site-ink); }
+  .brief-option:hover:not(:disabled):not([aria-pressed="true"])::after { border-color: var(--site-muted); }
   .brief-back:hover:not(:disabled) { color: var(--site-ink); }
   .brief-quiet:hover { color: var(--site-ink); }
 }
@@ -1175,6 +1199,8 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 .site-root .contact-way__email { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
 .site-root .contact-way__email .site-link { font-size: 17px; }
+.site-root .contact-way__line { margin: 0; font-size: 15px; line-height: 1.6; color: var(--site-muted); }
+.site-root .contact-way__line .site-link { color: var(--site-ink); }
 
 .site-root .contact-form,
 .site-root .contact-form__form { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 40rem; }

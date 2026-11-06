@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
+  JOURNAL_DESCRIPTION_PAD,
+  JOURNAL_EMPTY,
+  JOURNAL_META_DESCRIPTION,
+  JOURNAL_TITLE_SUFFIX,
   formatMetaTitle,
   ORGANIZATION_LOGO_URL,
   ORGANIZATION_NAME,
@@ -17,8 +21,7 @@ import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { getImageDimensions } from "@shared/imageDelivery";
 import { ownCovers } from "@/lib/journalCovers";
 
-const DEFAULT_PAGE_DESCRIPTION =
-  "Atla Journal: essays and notes on branding, strategy and design from Atla, a senior-led branding studio working across the US and Latin America.";
+const DEFAULT_PAGE_DESCRIPTION = JOURNAL_META_DESCRIPTION;
 const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
   branding: ["Naming, positioning, rebrands and launches, and what each one changes once it reaches the website, the package and the pitch."],
   strategy: ["Positioning and audience, written so the design work moves faster."],
@@ -28,7 +31,7 @@ const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
 
 function ensureDescriptionLength(description: string) {
   if (description.length >= 130) return description;
-  const fallback = "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems.";
+  const fallback = JOURNAL_DESCRIPTION_PAD;
   const combined = `${description} ${fallback}`.trim();
   return combined.length > 160 ? `${combined.slice(0, 157).trimEnd()}...` : combined;
 }
@@ -71,7 +74,7 @@ export default function AtlaJournal() {
   const pathname = activeCategory ? `/journal/category/${activeCategory.slug}` : "/journal";
   const pageTitle = activeCategory
     ? formatJournalMetaTitle(activeCategory.seoTitle || `${activeCategory.title} Articles`)
-    : formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft");
+    : formatMetaTitle("Atla Journal", JOURNAL_TITLE_SUFFIX);
   const pageDescription = ensureDescriptionLength(activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION);
   const heroTitle = activeCategory
     ? activeCategory.title
@@ -79,7 +82,7 @@ export default function AtlaJournal() {
   const heroDescription = activeCategory?.description;
   const categorySupportCopy = activeCategory
     ? CATEGORY_SUPPORT_COPY[activeCategory.slug] || [
-      `${activeCategory.title} writing from the Atla Journal.`,
+      `Notes filed under ${activeCategory.title}.`,
     ]
     : [];
   const collectionSchema = {
@@ -183,8 +186,8 @@ export default function AtlaJournal() {
           </div>
         ) : (
           <div className="journal-empty">
-            <p className="journal-empty__title">Nothing here yet.</p>
-            <p className="longform-text">We&apos;ll publish articles in this category soon. Browse the full archive from All.</p>
+            <p className="journal-empty__title">{JOURNAL_EMPTY.title}</p>
+            <p className="longform-text">{JOURNAL_EMPTY.body}</p>
           </div>
         )}
       </div>

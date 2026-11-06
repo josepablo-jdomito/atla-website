@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { trackEvent } from "@/hooks/use-analytics";
 import { ga4Event } from "@/lib/ga";
+import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_EMAIL } from "@shared/siteSeo";
 
 // Extracted from AtlaContact.tsx (Task 10). Fields, payload, endpoint, analytics and messages are
 // unchanged except one ruling: the budget question is gone (no budget questions or prices on v2).
 // /api/contact treats budget as optional (default ""), so the payload stays valid without it.
 
-const SUCCESS_TEXT = "Received. We read every note directly and reply with the next recommended step.";
+const SUCCESS_TEXT = siteCopy.contact.sent;
 
 type FormStatus =
   | { state: "idle" }
@@ -89,7 +90,7 @@ export function ContactForm() {
           <div className="contact-form__sent">
             <p className="contact-form__sent-title">{SUCCESS_TEXT}</p>
             <p className="contact-form__note">
-              If it is urgent, write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+              {siteCopy.contact.sentUrgent} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </div>
         ) : null}
@@ -109,10 +110,11 @@ export function ContactForm() {
           <Field label="Timeline (optional)">
             <select name="timeline" defaultValue="" className="brief-input contact-form__select">
               <option value="">Select a timeline</option>
-              <option value="this-month">This month</option>
-              <option value="1-3-months">1–3 months</option>
-              <option value="3-6-months">3–6 months</option>
-              <option value="exploring">Exploring</option>
+              {/* The brief's own wording (shared/brief.ts q5), so both forms ask the same way. */}
+              <option value="this-month">In the next 30 days</option>
+              <option value="1-3-months">1 – 3 months</option>
+              <option value="3-6-months">3 – 6 months</option>
+              <option value="exploring">No fixed timeline</option>
             </select>
           </Field>
           <Field label="What is the business, what feels misaligned, and what has to happen next?">
@@ -140,8 +142,7 @@ export function ContactForm() {
           ) : null}
 
           <p className="contact-form__note">
-            What you send here goes to our CRM so we can answer your inquiry, and we keep it for two years after our last
-            exchange. See the <a href="/privacy">privacy policy</a>.
+            {siteCopy.contact.formNotice} <a href="/privacy">{siteCopy.contact.formNoticeLink}</a>
           </p>
           <div className="brief-actions">
             <button type="submit" disabled={isSubmitting} className="brief-primary">

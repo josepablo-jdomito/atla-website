@@ -257,7 +257,7 @@ const isOutcome = (value: unknown): value is Outcome => typeof value === "string
 const OUTCOME_STATUS: Record<Outcome, number> = { sent: 200, unavailable: 503, invalid: 400, busy: 429, failed: 502, forbidden: 403 };
 
 const OUTCOME_COPY: Record<Outcome, { heading: string; body: string }> = {
-  sent: { heading: "Received.", body: "We read every note directly and reply with the next recommended step." },
+  sent: { heading: "Received.", body: "José Pablo reads every note himself and replies by email." },
   unavailable: { heading: "The form is offline right now.", body: `Send your note to ${CONTACT_EMAIL} and we will pick it up there.` },
   invalid: { heading: "Something in the form needs a second look.", body: "Go back, check the fields, and send it again." },
   busy: { heading: "Too many messages from this connection.", body: "Try again in a few minutes, or email us." },
