@@ -17,18 +17,25 @@ export const siteCopy = {
     ],
     // JP, 2026-10-04: the header reads "Start a project". It opens the brief.
     cta: { label: "Start a project", href: "/brief" },
-    // The phone menu (below 768 px) lists the three header links, then the two ways in (red team 19).
+    // The phone menu (below 768 px), JP's reference of 2026-11-06: one row per page with a picture,
+    // the brief last as its own row.
     sheetLinks: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
       { label: "Why Atla", href: "/about" },
-      { label: "Start a project", href: "/brief" },
+      { label: "Ventures", href: "/ventures" },
       { label: "Contact", href: "/contact" },
+      { label: "Start a project", href: "/brief" },
     ],
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
     skipLink: "Skip to the work",
+  },
+  // The phone menu card's own words.
+  menu: {
+    navLabel: "Menu",
+    closeLabel: "Close menu",
   },
   footer: {
     navLabel: "Footer",
@@ -146,16 +153,31 @@ export const siteCopy = {
     restart: "Start another",
   },
   // Services after tbp.studio/services (JP, 2026-11-05): rows by discipline, an Includes list that
-  // opens, a real project photo beside each row. The four moments sit on top and narrow the rows.
-  // Every line below comes from the current /services page and the SEO landings. Nothing new.
+  // opens, a real project photo beside each row. Every line below comes from the current /services
+  // page and the SEO landings. Nothing new.
+  // JP, 2026-11-06: the visitor picks the moment first ("Where are you?"), then reads every
+  // discipline and every engagement through it. `byMoment` and `engagementsByMoment` are written
+  // only from the discipline's own line and the moment's own line: no new claims, no numbers.
   services: {
     metaTitle: "Brand Strategy, Identity, and Digital Design Services",
     metaDescription:
       "Brand strategy, naming, identity, packaging, websites and motion from Atla, for companies launching, raising, growing or starting over.",
-    title: "What we do.",
-    lead: "Every discipline, one team. Pick the moment you are in and the list narrows to what matters now.",
+    title: "Where are you?",
+    lead: "Every discipline, one team. Pick the moment your company is in and read each one through it.",
     momentsLabel: "The moment",
     allMoments: "Any moment",
+    disciplinesTitle: "What we do.",
+    // Act two echoes the chosen moment (coordinator, 2026-11-06).
+    disciplinesTitleByMoment: {
+      launch: "What we do when you launch",
+      raise: "What we do when you raise capital",
+      grow: "What we do when you grow",
+      reposition: "What we do when you reposition",
+    },
+    alsoLabel: "Also, when you need it",
+    // Read once by screen readers when the moment changes; never shown.
+    liveAny: "Every discipline, for any moment.",
+    liveFor: "Every discipline, read for",
     includesLabel: "What is included",
     includesOpen: "See what is included",
     includesClose: "Close",
@@ -170,7 +192,7 @@ export const siteCopy = {
       },
       {
         id: "grow",
-        title: "Grow / scale",
+        title: "Grow",
         line: "More products, more markets. Every new person touches the brand. We keep it one brand.",
       },
       {
@@ -188,6 +210,12 @@ export const siteCopy = {
       { title: "Full build", line: "The system plus the content to launch it: website, decks, social, packaging." },
       { title: "Fractional brand director", line: "A creative director on your team. Decisions, reviews, standards." },
     ],
+    engagementsByMoment: {
+      launch: "Most launches start with a Brand system, or a Full build when the website and packaging ship with it.",
+      raise: "Before a raise, a Brand system with the pitch deck, or an Audit when the brand exists and needs fixing first.",
+      grow: "While the company grows, a Fractional brand director keeps every new product and market one brand.",
+      reposition: "A reposition usually starts with an Audit: findings ranked by what to fix first, then the system.",
+    },
     // `project` is the slug whose cover sits beside the row. JP can swap any of them.
     disciplines: [
       {
@@ -203,6 +231,12 @@ export const siteCopy = {
           "Leadership workshop and roadmap",
           "Strategy for a new market",
         ],
+        byMoment: {
+          launch: "Before anyone sees the brand, one position the whole company can repeat.",
+          raise: "One position the whole company can repeat, so the story investors hear holds from the first look.",
+          grow: "A strategy for each new market, built on the one position every team already repeats.",
+          reposition: "We start with what your customers already say, then pick the one position the company can repeat.",
+        },
         moments: ["launch", "raise", "reposition"],
         project: "casa-colora",
       },
@@ -211,6 +245,12 @@ export const siteCopy = {
         title: "Naming and voice",
         line: "A name that clears legal, and a voice that holds from the pitch deck to the shelf.",
         includes: ["Naming", "Tone of voice", "Copy"],
+        byMoment: {
+          launch: "A name that clears legal before anyone sees it, and a voice ready for the first impression.",
+          raise: "A voice that holds in the pitch deck, so investors meet the same company on every page.",
+          grow: "One voice from the pitch deck to the shelf, across every new product and market.",
+          reposition: "A new name if the company outgrew the old one, and a voice that says what changed.",
+        },
         moments: ["launch", "reposition"],
         project: "sexto-abismo",
       },
@@ -225,6 +265,12 @@ export const siteCopy = {
           "Art direction and content standards",
           "Brand direction as the company grows",
         ],
+        byMoment: {
+          launch: "A system built before anyone sees the brand, ready for your first hire and your first agency.",
+          raise: "A system that makes the company look like one brand at first look, before the deck is open.",
+          grow: "Guidelines your team can use without us, so every new person keeps it one brand.",
+          reposition: "An identity redesign that shows what changed, and guidelines so it stays one brand.",
+        },
         moments: ["launch", "raise", "grow", "reposition"],
         project: "rustico",
       },
@@ -233,6 +279,12 @@ export const siteCopy = {
         title: "Packaging",
         line: "Packaging you recognize at arm's length and in a thumbnail, across the whole range.",
         includes: ["Packaging and labels", "Packaging across the whole range"],
+        byMoment: {
+          launch: "Packaging you recognize at arm's length and in a thumbnail from the day it reaches a shelf.",
+          raise: "Packaging that reads as one brand in a thumbnail, wherever investors first see the product.",
+          grow: "Packaging across the whole range, so every new product still reads as one brand.",
+          reposition: "Packaging that carries the change to the shelf, recognizable at arm's length.",
+        },
         moments: ["launch", "grow"],
         project: "reggie",
       },
@@ -247,6 +299,12 @@ export const siteCopy = {
           "Investor and sales material",
           "Social templates and launch assets",
         ],
+        byMoment: {
+          launch: "A website and launch assets that make the case before anyone knows your name.",
+          raise: "A pitch deck, one-pager and investor material that make the case when nobody from your team is in the room.",
+          grow: "A website built to convert, and sales material every new market can use.",
+          reposition: "A website that tells the new story when nobody from your team is in the room.",
+        },
         moments: ["launch", "raise", "grow"],
         project: "anything-ai",
       },
@@ -255,6 +313,12 @@ export const siteCopy = {
         title: "Motion and campaigns",
         line: "The brand in movement, without a second system.",
         includes: ["Motion: logo animation, social, product UI", "Creative direction for campaigns"],
+        byMoment: {
+          launch: "Logo animation and the launch campaign: the brand in movement from the first day.",
+          raise: "Motion for the deck and the product UI: the same brand, in movement.",
+          grow: "Creative direction for every campaign as you grow, without a second system.",
+          reposition: "The new brand in movement across social and product, without a second system.",
+        },
         moments: ["launch", "grow"],
         project: "bond-and-bloom",
       },

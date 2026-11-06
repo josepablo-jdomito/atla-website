@@ -140,30 +140,133 @@ html body {
 .site-header__brand { display: block; width: 56px; color: inherit; }
 .site-header__cta { font-weight: 500; }
 
-.site-sheet {
-  position: fixed;
-  inset: 64px 0 0 0;
-  background: var(--site-bg);
-  padding: 32px var(--site-gutter);
-  overflow-y: auto;
-}
+/* The phone menu (JP's reference, 2026-11-06): a paper card drops from the top of the viewport over the
+   page, which stays in view, dimmed and blurred. One row per page, a picture and the name; the email and
+   the motion control at the base. */
+.site-sheet { position: fixed; inset: 0; z-index: 60; }
 .site-sheet[hidden] { display: none; }
-/* Opens once per phone visit: a 160 ms fade in. Browsers without @starting-style show it instantly. */
-.site-sheet { opacity: 1; transition: opacity 160ms var(--site-ease); }
-@starting-style {
-  .site-sheet:not([hidden]) { opacity: 0; }
-}
 .site-sheet ul { list-style: none; margin: 0; padding: 0; }
 /* The Explore pill never floats over the open menu (red team 19). */
 html[data-menu="open"] .site-explore { display: none; }
+.site-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(27, 26, 23, 0.3);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: site-menu-fade 220ms var(--site-ease) both;
+}
+.site-sheet__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--site-surface);
+  color: var(--site-ink);
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 16px 40px rgba(27, 26, 23, 0.12);
+  padding-top: env(safe-area-inset-top, 0px);
+  animation: site-menu-in 220ms var(--site-ease) both;
+}
+.site-sheet[data-state="closing"] .site-sheet__card { animation: site-menu-out 160ms var(--site-ease) both; }
+.site-sheet[data-state="closing"] .site-sheet__backdrop { animation: site-menu-fade-out 160ms var(--site-ease) both; }
+.site-sheet__top { display: flex; justify-content: flex-end; padding: 16px 16px 4px; }
+.site-sheet__close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--site-line);
+  color: var(--site-ink);
+  cursor: pointer;
+}
+.site-sheet .site-sheet__rows { padding: 0 8px 8px; }
+.site-sheet__rows li {
+  animation: site-menu-row 220ms var(--site-ease) both;
+  animation-delay: calc(var(--i, 0) * 25ms);
+}
 .site-sheet__link {
-  display: block;
-  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 8px;
+  border-radius: 8px;
   color: inherit;
   text-decoration: none;
-  font-size: 32px;
+  font-family: "Libre Franklin", Helvetica, Arial, sans-serif;
+  /* Sized so six rows and the bar fit a 375x812 phone with the page still visible below (the reference). */
+  font-size: 22px;
   font-weight: 500;
-  letter-spacing: -0.03em;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  -webkit-tap-highlight-color: transparent;
+}
+.site-sheet__link:active { background: rgba(27, 26, 23, 0.04); }
+/* The page you are on: a light grey row, like the reference. */
+.site-sheet__link[aria-current="page"] {
+  background: rgba(27, 26, 23, 0.07);
+  background: color-mix(in srgb, var(--site-line) 60%, transparent);
+}
+.site-sheet__thumb {
+  flex: none;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--site-line);
+}
+.site-sheet__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.site-sheet__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+  border-top: 1px solid var(--site-line);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  font-size: 16px;
+  font-weight: 500;
+}
+.site-sheet__email { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; min-width: 0; overflow-wrap: anywhere; }
+.site-sheet__bar .site-sheet__motion { font-size: 16px; text-decoration: none; padding: 0; white-space: nowrap; }
+@keyframes site-menu-in {
+  from { opacity: 0; transform: translateY(-12px); }
+}
+@keyframes site-menu-out {
+  to { opacity: 0; transform: translateY(-12px); }
+}
+@keyframes site-menu-fade {
+  from { opacity: 0; }
+}
+@keyframes site-menu-fade-out {
+  to { opacity: 0; }
+}
+@keyframes site-menu-row {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-sheet__card,
+  .site-sheet__backdrop,
+  .site-sheet__rows li,
+  .site-sheet[data-state="closing"] .site-sheet__card,
+  .site-sheet[data-state="closing"] .site-sheet__backdrop { animation: none; }
+}
+/* Tablet and up: the same card, 320 px wide, under the header at the right, every corner rounded. The
+   header shows its links there, so the Menu button is hidden and this only applies if it is shown. */
+@media (min-width: 768px) {
+  .site-sheet__card {
+    max-width: 320px;
+    margin: 72px var(--site-gutter) 0 auto;
+    max-height: calc(100dvh - 88px);
+    border-radius: 6px;
+  }
+  .site-sheet__thumb { width: 72px; height: 72px; }
+  .site-sheet__link { font-size: 22px; gap: 16px; }
 }
 
 @media (min-width: 768px) {
@@ -639,28 +742,103 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 
 /* ---- Services as discipline rows with a sticky example (v2, 2026-11-05, after tbp.studio) ---- */
-.moments-strip { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: -8px 0 12px; }
-.moments-strip__item {
-  padding: 6px 0;
+/* Act one (JP, 2026-11-06): "Where are you?" The four moments are the point of the page, so they
+   are set at display size as a list of rows, not a filter strip. Chosen: ink with the accent
+   underline; the others step back to muted. Nothing chosen: all four in ink. */
+.services .services-intro { padding-bottom: 32px; }
+.moment-picker { display: flex; flex-direction: column; margin: 0; border-bottom: 1px solid var(--site-line); }
+.moment-picker__option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 20px 0 22px;
+  border: 0;
+  border-top: 1px solid var(--site-line);
+  background: none;
+  color: var(--site-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.moment-picker__title {
+  font-family: var(--site-display);
+  font-size: clamp(36px, 3.2vw + 14px, 72px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.14em;
+  transition: color 160ms var(--site-ease), text-decoration-color 160ms var(--site-ease);
+}
+.moment-picker__line {
+  max-width: 40ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--site-muted);
+  text-wrap: pretty;
+}
+.moment-picker[data-chosen="true"] .moment-picker__option .moment-picker__title { color: var(--site-muted); }
+.moment-picker .moment-picker__option[aria-checked="true"] .moment-picker__title {
+  color: var(--site-ink);
+  text-decoration-color: var(--site-accent);
+}
+.moment-picker__option[aria-checked="true"] .moment-picker__line { color: var(--site-ink); }
+.moment-picker__option:focus-visible,
+.services-what__reset:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .moment-picker .moment-picker__option:hover .moment-picker__title,
+  .services-what__reset:hover { color: var(--site-ink); }
+}
+/* Read once by screen readers when the moment changes. */
+.services-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Act two heading echoes the moment: the discipline titles' type, one step larger, one section
+   rhythm under the picker. "Any moment" sits beside it as a small muted reset. */
+.services-what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; margin: 64px 0 0; }
+.services-what__title { margin: 0; font-size: 32px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; text-wrap: balance; }
+.services-what__reset {
+  min-height: 44px;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--site-muted);
   font: inherit;
   font-size: 15px;
-  cursor: pointer;
-  transition: color 120ms var(--site-ease);
-}
-.moments-strip__item:hover { color: var(--site-ink); }
-.moments-strip__item[aria-pressed="true"] {
-  color: var(--site-ink);
   text-decoration: underline;
-  text-decoration-color: var(--site-accent);
-  text-decoration-thickness: 2px;
+  text-decoration-color: var(--site-line);
   text-underline-offset: 5px;
+  cursor: pointer;
+  transition: color 160ms var(--site-ease);
 }
-.moments-strip__line { margin: 0 0 8px; max-width: 60ch; font-size: 15px; line-height: 1.5; color: var(--site-muted); }
-.moments-strip__brief { color: var(--site-ink); font-weight: 500; }
-.services-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 24px; }
+/* The disciplines that do not apply to the moment: still the whole offer, one step quieter. */
+.services-also { margin: 48px 0 0; padding: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--site-muted); }
+/* Read through a moment, the line for that moment is the news: ink, not muted. */
+.services-grid:not([data-moment="any"]) .discipline[data-group="relevant"] .discipline__line { color: var(--site-ink); }
+.discipline[data-group="also"] .discipline__title { font-size: 22px; color: var(--site-muted); }
+.discipline[data-group="also"] { padding: 22px 0; gap: 10px; }
+/* Act three: the engagement line for the chosen moment reads in ink. */
+.site-root .services .engagements__lead--moment { color: var(--site-ink); }
+/* The moment change crossfades the lines in: opacity only, 200ms, ease-out. Nothing else moves. */
+.services-fade { animation: services-fade-in 200ms ease-out both; }
+@keyframes services-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .services-fade { animation: none; }
+  .moment-picker__title { transition: none; }
+}
+.services-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 16px; }
 .services-rows { display: flex; flex-direction: column; }
 .discipline {
   display: flex;
@@ -698,7 +876,18 @@ html[data-menu="open"] .site-explore { display: none; }
   .discipline__example--inline { display: none; }
   .discipline { padding: 36px 0; gap: 14px; }
   .discipline__title { font-size: 36px; }
-  .moments-strip { margin-top: 0; }
+  .discipline[data-group="also"] .discipline__title { font-size: 26px; }
+  .discipline[data-group="also"] { padding: 26px 0; }
+  .services .services-intro { padding-bottom: 40px; }
+  .moment-picker__option {
+    /* Same columns as the rows and the photo below, so the line sits over the photo's edge. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    align-items: baseline;
+    gap: 56px;
+    padding: 26px 0 28px;
+  }
+  .services-what { margin-top: 96px; }
+  .services-what__title { font-size: 44px; }
 }
 
 /* Why Atla + engagements (2026-11-05) */
