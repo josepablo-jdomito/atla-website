@@ -75,7 +75,7 @@ function tilesOf(project: SiteProject): WallTile[] {
  * and the ratio alternates whenever a candidate allows it.
  */
 /** Small seeded PRNG (mulberry32), so one page load keeps one order across re-renders. */
-function seededRandom(seed: number) {
+export function seededRandom(seed: number) {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -135,21 +135,62 @@ export function wallPass(sequence: WallTile[], pass: number): WallTile[] {
   return [...sequence.slice(shift), ...sequence.slice(0, shift)];
 }
 
+/** A card's cell in the index grid, 0-based. */
+export type WallCell = { row: number; col: number };
+
 /**
- * Shortest-column-first placement. Heights are in column widths, so no
- * measurement is needed. A tile never lands directly under its own project:
- * when the shortest column ends in the same slug, the next shortest takes it.
+ * Which cells hold a card in Masonry, row by row, as drawn in the Figma (Index 4423:2308):
+ * at 4 columns rows of 2, 3, 3, 2, 2 cards; at 3 columns mostly 2 a row. The prerender (seed 0)
+ * draws exactly these rows; any other seed keeps the counts and picks the cells at random.
  */
-export function placeInColumns<T extends { ratio: number; slug?: string }>(tiles: T[], columns: number): T[][] {
-  const count = Math.max(1, columns);
-  const heights = new Array<number>(count).fill(0);
-  const placed: T[][] = Array.from({ length: count }, () => []);
-  for (const tile of tiles) {
-    const byHeight = heights.map((h, i) => i).sort((a, b) => heights[a] - heights[b] || a - b);
-    const target =
-      byHeight.find((i) => !tile.slug || placed[i][placed[i].length - 1]?.slug !== tile.slug) ?? byHeight[0];
-    placed[target].push(tile);
-    heights[target] += 1 / tile.ratio;
+const MASONRY_ROWS: Record<number, number[][]> = {
+  4: [[0, 2], [0, 1, 3], [0, 2, 3], [1, 2], [0, 3]],
+  3: [[0, 2], [1, 2], [0, 2], [1, 2], [0, 2], [1], [0]],
+};
+
+/**
+ * The cell of each of `count` cards. Grid fills every cell; Masonry leaves cells empty per the
+ * rhythm above. One seed gives one layout, and adding cards never moves the ones already placed.
+ */
+export function wallCells(count: number, columns: number, mode: "masonry" | "grid", seed = 0): WallCell[] {
+  const cols = Math.max(1, columns);
+  const rhythm = mode === "masonry" ? MASONRY_ROWS[cols] : undefined;
+  const cells: WallCell[] = [];
+  if (!rhythm) {
+    for (let i = 0; i < count; i += 1) cells.push({ row: Math.floor(i / cols), col: i % cols });
+    return cells;
   }
-  return placed;
+  const random = seed ? seededRandom(seed) : null;
+  for (let row = 0; cells.length < count; row += 1) {
+    const drawn = rhythm[row % rhythm.length];
+    const picked = random
+      ? shuffled(Array.from({ length: cols }, (_, i) => i), random)
+          .slice(0, drawn.length)
+          .sort((a, b) => a - b)
+      : drawn;
+    for (const col of picked) {
+      if (cells.length >= count) break;
+      cells.push({ row, col });
+    }
+  }
+  return cells;
+}
+
+/**
+ * Where each List row's thumbnail sits, as a share of the free width (0 = left edge, 1 = right).
+ * Seed 0 is the Figma (4564:3482: x = 190, 773, 0, 576, 192, 773, 384, 0, 773, 384, 0, 576 of 960);
+ * other seeds drift between the same five stops and never repeat the row above.
+ */
+const LIST_DRIFT = [0.2, 0.8, 0, 0.6, 0.2, 0.8, 0.4, 0, 0.8, 0.4, 0, 0.6];
+const DRIFT_STOPS = [0, 0.2, 0.4, 0.6, 0.8];
+
+export function listDrift(count: number, seed = 0): number[] {
+  if (!seed) return Array.from({ length: count }, (_, i) => LIST_DRIFT[i % LIST_DRIFT.length]);
+  const random = seededRandom(seed);
+  const out: number[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const choices = DRIFT_STOPS.filter((stop) => stop !== out[i - 1]);
+    out.push(choices[Math.floor(random() * choices.length)]);
+  }
+  return out;
 }

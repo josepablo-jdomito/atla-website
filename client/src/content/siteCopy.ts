@@ -5,39 +5,56 @@
 export const siteCopy = {
   header: {
     navLabel: "Primary",
-    links: [
+    // Figma navbar 4445:471 (JP, 2026-11-05): Work About Services left, Journal Contact right.
+    left: [
       { label: "Work", href: "/" },
+      { label: "About", href: "/about" },
       { label: "Services", href: "/services" },
-      { label: "Why Atla", href: "/about" },
     ],
-    // JP, 2026-10-04: the header reads "Start a project". It opens the brief.
-    cta: { label: "Start a project", href: "/brief" },
+    right: [
+      { label: "Journal", href: "/journal" },
+      { label: "Contact", href: "/contact" },
+    ],
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
     skipLink: "Skip to the work",
+    themeLabel: "Color mode",
+    themeLight: "Light mode",
+    themeDark: "Dark mode",
   },
   footer: {
     navLabel: "Footer",
-    links: [
-      { label: "Work", href: "/" },
-      { label: "Services", href: "/services" },
-      { label: "Why Atla", href: "/about" },
-      { label: "Ventures", href: "/ventures" },
-      { label: "Contact", href: "/contact" },
-      { label: "Journal", href: "/journal" },
-      { label: "Programs", href: "/programs" },
-      { label: "Hospitality", href: "/hospitality" },
+    // Figma footer 4546:2280. Careers and Facebook are drawn but have no page or profile yet: left out.
+    atla: {
+      head: "Atla",
+      links: [
+        { label: "Work", href: "/" },
+        { label: "About", href: "/about" },
+        { label: "Services", href: "/services" },
+        { label: "Journal", href: "/journal" },
+        { label: "Contact", href: "/contact" },
+      ],
+    },
+    socialsHead: "Socials",
+    officesHead: "Offices",
+    // Studio cities as drawn, with their local time.
+    offices: [
+      { label: "Austin, US", timeZone: "America/Chicago" },
+      { label: "CDMX, MX", timeZone: "America/Mexico_City" },
+      { label: "Caracas, VZ", timeZone: "America/Caracas" },
+      { label: "Lima, PE", timeZone: "America/Lima" },
+      { label: "Tijuana, MX", timeZone: "America/Tijuana" },
     ],
     legal: [
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },
     ],
-    cookiesLabel: "Analytics cookies",
-    citiesLabel: "Studio cities",
+    cookiesLabel: "Cookies",
     // JP, 2026-10-04: the footer line, verbatim.
     line: "When your brand has to change, start here.",
-    rights: "Atla. All rights reserved.",
+    rights: "Atla® All Rights Reserved.",
+    backToTop: "Back to top ↑",
   },
   home: {
     // The bar lives off the home now; these strings serve it wherever it is placed.
@@ -58,9 +75,10 @@ export const siteCopy = {
       more: "More work",
     },
     explore: "Explore",
-    exploreDialog: "Filter the work",
-    filters: { region: "Region", industry: "Industry", service: "Service", year: "Year", all: "All" },
-    close: "Close",
+    // The filter index (Figma 4423:1871): rendered as ( REGION ), ( INDUSTRY ), ( SERVICE ), ( VIEW ).
+    filtersLabel: "Filter the work",
+    filters: { region: "Region", industry: "Industry", service: "Service", view: "View", all: "All" },
+    views: { masonry: "Masonry", grid: "Grid", list: "List" },
   },
   project: {
     // Bracket labels as drawn in the Figma (Project 4423:5596); CSS sets them uppercase.
