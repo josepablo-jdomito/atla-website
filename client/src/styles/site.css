@@ -1,4 +1,10 @@
 /* atla.design v2 tokens. Additive: old pages keep using index.css rules. */
+@font-face {
+  font-family: "ABC Synt";
+  src: url("/fonts/ABCSyntVariable.ttf") format("truetype");
+  font-weight: 400 900;
+  font-display: swap;
+}
 :root {
   /* Paper and ink, warm: the editorial palette JP approved on /hospitality (2026-10-23). */
   --site-bg: #f6f3ec;
@@ -6,7 +12,9 @@
   --site-muted: #6f6a61;
   --site-line: rgba(27, 26, 23, 0.12);
   --site-surface: #fcfaf5;
-  --site-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  /* Display face: ABC Synt, Atla's own (the Figma's titles). Licensing is JP's. */
+  --site-display: "ABC Synt", "Libre Franklin", Helvetica, Arial, sans-serif;
+  --site-serif: var(--site-display);
   --site-accent: #f6c428;
   --site-error: #b3261e;
   --site-ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -689,20 +697,20 @@ html body {
 .story-head { margin-bottom: 32px; }
 .story-head__title {
   margin: 0 0 10px;
-  font-size: 34px;
-  font-weight: 500;
+  font-family: var(--site-display);
+  font-size: 40px;
+  font-weight: 400;
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 .story-head__facts { margin: 0 0 20px; font-size: 14px; line-height: 1.5; color: var(--site-muted); }
 .story-head__lead {
   margin: 0;
-  max-width: 32ch;
-  font-family: var(--site-serif);
-  font-size: 26px;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
+  max-width: 44ch;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0;
   text-wrap: pretty;
 }
 .story-body { display: flex; flex-direction: column; gap: 12px; }
@@ -813,8 +821,8 @@ html body {
 @media (min-width: 768px) {
   .story { padding: 48px 0 96px; }
   .story-head { margin-bottom: 44px; }
-  .story-head__title { font-size: 48px; }
-  .story-head__lead { font-size: 32px; }
+  .story-head__title { font-size: 64px; }
+  .story-head__lead { font-size: 18px; }
   .story-body, .story-media { gap: 16px; }
   .story-cta { margin: 112px 0 80px; }
   .story-cta__title { font-size: 40px; }
@@ -997,10 +1005,11 @@ html body {
 }
 .site-root .page-intro__title {
   margin: 0;
-  font-size: clamp(30px, 2.4vw + 18px, 54px);
-  font-weight: 500;
+  font-family: var(--site-display);
+  font-size: clamp(32px, 2.6vw + 18px, 64px);
+  font-weight: 400;
   line-height: 1.06;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 .site-root .page-intro__lead {
