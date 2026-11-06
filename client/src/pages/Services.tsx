@@ -36,22 +36,38 @@ export default function Services() {
   const current = rows.find((row) => row.id === active) ?? rows[0];
   const example = current ? bySlug.get(current.project) : undefined;
 
-  // The photo follows the row nearest the top of the viewport.
+  // The photo follows the row in view: the last row whose top has passed 40% of the viewport,
+  // or the last row once the page can scroll no further. An IntersectionObserver band missed the
+  // last row (it only reports rows that change state, so a row leaving the band updated nothing).
   useEffect(() => {
     const elements = rows.map((row) => rowRefs.current.get(row.id)).filter((el): el is HTMLElement => Boolean(el));
-    if (elements.length === 0 || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive((visible[0].target as HTMLElement).dataset.discipline ?? active);
-      },
-      { rootMargin: "-20% 0px -60% 0px" },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [rows, active]);
+    if (elements.length === 0) return;
+    let frame = 0;
+    const pick = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.4;
+      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      let next = elements[0];
+      if (atEnd && elements[elements.length - 1].getBoundingClientRect().top < window.innerHeight) {
+        next = elements[elements.length - 1];
+      } else {
+        for (const el of elements) if (el.getBoundingClientRect().top <= line) next = el;
+      }
+      const id = next.dataset.discipline;
+      if (id) setActive((prev) => (prev === id ? prev : id));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(pick);
+    };
+    pick();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [rows]);
 
   return (
     <PageShell>
