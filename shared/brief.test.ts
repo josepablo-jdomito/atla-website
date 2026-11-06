@@ -63,9 +63,9 @@ const WAITLIST: { id: string; name: string; prompt: string; options: [string, st
     name: "timeline",
     prompt: "When do you want this live?",
     options: [
-      ["30_days", "In the next 30 days."],
-      ["1_3_months", "1 \u2013 3 months."],
-      ["3_6_months", "3 \u2013 6 months."],
+      ["30_days", "As soon as we can."],
+      ["1_3_months", "Soon, with room to do it well."],
+      ["3_6_months", "Later this year."],
       ["no_timeline", "No fixed timeline."],
     ],
   },

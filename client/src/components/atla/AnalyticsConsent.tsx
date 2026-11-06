@@ -72,7 +72,7 @@ export function AnalyticsConsent() {
       <p style={textStyle}>
         {hasThirdPartyTags()
           ? "We use Google Analytics, Microsoft Clarity and the Meta Pixel to see which pages lead to projects and to measure our own campaigns. They load only if you accept."
-          : "We use Google Analytics cookies to see which pages lead to projects. Nothing is used for ads."}{" "}
+          : "We use Google Analytics cookies to see which pages lead to projects."}{" "}
         <a href="/privacy" style={{ color: "#222" }}>
           Privacy policy
         </a>

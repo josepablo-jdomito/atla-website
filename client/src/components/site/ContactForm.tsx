@@ -109,11 +109,11 @@ export function ContactForm() {
           </Field>
           <Field label="Timeline (optional)">
             <select name="timeline" defaultValue="" className="brief-input contact-form__select">
-              <option value="">Select a timeline</option>
+              <option value="">Select one</option>
               {/* The brief's own wording (shared/brief.ts q5), so both forms ask the same way. */}
-              <option value="this-month">In the next 30 days</option>
-              <option value="1-3-months">1 – 3 months</option>
-              <option value="3-6-months">3 – 6 months</option>
+              <option value="this-month">As soon as we can</option>
+              <option value="1-3-months">Soon, with room to do it well</option>
+              <option value="3-6-months">Later this year</option>
               <option value="exploring">No fixed timeline</option>
             </select>
           </Field>

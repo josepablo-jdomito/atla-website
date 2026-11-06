@@ -58,7 +58,8 @@ const PRERENDER_REMOTE_TIMEOUT_MS = 12_000;
 
 function ensureDescriptionLength(description: string, fallback: string) {
   const cleanDescription = description.trim();
-  if (cleanDescription.length >= 130 && cleanDescription.length <= 160) return cleanDescription;
+  // A complete sentence is never padded with a second one that says the same thing.
+  if (cleanDescription.length >= 80 && cleanDescription.length <= 160) return cleanDescription;
   if (cleanDescription.length > 160) {
     return `${cleanDescription.slice(0, 157).trimEnd()}...`;
   }
@@ -603,13 +604,13 @@ async function prerenderRoutes() {
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
+      description: "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/hospitality-branding",
-      title: formatMetaTitle("Hospitality Branding Agency", "Hotels, Restaurants and Travel"),
+      title: formatMetaTitle("Hospitality Branding Agency", "Atla"),
       description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",
       image: workFeaturedImage,
       includeInSitemap: true,
@@ -633,7 +634,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/saas-branding",
-      title: formatMetaTitle("SaaS Branding Agency", "Brand Identity for Software Companies"),
+      title: formatMetaTitle("SaaS Branding Agency", "Atla"),
       description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,
@@ -641,7 +642,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/brand-strategy",
-      title: formatMetaTitle("Brand Strategy for Growing Companies", "Process and Framework"),
+      title: formatMetaTitle("Brand Strategy for Growing Companies", "Atla"),
       description: "How brand strategy works: positioning, messaging, audience and competitive framing, decided before design starts.",
       image: workFeaturedImage,
       includeInSitemap: true,

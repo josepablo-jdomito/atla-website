@@ -17,7 +17,7 @@ export default function AtlaPrivacy() {
     <PageShell logos={false}>
       <SeoHead
         title={formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data")}
-        description="How Atla handles what you send through the brief and the contact form, the analytics on the site, browser storage and the providers that process data."
+        description="How Atla handles what you send through the brief, the brand check and the contact form, the analytics on the site, browser storage and the providers that process data."
         pathname="/privacy"
       />
       <div className="site-page-body legal">
@@ -28,7 +28,7 @@ export default function AtlaPrivacy() {
             and Clarity behind consent). JP approved this text, the two-year retention, the 30-day reply and the
             transfer basis on 2026-11-05 ("Si"). Nothing here is legal advice. */}
         <div className="legal-body">
-          <p className="longform-text">Last updated: November 5, 2026.</p>
+          <p className="longform-text">Last updated: November 6, 2026.</p>
           <p className="longform-text">
             This site is operated by Atla & WeLoveDaily, LLC. This policy explains what information we collect, how we use it, which providers process it, and what your browser stores.
           </p>
@@ -47,7 +47,10 @@ export default function AtlaPrivacy() {
               If you fill in the project brief, we receive your answers to its five questions and the contact details you enter: your name and email address, and your company, website and phone number if you add them. The questions are fixed. No AI service chooses or words them, and none reads your answers. The finished brief is saved in Attio and sent to the studio by email through Resend. We use it to reply to you and to manage your inquiry.
             </p>
             <p className="longform-text">
-              To limit repeated requests, the brief and the contact form count requests per visitor in Upstash, keyed by a hashed version of your IP address rather than the address itself. A hashed address is pseudonymised, not anonymous. Each count expires after ten minutes. The brief also counts submissions per email address, keyed by a hash of the address, for 24 hours, and keeps a random submission reference for 24 hours to stop duplicates.
+              If you ask for a brand check, we receive the name, email address, website or Instagram, moment, company size, brand investment answer and message you enter. We use them to reply and to manage your inquiry. They are saved in Attio and sent to the studio by email through Resend, like the brief. No AI service reads them.
+            </p>
+            <p className="longform-text">
+              To limit repeated requests, the brief, the brand check and the contact form count requests per visitor in Upstash, keyed by a hashed version of your IP address rather than the address itself. A hashed address is pseudonymised, not anonymous. Each count expires after ten minutes. The brief also counts submissions per email address, keyed by a hash of the address, for 24 hours, and keeps a random submission reference for 24 hours to stop duplicates.
             </p>
             <p className="longform-text">
               After you send the brief, the confirmation offers a link to book a call on Calendly. That link carries your name and email address, so Calendly can fill them in when you open it. Nothing goes to Calendly unless you click the link.
@@ -86,16 +89,16 @@ export default function AtlaPrivacy() {
 
           <Section title="How we use information">
             <p className="longform-text">
-              We use what you send through the brief and the contact form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
+              We use what you send through the brief, the brand check and the contact form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
             </p>
           </Section>
 
           <Section title="Third parties">
             <p className="longform-text">
-              The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above, and, if you accept analytics, Meta and Microsoft (Clarity) process visit data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions and finished briefs are stored in Attio, the customer relationship system we use to manage inquiries. If a contact form submission cannot be saved there, the server log keeps only a reference number and the domain of your email address, never the message. Briefs are also sent to the studio by email through Resend, and the studio's mailbox is hosted by Google Workspace. If a brief cannot be delivered, the server log keeps only a reference number and the domain of your email address, never the brief itself. Upstash stores the hashed request counts described above. Calendly receives your name and email address only if you open the booking link. On the /waitlist page, Google and Meta process visit data as described above. These providers may process technical request data such as IP address, device metadata, and request logs to deliver their services.
+              The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above, and, if you accept analytics, Meta and Microsoft (Clarity) process visit data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions, finished briefs and brand check requests are stored in Attio, the customer relationship system we use to manage inquiries. If a contact form submission cannot be saved there, the server log keeps only a reference number and the domain of your email address, never the message. Briefs and brand check requests are also sent to the studio by email through Resend, and the studio's mailbox is hosted by Google Workspace. If a brief or brand check request cannot be delivered, the server log keeps only a reference number and the domain of your email address, never its content. When you use Ask, Anthropic receives your question and the last few turns of the conversation and writes the answer. Upstash stores the hashed request counts described above. Calendly receives your name and email address only if you open the booking link. On the /waitlist page, Google and Meta process visit data as described above. These providers may process technical request data such as IP address, device metadata, and request logs to deliver their services.
             </p>
             <p className="longform-text">
-              The project brief and the search on the work page do not use any AI service. What you type stays with the providers named on this page.
+              The project brief, the brand check and the search on the work page do not use any AI service. Apart from Ask, which Anthropic answers as described above, what you type stays with the providers named on this page.
             </p>
           </Section>
 

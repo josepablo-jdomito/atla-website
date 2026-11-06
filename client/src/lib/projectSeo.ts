@@ -76,14 +76,16 @@ export function buildProjectMetaDescription(input: ProjectMetaInput) {
     return truncateOnWord(summary);
   }
 
+  // The dek stands alone with a short close; no generated tail that gets cut mid-phrase.
   const client = collapseWhitespace(input.client);
   const hasDistinctClient = Boolean(client) && client !== "Confidential" && textKey(client) !== textKey(title);
   const facets = joinFacets(projectFacets(input));
-  const summaryNamesTitle = summary.toLowerCase().includes(title.toLowerCase());
-  const generated = hasDistinctClient
-    ? `${summaryNamesTitle ? "Case study" : `${title} case study`} by Atla for ${client}: ${facets}.`
-    : `${summaryNamesTitle ? "Brand identity case study" : `${title} brand identity case study`} by Atla: ${facets}.`;
-  const combined = summary ? `${summary.replace(/[\s.]*$/, ".")} ${generated}` : generated;
+  const close = summary
+    ? "Case study by Atla."
+    : hasDistinctClient
+      ? `${title} case study by Atla for ${client}: ${facets}.`
+      : `${title} brand identity case study by Atla: ${facets}.`;
+  const combined = summary ? `${summary.replace(/[\s.]*$/, ".")} ${close}` : close;
 
   return truncateOnWord(combined);
 }

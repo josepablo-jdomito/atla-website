@@ -72,9 +72,9 @@ export const BRIEF_QUESTIONS: BriefQuestion[] = [
     prompt: "When do you want this live?",
     kind: "single",
     options: [
-      { value: "30_days", label: "In the next 30 days." },
-      { value: "1_3_months", label: "1 \u2013 3 months." },
-      { value: "3_6_months", label: "3 \u2013 6 months." },
+      { value: "30_days", label: "As soon as we can." },
+      { value: "1_3_months", label: "Soon, with room to do it well." },
+      { value: "3_6_months", label: "Later this year." },
       { value: "no_timeline", label: "No fixed timeline." },
     ],
   },

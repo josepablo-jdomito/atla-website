@@ -46,6 +46,11 @@ describe("llms.txt source", () => {
     for (const venture of siteCopy.ventures.items) expect(LLMS).toContain(venture.name);
   });
 
+  it("links no pricing article and no application or count wording", () => {
+    expect(LLMS).not.toContain("how-much-does-branding-cost");
+    expect(LLMS).not.toMatch(/five questions|every application/);
+  });
+
   it("keeps the existing sections", () => {
     for (const heading of ["## Studio", "## Work by industry", "## Work and writing", "## Contact"]) {
       expect(LLMS).toContain(heading);

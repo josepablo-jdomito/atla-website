@@ -266,7 +266,7 @@ describe("brief delivery helpers", () => {
     expect(summary).toContain("Came from\nLike Casa Mar");
     expect(summary).toContain("What's your brand actually costing you right now?\nLost deals. Clients can't see what we're worth. [lost_deals]");
     expect(summary).toContain("What's your investment range for this?\n$35K \u2013 $75K [35_75k]");
-    expect(summary).toContain("When do you want this live?\n1 \u2013 3 months. [1_3_months]");
+    expect(summary).toContain("When do you want this live?\nSoon, with room to do it well. [1_3_months]");
     expect(summary).not.toContain("Website: ");
   });
 

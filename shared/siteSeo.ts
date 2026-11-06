@@ -32,7 +32,7 @@ export const HOME_META_DESCRIPTION =
 /** The journal index head, shared by the prerender route table and the runtime SeoHead (fix wave 3, red team 24). */
 export const JOURNAL_TITLE_SUFFIX = "Notes from the Studio";
 export const JOURNAL_META_DESCRIPTION =
-  "Notes from the Atla studio on naming, positioning, identity and the websites that carry them.";
+  "Notes from the Atla studio on naming, positioning, identity and the websites that carry them, written by the people who do the work.";
 /** Pads a thin category description; never the journal's own words for itself. */
 export const JOURNAL_DESCRIPTION_PAD = "Notes from the Atla studio on naming, positioning, identity and websites.";
 export const JOURNAL_EMPTY = {

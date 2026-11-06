@@ -7,7 +7,7 @@ import { DEFAULT_ASK_MODEL, generateWith } from "./model.ts";
 describe("answerRuleBreak", () => {
   it("lets years and plain words through", () => {
     expect(answerRuleBreak("We built Acre's brand architecture in 2021 and still work with them.")).toBeNull();
-    expect(answerRuleBreak("Most brands are built for the launch. We build them for the years after.")).toBeNull();
+    expect(answerRuleBreak("Many brands are built for the launch. We build them for the years after.")).toBeNull();
   });
   it.each([
     ["We quote $25k.", "number"],
@@ -48,7 +48,7 @@ describe("system prompt", () => {
     const prompt = buildSystemPrompt(projects);
     expect(prompt).toBe(buildSystemPrompt([...projects].reverse()));
     expect(prompt).toContain("we quote after a short call");
-    expect(prompt).toContain("about.title: Most brands are built for the launch.");
+    expect(prompt).toContain("about.title: Many brands are built for the launch.");
     expect(prompt.indexOf('<project slug="a">')).toBeLessThan(prompt.indexOf('<project slug="b">'));
     expect(prompt).toContain("never name it");
     expect(prompt).not.toMatch(/\d{2}:\d{2}/);

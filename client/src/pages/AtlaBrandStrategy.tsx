@@ -74,7 +74,7 @@ export default function AtlaBrandStrategy() {
     <AtlaLongformLayout
       pathname="/brand-strategy"
       title="Brand Strategy for Growing Companies"
-      titleSuffix="Process and Framework"
+      titleSuffix="Atla"
       description="How brand strategy works: positioning, messaging, audience and competitive framing, decided before design starts."
       structuredData={[articleSchema, faqSchema, buildBreadcrumbSchema("/brand-strategy", "Brand Strategy")]}
     >

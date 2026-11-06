@@ -1,14 +1,16 @@
 import { Link } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 export default function NotFound() {
   return (
     <PageShell logos={false}>
+      <SeoHead title="Page not found | Atla" description="The page you requested could not be found." pathname="/404" robots="noindex,nofollow" />
       <div className="site-page-body not-found">
         <header className="page-intro">
-          <h1 className="site-label">Page not found</h1>
+          <h1 className="site-label">That page is not here.</h1>
           <Link href="/" className="not-found__home">
-            Go to home
+            See the work
           </Link>
         </header>
       </div>

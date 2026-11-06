@@ -60,7 +60,7 @@ export const siteCopy = {
     // JP's Figma footer on paper (2026-11-06): three columns, one line, the Atlas symbol, the base line.
     pagesLabel: "Atla",
     socialsLabel: "Socials",
-    citiesLabel: "Global Team",
+    citiesLabel: "Where we are",
     emailLabel: "Email",
     // The same sentence the site already uses to describe itself (index.html og:description).
     line: "Strategy, identity and creative direction for companies that take their brand seriously.",
@@ -119,7 +119,7 @@ export const siteCopy = {
   },
   brief: {
     metaTitle: "Start a project",
-    metaDescription: "A few questions, one at a time. José Pablo reads every application and replies by email.",
+    metaDescription: "A few questions, one at a time. José Pablo reads every brief and replies by email.",
     label: "Brief",
     progressLabel: "Brief progress",
     stepSeparator: "/",
@@ -134,7 +134,7 @@ export const siteCopy = {
     contact: {
       prompt: "Where should we send our reply?",
       // No durations on this site (JP's rule), so the waitlist's promise keeps its words minus the hours.
-      body: "Every application gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
+      body: "Every brief gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
       fields: {
         name: "Name",
         email: "Email",
@@ -146,7 +146,7 @@ export const siteCopy = {
       // The one promise, said the same way on /contact and in the policy: we reply by email and manage the inquiry.
       privacyNotice: "We use this to reply and to manage your inquiry.",
       privacyLink: "Privacy",
-      submit: "Submit application",
+      submit: "Send the brief",
       sending: "Sending",
       nameError: "We need a name.",
       emailError: "We need an email we can reply to.",
@@ -186,7 +186,7 @@ export const siteCopy = {
       "The brand gets built in pieces, by different teams and agencies.",
       "Each piece is fine on its own, and together they stop looking like one company.",
     ],
-    disciplinesTitle: "What we do.",
+    disciplinesTitle: "What we do",
     // Act two echoes the chosen moment (coordinator, 2026-11-06).
     disciplinesTitleByMoment: {
       launch: "What we do when you launch",
@@ -222,18 +222,16 @@ export const siteCopy = {
         title: "Launch",
         line: "You get one first impression. We build the brand before anyone sees it.",
         happens: [
-          "You get one first impression, and the brand has to be ready before anyone sees it.",
-          "The name has to clear legal, and the website has to make the case before anyone has heard of you.",
+          "The name has to clear legal, and the website has to explain a company nobody has heard of.",
         ],
         project: "casa-colora",
-        projectLine: "A new brand in Mexico, built before anyone saw it.",
+        projectLine: "A new brand in Mexico, designed for its first impression.",
       },
       {
         id: "raise",
         title: "Raise capital",
         line: "Investors judge the company before they open the deck. We make sure the brand survives that first look.",
         happens: [
-          "Investors judge the company before they open the deck.",
           "The deck has to make the case when nobody from your team is in the room.",
         ],
         project: "anything-ai",
@@ -242,10 +240,9 @@ export const siteCopy = {
       {
         id: "grow",
         title: "Grow",
-        line: "More products, more markets. Every new person touches the brand. We keep it one brand.",
+        line: "More products, more markets. Every new person touches the brand. We write the rules they follow.",
         happens: [
-          "More products, more markets, and every new person touches the brand.",
-          "In the hands of your third agency and your newest hire, it stops looking like one brand.",
+          "Different teams and agencies each take the brand their own way.",
         ],
         project: "hanks-leather",
         projectLine: "A heritage leather house from Upstate New York, rebuilt for the way it sells today.",
@@ -255,7 +252,6 @@ export const siteCopy = {
         title: "Reposition",
         line: "The company changed and the brand did not. We start with what your customers already say about you.",
         happens: [
-          "The company changed and the brand did not.",
           "Your customers already say something about you that the brand does not.",
         ],
         project: "rustico",
@@ -272,9 +268,9 @@ export const siteCopy = {
       { title: "Fractional brand director", line: "A creative director on your team. Decisions, reviews, standards." },
     ],
     engagementsByMoment: {
-      launch: "Most launches start with a Brand system, or a Full build when the website and packaging ship with it.",
+      launch: "A launch starts with a Brand system, or a Full build when the website and packaging ship with it.",
       raise: "Before a raise, a Brand system with the pitch deck, or an Audit when the brand exists and needs fixing first.",
-      grow: "While the company grows, a Fractional brand director keeps every new product and market one brand.",
+      grow: "As the company grows, a Fractional brand director reviews every new product and market before it ships.",
       reposition: "A reposition usually starts with an Audit: findings ranked by what to fix first, then the system.",
     },
     // The engagements each moment shows, by title; the others are not shown for that moment.
@@ -300,7 +296,7 @@ export const siteCopy = {
           "Strategy for a new market",
         ],
         byMoment: {
-          launch: "Before anyone sees the brand, one position the whole company can repeat.",
+          launch: "One position the whole company can repeat, set before the first customer meets the brand.",
           raise: "One position the whole company can repeat, so the story investors hear holds from the first look.",
           grow: "A strategy for each new market, built on the one position every team already repeats.",
           reposition: "We start with what your customers already say, then pick the one position the company can repeat.",
@@ -314,7 +310,7 @@ export const siteCopy = {
         line: "A name that clears legal, and a voice that holds from the pitch deck to the shelf.",
         includes: ["Naming", "Tone of voice", "Copy"],
         byMoment: {
-          launch: "A name that clears legal before anyone sees it, and a voice ready for the first impression.",
+          launch: "A name that clears legal, and a voice ready for the first impression.",
           raise: "A voice that holds in the pitch deck, so investors meet the same company on every page.",
           grow: "One voice from the pitch deck to the shelf, across every new product and market.",
           reposition: "A new name if the company outgrew the old one, and a voice that says what changed.",
@@ -334,10 +330,10 @@ export const siteCopy = {
           "Brand direction as the company grows",
         ],
         byMoment: {
-          launch: "A system built before anyone sees the brand, ready for your first hire and your first agency.",
-          raise: "A system that makes the company look like one brand at first look, before the deck is open.",
-          grow: "Guidelines your team can use without us, so every new person keeps it one brand.",
-          reposition: "An identity redesign that shows what changed, and guidelines so it stays one brand.",
+          launch: "A system ready for your first hire and your first agency.",
+          raise: "A system that makes the company look whole at first look, before the deck is open.",
+          grow: "Guidelines your team can use without us, so a new hire gets it right without asking.",
+          reposition: "An identity redesign that shows what changed, and guidelines so it holds.",
         },
         moments: ["launch", "raise", "grow", "reposition"],
         project: "rustico",
@@ -349,8 +345,8 @@ export const siteCopy = {
         includes: ["Packaging and labels", "Packaging across the whole range"],
         byMoment: {
           launch: "Packaging you recognize at arm's length and in a thumbnail from the day it reaches a shelf.",
-          raise: "Packaging that reads as one brand in a thumbnail, wherever investors first see the product.",
-          grow: "Packaging across the whole range, so every new product still reads as one brand.",
+          raise: "Packaging that reads clearly in a thumbnail, wherever investors first see the product.",
+          grow: "Packaging across the whole range, so every new product still looks like the last.",
           reposition: "Packaging that carries the change to the shelf, recognizable at arm's length.",
         },
         moments: ["grow"],
@@ -359,7 +355,7 @@ export const siteCopy = {
       {
         id: "website",
         title: "Website and decks",
-        line: "Websites and decks that make the case when nobody from your team is in the room.",
+        line: "Websites and decks that explain the company when you are not there.",
         includes: [
           "Website, designed and ready for development",
           "Website built to convert",
@@ -368,10 +364,10 @@ export const siteCopy = {
           "Social templates and launch assets",
         ],
         byMoment: {
-          launch: "A website and launch assets that make the case before anyone knows your name.",
-          raise: "A pitch deck, one-pager and investor material that make the case when nobody from your team is in the room.",
+          launch: "A website and launch assets that make the case to people who have never heard of you.",
+          raise: "A pitch deck, one-pager and investor material that carry the story without you.",
           grow: "A website built to convert, and sales material every new market can use.",
-          reposition: "A website that tells the new story when nobody from your team is in the room.",
+          reposition: "A website that tells the new story on its own.",
         },
         moments: ["launch", "raise", "grow"],
         project: "anything-ai",
@@ -382,7 +378,7 @@ export const siteCopy = {
         line: "The brand in movement, without a second system.",
         includes: ["Motion: logo animation, social, product UI", "Creative direction for campaigns"],
         byMoment: {
-          launch: "Logo animation and the launch campaign: the brand in movement from the first day.",
+          launch: "Logo animation and the launch campaign: the brand in movement from the start.",
           raise: "Motion for the deck and the product UI: the same brand, in movement.",
           grow: "Creative direction for every campaign as you grow, without a second system.",
           reposition: "The new brand in movement across social and product, without a second system.",
@@ -399,10 +395,10 @@ export const siteCopy = {
     metaDescription:
       "A free brand check from Atla. We look at your brand as it lives today, find the biggest opportunities and show you what we would change first.",
     title: "What is holding your brand back?",
-    lead: "A free brand check from the team behind the work on this site. We look at your brand as it lives today, find the biggest opportunities, and show you what we would change first. For founders and teams who take their brand seriously.",
+    lead: "A free brand check from the team behind the work on this site. We look at your brand as it lives today and show you what we would change first. For founders and teams who take their brand seriously.",
     factsLabel: "What you get",
-    facts: ["A short video", "What is in your way, in the order to fix it", "A written brand check at atla.design/audit/your-brand"],
-    capacity: "A few each week, first come first served.",
+    facts: ["A short video", "What is in your way, ranked by what to fix first", "A written brand check at atla.design/audit/your-brand"],
+    capacity: "We take them in the order they arrive.",
     formTitle: "Ask for yours",
     fields: {
       name: "Name",
@@ -439,8 +435,8 @@ export const siteCopy = {
     metaTitle: "Why Atla",
     metaSuffix: "Senior-led branding for the years after launch",
     metaDescription:
-      "Atla builds brands for the years after launch. Senior people make the calls, AI does the slow parts, and the identity reads to people and to the assistants that shop for them.",
-    title: "Most brands are built for the launch. We build them for the years after.",
+      "Atla builds brands for the years after launch. Senior people make the calls, AI does the slow parts, and the identity reads to people and to assistants.",
+    title: "Many brands are built for the launch. We build them for the years after.",
     lead: "A small studio of senior people, working from Austin, Mexico City, Barcelona, Lima and Caracas. We use AI for the slow parts and keep every decision about taste with a person.",
     thesisLabel: "What we believe",
     thesis: [
@@ -450,7 +446,7 @@ export const siteCopy = {
       },
       {
         title: "Your next customer may not be a person.",
-        body: "Assistants now compare and book for people. We build identities they can read too.",
+        body: "Some assistants now compare and book for people. We build identities they can read too.",
       },
       {
         title: "A brand has to survive its third agency.",
@@ -462,7 +458,7 @@ export const siteCopy = {
       },
     ],
     howLabel: "How we work",
-    howLead: "Machines do the legwork. People make the calls.",
+    howLead: "AI does the legwork, and people make the calls.",
     how: [
       {
         title: "Read the market",
@@ -517,7 +513,7 @@ export const siteCopy = {
     cta: "Start a project",
     emailLabel: "Email",
     socialLabel: "Elsewhere",
-    citiesLabel: "Cities",
+    citiesLabel: "Where we are",
     // The same sentence the brief's contact step carries; the policy says it too.
     formNotice: "We use this to reply and to manage your inquiry.",
     formNoticeLink: "See the privacy policy.",
@@ -529,7 +525,7 @@ export const siteCopy = {
   // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.
   logos: {
     label: "Clients",
-    line: "Brands we have worked with.",
+    line: "Brands we have worked on.",
     // Order = JP's selected-client list (2026-10-04), then the featured projects. Sources per mark in
     // docs/superpowers/specs/2026-11-05-client-logos.md. Missing on purpose until JP sends files:
     // Aimee Kestenberg, PrettyBoy, Casa Colora, Reggie.
@@ -568,7 +564,7 @@ export const siteCopy = {
     lead: "Some brands we did not stop at designing.",
     items: [
       { name: "Sexto Abismo", line: "Surrealist gin from Mexico.", href: "/projects/sexto-abismo" },
-      { name: "TigreTigre", line: "A restaurant.", href: "/projects/tigretigre" },
+      { name: "TigreTigre", line: "A restaurant in San Luis Potosí.", href: "/projects/tigretigre" },
       { name: "Persona", line: "Nutrition, made personal.", href: "/projects/persona" },
       { name: "WeLoveDaily", line: "A daily curation of the brands we love.", href: "https://welovedaily.net" },
     ],
@@ -593,7 +589,7 @@ export const siteCopy = {
     // Said in place of an answer. No durations, no numbers, like everything else here.
     fallback: "We would rather answer that properly. Start a project and José Pablo replies himself.",
     error: "That did not go through. Ask again, or start a project.",
-    limited: "That is a lot of questions. The brief is the quickest way to reach us.",
+    limited: "That is enough questions for now. The brief is the quickest way to reach us.",
     unavailable: "Ask is resting for now. Search still works, and the brief reaches us directly.",
   },
 } as const;

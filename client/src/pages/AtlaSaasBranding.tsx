@@ -18,7 +18,7 @@ export default function AtlaSaasBranding() {
     <AtlaLongformLayout
       pathname="/saas-branding"
       title="SaaS Branding Agency"
-      titleSuffix="Brand Identity for Software Companies"
+      titleSuffix="Atla"
       description="Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation."
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >

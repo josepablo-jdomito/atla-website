@@ -113,13 +113,13 @@ describe("Services page, one route per moment", () => {
     }
   });
 
-  it("each moment is its own route: its two lines, only its three or four disciplines, only its engagements, its project", () => {
+  it("each moment is its own route: its one line, only its three or four disciplines, only its engagements, its project", () => {
     for (const m of services.moments) {
       act(() => root.unmount());
       root = createRoot(container);
       show(`?moment=${m.id}`);
       expect(happens()).toEqual(m.happens);
-      expect(m.happens).toHaveLength(2);
+      expect(m.happens).toHaveLength(1);
       const fit = fitFor(m.id);
       expect(fit.length, m.id).toBeGreaterThanOrEqual(3);
       expect(fit.length, m.id).toBeLessThanOrEqual(4);

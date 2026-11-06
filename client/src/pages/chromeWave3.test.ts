@@ -55,7 +55,7 @@ describe("The footer: JP's Figma on paper (2026-11-06)", () => {
   it("has three columns (Atla, Socials, Studios), a line, the symbol, then the base line", () => {
     render(SiteFooter);
     const footer = container.querySelector(".site-footer")!;
-    expect(Array.from(footer.querySelectorAll(".site-footer__head")).map((h) => h.textContent)).toEqual(["Atla", "Socials", "Global Team"]);
+    expect(Array.from(footer.querySelectorAll(".site-footer__head")).map((h) => h.textContent)).toEqual(["Atla", "Socials", "Where we are"]);
     expect(Array.from(footer.querySelectorAll("nav a")).map((a) => a.textContent)).toEqual(siteCopy.footer.links.map((l) => l.label));
     expect(siteCopy.footer.links.map((l) => l.label)).toContain("Journal"); // kept: indexed, linked, would be orphaned
     expect(Array.from(footer.querySelectorAll(".site-footer__cities li")).map((li) => li.textContent)).toEqual(SITE_CITIES.map((c) => c.label));
@@ -88,7 +88,7 @@ describe("The client marks", () => {
 
   it("the 404 link points nowhere but home", () => {
     render(NotFound, "/nope");
-    expect(container.querySelector(".not-found__home")?.textContent).toBe("Go to home");
+    expect(container.querySelector(".not-found__home")?.textContent).toBe("See the work");
   });
 });
 
@@ -120,7 +120,7 @@ describe("Chrome copy (fix wave 3, group C)", () => {
     const { contact } = siteCopy.brief;
     expect(contact.privacyNotice).toBe(siteCopy.contact.formNotice);
     expect(contact.body).toBe(
-      "Every application gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
+      "Every brief gets a careful read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
     );
     for (const text of [contact.body, contact.privacyNotice, siteCopy.contact.lead, siteCopy.contact.formNotice, siteCopy.contact.sent, siteCopy.brief.done]) {
       expect(text).not.toMatch(/\d|\bhours?\b|\bdays?\b|\bweeks?\b|\byears?\b/i);
@@ -135,8 +135,8 @@ describe("Chrome copy (fix wave 3, group C)", () => {
 
   it("the contact form's timeline options read like the brief's", () => {
     const form = read("src/components/site/ContactForm.tsx");
-    for (const label of ["In the next 30 days", "1 – 3 months", "3 – 6 months", "No fixed timeline"]) expect(form).toContain(label);
-    expect(form).not.toContain("1–3 months");
+    for (const label of ["As soon as we can", "Soon, with room to do it well", "Later this year", "No fixed timeline"]) expect(form).toContain(label);
+    expect(form).not.toMatch(/\d+\s*(–|-)\s*\d+ months|30 days/);
   });
 
   it("brief options are rows with a hairline, a 44px hit area, a mark on hover and focus, and a clear selected state", () => {

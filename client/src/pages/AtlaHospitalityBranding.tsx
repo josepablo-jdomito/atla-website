@@ -18,7 +18,7 @@ export default function AtlaHospitalityBranding() {
     <AtlaLongformLayout
       pathname="/hospitality-branding"
       title="Hospitality Branding Agency"
-      titleSuffix="Hotels, Restaurants and Travel"
+      titleSuffix="Atla"
       description="Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints."
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >

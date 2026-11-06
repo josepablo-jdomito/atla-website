@@ -8,7 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
+  "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
 
 // The face every visitor gets (loaded site-wide in index.html). No local-only trial fonts: JP reviews what visitors see.
 const DISPLAY = "'Instrument Serif', Georgia, serif";
@@ -216,7 +216,7 @@ const SERVICES = [
   {
     name: "Branding",
     forWhom: "For a new opening: a hotel, restaurant, spa or coffee shop.",
-    body: "We build the brand before the doors open: the name, the identity and every object a guest touches on the first day, ready for the vendors who make them.",
+    body: "We build the brand before the doors open: the name, the identity and every object a guest touches from the first guest on, ready for the vendors who make them.",
     includes: [
       "Naming and positioning",
       "Identity, character and signature marks",

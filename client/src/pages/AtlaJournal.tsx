@@ -30,7 +30,8 @@ const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
 };
 
 function ensureDescriptionLength(description: string) {
-  if (description.length >= 130) return description;
+  // A complete sentence is never padded with a second one that says the same thing.
+  if (description.length >= 80) return description;
   const fallback = JOURNAL_DESCRIPTION_PAD;
   const combined = `${description} ${fallback}`.trim();
   return combined.length > 160 ? `${combined.slice(0, 157).trimEnd()}...` : combined;
