@@ -39,6 +39,11 @@ export const siteCopy = {
     line: "When your brand has to change, start here.",
     rights: "Atla. All rights reserved.",
   },
+  // One control per page for every looping video (WCAG 2.2.2).
+  motion: {
+    pause: "Pause motion",
+    play: "Play motion",
+  },
   home: {
     // The bar lives off the home now; these strings serve it wherever it is placed.
     askLabel: "Search the work or say what you are building",
@@ -99,6 +104,8 @@ export const siteCopy = {
         phone: "Phone",
       },
       optional: "Optional",
+      privacyNotice: "We use this to reply and for nothing else.",
+      privacyLink: "Privacy",
       submit: "Submit application",
       sending: "Sending",
       nameError: "We need a name.",

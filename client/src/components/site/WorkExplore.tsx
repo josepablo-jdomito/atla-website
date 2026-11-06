@@ -90,35 +90,17 @@ export function WorkExplore({
   if (!mounted) return null;
 
   return createPortal(
-    <div ref={rootRef} className="site-explore" data-visible={visible} data-open={open}>
-      {state !== "closed" ? (
-        <div
-          id={panelId}
-          role="dialog"
-          aria-label={home.exploreDialog}
-          aria-hidden={state === "closing" || undefined}
-          className="site-explore__panel"
-          data-state={state}
-          onTransitionEnd={(event) => {
-            if (event.propertyName === "opacity" && state === "closing") setState("closed");
-          }}
-        >
-          <div className="site-explore__head">
-            <p>{home.exploreDialog}</p>
-            <div className="site-explore__head-actions">
-              {query || activeCount > 0 ? (
-                <button type="button" onClick={onClear} data-action="clear">
-                  {home.results.clear}
-                </button>
-              ) : null}
-              <button type="button" onClick={closeSoft}>
-                {home.close}
-              </button>
-            </div>
-          </div>
-          {children}
-        </div>
-      ) : null}
+    <div
+      ref={rootRef}
+      className="site-explore"
+      data-visible={visible}
+      data-open={open}
+      onBlur={(event) => {
+        // Tabbing out of the pill and its panel closes the panel; the window losing focus does not.
+        const next = event.relatedTarget as Node | null;
+        if (next && !rootRef.current?.contains(next)) closeSoft();
+      }}
+    >
       <form
         role="search"
         className="site-explore__pill"
@@ -157,6 +139,34 @@ export function WorkExplore({
           onClick={openPanel}
         />
       </form>
+      {state !== "closed" ? (
+        <div
+          id={panelId}
+          role="dialog"
+          aria-label={home.exploreDialog}
+          aria-hidden={state === "closing" || undefined}
+          className="site-explore__panel"
+          data-state={state}
+          onTransitionEnd={(event) => {
+            if (event.propertyName === "opacity" && state === "closing") setState("closed");
+          }}
+        >
+          <div className="site-explore__head">
+            <p>{home.exploreDialog}</p>
+            <div className="site-explore__head-actions">
+              {query || activeCount > 0 ? (
+                <button type="button" onClick={onClear} data-action="clear">
+                  {home.results.clear}
+                </button>
+              ) : null}
+              <button type="button" onClick={closeSoft}>
+                {home.close}
+              </button>
+            </div>
+          </div>
+          {children}
+        </div>
+      ) : null}
     </div>,
     document.body,
   );

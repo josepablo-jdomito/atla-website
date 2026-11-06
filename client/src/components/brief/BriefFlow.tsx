@@ -17,6 +17,7 @@ import {
   type BriefContact,
   type BriefQuestion,
 } from "@shared/brief";
+import { Link } from "wouter";
 import { siteCopy } from "@/content/siteCopy";
 import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
 import { submitBrief } from "./briefApi";
@@ -517,6 +518,9 @@ function ContactScreen({
         <label htmlFor={`${baseId}-gotcha`}>Leave this empty</label>
         <input ref={honeypot} id={`${baseId}-gotcha`} type="text" name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" />
       </div>
+      <p className="brief-privacy">
+        {copy.contact.privacyNotice} <Link href="/privacy">{copy.contact.privacyLink}</Link>
+      </p>
       <div className="brief-actions">
         <button type="submit" className="brief-primary" disabled={sending}>
           {sending ? copy.contact.sending : status === "failed" ? copy.errors.retry : copy.contact.submit}

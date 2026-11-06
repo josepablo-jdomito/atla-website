@@ -1,8 +1,10 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import {
+  BRIEF_QUESTIONS,
   briefContactSchema,
+  isComplete,
   type BriefContact,
   type BriefState,
 } from "../../shared/brief.ts";
@@ -36,6 +38,8 @@ const MAX_MULTI_ITEMS = 10;
 const MAX_ANSWER_KEYS = 20;
 const MAX_SEED_CHARS = 300;
 const SUBMISSION_TTL_SECONDS = 24 * 60 * 60;
+/** Briefs one email address can file in a day: it stops a script from filling Attio under a real client's address. */
+const MAX_BRIEFS_PER_EMAIL_PER_DAY = 3;
 const HONEYPOT_FIELD = "_gotcha";
 
 const answerValue = z.union([
@@ -47,6 +51,19 @@ const answersSchema = z
   .record(z.string().max(40), answerValue)
   .refine((answers) => Object.keys(answers).length <= MAX_ANSWER_KEYS, { message: "Too many answers" });
 
+/** Only the bank's question ids, with option values the bank offers: a script cannot invent labels for JP's email. */
+function answersMatchBank(answers: Record<string, string | string[]>): boolean {
+  const known = new Map(BRIEF_QUESTIONS.map((q) => [q.id, q]));
+  return Object.entries(answers).every(([id, value]) => {
+    const question = known.get(id);
+    if (!question) return false;
+    if (question.kind === "text") return typeof value === "string";
+    const allowed = new Set((question.options ?? []).map((o) => o.value));
+    const values = Array.isArray(value) ? value : [value];
+    return (question.kind === "multi" || !Array.isArray(value)) && values.every((v) => allowed.has(v));
+  });
+}
+
 const submitBody = z.object({
   state: z.object({
     seed: z.string().max(MAX_SEED_CHARS).optional(),
@@ -54,7 +71,7 @@ const submitBody = z.object({
     contact: briefContactSchema,
   }),
   submissionId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
-});
+}).refine(({ state }) => answersMatchBank(state.answers) && isComplete(state), { message: "Invalid brief" });
 
 const RETRY_MESSAGE = "We could not send your brief. Nothing was lost: please send it again in a moment.";
 
@@ -120,6 +137,15 @@ export function registerBriefRoutes(app: Express, deps: BriefDeps = defaultDeps)
     // Before the idempotency mark, so a refused submit can still be delivered on a later retry.
     if (!(await deps.rateLimit(ip, "submit"))) {
       return res.status(429).json({ error: "Too many briefs from this address. Try again in a few minutes." });
+    }
+
+    try {
+      const key = `briefmail:${createHash("sha256").update(brief.contact.email.toLowerCase()).digest("hex").slice(0, 32)}`;
+      if ((await deps.incrWithExpiry(key, SUBMISSION_TTL_SECONDS)) > MAX_BRIEFS_PER_EMAIL_PER_DAY) {
+        return res.status(429).json({ error: "Too many briefs from this address. Try again tomorrow." });
+      }
+    } catch {
+      // A counter outage never blocks a real lead.
     }
 
     const submissionKey = `brief:${parsed.data.submissionId}`;

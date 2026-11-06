@@ -418,7 +418,7 @@ html body {
 .brief-option:disabled:not([aria-pressed="true"]) { opacity: 0.45; }
 .brief-option[aria-pressed="true"] .brief-option__label {
   text-decoration: underline;
-  text-decoration-color: var(--site-accent);
+  text-decoration-color: var(--site-ink);
   text-decoration-thickness: 2px;
   text-underline-offset: 6px;
 }
@@ -433,7 +433,8 @@ html body {
 .brief-input {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid var(--site-line);
+  /* A solid ink line: the old 12% line was 1.27:1 against the page, WCAG 1.4.11 asks for 3:1. */
+  border-bottom: 1px solid var(--site-ink);
   border-radius: 0;
   background: transparent;
   color: var(--site-ink);
@@ -455,7 +456,7 @@ html body {
   line-height: 1.4;
 }
 .brief-text::placeholder,
-.brief-input::placeholder { color: var(--site-muted); opacity: 0.7; }
+.brief-input::placeholder { color: var(--site-muted); opacity: 1; }
 .brief-text:focus,
 .brief-input:focus {
   outline: none;
@@ -483,6 +484,41 @@ html body {
   .brief-fields { grid-template-columns: 1fr 1fr; }
   .brief-field[data-field="phone"] { grid-column: 1 / -1; max-width: calc(50% - 12px); }
 }
+
+/* The single pause control for looping video (WCAG 2.2.2). Text only, like the Explore filters. */
+.motion-toggle {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--site-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.motion-toggle--wall {
+  position: fixed;
+  right: var(--site-gutter);
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 60;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--site-surface);
+  border: 1px solid var(--site-line);
+  text-decoration: none;
+}
+@media (max-width: 640px) {
+  /* Above the centred pill, so the two never overlap on a phone. */
+  .motion-toggle--wall { bottom: calc(max(20px, env(safe-area-inset-bottom)) + 60px); }
+}
+.motion-toggle--story { align-self: flex-start; }
+
+.brief-privacy { margin: 24px 0 0; font-size: 13px; color: var(--site-muted); }
+.brief-privacy a { color: var(--site-ink); text-decoration: underline; text-underline-offset: 3px; }
 
 .brief-hp {
   position: absolute;
@@ -857,7 +893,8 @@ html body {
   z-index: 60;
   display: flex;
   width: min(880px, calc(100vw - 32px));
-  flex-direction: column;
+  /* DOM order is form then panel, so Tab runs from the field into the filters; the panel still sits above. */
+  flex-direction: column-reverse;
   align-items: center;
   gap: 12px;
   transform: translateX(-50%);

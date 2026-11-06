@@ -329,7 +329,7 @@ function createHeadMarkup({
   if (structuredData) {
     const blocks = Array.isArray(structuredData) ? structuredData : [structuredData];
     for (const block of blocks) {
-      tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
+      tags.push(`<script type="application/ld+json">${serializeJsonForScript(block)}</script>`);
     }
   }
 

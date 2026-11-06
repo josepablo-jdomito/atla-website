@@ -173,6 +173,32 @@ describe("withdrawal", () => {
   });
 });
 
+describe("withdrawal deletes cookies already set", () => {
+  it("expires _ga*, _fbp, _clck and _clsk on the host and its parent domain", async () => {
+    const { ga } = await load();
+    // jsdom keeps a real cookie jar; record every write to see which names and domains are expired.
+    const writes: string[] = [];
+    const jar = Object.getOwnPropertyDescriptor(Document.prototype, "cookie")!;
+    Object.defineProperty(document, "cookie", {
+      configurable: true,
+      get: () => "_ga=GA1.1.1; _ga_X4ZD7PGXE3=GS1.1.2; _fbp=fb.1; _clck=a; _clsk=b; keep=1",
+      set: (value: string) => void writes.push(value),
+    });
+    try {
+      ga.setAnalyticsConsent("denied");
+    } finally {
+      delete (document as unknown as Record<string, unknown>).cookie;
+      Object.defineProperty(Document.prototype, "cookie", jar);
+    }
+    const expired = (name: string) => writes.filter((w) => w.startsWith(`${name}=;`) && w.includes("1970"));
+    for (const name of ["_ga", "_ga_X4ZD7PGXE3", "_fbp", "_clck", "_clsk"]) {
+      expect(expired(name).length).toBeGreaterThan(1);
+      expect(expired(name).some((w) => w.includes("domain=."))).toBe(true);
+    }
+    expect(expired("keep")).toEqual([]);
+  });
+});
+
 describe("GA4 page_location", () => {
   it("is path-only on events, never the query string", async () => {
     window.history.replaceState({}, "", "/contact?email=a%40b.com&utm_source=x#frag");

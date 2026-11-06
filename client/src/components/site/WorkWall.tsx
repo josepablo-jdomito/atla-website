@@ -4,6 +4,7 @@ import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/
 import { assetKey, buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
 import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
+import { MotionToggle } from "@/components/site/MotionToggle";
 import {
   ALL as ALL_VALUE,
   WorkFilters,
@@ -268,6 +269,7 @@ export function WorkWall() {
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
+      {tiles.some((tile) => tile.kind === "video") ? <MotionToggle className="motion-toggle--wall" /> : null}
       <WorkExplore
         query={draft}
         onQuery={(value) => {

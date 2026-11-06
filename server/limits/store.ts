@@ -1,13 +1,11 @@
 /**
- * Counters with expiry for rate limits and the AI budget.
+ * Counters with expiry for rate limits and the brief's idempotency marks.
  *
  * With UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN set, counters live in
  * Upstash Redis (plain REST, no SDK), so every Vercel instance shares them.
  * Without them, counters fall back to a per-process Map: on Vercel each
  * instance then keeps its own, which is a brake, not a control. That fallback
- * is logged once per process. In production (NODE_ENV=production) the AI is
- * also switched off while Upstash is missing (fail closed, see guards.ts), and
- * the one log line says so.
+ * is logged once per process.
  */
 
 const UPSTASH_TIMEOUT_MS = 2_000;
@@ -27,7 +25,7 @@ function upstashConfig() {
     warnedNoUpstash = true;
     console.error(
       isProduction()
-        ? "[limits] UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not set in production: AI is OFF (fail closed); rate limits and brief idempotency use per-instance memory"
+        ? "[limits] UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not set in production: rate limits and brief idempotency use per-instance memory"
         : "[limits] Upstash not configured, using per-instance memory",
     );
   }

@@ -22,7 +22,8 @@ import {
   type ProjectMediaMosaicItem,
 } from "@/lib/projectPage";
 import { consumePopNav } from "@/lib/navType";
-import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
+import { PRIORITY_ATTRS, useInViewPlayback, useMotionPaused } from "@/components/site/media";
+import { MotionToggle } from "@/components/site/MotionToggle";
 import { trapTab } from "@/components/site/focusTrap";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
@@ -124,6 +125,7 @@ function ProjectImage({
 function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: string; title: string; reduced: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   useInViewPlayback(ref, { enabled: !reduced });
+  const paused = useMotionPaused();
   return (
     <video
       ref={ref}
@@ -133,7 +135,7 @@ function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: s
       muted
       loop
       playsInline
-      controls={reduced}
+      controls={reduced || paused}
       preload="metadata"
       disablePictureInPicture
       aria-label={title}
@@ -227,6 +229,7 @@ export default function Project() {
   const slug = params?.slug ?? "";
   const search = useSearch();
   const reduced = useReducedMotion();
+  const motionPaused = useMotionPaused();
   const { projects } = useSiteProjects();
   const [open, setOpen] = useState<number | null>(null);
   const landedRef = useRef<string | null>(null);
@@ -354,6 +357,9 @@ export default function Project() {
         </header>
 
         <div className="story-body">
+          {groups.some((group) => group.items.some((item) => item.type !== "image")) ? (
+            <MotionToggle className="motion-toggle--story" />
+          ) : null}
           {groups.map((group, groupIndex) => {
             const block = (
               <div key={`g${groupIndex}`} className="story-media" data-kind={group.kind}>
@@ -384,7 +390,7 @@ export default function Project() {
                   return (
                     <figure key={key} className="story-media__figure story-media__embed">
                       <iframe
-                        src={reduced ? item.src : toVimeoBackgroundUrl(item.src)}
+                        src={reduced || motionPaused ? item.src : toVimeoBackgroundUrl(item.src)}
                         title={item.title || `${project.title}, video`}
                         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                         allowFullScreen

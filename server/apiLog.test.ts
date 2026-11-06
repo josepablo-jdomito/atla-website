@@ -8,20 +8,19 @@ describe("apiLogLine", () => {
     expect(apiLogLine("GET", "/api/projects", 200, 5, [{ slug: "a" }])).toBe('GET /api/projects 200 in 5ms :: [{"slug":"a"}]');
   });
 
-  it("never logs bodies for /api/ask, /api/brief/* and /api/contact", () => {
+  it("never logs bodies for /api/brief/* and /api/contact", () => {
     const body = { kind: "brief", seed: "We're launching a coffee brand" };
-    expect(apiLogLine("POST", "/api/ask", 200, 7, body)).toBe("POST /api/ask 200 in 7ms");
     expect(apiLogLine("POST", "/api/brief/next", 200, 7, body)).toBe("POST /api/brief/next 200 in 7ms");
     expect(apiLogLine("POST", "/api/brief", 200, 7, body)).toBe("POST /api/brief 200 in 7ms");
     expect(apiLogLine("POST", "/api/contact", 400, 7, { error: "x" })).toBe("POST /api/contact 400 in 7ms");
   });
 
   it("matches the private paths in any case, and only those", () => {
-    for (const path of ["/api/ask/", "/api/ASK", "/api/Ask/", "/api/Brief/submit", "/API/BRIEF/next", "/api/Contact", "/api/contact/result"]) {
+    for (const path of ["/api/Brief/submit", "/API/BRIEF/next", "/api/Contact", "/api/contact/result"]) {
       expect(isPrivateApiPath(path), path).toBe(true);
     }
-    expect(apiLogLine("POST", "/api/ASK", 200, 1, { seed: "secret" })).not.toContain("secret");
-    expect(isPrivateApiPath("/api/asking")).toBe(false);
+    expect(apiLogLine("POST", "/api/BRIEF/next", 200, 1, { seed: "secret" })).not.toContain("secret");
+    expect(isPrivateApiPath("/api/briefing")).toBe(false);
     expect(isPrivateApiPath("/api/briefs")).toBe(false);
     expect(isPrivateApiPath("/api/contacts")).toBe(false);
   });

@@ -387,15 +387,23 @@ const SERVICE_KEYWORDS: Record<(typeof SERVICE_ORDER)[number], string[]> = {
   ],
 };
 
+/**
+ * SANITY_INCLUDE_DRAFTS gates projects whose Sanity status is Draft. Unset keeps today's behaviour (drafts
+ * are included); "false", "0", "no" or "off" drops them from the API, the wall, the sitemap and the prerender.
+ */
+export const includeDraftProjects = () => !/^(false|0|no|off)$/i.test((process.env.SANITY_INCLUDE_DRAFTS || "").trim());
+export const dropDraftsUnlessIncluded = <T extends { status?: string }>(projects: T[], include = includeDraftProjects()) =>
+  include ? projects : projects.filter((project) => project.status !== "draft");
+
 export async function fetchProjectsFromSanity(options?: { featured?: boolean }) {
   if (!isJournalSanityConfigured()) return [];
 
   const client = getJournalSanityClient();
   const projects = await client.fetch<SanityProject[]>(PROJECT_QUERY);
 
-  const normalized = projects
-    .filter((project) => (options?.featured ? project.featured : true))
-    .map(normalizeProject);
+  const normalized = dropDraftsUnlessIncluded(
+    projects.filter((project) => (options?.featured ? project.featured : true)).map(normalizeProject),
+  );
 
   return options?.featured ? sortFeatured(normalized) : normalized;
 }

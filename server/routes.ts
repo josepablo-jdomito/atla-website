@@ -1,8 +1,7 @@
-import type { Express, Request } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
-import { registerAskRoute } from "./ask/route.ts";
 import { registerBriefRoutes } from "./brief/route.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
@@ -52,6 +51,9 @@ function getCookieValue(cookieHeader: string | undefined, name: string) {
   const match = parts.find((part) => part.startsWith(`${name}=`));
   return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
 }
+
+/** Edge cache for the read-only content endpoints, so a request loop does not become a Sanity API loop. */
+const PUBLIC_CACHE = "public, s-maxage=300, stale-while-revalidate=600";
 
 function getAdminSecret() {
   return process.env.ADMIN_ACCESS_PASSWORD || process.env.ATLA_ADMIN_PASSWORD || null;
@@ -138,8 +140,15 @@ export async function registerRoutes(
   });
 
   registerContactRoute(app);
-  registerAskRoute(app);
   registerBriefRoutes(app);
+
+  // The legacy admin and the project writes are retired (Sanity is the source). They answer 410 whatever
+  // the environment holds, so removing a Sanity variable can never switch a password login back on.
+  const retired = (_req: Request, res: Response) => res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
+  app.use("/api/admin", retired);
+  app.post("/api/projects", retired);
+  app.patch("/api/projects/:id", retired);
+  app.delete("/api/projects/:id", retired);
 
   app.get("/api/admin/session", async (req, res) => {
     if (isProjectSanityConfigured()) {
@@ -186,6 +195,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/projects", async (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     try {
       if (isProjectSanityConfigured()) {
         const { featured } = req.query;
@@ -205,6 +215,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/projects/:slugOrId", async (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     try {
       const { slugOrId } = req.params;
       if (isProjectSanityConfigured()) {
@@ -285,6 +296,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/journal", async (_req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     try {
       const articles = await fetchJournalArticlesFromSanity();
       res.json(articles);
@@ -295,6 +307,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/journal/categories", async (_req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     try {
       const categories = await fetchJournalCategoriesFromSanity();
       res.json(categories);
@@ -305,6 +318,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/journal/:slug", async (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     try {
       const article = await fetchJournalArticleBySlugFromSanity(req.params.slug);
       if (!article) return res.status(404).json({ error: "Journal article not found" });

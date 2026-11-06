@@ -168,11 +168,12 @@ describe("POST /api/brief/submit", () => {
     const { submit, deps } = await start({ rateLimit });
     const statuses: number[] = [];
     for (let i = 0; i < 6; i++) {
-      statuses.push((await submit({ state: answeredState(), submissionId: `aaaaaaaa-bbbb-4ccc-8ddd-44444444444${i}` })).status);
+      statuses.push((await submit({ state: { ...answeredState(), contact: { ...CONTACT, email: `visitor${i}@example.com` } }, submissionId: `aaaaaaaa-bbbb-4ccc-8ddd-44444444444${i}` })).status);
     }
     expect(statuses).toEqual([200, 200, 200, 200, 200, 429]);
     expect(deps.deliverToAttio).toHaveBeenCalledTimes(5);
-    expect(deps.incrWithExpiry).toHaveBeenCalledTimes(5);
+    // One per-email counter and one idempotency mark for each delivered brief.
+    expect(deps.incrWithExpiry).toHaveBeenCalledTimes(10);
   });
 
   it("idempotent submit", async () => {
@@ -201,6 +202,38 @@ describe("POST /api/brief/submit", () => {
     expect((await submit({ state: { answers: {} }, submissionId: "aaaaaaaa-bbbb-4ccc-8ddd-222222222222" })).status).toBe(400);
     expect(deps.deliverToAttio).not.toHaveBeenCalled();
     expect(deps.sendEmail).not.toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/brief/submit shape and abuse limits", () => {
+  afterEach(async () => {
+    await new Promise<void>((resolve) => (server ? server.close(() => resolve()) : resolve()));
+    server = undefined;
+  });
+
+  it("refuses made-up keys, values outside the bank and incomplete briefs", async () => {
+    const { submit, deps } = await start();
+    const base = answeredState();
+    const bad = [
+      { ...base, answers: { ...base.answers, evil: "x" } },
+      { ...base, answers: { ...base.answers, q1: "not an option" } },
+      { ...base, answers: { ...base.answers, q1: ["lost_deals"] } },
+      { ...base, answers: { q1: "lost_deals" } },
+    ];
+    for (const [i, state] of bad.entries()) {
+      expect((await submit({ state, submissionId: `dddddddd-bbbb-4ccc-8ddd-00000000000${i}` })).status, `case ${i}`).toBe(400);
+    }
+    expect(deps.deliverToAttio).not.toHaveBeenCalled();
+  });
+
+  it("caps three briefs a day per email address with 429", async () => {
+    const { submit, deps } = await start();
+    for (let i = 0; i < 3; i++) {
+      expect((await submit({ state: answeredState(), submissionId: `eeeeeeee-bbbb-4ccc-8ddd-00000000000${i}` })).status).toBe(200);
+    }
+    const fourth = await submit({ state: { ...answeredState(), contact: { ...CONTACT, email: "ANA@example.com" } }, submissionId: "eeeeeeee-bbbb-4ccc-8ddd-000000000009" });
+    expect(fourth.status).toBe(429);
+    expect(deps.deliverToAttio).toHaveBeenCalledTimes(3);
   });
 });
 

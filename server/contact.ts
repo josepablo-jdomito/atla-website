@@ -1,6 +1,8 @@
+import { randomUUID } from "node:crypto";
 import type { Express, Request } from "express";
 import { z } from "zod";
 import { CONTACT_EMAIL } from "../shared/siteSeo.ts";
+import { rateLimit } from "./limits/guards.ts";
 
 /**
  * Contact form endpoint.
@@ -36,7 +38,6 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_SWEEP_AT = 5_000;
 const HONEYPOT_FIELD = "_gotcha";
-const LOG_EXCERPT_CHARS = 160;
 const RESULT_PATH = "/api/contact/result";
 
 /** Collapse line breaks and control characters so a value stays on one line. */
@@ -240,10 +241,13 @@ export async function deliverContactToAttio(apiKey: string, payload: ContactPayl
   return { ok: true, data: { recordId: person.data.recordId } };
 }
 
-/** What the log keeps when delivery fails: enough to follow up, not the whole message. */
-function failureExcerpt(payload: ContactPayload): string {
-  const excerpt = singleLine(payload.message).slice(0, LOG_EXCERPT_CHARS);
-  return `${payload.email} · "${excerpt}${payload.message.length > LOG_EXCERPT_CHARS ? "…" : ""}"`;
+/**
+ * What the log keeps when delivery fails: a reference and the email's domain, like the brief.
+ * Never the address, the name or any of the message, so a failure line cannot leak what a visitor wrote.
+ */
+export function failureRef(email: string, ref: string = randomUUID()): string {
+  const domain = email.split("@").pop()?.toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 80) || "unknown";
+  return `ref=${ref} domain=${domain}`;
 }
 
 const OUTCOMES = ["sent", "unavailable", "invalid", "busy", "failed", "forbidden"] as const;
@@ -323,6 +327,10 @@ export function registerContactRoute(app: Express) {
 
     // Only deliveries and honeypot hits count: a typo does not burn a real visitor's quota.
     // Keyed on address and email, so several people behind one office network don't block each other.
+    // A second bucket on the address alone, shared and hashed, so rotating emails does not reset the count.
+    if (!(await rateLimit(ip, "submit"))) {
+      return answer("busy");
+    }
     if (isRateLimited(`${ip}|${parsed.data.email}`)) {
       return answer("busy");
     }
@@ -331,7 +339,7 @@ export function registerContactRoute(app: Express) {
     if (!delivered.ok) {
       // 4xx bodies from Attio echo submitted values, so only the status is kept for those.
       const detail = delivered.status === 0 || delivered.status >= 500 ? `: ${singleLine(delivered.error)}` : "";
-      console.error(`Contact delivery failed (Attio ${delivered.status}${detail}) for ${failureExcerpt(parsed.data)}`);
+      console.error(`Contact delivery failed (Attio ${delivered.status}${detail}) ${failureRef(parsed.data.email)}`);
       return answer("failed");
     }
 

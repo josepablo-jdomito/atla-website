@@ -2,6 +2,7 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFunnelClickTracking, usePageAnalytics } from "@/hooks/use-analytics";
+import { stripQuery } from "@/lib/stripQuery";
 import { AnalyticsConsent } from "@/components/atla/AnalyticsConsent";
 import { AppRouter } from "./AppRouter";
 
@@ -82,8 +83,8 @@ function DeferredEnhancements() {
 
   return (
     <Suspense fallback={null}>
-      <Analytics />
-      <SpeedInsights />
+      <Analytics beforeSend={stripQuery} />
+      <SpeedInsights beforeSend={stripQuery} />
     </Suspense>
   );
 }

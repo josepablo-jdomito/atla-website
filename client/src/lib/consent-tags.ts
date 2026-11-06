@@ -109,12 +109,27 @@ function loadClarity() {
   inject(CLARITY_SRC(id), CLARITY_SCRIPT_ATTR);
 }
 
-const VENDOR_COOKIES = ["_fbp", "_fbc", "_clck", "_clsk", "CLID", "ANONCHK", "MR", "SM"];
+const VENDOR_COOKIES = ["_fbp", "_fbc", "_clck", "_clsk", "CLID", "ANONCHK", "MR", "SM", "_gid", "_gat"];
 
-function clearVendorCookies() {
+/** Google sets _ga plus one _ga_<container> per property, so those are found by prefix, not by a fixed list. */
+function cookieNamesToClear(): string[] {
+  const names = new Set(VENDOR_COOKIES);
+  for (const part of document.cookie.split(";")) {
+    const name = part.split("=")[0].trim();
+    if (name === "_ga" || name.startsWith("_ga_") || name.startsWith("_gat_")) names.add(name);
+  }
+  return Array.from(names);
+}
+
+/**
+ * Expires the analytics cookies already set (GA `_ga*`, Meta `_fbp`, Clarity `_clck`/`_clsk`) on the
+ * host and on its parent domain. Called when the visitor declines or withdraws consent.
+ */
+export function clearAnalyticsCookies() {
+  if (typeof document === "undefined") return;
   const host = window.location.hostname;
   const domains = [undefined, host, `.${host}`, `.${host.split(".").slice(-2).join(".")}`];
-  for (const name of VENDOR_COOKIES) {
+  for (const name of cookieNamesToClear()) {
     for (const domain of domains) {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domain ? `; domain=${domain}` : ""}`;
     }
@@ -137,7 +152,7 @@ function unload() {
   delete window.fbq;
   delete window._fbq;
   delete window.clarity;
-  clearVendorCookies();
+  clearAnalyticsCookies();
   metaLoaded = false;
   clarityLoaded = false;
   lastMetaPath = null;

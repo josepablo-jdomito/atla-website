@@ -17,7 +17,7 @@
  * receives everything without a second migration.
  */
 
-import { applyThirdPartyConsent, trackMetaLead, trackThirdPartyPageView } from "@/lib/consent-tags";
+import { applyThirdPartyConsent, clearAnalyticsCookies, trackMetaLead, trackThirdPartyPageView } from "@/lib/consent-tags";
 
 export const GA4_MEASUREMENT_ID = "G-X4ZD7PGXE3";
 
@@ -89,6 +89,8 @@ export function setAnalyticsConsent(value: AnalyticsConsent) {
   gtag("consent", "update", consentState(value));
   // Meta and Clarity load only on an explicit "granted", and are removed on "denied".
   applyThirdPartyConsent(value);
+  // Withdrawing means the cookies already on the device go too, not only that new ones stop.
+  if (value === "denied") clearAnalyticsCookies();
   if (value === "granted") trackThirdPartyPageView(window.location.pathname, value);
   window.dispatchEvent(new CustomEvent("atla:analytics-consent"));
 }
