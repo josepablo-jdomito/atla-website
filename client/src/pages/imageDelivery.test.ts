@@ -107,10 +107,10 @@ describe("no component hands the browser a bare Sanity image", () => {
     expectSized(requestedSanityUrls());
   });
 
-  it("a project page: the frames, the lightbox and the head preloads", () => {
+  it("a project page: the strip, the lightbox and the head preloads", () => {
     mount("/projects/alpha", Project, "alpha");
     expectSized(requestedSanityUrls());
-    const opener = container.querySelector<HTMLButtonElement>(".reel-frame__button")!;
+    const opener = container.querySelector<HTMLButtonElement>(".film-frame__button")!;
     act(() => opener.click());
     expect(document.querySelector(".lightbox__image")).not.toBeNull();
     const urls = requestedSanityUrls();

@@ -3,7 +3,7 @@ import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import { createRequire } from "module";
 import path from "path";
-import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
+import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
 import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, JOURNAL_DESCRIPTION_PAD, JOURNAL_META_DESCRIPTION, JOURNAL_TITLE_SUFFIX, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
@@ -15,7 +15,7 @@ import {
 } from "../server/sanity/journalService.ts";
 import { fetchProjectsFromSanity } from "../server/sanity/projectService.ts";
 import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/lib/journalSeo.ts";
-import { buildProjectPageView, buildProjectSeoHead, FILM_QUALITY, FILM_WIDTHS, filmImageSizes } from "../client/src/lib/projectPage.ts";
+import { buildProjectPageView, buildProjectSeoHead } from "../client/src/lib/projectPage.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
 import { buildServicesStructuredData, CONTACT_PAGE_SCHEMA } from "../client/src/lib/sitePageSchema.ts";
@@ -365,6 +365,23 @@ function buildResponsiveImagePreload(
     preloadImageSrcSet: buildImageSrcSet(src, widths, { quality }),
     preloadImageSizes: sizes,
   };
+}
+
+function buildImagePreloadEntries(
+  entries: Array<{
+    src?: string;
+    widths: number[];
+    quality: number;
+    sizes: string;
+  }>,
+) {
+  return entries
+    .filter((entry) => entry.src && entry.widths.length > 0)
+    .map((entry) => ({
+      href: getOptimizedImageUrl(entry.src, { width: entry.widths[entry.widths.length - 1], quality: entry.quality }) || entry.src!,
+      srcSet: buildImageSrcSet(entry.src!, entry.widths, { quality: entry.quality }),
+      sizes: entry.sizes,
+    }));
 }
 
 function hydrationScriptPaths(pathname: string) {
@@ -741,11 +758,14 @@ async function prerenderRoutes() {
     const seoHead = buildProjectSeoHead(buildProjectPageView(project, projects));
 
     const pathname = `/projects/${project.slug}`;
-    // The Scroll film opens on the cover filling the screen: one preload, the same candidates and sizes
-    // as the frame's <img>, so the browser fetches it once (project-scrollfilm-brief.md, 2026-11-06).
-    const heroSrc = resolveProjectHeroImage(project);
-    const heroDims = getImageDimensions(heroSrc);
-    const heroSizes = filmImageSizes(heroDims && heroDims.height > 0 ? heroDims.width / heroDims.height : 1.5);
+    const projectGalleryPreloads = buildImagePreloadEntries(
+      (project.images.length > 0 ? project.images.slice(0, 2) : [resolveProjectHeroImage(project)]).map((src) => ({
+        src,
+        widths: [600, 900, 1200],
+        quality: 82,
+        sizes: "(max-width: 767px) 100vw, 50vw",
+      })),
+    );
     const html = await injectPrerenderedApp(
       replaceHead(
         template,
@@ -754,7 +774,13 @@ async function prerenderRoutes() {
           description: seoHead.description,
           pathname,
           image: resolveProjectHeroImage(project),
-          ...buildResponsiveImagePreload(heroSrc, FILM_WIDTHS, FILM_QUALITY, heroSizes),
+          ...buildResponsiveImagePreload(
+            resolveProjectHeroImage(project),
+            [600, 900, 1200, 1400],
+            84,
+            "(max-width: 767px) 100vw, 55vw",
+          ),
+          preloadImages: projectGalleryPreloads,
           structuredData: seoHead.structuredData,
         }),
       ),

@@ -5,8 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Router } from "wouter";
 import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import Project, { buildFilm } from "./Project";
-import { CAPTION_MAX, filmFrameScrollY, filmImageSizes, filmPosition, filmStep, planFilmText, splitCaption } from "@/lib/projectPage";
+import Project, { filmFrames } from "./Project";
+import { stripProgress, stripStop } from "@/lib/projectPage";
 import { nextProjectInSiteOrder, siteOrder, toSiteProject } from "@/components/site/siteProjects";
 import type { Project as ProjectRecord } from "@shared/schema";
 import { siteCopy } from "@/content/siteCopy";
@@ -50,114 +50,45 @@ const API = [
   raw({ slug: "feat-one", title: "Feature One", featured: true, homeOrder: 1 }),
 ];
 
-describe("Scroll film text: who says what in the caption bar (2026-11-06)", () => {
-  const long =
-    "Acre already had a brand and a whole family of things under it. Rústico had to read as Acre's, the baby brother of a bigger restaurant. A place like that cannot out-shout its setting. It has to disappear into it.";
+describe("filmFrames, stripProgress and stripStop (Filmstrip, 2026-11-06)", () => {
+  const piece = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg` });
+  const shape = (frames: ReturnType<typeof filmFrames>) => frames.map((f) => (f.kind === "text" ? f.text : "i")).join(" ");
+  const pieces = (n: number) => Array.from({ length: n }, (_, i) => piece(`p${i}`));
 
-  it("keeps a caption that fits two lines whole, and splits a longer paragraph at sentence ends, in order", () => {
-    expect(splitCaption("One short line.")).toEqual(["One short line."]);
-    const lines = splitCaption(long);
-    expect(lines.length).toBeGreaterThan(1);
-    // Nothing added, nothing dropped, the order kept.
-    expect(lines.join(" ")).toBe(long);
-    for (const line of lines) {
-      expect(line.length).toBeLessThanOrEqual(CAPTION_MAX);
-      expect(line).toMatch(/[.!?]$/);
-    }
+  it("puts a text frame after every third or fourth piece, until the paragraphs run out", () => {
+    // Twelve pieces, two paragraphs: spread evenly would be every fourth.
+    expect(shape(filmFrames(pieces(12), ["one", "two"]))).toBe("i i i i one i i i i two i i i i");
+    // Never closer than every third, even with many paragraphs; the leftovers close the strip.
+    expect(shape(filmFrames(pieces(6), ["one", "two", "three"]))).toBe("i i i one i i i two three");
+    // Never further apart than every fourth.
+    expect(shape(filmFrames(pieces(10), ["one"]))).toBe("i i i i one i i i i i i");
   });
 
-  it("cuts a sentence too long for the bar at a clause, never mid-word, and leaves one with no clause whole", () => {
-    const sentence =
-      "In the empty center of a circular permaculture garden, the owners were running an open-fire dinner as a pop-up: private buyouts, winemaker dinners, a dark sky above and a long table under it.";
-    const lines = splitCaption(sentence);
-    expect(lines.length).toBeGreaterThan(1);
-    expect(lines.join(" ")).toBe(sentence);
-    expect(lines.slice(0, -1).every((line) => /[,;:]$/.test(line))).toBe(true);
-    const unbroken = "A".repeat(80) + " " + "b".repeat(80) + ".";
-    expect(splitCaption(unbroken)).toEqual([unbroken]);
-    expect(splitCaption("   ")).toEqual([]);
+  it("never drops a paragraph, and no paragraphs means pieces only", () => {
+    expect(shape(filmFrames(pieces(2), ["one", "two"]))).toBe("i i one two");
+    expect(shape(filmFrames(pieces(3), []))).toBe("i i i");
+    expect(filmFrames([], [])).toEqual([]);
   });
 
-  it("gives the first frame the intro, then the paragraphs one by one, a long one across consecutive frames", () => {
-    const plan = planFilmText([undefined, undefined, undefined, undefined, undefined, undefined, undefined], "The intro.", ["First paragraph.", long, "Last paragraph."]);
-    const pieces = splitCaption(long);
-    expect(plan.captions).toEqual(["The intro.", "First paragraph.", ...pieces, "Last paragraph.", ...Array(7 - 3 - pieces.length).fill("")]);
-    expect(plan.textFrames).toEqual([]);
+  it("reads the progress as scrollLeft over the scrollable range, clamped, and 0 when nothing overflows", () => {
+    expect(stripProgress(0, 3000, 1000)).toBe(0);
+    expect(stripProgress(1000, 3000, 1000)).toBe(0.5);
+    expect(stripProgress(2000, 3000, 1000)).toBe(1);
+    expect(stripProgress(2600, 3000, 1000)).toBe(1);
+    expect(stripProgress(-20, 3000, 1000)).toBe(0);
+    expect(stripProgress(0, 900, 1000)).toBe(0);
   });
 
-  it("never invents a caption: frames past the story carry the title alone, a Sanity caption is kept as written", () => {
-    const plan = planFilmText([undefined, "The menu, on cream paper.", undefined, undefined], "The intro.", ["One paragraph."]);
-    expect(plan.captions).toEqual(["The intro.", "The menu, on cream paper.", "One paragraph.", ""]);
-    expect(planFilmText([undefined, undefined], "", []).captions).toEqual(["", ""]);
-    const sources = ["The intro.", "One paragraph.", "The menu, on cream paper."].join(" ");
-    for (const caption of plan.captions) expect(sources.includes(caption)).toBe(true);
-  });
-
-  it("never drops the story: what finds no frame closes the film as text frames of whole paragraphs", () => {
-    const plan = planFilmText([undefined, undefined], "The intro.", ["Second.", long, "Fourth.", "x".repeat(600) + "."]);
-    expect(plan.captions).toEqual(["The intro.", "Second."]);
-    // The paragraph that started no frame stays whole; a very long one gets a text frame of its own.
-    expect(plan.textFrames).toEqual([[long, "Fourth."], ["x".repeat(600) + "."]]);
-    // A paragraph cut short by the last frame keeps its remaining sentences together.
-    const cut = planFilmText([undefined, undefined], "", [long]);
-    const lines = splitCaption(long);
-    expect(cut.captions).toEqual(lines.slice(0, 2));
-    expect(cut.textFrames).toEqual(lines.length > 2 ? [[lines.slice(2).join(" ")]] : []);
-  });
-
-  it("puts the pieces in order with their captions, then the text frames", () => {
-    const piece = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg` });
-    const film = buildFilm([piece("a"), piece("b")], "Intro.", ["One.", "Two.", "Three."]);
-    expect(film.map((f) => (f.kind === "text" ? `text:${f.paragraphs.join("|")}` : `${f.item.src.includes("/a-") ? "a" : "b"}:${f.caption}`))).toEqual([
-      "a:Intro.",
-      "b:One.",
-      "text:Two.|Three.",
-    ]);
-    expect(buildFilm([], "", [])).toEqual([]);
-  });
-});
-
-describe("Scroll film position: active frame, progress, landings and steps", () => {
-  it("flips the active frame when the next one has covered half the screen", () => {
-    expect(filmPosition(0, 800, 5).active).toBe(0);
-    expect(filmPosition(399, 800, 5).active).toBe(0);
-    expect(filmPosition(400, 800, 5).active).toBe(1);
-    expect(filmPosition(3200, 800, 5).active).toBe(4);
-    // Past the last frame (the page goes on to the footer) and before the first, clamped.
-    expect(filmPosition(9000, 800, 5).active).toBe(4);
-    expect(filmPosition(-300, 800, 5).active).toBe(0);
-  });
-
-  it("fills the line by the frames passed over the whole: a sliver at the first, full at the last", () => {
-    expect(filmPosition(0, 800, 4).progress).toBe(0.25);
-    expect(filmPosition(400, 800, 4).progress).toBe(0.375);
-    expect(filmPosition(2400, 800, 4).progress).toBe(1);
-    expect(filmPosition(5000, 800, 4).progress).toBe(1);
-    expect(filmPosition(0, 800, 1).progress).toBe(1);
-    expect(filmPosition(0, 800, 0)).toEqual({ active: 0, progress: 0 });
-    expect(filmPosition(100, 0, 3)).toEqual({ active: 0, progress: 0 });
-  });
-
-  it("lands a frame exactly under the header", () => {
-    expect(filmFrameScrollY(64, 0, 800)).toBe(0);
-    expect(filmFrameScrollY(64, 3, 800)).toBe(2400);
-    expect(filmFrameScrollY(200, 2, 700, 64)).toBe(1536);
-  });
-
-  it("steps one frame, finishing a half-scrolled frame first, clamped at the ends", () => {
-    expect(filmStep(0, 800, 5, 1)).toBe(1);
-    expect(filmStep(800, 800, 5, 1)).toBe(2);
-    expect(filmStep(1000, 800, 5, 1)).toBe(2);
-    expect(filmStep(1000, 800, 5, -1)).toBe(1);
-    expect(filmStep(1600, 800, 5, -1)).toBe(1);
-    expect(filmStep(0, 800, 5, -1)).toBe(0);
-    expect(filmStep(3200, 800, 5, 1)).toBe(4);
-  });
-
-  it("asks for a landscape at the screen's width and a portrait at its own width at full height", () => {
-    expect(filmImageSizes(1.5)).toBe("100vw");
-    expect(filmImageSizes(0.75)).toBe("min(100vw, calc((100vh - 64px) * 0.75))");
-    expect(filmImageSizes(Number.NaN)).toBe("100vw");
+  it("steps to the next or previous frame edge, and to the ends when there is none", () => {
+    const lefts = [0, 600, 1200, 1900];
+    expect(stripStop(lefts, 0, 1, 2400)).toBe(600);
+    expect(stripStop(lefts, 601, 1, 2400)).toBe(1200);
+    expect(stripStop(lefts, 1900, 1, 2400)).toBe(2400);
+    expect(stripStop(lefts, 1200, -1, 2400)).toBe(600);
+    expect(stripStop(lefts, 650, -1, 2400)).toBe(600);
+    expect(stripStop(lefts, 0, -1, 2400)).toBe(0);
+    // The last frame's edge past the end of the range is clamped to the end.
+    expect(stripStop([0, 3000], 0, 1, 2400)).toBe(2400);
   });
 });
 
@@ -240,28 +171,13 @@ function render(slug: string, search = "") {
   );
 }
 
-/** The frames container's document top and one frame's height, as the page measures them. */
-function stubGeometry(framesTop: () => number, frameHeight = 800) {
-  const real = Element.prototype.getBoundingClientRect;
-  const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
-    if (this.classList.contains("reel-frames")) return { top: framesTop() - window.scrollY, left: 0 } as DOMRect;
-    return real.call(this);
-  });
-  const height = vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
-    return this.classList.contains("reel-frame") ? frameHeight : 0;
-  });
-  return () => {
-    spy.mockRestore();
-    height.mockRestore();
-  };
-}
-
-describe("Project page, Scroll film", () => {
-  it("opens on the first frame with the facets as links into the filtered wall, over the picture", () => {
+describe("Project page", () => {
+  it("shows the year in the facts line, then the facets as links into the filtered wall", () => {
     render("archive-b");
-    const meta = container.querySelector(".reel-frames > .reel-frame:first-child .reel-meta")!;
-    expect(meta).not.toBeNull();
-    const facets = meta.querySelector(".reel-meta__facets")!;
+    // One skeleton for every project: the client line is on none of them, only the year.
+    expect(container.querySelector("h1")?.textContent).toBe("Rústico & Co / Tulum");
+    expect(container.querySelector(".film-head__facts")?.textContent).toBe("2023");
+    const facets = container.querySelector(".film-head__facets")!;
     expect(facets.textContent).toBe("Hospitality & Travel\u00a0\u00a0·  Website, Brand Identity\u00a0\u00a0·  Mexico\u00a0\u00a0·  Rebrand");
     const links = Array.from(facets.querySelectorAll("a")).map((a) => [a.textContent, a.getAttribute("href")]);
     // Brand Identity is on every project, so it is text, not a link; Stage is text.
@@ -270,195 +186,171 @@ describe("Project page, Scroll film", () => {
       ["Website", "/?discipline=website"],
       ["Mexico", "/?place=mexico"],
     ]);
-    expect(facets.textContent).not.toContain("Hotel");
-    // Only the first frame says what the project is.
-    expect(container.querySelectorAll(".reel-meta")).toHaveLength(1);
+    expect(container.querySelector(".film-head__facets")?.textContent).not.toContain("Hotel");
   });
 
-  it("puts the proof line on the first frame of the project it is about, and on no other", () => {
+  it("has the same head skeleton with or without a description: no empty block, nothing in its place", () => {
+    API.push(raw({ slug: "thin", title: "Thin", description: "", client: "Confidential" }));
+    API.push(raw({ slug: "wordy", title: "Wordy", description: "A gin for the unreal. It was never meant for a shelf. Deep colors." }));
+    try {
+      render("thin");
+      expect(container.querySelector(".film-head__lead")).toBeNull();
+      // The column's order: title, the line (absent here), the quiet metadata. Nothing else.
+      expect(Array.from(container.querySelectorAll(".film-head > *")).map((el) => el.className)).toEqual([
+        "film-head__title",
+        "film-head__facets",
+        "film-head__facts",
+      ]);
+      expect(container.querySelector(".film-head__body, .film-frame--text, .film-rest")).toBeNull();
+      act(() => root.unmount());
+      root = createRoot(container);
+      render("wordy");
+      // The line is one sentence; the rest of the description opens the story.
+      expect(container.querySelector(".film-head__lead")?.textContent).toBe("A gin for the unreal.");
+      expect(container.querySelector(".film-head__title + .film-head__lead")).not.toBeNull();
+      // The first paragraph sits last in the column, after the facts.
+      const body = container.querySelector(".film-head > :last-child")!;
+      expect(body.className).toBe("film-head__body");
+      expect(body.textContent).toBe("It was never meant for a shelf. Deep colors.");
+    } finally {
+      API.pop();
+      API.pop();
+    }
+  });
+
+  it("puts the proof line under the facets on the project it is about, and on no other", () => {
     API.push(raw({ slug: "rustico", title: "Rústico" }));
     try {
       render("rustico");
-      expect(container.querySelector(".reel-frame:first-child .reel-meta__proof")?.textContent).toBe(siteCopy.project.proof.rustico);
-      expect(container.querySelector(".reel-meta__proof")?.textContent).toContain("MICHELIN Green Star");
+      expect(container.querySelector(".film-head__proof")?.textContent).toBe(siteCopy.project.proof.rustico);
+      expect(container.querySelector(".film-head__proof")?.textContent).toContain("MICHELIN Green Star");
       act(() => root.unmount());
       root = createRoot(container);
       render("archive-b");
-      expect(container.querySelector(".reel-meta__proof")).toBeNull();
+      expect(container.querySelector(".film-head__proof")).toBeNull();
     } finally {
       API.pop();
     }
   });
 
-  it("pins one bar: the title as the page's heading, the active caption read aloud, a line with no digits", () => {
-    API.push(raw({ slug: "story", title: "Story", description: "One line. First paragraph.", body: "Second paragraph.\n\nThird paragraph.", images: [image("s1"), image("s2")] }));
-    try {
-      render("story");
-      const article = container.querySelector("article.reel")!;
-      // The bar comes first in the document (read before the frames); CSS pins it to the bottom.
-      expect(Array.from(article.children).map((el) => el.className)).toEqual(["reel-bar-slot", "reel-frames"]);
-      const bar = container.querySelector(".reel-bar")!;
-      expect(bar.querySelector("h1")?.textContent).toBe("Story");
-      expect(container.querySelectorAll("h1")).toHaveLength(1);
-      const live = bar.querySelector(".reel-bar__live")!;
-      expect(live.getAttribute("aria-live")).toBe("polite");
-      expect(live.textContent).toBe("One line.");
-      expect(bar.querySelector(".reel-progress")?.getAttribute("aria-hidden")).toBe("true");
-      expect(bar.textContent).not.toMatch(/\d/);
-      // Three pieces carry the line and two paragraphs; the third paragraph closes the film as text.
-      expect(Array.from(container.querySelectorAll(".reel-frame--text p")).map((p) => p.textContent)).toEqual(["Third paragraph."]);
-    } finally {
-      API.pop();
-    }
-  });
-
-  it("is frames and the bar, then nothing: no call to action, no next project, no counters or arrows", () => {
-    render("archive-b");
-    const article = container.querySelector("article.reel")!;
-    expect(article.textContent).not.toMatch(/\d/);
-    // The header keeps "Start a project"; the page itself adds no second one.
-    expect(article.querySelector('a[href^="/brief"]')).toBeNull();
-    expect(article.querySelector("svg")).toBeNull();
-    expect(container.querySelector(".story-cta, .story-next, .story-more, .story-rail, .film-strip")).toBeNull();
-  });
-
-  it("makes the frames a focusable carousel of labelled groups, with no number in any label", () => {
-    API.push(raw({ slug: "story", title: "Story", description: "One line. First paragraph.", body: "Second paragraph.\n\nThird paragraph.", images: [image("s1"), image("s2")] }));
-    try {
-      render("story");
-      const frames = container.querySelector<HTMLElement>(".reel-frames")!;
-      expect(frames.tabIndex).toBe(0);
-      expect(frames.getAttribute("aria-roledescription")).toBe("carousel");
-      expect(frames.getAttribute("aria-label")).toBe("Story");
-      const groups = Array.from(frames.querySelectorAll(".reel-frame"));
-      expect(groups.every((f) => f.getAttribute("role") === "group")).toBe(true);
-      expect(groups.map((f) => f.getAttribute("aria-label"))).toEqual(["Story, image", "Story, image", "Story, image", "Story, text"]);
-      expect(container.querySelector("article")!.innerHTML).not.toMatch(/aria-label="[^"]*\d/);
-    } finally {
-      API.pop();
-    }
-  });
-
-  it("fills the frame: a landscape covers it (on its hotspot), a portrait sits whole over a blurred copy of itself", () => {
+  it("opens the strip on the cover whole, at its own ratio: no crop, even with a hotspot", () => {
     API.push(raw({ slug: "tall", title: "Tall", coverImage: "https://cdn.sanity.io/images/p/production/tall-1080x1440.png" }));
     API.push(raw({ slug: "focal", title: "Focal", coverImage: "https://cdn.sanity.io/images/p/production/focal-1200x800.png", coverFocal: { x: 0.5, y: 0.15 } }));
     try {
-      for (const [slug, shape, sizes] of [
-        ["archive-b", "landscape", "100vw"],
-        ["tall", "portrait", "min(100vw, calc((100vh - 64px) * 0.75))"],
-        ["focal", "landscape", "100vw"],
-      ]) {
+      for (const [slug, w, h] of [["archive-b", "1200", "800"], ["tall", "1080", "1440"], ["focal", "1200", "800"]]) {
         act(() => root.unmount());
         root = createRoot(container);
         render(slug);
-        const button = container.querySelector<HTMLElement>(".reel-frame:first-child .reel-frame__button")!;
-        expect(button.dataset.shape, slug).toBe(shape);
-        const img = button.querySelector<HTMLImageElement>(".reel-frame__image")!;
-        expect(img.getAttribute("sizes"), slug).toBe(sizes);
-        // The image itself is never cropped by the CDN: CSS frames it.
+        const img = container.querySelector<HTMLImageElement>(".film-strip > .film-frame:first-child img")!;
+        expect(img, slug).not.toBeNull();
+        expect([img.getAttribute("width"), img.getAttribute("height")], slug).toEqual([w, h]);
         const url = new URL(img.getAttribute("src")!);
         expect(url.searchParams.get("fit"), slug).toBe("max");
+        expect(url.searchParams.get("h"), slug).toBeNull();
         expect(url.searchParams.get("crop"), slug).toBeNull();
         expect(img.getAttribute("srcset"), slug).toContain("w=2400");
-        const fill = button.querySelector<HTMLImageElement>(".reel-frame__fill")!;
-        expect(fill.getAttribute("aria-hidden")).toBe("true");
-        expect(fill.getAttribute("alt")).toBe("");
-        expect(new URL(fill.getAttribute("src")!).searchParams.get("w")).toBe("64");
+        // The frame takes its width from the ratio (height-filled), never a fixed box.
+        expect((img.parentElement as HTMLElement).style.getPropertyValue("--r"), slug).toBe((Number(w) / Number(h)).toFixed(4));
       }
-      expect(container.querySelector<HTMLElement>(".reel-frame__image")!.style.getPropertyValue("--focal")).toBe("50.0% 15.0%");
     } finally {
       API.pop();
       API.pop();
     }
   });
 
-  it("loads the active frame and its neighbours at once, the rest as the page scrolls", () => {
-    API.push(raw({ slug: "many", title: "Many", images: ["m1", "m2", "m3", "m4", "m5"].map(image) }));
+  it("is a column and a strip, then nothing: no call to action, no next project, no digits", () => {
+    render("archive-b");
+    const article = container.querySelector("article.film")!;
+    expect(Array.from(article.children).map((el) => el.className)).toEqual(["film-head", "film-stage"]);
+    const stage = container.querySelector(".film-stage")!;
+    expect(Array.from(stage.children).map((el) => el.className)).toEqual(["film-strip", "film-progress"]);
+    expect(stage.textContent).not.toMatch(/\d/);
+    // The header keeps "Start a project"; the page itself adds no second one.
+    expect(article.querySelector('a[href^="/brief"]')).toBeNull();
+    expect(container.querySelector(".story-cta, .story-next, .story-more, .story-rail")).toBeNull();
+  });
+
+  it("makes the strip a focusable carousel of labelled frames, with no number in any label", () => {
+    API.push(raw({ slug: "story", title: "Story", description: "One line. First paragraph.", body: "Second paragraph.\n\nThird paragraph.", images: [image("s1"), image("s2"), image("s3"), image("s4")] }));
     try {
-      render("many");
-      const loading = Array.from(container.querySelectorAll<HTMLImageElement>(".reel-frame__image")).map((img) => img.getAttribute("loading"));
-      expect(loading).toEqual(["eager", "eager", "lazy", "lazy", "lazy", "lazy"]);
-      const decoding = Array.from(container.querySelectorAll<HTMLImageElement>(".reel-frame img")).map((img) => img.getAttribute("decoding"));
-      expect(new Set(decoding)).toEqual(new Set(["async"]));
-      expect(container.querySelector(".reel-frame__image")?.getAttribute("fetchpriority")).toBe("high");
+      render("story");
+      const strip = container.querySelector<HTMLElement>(".film-strip")!;
+      expect(strip.tabIndex).toBe(0);
+      expect(strip.getAttribute("aria-roledescription")).toBe("carousel");
+      expect(strip.getAttribute("aria-label")).toBe("Story");
+      const frames = Array.from(strip.querySelectorAll(".film-frame"));
+      expect(frames.every((f) => f.getAttribute("role") === "group")).toBe(true);
+      expect(frames.map((f) => f.getAttribute("aria-label"))).toEqual([
+        "Story, image", "Story, image", "Story, image", "Story, text", "Story, image", "Story, image", "Story, text",
+      ]);
+      expect(strip.innerHTML).not.toMatch(/aria-label="[^"]*\d/);
+      // The same paragraphs read under the strip below 1024 (CSS shows one or the other).
+      expect(Array.from(container.querySelectorAll(".film-rest__text")).map((p) => p.textContent)).toEqual([
+        "Second paragraph.",
+        "Third paragraph.",
+      ]);
+      expect(container.querySelector(".film-progress")?.getAttribute("aria-hidden")).toBe("true");
     } finally {
       API.pop();
+    }
+  });
+
+  it("steps the strip a frame with the arrows and to its ends with Home and End", () => {
+    render("archive-b");
+    const strip = container.querySelector<HTMLElement>(".film-strip")!;
+    const frames = Array.from(strip.querySelectorAll<HTMLElement>(".film-frame"));
+    // Three frames 700px apart; the strip shows 1000px of 2100.
+    const lefts = new Map(frames.map((frame, index) => [frame, index * 700]));
+    let scrollLeft = 0;
+    Object.defineProperty(strip, "scrollLeft", { configurable: true, get: () => scrollLeft, set: (v: number) => (scrollLeft = v) });
+    Object.defineProperty(strip, "scrollWidth", { configurable: true, value: 2100 });
+    Object.defineProperty(strip, "clientWidth", { configurable: true, value: 1000 });
+    const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const left = lefts.has(this as HTMLElement) ? lefts.get(this as HTMLElement)! - scrollLeft : 0;
+      return { left, top: 0 } as DOMRect;
+    });
+    const scrollTo = vi.fn((options: ScrollToOptions) => (scrollLeft = options.left ?? scrollLeft));
+    strip.scrollTo = scrollTo as unknown as typeof strip.scrollTo;
+    const press = (key: string) => {
+      const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+      act(() => {
+        strip.dispatchEvent(event);
+      });
+      return event;
+    };
+    try {
+      expect(press("ArrowRight").defaultPrevented).toBe(true);
+      expect(scrollTo).toHaveBeenLastCalledWith({ left: 700, behavior: "auto" });
+      press("ArrowRight");
+      expect(scrollLeft).toBe(1100);
+      press("ArrowLeft");
+      expect(scrollLeft).toBe(700);
+      press("End");
+      expect(scrollLeft).toBe(1100);
+      press("Home");
+      expect(scrollLeft).toBe(0);
+      expect(press("a").defaultPrevented).toBe(false);
+    } finally {
+      spy.mockRestore();
     }
   });
 
   it("renders the media in order, cover first", () => {
     render("archive-b");
-    const sources = Array.from(container.querySelectorAll(".reel-frame__image")).map((img) => img.getAttribute("src"));
+    const sources = Array.from(container.querySelectorAll(".film-strip img")).map((img) => img.getAttribute("src"));
     expect(sources).toHaveLength(3);
     expect(sources[0]).toContain("archive-b");
     expect(sources[1]).toContain("b1");
     expect(sources[2]).toContain("b2");
   });
 
-  it("moves one frame with the arrows and Page keys, to the ends with Home and End", () => {
-    render("archive-b");
-    const restore = stubGeometry(() => 64);
-    const scrollTo = vi.mocked(window.scrollTo);
-    scrollTo.mockClear();
-    const frames = container.querySelector<HTMLElement>(".reel-frames")!;
-    const press = (key: string) => {
-      const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
-      act(() => {
-        frames.dispatchEvent(event);
-      });
-      return event;
-    };
-    try {
-      expect(press("ArrowDown").defaultPrevented).toBe(true);
-      // Reduced motion in this suite: the jump is instant.
-      expect(scrollTo).toHaveBeenLastCalledWith({ top: 800, behavior: "auto" });
-      Object.defineProperty(window, "scrollY", { configurable: true, value: 800 });
-      press("PageDown");
-      expect(scrollTo).toHaveBeenLastCalledWith({ top: 1600, behavior: "auto" });
-      press("ArrowUp");
-      expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "auto" });
-      press("PageUp");
-      expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "auto" });
-      press("End");
-      expect(scrollTo).toHaveBeenLastCalledWith({ top: 1600, behavior: "auto" });
-      expect(press("a").defaultPrevented).toBe(false);
-    } finally {
-      Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
-      restore();
-    }
-  });
-
-  it("lands on the image clicked on the wall (?at=) under the header, and checks again at 250 and 900ms", () => {
-    vi.useFakeTimers();
-    let framesTop = 64;
-    const restore = stubGeometry(() => framesTop);
-    try {
-      render("archive-b", "at=b2");
-      // b2 is the third frame: two frames below the first.
-      expect(window.scrollTo).toHaveBeenCalledWith({ top: 1600, behavior: "auto" });
-      expect(container.querySelector(".reel-bar__live")?.textContent).toBe("");
-      // The page above the frames settled late: the next check corrects the landing.
-      framesTop = 100;
-      act(() => vi.advanceTimersByTime(250));
-      expect(window.scrollTo).toHaveBeenLastCalledWith({ top: 1636, behavior: "auto" });
-      act(() => vi.advanceTimersByTime(650));
-      expect(vi.mocked(window.scrollTo).mock.calls.filter(([arg]) => typeof arg === "object")).toHaveLength(3);
-      // The frame landed on and its neighbours load at once.
-      const loading = Array.from(container.querySelectorAll<HTMLImageElement>(".reel-frame__image")).map((img) => img.getAttribute("loading"));
-      expect(loading).toEqual(["lazy", "eager", "eager"]);
-    } finally {
-      restore();
-      vi.useRealTimers();
-    }
-  });
-
-  it("renders the bar alone for a project with no media", () => {
+  it("renders the column alone, without a strip, for a project with no media", () => {
     API.push(raw({ slug: "bare", title: "Bare", coverImage: "", images: [] }));
     try {
       render("bare");
-      expect(container.querySelector(".reel-frames")).toBeNull();
-      expect(container.querySelector("h1")?.textContent).toBe("Bare");
-      expect(container.querySelector(".reel")?.getAttribute("data-media")).toBe("none");
+      expect(container.querySelector(".film-strip, .film-progress")).toBeNull();
+      expect(container.querySelector(".film-head")?.textContent).toContain("Bare");
+      expect(container.querySelector(".film")?.getAttribute("data-media")).toBe("none");
     } finally {
       API.pop();
     }
@@ -484,24 +376,20 @@ describe("Project page, Scroll film", () => {
     }
   });
 
-  it("plays muted video while on screen and pauses it off screen; poster until then", () => {
+  it("plays muted video while on screen and pauses it off screen", () => {
     reducedMotion = false;
     API.push(VIDEO_PROJECT);
     try {
       render("with-video");
       const video = container.querySelector("video")!;
-      expect(video.closest(".reel-frame")?.getAttribute("aria-label")).toBe("With Video, video");
       expect(video.controls).toBe(false);
       expect(video.muted).toBe(true);
       expect(video.loop).toBe(true);
-      expect(video.getAttribute("preload")).toBe("none");
       expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
       intersect(true);
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
       intersect(false);
       expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled();
-      // One pause control for the page, on the opening frame.
-      expect(container.querySelectorAll(".reel-meta .motion-toggle")).toHaveLength(1);
     } finally {
       API.pop();
     }
@@ -513,6 +401,38 @@ describe("Project page, Scroll film", () => {
     vi.mocked(window.scrollTo).mockClear();
     act(() => location.navigate("/projects/feat-one"));
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  it("lands the strip on the image clicked on the wall (?at=), at its left edge, and checks again at 250 and 900ms", () => {
+    vi.useFakeTimers();
+    // jsdom has no CSS.escape; the asset keys are plain hex in practice.
+    const g = globalThis as { CSS?: { escape?: (value: string) => string } };
+    g.CSS = { ...(g.CSS ?? {}), escape: g.CSS?.escape ?? ((value: string) => value) };
+    let frameAt = 1400;
+    const asset = "b2";
+    const scrollTo = vi.fn();
+    const originalScrollTo = HTMLElement.prototype.scrollTo;
+    HTMLElement.prototype.scrollTo = scrollTo as unknown as typeof HTMLElement.prototype.scrollTo;
+    const real = Element.prototype.getBoundingClientRect;
+    const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      if (this.getAttribute("data-asset") === asset) return { left: frameAt, top: 0 } as DOMRect;
+      if (this.classList.contains("film-strip")) return { left: 380, top: 88 } as DOMRect;
+      return real.call(this);
+    });
+    try {
+      render("archive-b", `at=${asset}`);
+      expect(scrollTo).toHaveBeenCalledWith({ left: 1400 - 380, behavior: "auto" });
+      // The frames before it got their width late: the next check corrects the landing.
+      frameAt = 1700;
+      act(() => vi.advanceTimersByTime(250));
+      expect(scrollTo).toHaveBeenLastCalledWith({ left: 1700 - 380, behavior: "auto" });
+      act(() => vi.advanceTimersByTime(650));
+      expect(scrollTo).toHaveBeenCalledTimes(3);
+    } finally {
+      spy.mockRestore();
+      HTMLElement.prototype.scrollTo = originalScrollTo;
+      vi.useRealTimers();
+    }
   });
 
   it("keeps the restored position after Back (popstate)", () => {
@@ -533,7 +453,7 @@ describe("Lightbox keyboard (fix wave 2026-11-05)", () => {
 
   it("keeps Tab inside the dialog and gives focus back to the image that opened it", () => {
     render("archive-b");
-    const opener = container.querySelectorAll<HTMLButtonElement>(".reel-frame__button")[1];
+    const opener = container.querySelectorAll<HTMLButtonElement>(".film-frame__button")[1];
     act(() => opener.focus());
     act(() => opener.click());
     const dialog = document.querySelector<HTMLElement>('.lightbox[role="dialog"]')!;
@@ -558,7 +478,7 @@ describe("Lightbox keyboard (fix wave 2026-11-05)", () => {
 
   it("returns focus after the Close button too", () => {
     render("archive-b");
-    const opener = container.querySelector<HTMLButtonElement>(".reel-frame__button")!;
+    const opener = container.querySelector<HTMLButtonElement>(".film-frame__button")!;
     act(() => opener.focus());
     act(() => opener.click());
     const close = document.querySelector<HTMLButtonElement>(".lightbox__control--close")!;
