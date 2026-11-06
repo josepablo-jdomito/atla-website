@@ -371,7 +371,9 @@ describe("Ventures", () => {
 describe("Services side photo", () => {
   it("follows the row in view down to the last row, which the old observer band never reached", () => {
     stubMedia();
-    const disciplines = siteCopy.services.disciplines;
+    // The moment with the most rows (four), so the middle and the last row are different rows.
+    window.history.replaceState(null, "", "/services?moment=grow");
+    const disciplines = siteCopy.services.disciplines.filter((d) => (d.moments as readonly string[]).includes("grow"));
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
     client.setQueryData(
       ["/api/projects"],
@@ -386,6 +388,7 @@ describe("Services side photo", () => {
       root.render(createElement(QueryClientProvider, { client }, createElement(Router, { hook: location.hook }, createElement(Services)))),
     );
     const rows = Array.from(container.querySelectorAll<HTMLElement>("[data-discipline]"));
+    expect(rows.map((row) => row.dataset.discipline)).toEqual(disciplines.map((d) => d.id));
     expect(rows).toHaveLength(disciplines.length);
     Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
     Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 5000 });
@@ -397,7 +400,7 @@ describe("Services side photo", () => {
       });
       act(() => window.dispatchEvent(new Event("scroll")));
     };
-    const activeId = () => container.querySelector<HTMLElement>('.discipline[data-active="true"]')?.id;
+    const activeId = () => container.querySelector<HTMLElement>('.discipline[data-active="true"]')?.dataset.discipline;
     placeRows(0);
     expect(activeId()).toBe(disciplines[0].id);
     placeRows(300 * 2);
@@ -412,6 +415,7 @@ describe("Services side photo", () => {
     placeRows(y);
     expect(activeId()).toBe(disciplines[last].id);
     raf.mockRestore();
+    window.history.replaceState(null, "", "/");
   });
 });
 

@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
-import { assetKey, buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
+import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
+import { AskPanel } from "@/components/site/AskPanel";
+import { useAsk } from "@/lib/askClient";
+import { pieceHref } from "@/lib/askPieces";
 import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
 import { MotionToggle } from "@/components/site/MotionToggle";
 import {
@@ -117,7 +120,7 @@ export function Tile({
   if (failed) return null;
   return (
     <Link
-      href={`/projects/${tile.slug}?at=${encodeURIComponent(assetKey(tile.src))}`}
+      href={pieceHref(tile.slug, tile.src)}
       className="wall-tile"
       aria-label={tile.title}
       data-loaded={loaded}
@@ -150,6 +153,7 @@ export function Tile({
 /** The home: the work, from the first pixel. Fixed columns, native ratios, the whole gallery. */
 export function WorkWall() {
   const { projects } = useSiteProjects();
+  const ask = useAsk();
   const columns = useColumns();
   const reduced = useReducedMotion();
   // The URL is the state: /?q=coffee+shop&sector=hospitality-travel is shareable.
@@ -292,6 +296,22 @@ export function WorkWall() {
         }}
         activeCount={activeFilterCount(filters)}
         visible
+        ask={{
+          available: ask.available,
+          pending: ask.pending,
+          onOpen: ask.probe,
+          onAsk: ask.send,
+          panel: (send) => (
+            <AskPanel
+              turns={ask.turns}
+              pending={ask.pending}
+              partial={ask.partial}
+              projects={projects}
+              onAsk={send}
+              onRestart={ask.restart}
+            />
+          ),
+        }}
       >
         <WorkFilters projects={projects} filters={filters} onChange={changeFilters} />
       </WorkExplore>

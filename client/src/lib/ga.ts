@@ -160,7 +160,7 @@ export type SiteEvent =
   | { name: "bar_search"; params: { kind: "results" | "brief"; closest: boolean } }
   | { name: "brief_start"; params: { seeded: boolean } }
   | { name: "brief_complete"; params: Record<string, never> }
-  | { name: "generate_lead"; params: { form: "brief"; event_id: string } }
+  | { name: "generate_lead"; params: { form: "brief" | "brand_check"; event_id: string } }
   | { name: "calendly_click"; params: Record<string, never> };
 
 function siteEvent(event: SiteEvent) {
@@ -185,3 +185,12 @@ export const trackBriefComplete = (submissionId?: string) => {
   trackMetaLead(submissionId);
 };
 export const trackCalendlyClick = () => siteEvent({ name: "calendly_click", params: {} });
+/**
+ * The brand check was delivered. Same rule as the brief: the idempotency key is the event_id on
+ * GA4's generate_lead and on Meta's Lead, and nothing the visitor typed or chose rides along.
+ */
+export const trackBrandCheckComplete = (submissionId: string) => {
+  if (!submissionId) return;
+  siteEvent({ name: "generate_lead", params: { form: "brand_check", event_id: submissionId } });
+  trackMetaLead(submissionId);
+};
