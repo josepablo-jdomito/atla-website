@@ -380,8 +380,8 @@ html[data-menu="open"] .site-explore { display: none; }
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 132px;
-  height: 36px;
+  width: 104px;
+  height: 28px;
   opacity: 0.55;
 }
 .client-logos__mark img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); }
@@ -399,8 +399,8 @@ html[data-menu="open"] .site-explore { display: none; }
   .client-logos__track:last-child { display: none; }
 }
 @media (min-width: 768px) {
-  .client-logos__mark { width: 160px; height: 44px; }
-  .client-logos__track { gap: 72px; padding-right: 72px; }
+  .client-logos__mark { width: 120px; height: 32px; }
+  .client-logos__track { gap: 64px; padding-right: 64px; }
 }
 
 /* ---- Work wall: the home (v2, 2026-11-05) ---- */
@@ -965,50 +965,46 @@ html[data-menu="open"] .site-explore { display: none; }
   .site-root .engagements__title { font-size: 36px; }
 }
 
-/* ---- Project as a story column (v2, 2026-11-05) ---- */
+/* ---- Project page, Little Plains pure (JP, 2026-11-06) ----
+   Measured on littleplains.com/projects/revitin, sweetgreen, haven (project-lp-measurements.md).
+   One centered column (LP 715px, ours 720px). The opening is a plate: cover left half at its own
+   ratio, copy right half, centered on it. Then text and image groups on one rhythm (64px, 32px phone). */
 .story {
-  width: min(100% - 2 * var(--site-gutter), 880px);
+  --story-column: 720px;
+  --story-rhythm: 32px;
+  width: min(100% - 2 * var(--site-gutter), var(--story-column));
   margin: 0 auto;
-  padding: 24px 0 64px;
+  padding: 24px 0 72px;
 }
-.story-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 32px; }
+.story-head { display: flex; flex-direction: column; gap: 24px; }
+.story-head__cover { margin: 0; min-width: 0; }
+.story-head__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
 .story-head__title {
-  margin: 0 0 4px;
+  margin: 0;
   font-family: var(--site-display);
   font-size: 40px;
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.06;
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
-.story-head__facts { margin: 0; font-size: 14px; line-height: 1.5; color: var(--site-muted); }
-.story-head__facets { margin: 0; font-size: 14px; line-height: 1.5; color: var(--site-muted); white-space: pre-wrap; }
+/* The one line: the only sentence in the plate, at the story's voice. */
+.story-head__lead { margin: 0 0 8px; max-width: 34ch; font-size: 17px; line-height: 1.5; text-wrap: pretty; }
+/* Metadata where Little Plains keeps its roles and industry: quiet, small, under the title. */
+.story-head__facets,
+.story-head__facts,
+.story-head__proof { margin: 0; font-size: 14px; line-height: 1.5; color: var(--site-muted); }
+.story-head__facets { white-space: pre-wrap; }
 .story-head__facets a { color: inherit; text-decoration: none; }
 .story-head__facets a:hover,
 .story-head__facets a:focus-visible { color: var(--site-ink); text-decoration: underline; text-underline-offset: 4px; }
-/* Proof, when the project has it: one quiet line, never a badge. */
-.story-head__proof { margin: 0; max-width: 62ch; font-size: 14px; line-height: 1.5; color: var(--site-muted); }
-/* The lead is the only thing that sets the head apart from its facets; absent, it leaves no gap behind. */
-.story-head__lead {
-  margin: 8px 0 0;
-  max-width: 44ch;
-  font-size: 17px;
-  line-height: 1.5;
-  letter-spacing: 0;
-  text-wrap: pretty;
-}
-.story-head .motion-toggle { margin-top: 8px; }
-.story-body { display: flex; flex-direction: column; gap: 12px; }
-.story-media { display: grid; gap: 12px; }
-.story-media[data-kind="pair"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-/* The opener: one frame of the same shape on every project (UX interview 17, 2026-11-05). */
-.story-media[data-kind="opener"][data-frame="crop"] .story-media__button,
-.story-media[data-kind="opener"][data-frame="crop"] .story-media__figure { aspect-ratio: 4 / 3; overflow: hidden; }
-.story-media[data-kind="opener"][data-frame="crop"] .story-media__item { width: 100%; height: 100%; object-fit: cover; }
-/* An image that does not fit the frame is shown whole, at its own ratio and the column's width: no letterbox. */
-.story-media[data-kind="opener"][data-frame="native"] .story-media__item { width: 100%; height: auto; }
-.story-media[data-kind="opener"] + .story-media,
-.story-media[data-kind="opener"] + div { margin-top: 28px; }
+.story-head__proof { max-width: 40ch; }
+
+.story-body { display: flex; flex-direction: column; gap: var(--story-rhythm); margin-top: var(--story-rhythm); }
+.story-block { display: flex; flex-direction: column; gap: 12px; transition: opacity 300ms var(--site-ease); }
+/* Set by script only, only below the fold, never under reduced motion: nothing hides without JS. */
+.story-block[data-reveal="wait"] { opacity: 0; }
+.story-media { display: grid; gap: 10px; }
 .story-media__figure { margin: 0; min-width: 0; }
 .story-media__button {
   display: block;
@@ -1027,58 +1023,35 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 .story-media__embed { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--site-line); }
 .story-media__embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.story-text {
-  margin: 28px auto 40px;
-  max-width: 62ch;
-  font-size: 17px;
-  line-height: 1.6;
-  text-wrap: pretty;
+/* Body text runs the column, as on Little Plains. */
+.story-text { margin: 0; font-size: 18px; line-height: 1.6; text-wrap: pretty; }
+
+/* The rail: Little Plains' mini index, wide screens only, once the plate has scrolled away. */
+.story-rail { display: none; }
+@media (min-width: 1200px) {
+  .story-rail {
+    position: fixed;
+    left: var(--site-gutter);
+    top: 50%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 168px;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 220ms var(--site-ease), visibility 0s linear 220ms;
+  }
+  .story-rail[data-shown="yes"] { opacity: 1; visibility: visible; transition: opacity 220ms var(--site-ease), visibility 0s; }
+  .story-rail__cover { display: block; width: 100%; height: auto; margin-bottom: 8px; background: var(--site-line); }
+  .story-rail__title { margin: 0; font-family: var(--site-display); font-size: 20px; line-height: 1.15; text-wrap: balance; }
+  .story-rail__facets { margin: 0; font-size: 13px; line-height: 1.45; color: var(--site-muted); }
 }
-.story-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  margin: 72px 0 64px;
+@media (prefers-reduced-motion: reduce) {
+  .story-block, .story-rail, .story-rail[data-shown="yes"] { transition: none; }
 }
-.story-cta__title {
-  margin: 0;
-  font-family: var(--site-serif);
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  text-wrap: balance;
-}
-.story-cta__link {
-  color: inherit;
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: var(--site-accent);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 5px;
-  transition: opacity 160ms var(--site-ease);
-}
-.story-cta__link:hover { opacity: 0.6; }
-.story-more { display: flex; flex-direction: column; gap: 14px; margin: 0 0 56px; }
-.story-more__label { margin: 0; font-size: 14px; font-weight: 400; color: var(--site-muted); }
-.story-more__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-@media (min-width: 768px) {
-  .story-more__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 20px; }
-}
-.story-next { display: flex; flex-direction: column; gap: 14px; }
-.story-next__label { margin: 0; font-size: 14px; font-weight: 400; color: var(--site-muted); }
-.story-next__title { color: var(--site-ink); text-decoration: none; font-weight: 500; }
-.story-next__title:hover { text-decoration: underline; text-underline-offset: 4px; }
-.project-card[data-size="next"] .project-card__frame { aspect-ratio: 16 / 9; }
 
 .lightbox {
   position: fixed;
@@ -1126,13 +1099,14 @@ html[data-menu="open"] .site-explore { display: none; }
 .lightbox__control--next { right: 6px; top: 50%; transform: translateY(-50%); }
 
 @media (min-width: 768px) {
-  .story { padding: 48px 0 96px; }
-  .story-head { margin-bottom: 44px; }
-  .story-head__title { font-size: 64px; }
+  .story { --story-rhythm: 64px; padding: 48px 0 128px; }
+  /* The plate: cover in the left half, copy beside it, centered on the cover (LP: 345 | 70 | 345 of 715). */
+  .story-head[data-cover="yes"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 48px; align-items: center; }
+  .story-head__title { font-size: 54px; }
+  .story-head[data-cover="none"] .story-head__title { font-size: 64px; }
   .story-head__lead { font-size: 18px; }
-  .story-body, .story-media { gap: 16px; }
-  .story-cta { margin: 112px 0 80px; }
-  .story-cta__title { font-size: 40px; }
+  .story-media[data-kind="pair"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-text { font-size: 20px; }
   .lightbox__control--close { top: 16px; right: 20px; }
   .lightbox__control--prev { left: 16px; }
   .lightbox__control--next { right: 16px; }
