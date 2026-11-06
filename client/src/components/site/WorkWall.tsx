@@ -2,7 +2,7 @@ import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type React
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
-import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
+import { buildWallSequence, placeInColumns, seededRandom, shuffled, wallPass, type WallTile } from "@/components/site/wallLayout";
 import { WorkExplore } from "@/components/site/WorkExplore";
 import { AskPanel } from "@/components/site/AskPanel";
 import { useAsk } from "@/lib/askClient";
@@ -298,10 +298,15 @@ export function WorkWall() {
     if (!urlQuery) return { projects: filtered, closest: false };
     return rankProjects(urlQuery, filtered) as { projects: SiteProjectT[]; closest: boolean };
   }, [urlQuery, filtered]);
-  const sequence = useMemo(
-    () => buildWallSequence(ranked.projects, seed, Boolean(urlQuery)),
-    [ranked.projects, seed, urlQuery],
-  );
+  // The first screen keeps the server's order (no layout shift at load); only the pieces below the
+  // fold take the fresh shuffle. A typed search keeps its ranked order whole.
+  const sequence = useMemo(() => {
+    const base = buildWallSequence(ranked.projects, 0, Boolean(urlQuery));
+    if (seed === 0 || urlQuery) return base;
+    const head = base.slice(0, EAGER_MAX_DESKTOP);
+    const tail = shuffled(base.slice(EAGER_MAX_DESKTOP), seededRandom(seed));
+    return [...head, ...tail];
+  }, [ranked.projects, seed, urlQuery]);
 
   // Draft → URL after a short pause, so each keystroke does not rewrite history.
   useEffect(() => {
