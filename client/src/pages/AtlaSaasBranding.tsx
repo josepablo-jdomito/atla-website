@@ -24,14 +24,14 @@ export default function AtlaSaasBranding() {
     >
       <LongformHero
         eyebrow="SaaS branding"
-        h1="SaaS branding for software that needs to stand apart"
+        h1="SaaS branding that does not look like everyone else's"
         paragraphs={[
           "Most SaaS brands look interchangeable. When the identity is generic, nobody remembers it and every customer costs more to win.",
           "The SaaS brands that last make specific choices about how they look, sound and behave in the product, in marketing, in sales and in front of investors.",
           "We build systems people recognize on sight, with room to grow with the company.",
         ]}
         cta={
-          <LongformAction href="/contact">Start a project →</LongformAction>
+          <LongformAction href="/brief">Start a project</LongformAction>
         }
       />
 
@@ -135,7 +135,7 @@ export default function AtlaSaasBranding() {
         title="Start with a conversation"
         description="Tell us about the product, the market pressure and the timeline. We will tell you what to fix first and if we are the right fit."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/", label: "Browse selected work →" },
         ]}
       />

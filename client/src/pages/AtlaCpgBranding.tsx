@@ -30,7 +30,7 @@ export default function AtlaCpgBranding() {
           "We design CPG brands to be recognized fast. Strategy, identity, packaging and launch assets are one system, so nothing gets lost between the deck and the store.",
         ]}
         cta={
-          <LongformAction href="/contact">Start a project →</LongformAction>
+          <LongformAction href="/brief">Start a project</LongformAction>
         }
       />
 
@@ -91,7 +91,7 @@ export default function AtlaCpgBranding() {
       <LongformSection title="Why CPG teams hire Atla">
         <LongformSubTitle>We design for the shelf</LongformSubTitle>
         <LongformParagraph>
-          Pretty packaging that does not sell is wasted budget. We test hierarchy, legibility and how the pack stands
+          Pretty packaging that does not sell is wasted budget. We check hierarchy, legibility and how the pack stands
           apart before we lock a direction.
         </LongformParagraph>
         <LongformSubTitle>Strategy and packaging in one place</LongformSubTitle>
@@ -145,9 +145,9 @@ export default function AtlaCpgBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the product, the category and where it sells. We will tell you quickly if we are the right partner."
+        description="Tell us about the product, the category and where it sells. We will say if we are the right partner."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/", label: "Browse selected work →" },
         ]}
       />

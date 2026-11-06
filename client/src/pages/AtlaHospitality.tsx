@@ -144,7 +144,7 @@ const HOTELS: HospitalityCase[] = [
     place: "Los Cabos, Mexico",
     tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
     summary:
-      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds. We still work with Acre every week.",
+      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds.",
     specs: [
       { label: "Scope", value: "Audit, brand architecture, brand book, website, Rústico" },
       { label: "Distinction", value: "MICHELIN Green Star, Acre's restaurant" },
@@ -155,9 +155,9 @@ const HOTELS: HospitalityCase[] = [
   {
     name: "Casa Las Tortugas",
     place: "Holbox, Mexico",
-    tagline: "Four restaurants and a spa on one beach.",
+    tagline: "Restaurants and a spa on one beach.",
     summary:
-      "A family-owned hotel on Holbox's main beach. We audited the property, then set the brand architecture across its four restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
+      "A family-owned hotel on Holbox's main beach. We audited the property, then set the brand architecture across its restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
     specs: [
       { label: "Scope", value: "Hospitality audit, brand architecture, operating standards" },
       { label: "Distinction", value: "MICHELIN Key" },
@@ -187,7 +187,7 @@ const RESTAURANTS: HospitalityCase[] = [
   },
 ];
 
-// The three engagements. No prices or durations on the page (JP's rule); proof comes from the cases below.
+// The engagements: the same ways in as Services (Audit, Brand system, Full build), named for hospitality. No prices or durations on the page (JP's rule); proof comes from the cases below.
 const SERVICES = [
   {
     numeral: "I",
@@ -206,7 +206,7 @@ const SERVICES = [
     numeral: "II",
     name: "Rebranding",
     forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
-    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the people who come back every year.",
+    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the guests who come back.",
     includes: [
       "Brand architecture across rooms, restaurants and spa",
       "Repositioning",
@@ -897,7 +897,7 @@ export default function AtlaHospitality() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 26 }}>
-              <Label>Restaurants · Wellness · Coffee Shops · Hotels</Label>
+              <Label>Restaurants, wellness, coffee shops, hotels</Label>
               {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
               <img
                 src="/hospitality/hospitality-wordmark.svg"
@@ -917,11 +917,11 @@ export default function AtlaHospitality() {
                   maxWidth: 620,
                 }}
               >
-                We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
+                Brands for hotels and restaurants, from the booking page to the room.
               </h1>
               <BookCall position="hero" />
               <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `1px solid ${RULE}`, paddingTop: 18 }}>
-                <Label>Recent client awards</Label>
+                <Label>Awards our clients hold</Label>
                 {AWARDS.map((award) => (
                   <div key={award.src} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <img src={award.src} alt="" width={22} height={22} decoding="async" className="hospitality-award" style={{ width: 22, height: 22, objectFit: "contain" }} />
@@ -964,11 +964,11 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 760 }}>
               <Label inverted>Services</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
-                Three ways to work with us.
+                Ways to work with us.
               </h2>
               <p style={{ ...bodyStyle, color: onInk(75) }}>
-                We believe in a holistic approach to branding, guided by defined creative processes and the understanding
-                that great brands are built day by day.
+                The same ways in we offer every client, named for hospitality: the audit, the rebrand and the new brand.
+                One team does the strategy, the identity and the rollout, so the brand stays one brand.
               </p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 56 : 48 }}>
@@ -1004,8 +1004,7 @@ export default function AtlaHospitality() {
               ))}
             </div>
             <p style={{ ...bodyStyle, fontSize: 14, color: onInk(60), maxWidth: 760 }}>
-              After launch, we can keep a weekly seat at the table so new outlets and rooms come out of the same system. We
-              work with Acre and Temakase this way today.
+              After launch we can stay on, so new outlets and rooms come out of the same system.
             </p>
           </div>
         </section>
@@ -1023,15 +1022,13 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <Label>Our take on branding</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 28 : 36, fontWeight: 400, lineHeight: "1.12", color: INK, margin: 0 }}>
-                Branding goes far beyond visuals, it’s the foundation of building a complete and memorable identity.
+                Branding starts before the logo.
               </h2>
               <p style={bodyStyle}>
-                While the visual elements are the starting point, a true brand is shaped by a cohesive strategy that aligns
-                tone, voice, and objectives.
+                Strategy decides the tone, the voice and what the place is for. Design follows.
               </p>
               <p style={bodyStyle}>
-                The ultimate goal of branding is to foster meaningful, long-term relationships that inspire loyalty and
-                trust, turning every interaction into an opportunity to connect with your audience on a deeper level.
+                A brand is what a guest remembers on the way home.
               </p>
             </div>
             <TakeConstellation />
@@ -1042,7 +1039,7 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <Label>Hotels</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 52, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0, maxWidth: 820 }}>
-                One brand, whether you have ten rooms or four restaurants.
+                One brand, whether you have a few rooms or several restaurants.
               </h2>
             </div>
             {HOTELS.map((item, index) => (

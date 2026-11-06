@@ -31,7 +31,7 @@ export default function AtlaHospitalityBranding() {
           "We build the strategy, the identity, the digital work and the environmental guidelines together. Your team knows what on-brand means without having to ask.",
         ]}
         cta={
-          <LongformAction href="/contact">Start a project →</LongformAction>
+          <LongformAction href="/brief">Start a project</LongformAction>
         }
       />
 
@@ -60,7 +60,7 @@ export default function AtlaHospitalityBranding() {
 
       <LongformSection title="Selected hospitality work">
         <LongformParagraph>
-          <strong>The Bridge</strong>. Identity for a hotel and restaurant concept in Bali, with an editorial eye.{" "}
+          <strong>The Bridge</strong>. Identity for a hotel and restaurant concept in Bali.{" "}
           <a href="/projects/the-bridge" className="longform-link">
             View project →
           </a>
@@ -88,7 +88,7 @@ export default function AtlaHospitalityBranding() {
       <LongformSection title="Why hospitality teams hire Atla">
         <LongformSubTitle>Physical and digital from the start</LongformSubTitle>
         <LongformParagraph>
-          Most agencies design for screens or for spaces. We build one system that works on a phone and on the side of a
+          We build one system that works on a phone and on the side of a
           building.
         </LongformParagraph>
         <LongformSubTitle>Strategy before mood boards</LongformSubTitle>
@@ -146,9 +146,9 @@ export default function AtlaHospitalityBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the property, the timeline and what is not working. We will tell you honestly if we are the right fit."
+        description="Tell us about the property, the timeline and what is not working. We will say if we are the right fit."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/", label: "Browse selected work →" },
         ]}
       />

@@ -75,7 +75,7 @@ export default function AtlaBrandStrategy() {
       pathname="/brand-strategy"
       title="Brand Strategy for Growing Companies"
       titleSuffix="Process and Framework"
-      description="How brand strategy actually works — positioning, messaging, audience definition, and competitive framing. The strategic foundation before design begins."
+      description="How brand strategy works: positioning, messaging, audience and competitive framing, decided before design starts."
       structuredData={[articleSchema, faqSchema, buildBreadcrumbSchema("/brand-strategy", "Brand Strategy")]}
     >
       <LongformHero
@@ -84,34 +84,33 @@ export default function AtlaBrandStrategy() {
         paragraphs={[
           "Brand strategy is the set of decisions that shape how a company is understood in its market. It is the layer under the logo, the palette and the tagline.",
           "With a strong strategy, design decisions get faster and easier to defend. Without one, every review turns into a debate about taste.",
-          "This page lays out how Atla does strategy: what it includes, what it leaves out and what you get at the end.",
         ]}
       />
 
       <LongformSection title="What brand strategy is">
         <LongformParagraph>
-          Strategy answers five questions before any creative work starts.
+          Strategy answers these questions before any creative work starts.
         </LongformParagraph>
-        <LongformSubTitle>1. What does this company stand for?</LongformSubTitle>
+        <LongformSubTitle>What does this company stand for?</LongformSubTitle>
         <LongformParagraph>
           The point of view that separates the company from competitors who look the same. This is positioning, and it
           is the first decision.
         </LongformParagraph>
-        <LongformSubTitle>2. Who is the audience, specifically?</LongformSubTitle>
+        <LongformSubTitle>Who is the audience, specifically?</LongformSubTitle>
         <LongformParagraph>
           Demographics are not enough. We define segments by what moves them, what stops them and how they decide.
         </LongformParagraph>
-        <LongformSubTitle>3. How should the brand speak?</LongformSubTitle>
+        <LongformSubTitle>How should the brand speak?</LongformSubTitle>
         <LongformParagraph>
           A messaging hierarchy: what to say first, the proof behind it and the words to avoid.
         </LongformParagraph>
-        <LongformSubTitle>4. Where can the company win?</LongformSubTitle>
+        <LongformSubTitle>Where can the company win?</LongformSubTitle>
         <LongformParagraph>
           A map of the crowded ground, the open ground and the ground the company can credibly own.
         </LongformParagraph>
-        <LongformSubTitle>5. What does success look like?</LongformSubTitle>
+        <LongformSubTitle>What does success look like?</LongformSubTitle>
         <LongformParagraph>
-          Strategic choices tied to business results you can measure.
+          Choices you can check against sales, not taste.
         </LongformParagraph>
       </LongformSection>
 
@@ -144,7 +143,7 @@ export default function AtlaBrandStrategy() {
         <LongformSubTitle>Discovery</LongformSubTitle>
         <LongformParagraph>
           Stakeholder interviews, a competitive audit, audience research and category analysis. We map the constraints
-          you actually have.
+          you have.
         </LongformParagraph>
         <LongformSubTitle>Strategy</LongformSubTitle>
         <LongformParagraph>
@@ -242,7 +241,7 @@ export default function AtlaBrandStrategy() {
         title="Start with strategy"
         description="Not sure if you need strategy, design or both? Start here. We will scope the right order."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/how-we-work", label: "See process →" },
         ]}
       />

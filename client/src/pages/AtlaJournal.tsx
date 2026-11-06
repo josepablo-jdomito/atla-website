@@ -17,28 +17,12 @@ import { formatJournalMetaTitle } from "@/lib/seoSchema";
 import { getImageDimensions } from "@shared/imageDelivery";
 
 const DEFAULT_PAGE_DESCRIPTION =
-  "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.";
+  "Atla Journal: essays and notes on branding, strategy and design from Atla, a senior-led branding studio working across the US and Latin America.";
 const CATEGORY_SUPPORT_COPY: Record<string, string[]> = {
-  branding: [
-    "This category collects practical essays on naming, positioning, rebrands, launch systems, and the strategic choices that help a company stay recognizable as it grows.",
-    "It is meant for founders, operators, and marketing teams who need clearer language around what branding work actually changes once it reaches the website, packaging, investor narrative, or customer experience.",
-  ],
-  strategy: [
-    "Strategy pieces focus on the choices that come before visual execution: where a company sits in the market, what it needs to be known for, and how that point of view should shape messaging, structure, and rollout.",
-    "The goal is not abstract theory. It is to make positioning, audience clarity, and business decisions legible enough that the creative work can move faster and hold together under pressure.",
-  ],
-  insights: [
-    "Insights gathers shorter observations from the studio about client work, launch patterns, brand operations, and the recurring decisions that tend to shape better outcomes over time.",
-    "These pieces are useful when you want a quick signal rather than a full framework: the kind of guidance that helps a team sharpen a conversation before it turns into a larger engagement.",
-    "Think of this category as field notes from ongoing brand work. It is where smaller lessons live before they become larger systems, and where teams can often spot the pattern behind a problem they are already feeling internally.",
-  ],
-  "web-design": [
-    "Web design articles in the journal focus on how structure, narrative, interaction, and visual hierarchy turn a brand system into a site that feels clear, credible, and commercially useful.",
-    "They are especially relevant for teams redesigning a homepage, launch site, or company website that needs to look stronger while also explaining the business more convincingly.",
-    "The emphasis is on websites as business tools, not just visual containers. These essays look at how copy, hierarchy, case studies, and conversion paths need to support the same brand logic as the visual layer.",
-    "They also cover the practical tension most teams run into during redesigns: how to improve the visual language without losing clarity, speed, or the commercial usefulness of the site once it is live.",
-    "That makes this category especially useful for founders and marketing teams trying to evaluate whether a redesign needs a visual refresh, a stronger story architecture, or a deeper strategic reset before design decisions start getting made.",
-  ],
+  branding: ["Naming, positioning, rebrands and launches, and what each one changes once it reaches the website, the package and the pitch."],
+  strategy: ["Positioning and audience, written so the design work moves faster."],
+  insights: ["Short notes from client work."],
+  "web-design": ["A website has to explain the business as well as it looks. These essays cover structure, copy, case studies and the path to an inquiry."],
 };
 
 function ensureDescriptionLength(description: string) {
@@ -89,18 +73,17 @@ export default function AtlaJournal() {
   const pageDescription = ensureDescriptionLength(activeCategory?.seoDescription || activeCategory?.description || DEFAULT_PAGE_DESCRIPTION);
   const heroTitle = activeCategory
     ? activeCategory.title
-    : "How we think about brands, design, and the work behind the work. Essays, process notes, and studio perspectives.";
+    : "Notes on brands, design and how we work.";
   const heroDescription = activeCategory?.description;
   const categorySupportCopy = activeCategory
     ? CATEGORY_SUPPORT_COPY[activeCategory.slug] || [
-      `A tighter selection of ${activeCategory.title.toLowerCase()} writing from the Atla Journal archive, focused on how ideas translate into sharper decisions, better systems, and stronger execution.`,
-      `Use this category as a more specific way into the journal if you are trying to solve one problem at a time rather than browse the full archive.`,
+      `${activeCategory.title} writing from the Atla Journal.`,
     ]
     : [];
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": activeCategory ? "CollectionPage" : "Blog",
-    name: activeCategory ? `${activeCategory.title} — Atla Journal` : "Atla Journal",
+    name: activeCategory ? `${activeCategory.title} | Atla Journal` : "Atla Journal",
     description: pageDescription,
     url: `${SITE_ORIGIN}${pathname}`,
     publisher: {
@@ -141,13 +124,6 @@ export default function AtlaJournal() {
               {paragraph}
             </p>
           ))}
-          {!activeCategory ? (
-            <p className="longform-text journal-intro__support">
-              Use the journal as both an archive and a working reference. Some pieces are short and tactical, others are
-              longer frameworks, but they all aim to make brand, strategy, and digital decisions easier to evaluate before
-              teams commit time, budget, or attention in the wrong direction.
-            </p>
-          ) : null}
         </header>
 
         <nav className="journal-categories" aria-label="Journal categories">
@@ -190,19 +166,6 @@ export default function AtlaJournal() {
           </ul>
         ) : null}
 
-        {activeCategory ? (
-          <div className="journal-category-notes">
-            <p className="longform-text">
-              Category pages are designed to be useful on their own, not just as filters. Each one brings together essays that solve a related problem, whether that is repositioning a company, planning a rebrand, structuring a launch, or improving how a website communicates value.
-            </p>
-            <p className="longform-text">
-              If you are comparing articles, start with the most practical piece first and then move into the longer framework essays. That usually gives enough context to understand not just what to change, but why the change matters operationally.
-            </p>
-            <p className="longform-text">
-              Use this archive as a decision aid: identify the scenario that matches your current stage, then map the recommended sequence from strategy through execution. The objective is to reduce guesswork and help teams move from reading to actionable next steps without losing coherence.
-            </p>
-          </div>
-        ) : null}
 
         {cards.length > 0 ? (
           <div className="journal-grid">

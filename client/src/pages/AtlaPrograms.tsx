@@ -5,10 +5,13 @@ import { PageShell } from "@/components/site/PageShell";
 
 // Copy source: marketing-plans/atla/oferta-A.md, sections 3, 4 and 6 (offer approved by JP, 2026-10-13).
 // No prices and no durations on this page by design.
+// PENDING JP APPROVAL (2026-11-05 content wave): offer names aligned to the Services vocabulary
+// (Audit, Brand system, Full build, Fractional brand director). Loved or Lost Diagnostic, Core/Complete/Integral
+// and Brand Stewardship were the oferta-A names; the steps follow the five on Why Atla.
 
 export const PROGRAMS_META_TITLE = formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla");
 export const PROGRAMS_META_DESCRIPTION =
-  "When a brand has to change, start with the Loved or Lost Diagnostic. Then the Atla Brand Program, in three levels, and Brand Stewardship after launch.";
+  "When a brand has to change, start with an audit. Then a brand system or a full build, and a fractional brand director after launch.";
 
 const HERO_COPY = "When your brand has to change, start here.";
 
@@ -19,17 +22,17 @@ type NumberedItem = { title: string; description: string; href?: string };
 
 const PATH: NumberedItem[] = [
   {
-    title: "Loved or Lost Diagnostic",
+    title: "Audit",
     description:
       "We find out where your customers fall in love with the brand and where they fall out, then decide with your leadership what has to change.",
   },
   {
-    title: "Atla Brand Program",
+    title: "Brand system or full build",
     description:
-      "We build what the evidence calls for: strategy, identity and the system behind them, scoped in one of three levels.",
+      "We build what the evidence calls for: strategy, identity and the system behind them, scoped before work starts.",
   },
   {
-    title: "Brand Stewardship",
+    title: "Fractional brand director",
     description: "We stay on after launch so the brand keeps its shape as the company grows.",
   },
 ];
@@ -38,20 +41,20 @@ const DIAGNOSTIC_ITEMS: NumberedItem[] = [
   {
     title: "What your customers say",
     description:
-      "Every public review and conversation we can reach about your brand and two competitors, coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend. Where the public record is thin, we tell you.",
+      "Every public review and conversation we can reach about your brand and its closest competitors, coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend. Where the public record is thin, we tell you.",
   },
   {
     title: "What your team says",
-    description: "Six to eight interviews across leadership, sales, product and service.",
+    description: "Interviews across leadership, sales, product and service.",
   },
   {
     title: "Touchpoint audit",
     description: "Everything a customer sees, from the first ad to the package in their hands.",
   },
   {
-    title: "The 20/5 workshop",
+    title: "The position workshop",
     description:
-      "A working session with your leadership team. Twenty things the brand could be, reduced to the five it will be.",
+      "A working session with your leadership team. Everything the brand could be, reduced to what it will be.",
   },
   {
     title: "The roadmap",
@@ -62,19 +65,19 @@ const DIAGNOSTIC_ITEMS: NumberedItem[] = [
 
 const PROGRAM_LEVELS: NumberedItem[] = [
   {
-    title: "Core",
+    title: "Brand system",
     description: "Strategy, identity, the system that holds them together, and the guidelines your team runs it with.",
   },
   {
-    title: "Complete",
+    title: "Full build",
     description:
-      "Everything in Core, plus brand architecture or naming, the touchpoints that matter most (packaging, space or digital) and launch.",
+      "Everything in the brand system, plus brand architecture or naming, the touchpoints that matter most (packaging, space or digital) and launch.",
   },
   {
-    title: "Integral",
+    title: "Full build across markets",
     // PENDING JP APPROVAL: "six months of" removed (v2 rule: no numbers or deadlines promised).
     description:
-      "Everything in Complete, plus rollout across multiple US markets, with Brand Stewardship included after launch.",
+      "Everything in the full build, plus rollout across US markets, with a fractional brand director after launch.",
   },
 ];
 
@@ -146,17 +149,17 @@ export default function AtlaPrograms() {
 
   const programSchema = [
     {
-      name: "Loved or Lost Diagnostic",
+      name: "Audit",
       description:
-        "Customer evidence at scale, internal interviews, a touchpoint audit and a leadership workshop, ending in a roadmap and a fixed scope.",
+        "Customer evidence at scale, team interviews, a touchpoint audit and a leadership workshop, ending in a roadmap and a fixed scope.",
     },
     {
-      name: "Atla Brand Program",
-      description: "Brand strategy, identity and system in three levels: Core, Complete and Integral.",
+      name: "Brand system and full build",
+      description: "Brand strategy, identity and the system behind them, scoped from the audit's roadmap.",
     },
     {
-      name: "Brand Stewardship",
-      description: "Ongoing senior brand guidance after launch.",
+      name: "Fractional brand director",
+      description: "A senior creative director on the team after launch.",
     },
   ].map((program) => ({
     "@context": "https://schema.org",
@@ -189,15 +192,15 @@ export default function AtlaPrograms() {
 
         <SectionRow id="programs-path" title="The path">
           <p className="longform-text">
-            One sequence, three steps. We read the evidence before we design anything, build only what it calls for, and
-            stay close once the brand is live.
+            The same steps as every Atla project. We read the market, talk to your people and pick the position with
+            your leadership. Then we design the system and hand it over. We stay on if you want us to.
           </p>
           <NumberedList items={PATH} />
         </SectionRow>
 
         <SectionRow id="programs-diagnose" title="Diagnose">
           <p className="longform-text">
-            The Loved or Lost Diagnostic. We read what your customers say about you, at scale, and find where
+            The audit. We read what your customers say about you, at scale, and find where
             they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit with
             your leadership and decide what the brand must keep, and what it must stop saying.
           </p>
@@ -208,36 +211,36 @@ export default function AtlaPrograms() {
           </p>
           {/* PENDING JP APPROVAL: "within 60 days" removed (v2 rule: no numbers or deadlines promised). */}
           <p className="longform-text">
-            The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
-            Atla Brand Program when you continue with us.
+            The audit is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
+            build when you continue with us.
           </p>
         </SectionRow>
 
         <SectionRow id="programs-build" title="Build">
           <p className="longform-text">
-            The Atla Brand Program. Three levels, chosen from the roadmap, with the scope fixed before work starts.
-            Strategy decisions come first, design decisions second, production last.
+            A brand system or a full build, chosen from the roadmap, with the scope fixed before work starts. Strategy
+            decisions come first, then design, then production.
           </p>
           <NumberedList items={PROGRAM_LEVELS} />
         </SectionRow>
 
         <SectionRow id="programs-steward" title="Steward">
           <p className="longform-text">
-            Brand Stewardship. A monthly engagement after launch. We review new work, extend the system as the company
+            A fractional brand director: a creative director on your team after launch. We review new work, extend the system as the company
             grows, and help every team and partner use the brand the same way.
           </p>
         </SectionRow>
 
-        <SectionRow id="programs-proof" title="Proof">
+        <SectionRow id="programs-proof" title="Selected work">
           <NumberedList items={PROOF} />
         </SectionRow>
 
         <SectionRow id="programs-start" title="Start">
-          <p className="longform-text">Atla*. Senior team, founder at the table, no handoff chain.</p>
+          <p className="longform-text">Atla. Senior team, founder at the table, no handoff chain.</p>
           <p className="longform-text">
             Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next step.
           </p>
-          <a href="/contact" className="brief-primary">
+          <a href="/brief" className="brief-primary">
             Start a project
           </a>
         </SectionRow>

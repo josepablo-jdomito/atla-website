@@ -19,7 +19,7 @@ export default function AtlaWellnessBranding() {
       pathname="/wellness-branding"
       title="Wellness and Health Brand Design Agency"
       titleSuffix="Atla"
-      description="Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection."
+      description="Brand strategy and identity for wellness, health tech and care companies. Credible, warm, and written to stay inside the rules."
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
@@ -31,14 +31,14 @@ export default function AtlaWellnessBranding() {
           "We build strategy, identity, packaging and digital that stay warm and credible everywhere the brand appears.",
         ]}
         cta={
-          <LongformAction href="/contact">Start a project →</LongformAction>
+          <LongformAction href="/brief">Start a project</LongformAction>
         }
       />
 
       <LongformSection title="What wellness and health brands usually ask us for">
         <LongformSubTitle>Strategy for categories that run on trust</LongformSubTitle>
         <LongformParagraph>
-          Positioning that stands apart without overclaiming. Messaging that lands and stays inside compliance.
+          Positioning that sets the brand apart without overclaiming. Messaging that lands and stays inside compliance.
         </LongformParagraph>
         <LongformSubTitle>Identity that is warm and credible</LongformSubTitle>
         <LongformParagraph>
@@ -143,7 +143,7 @@ export default function AtlaWellnessBranding() {
         title="Start with a conversation"
         description="Tell us about the product, the audience and what is not landing. We will tell you what we see and if we are the right fit."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/", label: "Browse selected work →" },
         ]}
       />

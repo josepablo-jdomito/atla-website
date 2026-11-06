@@ -161,13 +161,9 @@ export default function AtlaArticle() {
 
         <section className="page-section article-more" aria-labelledby="article-more">
           <h2 id="article-more" className="home-section-label">
-            Other news
+            More from the journal
           </h2>
           <div className="page-section__body">
-            <p className="longform-text">
-              Keep reading through related journal pieces, or jump into the broader archive to see how strategy,
-              identity, digital craft, and category-specific thinking connect across the studio&apos;s writing.
-            </p>
             <div className="journal-grid journal-grid--related">
               {otherNews.map((item) => (
                 <a
