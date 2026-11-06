@@ -89,6 +89,9 @@ export const siteCopy = {
     resultLabel: "( The Result )",
     creditsLabel: "( Credits )",
     otherWorksLabel: "( Other Works )",
+    // The one way into the brief from a project page: a text link under Other Works (not in the Figma; JP asked for a conversion path).
+    ctaLabel: "Start a project",
+    seed: (title: string) => `Like ${title}`,
     // Shown when the project has no credits in Sanity: the Atla team line.
     fallbackCredit: { role: "Creative Direction", names: ["José Pablo Domínguez"] },
     lightboxClose: "Close",

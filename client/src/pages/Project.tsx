@@ -496,6 +496,9 @@ export default function Project() {
                   </li>
                 ))}
               </ul>
+              <Link href={`/brief?seed=${encodeURIComponent(copy.seed(project.title))}`} className="pj-others__cta">
+                {copy.ctaLabel}
+              </Link>
             </div>
           </section>
         ) : null}
