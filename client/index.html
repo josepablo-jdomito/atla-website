@@ -9,14 +9,18 @@
     <meta property="og:description" content="Strategy, identity, and creative direction for companies that take their brand seriously.">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" >
+    <meta name="color-scheme" content="light dark">
+    <!-- Restores the visitor's light/dark choice before the first paint (navbar toggle). External, not
+         inline: the CSP allows no inline script. Without a stored choice the system decides (site.css). -->
+    <script src="/theme-init.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Fonts never block the first paint: preloaded, applied by /font-loader.js once they arrive
          (media="print" until then), with swap so text shows at once in the fallback face. -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap">
-    <link id="atla-fonts-stylesheet" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap" media="print">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
+    <link id="atla-fonts-stylesheet" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" media="print">
     <script src="/font-loader.js" defer></script>
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"></noscript>
     <style>
       /* Prerendered markup is the mobile layout. On wider screens keep it
          unpainted until React commits the real layout (App.tsx PrerenderReveal).
