@@ -510,3 +510,27 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     videoStructuredData,
   };
 }
+
+/**
+ * The Filmstrip's progress line (JP, 2026-11-06): how far the strip has travelled, 0 at the first
+ * frame and 1 at the end. A strip that does not overflow has nowhere to go, so it reads 0.
+ */
+export function stripProgress(scrollLeft: number, scrollWidth: number, clientWidth: number): number {
+  const range = scrollWidth - clientWidth;
+  if (!(range > 0)) return 0;
+  return Math.min(1, Math.max(0, scrollLeft / range));
+}
+
+/**
+ * Where an arrow key takes the strip: the left edge of the next frame to the right (or the previous
+ * one to the left) of where it stands now, clamped to the strip's range. `lefts` are each frame's
+ * scrollLeft target, in order. With no frame further that way, the strip goes to its end (or start).
+ */
+export function stripStop(lefts: number[], current: number, direction: 1 | -1, max: number): number {
+  const slack = 2;
+  const target =
+    direction > 0
+      ? lefts.find((left) => left > current + slack) ?? max
+      : [...lefts].reverse().find((left) => left < current - slack) ?? 0;
+  return Math.min(max, Math.max(0, target));
+}

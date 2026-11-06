@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
@@ -16,6 +16,8 @@ import {
   fetchProject,
   PROJECT_PLACEHOLDER_IMAGE,
   projectMediaSequence,
+  stripProgress,
+  stripStop,
   toVimeoBackgroundUrl,
   type ProjectApi,
   type ProjectMediaMosaicItem,
@@ -28,31 +30,35 @@ import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
 /**
- * The project page, Little Plains pure (JP, 2026-11-06, measured on littleplains.com/projects/revitin,
- * sweetgreen and haven; see .superpowers/sdd/2026-11-04-atla-site-v2/project-lp-measurements.md).
- * One centered column. The opening is a plate: the cover at its own ratio in the left half, the title,
- * the one line and the facets beside it. Then the story: text and image groups alternating on one
- * rhythm, the first paragraph straight after the opening. Landscapes run the column; portraits pair.
- * Once the opening scrolls away, a small rail (cover, title, facets) holds the context at the left edge.
- * No ending section: Little Plains has no next link and no call to action, the header carries
- * "Start a project". A tile on the home links here with ?at=<asset>, and the page opens on that image.
+ * The project page, Filmstrip (JP, 2026-11-06, chosen from five wireframes; brief:
+ * .superpowers/sdd/2026-11-04-atla-site-v2/project-filmstrip-brief.md).
+ * Desktop: a pinned column at the left (title, the one line, facets, year, proof, the first paragraph)
+ * and the work as one horizontal strip at full height, every piece at its own ratio, the remaining
+ * paragraphs as text frames between the images. A 2px line under the strip is the only chrome: no
+ * digits, no arrows. Below 1024 the column stacks on top, the strip swipes at 70dvh, and the remaining
+ * paragraphs read under it. A tile on the home links here with ?at=<asset>; the strip opens on it.
  */
 
 const { project: copy } = siteCopy;
-const COLUMN_WIDTHS = [640, 960, 1280, 1600, 2000];
-const HALF_WIDTHS = [320, 480, 640, 800, 1000];
-const COLUMN_SIZES = "(min-width: 768px) 720px, calc(100vw - 32px)";
-const HALF_SIZES = "(min-width: 768px) 355px, calc(100vw - 32px)";
-/** Below this width / height, a piece is a portrait and pairs with its neighbour. */
-const PORTRAIT_BELOW = 1.15;
+const FRAME_WIDTHS = [480, 800, 1200, 1600, 2000, 2400];
+/** Frames are height-filled, so the width the browser needs is the strip height times the ratio. */
+const frameSizes = (ratio: number) => {
+  const r = Math.round(ratio * 1000) / 1000;
+  return `(min-width: 1024px) calc((100vh - 128px) * ${r}), calc(70vh * ${r})`;
+};
 /** Between facets on the project line; the dot stays with the word before it when the line wraps. */
 const FACET_SEPARATOR = "  ·  ";
-/** Sticky header height, so a landing scroll leaves the image clear of it. */
+/** Sticky header height, so a phone landing leaves the strip clear of it. */
 const HEADER = 64;
+const DESKTOP = "(min-width: 1024px)";
+/** A sideways scroller sits outside the browser's lazy-load margin: the first screen's frames load at once. */
+const EAGER_FRAMES = 4;
+/** Text frames sit after every third or fourth piece, spread as evenly as that allows. */
+const TEXT_EVERY_MIN = 3;
+const TEXT_EVERY_MAX = 4;
 
 type MediaItem = ProjectMediaMosaicItem | { type: "image"; src: string; sourceIndex?: number };
-type Group = { kind: "full" | "pair"; items: MediaItem[] };
-export type StoryBlock = { kind: "media"; group: Group } | { kind: "text"; text: string };
+export type FilmFrame = { kind: "media"; item: MediaItem } | { kind: "text"; text: string };
 
 function ratioOf(item: MediaItem) {
   if (item.type !== "image") return 16 / 9;
@@ -60,71 +66,62 @@ function ratioOf(item: MediaItem) {
   return dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;
 }
 
-/** Landscapes alone; consecutive portraits in pairs; a portrait left alone runs full. */
-export function groupMedia(items: MediaItem[]): Group[] {
-  const groups: Group[] = [];
-  let pending: MediaItem[] = [];
-  const flush = () => {
-    while (pending.length >= 2) groups.push({ kind: "pair", items: pending.splice(0, 2) });
-    if (pending.length === 1) groups.push({ kind: "full", items: pending.splice(0, 1) });
-  };
-  for (const item of items) {
-    if (item.type === "image" && ratioOf(item) < PORTRAIT_BELOW) pending.push(item);
-    else {
-      flush();
-      groups.push({ kind: "full", items: [item] });
-    }
-  }
-  flush();
-  return groups;
-}
-
 /**
- * The story's order, as on Little Plains: the first paragraph right after the opening, then the image
- * groups with the remaining paragraphs spread evenly between them. A paragraph never gets lost: any
- * that find no slot close the story. No paragraphs, images only.
+ * The strip's order: every piece in sequence, with the paragraphs after the first (which sits in the
+ * column) placed after every third or fourth piece until they run out. A paragraph never gets lost:
+ * any that find no slot close the strip. No paragraphs, pieces only.
  */
-export function storyBlocks(groups: Group[], paragraphs: string[]): StoryBlock[] {
-  const blocks: StoryBlock[] = [];
-  const [first, ...rest] = paragraphs;
-  if (first) blocks.push({ kind: "text", text: first });
-  const every = rest.length > 0 ? Math.max(1, Math.ceil(groups.length / (rest.length + 1))) : 0;
+export function filmFrames(media: MediaItem[], paragraphs: string[]): FilmFrame[] {
+  const frames: FilmFrame[] = [];
+  const every =
+    paragraphs.length > 0
+      ? Math.min(TEXT_EVERY_MAX, Math.max(TEXT_EVERY_MIN, Math.ceil(media.length / (paragraphs.length + 1))))
+      : 0;
   let next = 0;
-  groups.forEach((group, index) => {
-    blocks.push({ kind: "media", group });
-    if (every > 0 && (index + 1) % every === 0 && next < rest.length) blocks.push({ kind: "text", text: rest[next++] });
+  media.forEach((item, index) => {
+    frames.push({ kind: "media", item });
+    if (every > 0 && (index + 1) % every === 0 && next < paragraphs.length) frames.push({ kind: "text", text: paragraphs[next++] });
   });
-  while (next < rest.length) blocks.push({ kind: "text", text: rest[next++] });
-  return blocks;
+  while (next < paragraphs.length) frames.push({ kind: "text", text: paragraphs[next++] });
+  return frames;
 }
 
-function ProjectImage({
+/** The scrollLeft that puts a frame's left edge at the strip's left edge (after its padding). */
+export function frameLeft(strip: HTMLElement, frame: HTMLElement) {
+  const padding = Number.parseFloat(getComputedStyle(strip).paddingLeft) || 0;
+  return strip.scrollLeft + frame.getBoundingClientRect().left - strip.getBoundingClientRect().left - padding;
+}
+
+function isDesktop() {
+  return typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(DESKTOP).matches;
+}
+
+function FrameImage({
   src,
   alt,
-  sizes,
-  widths,
   priority,
+  eager,
   onOpen,
 }: {
   src: string;
   alt: string;
-  sizes: string;
-  widths: number[];
   priority: boolean;
+  eager: boolean;
   onOpen: () => void;
 }) {
   const dims = getImageDimensions(src);
+  const ratio = dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;
   return (
-    <button type="button" className="story-media__button" onClick={onOpen} aria-label={`${alt}. Open larger`}>
+    <button type="button" className="film-frame__button" onClick={onOpen} aria-label={`${alt}. Open larger`} style={{ "--r": ratio.toFixed(4) } as CSSProperties}>
       <img
-        className="story-media__item"
-        src={getOptimizedImageUrl(src, { width: widths[2], quality: 88 }) || src}
-        srcSet={buildImageSrcSet(src, widths, { quality: 88 })}
-        sizes={sizes}
+        className="film-frame__item"
+        src={getOptimizedImageUrl(src, { width: FRAME_WIDTHS[2], quality: 88 }) || src}
+        srcSet={buildImageSrcSet(src, FRAME_WIDTHS, { quality: 88 })}
+        sizes={frameSizes(ratio)}
         alt={alt}
         width={dims?.width}
         height={dims?.height}
-        loading={priority ? "eager" : "lazy"}
+        loading={priority || eager ? "eager" : "lazy"}
         {...(priority ? PRIORITY_ATTRS : null)}
         decoding="async"
       />
@@ -133,15 +130,16 @@ function ProjectImage({
 }
 
 /**
- * Fades each story block in as it enters (Little Plains does the same, at 500ms; ours stays within
- * the site's 300ms budget, opacity only). Only blocks below the fold wait, so nothing on screen at
- * load ever blinks, and nothing waits at all under reduced motion or without IntersectionObserver.
+ * Frames fade in once as they enter the strip's own viewport (opacity only, 200ms, the site's ease).
+ * Frames already in view at load never wait, so nothing on screen blinks; nothing waits at all under
+ * reduced motion or without IntersectionObserver.
  */
-function useReveal(root: RefObject<HTMLElement>, reduced: boolean, key: unknown) {
+function useFrameReveal(strip: RefObject<HTMLElement>, reduced: boolean, key: unknown) {
   useEffect(() => {
-    const el = root.current;
-    if (!el || reduced || typeof IntersectionObserver === "undefined") return;
-    const blocks = Array.from(el.querySelectorAll<HTMLElement>(".story-block"));
+    const root = strip.current;
+    if (!root || reduced || typeof IntersectionObserver === "undefined") return;
+    const frames = Array.from(root.querySelectorAll<HTMLElement>(".film-frame"));
+    const box = root.getBoundingClientRect();
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -151,35 +149,68 @@ function useReveal(root: RefObject<HTMLElement>, reduced: boolean, key: unknown)
           observer.unobserve(target);
         }
       },
-      { rootMargin: "0px 0px -6% 0px" },
+      { root, threshold: 0.01 },
     );
-    for (const block of blocks) {
-      if (block.getBoundingClientRect().top < window.innerHeight) continue;
-      block.dataset.reveal = "wait";
-      observer.observe(block);
+    for (const frame of frames) {
+      const rect = frame.getBoundingClientRect();
+      const inView = rect.right > box.left && rect.left < box.right;
+      if (inView && box.width > 0) continue;
+      frame.dataset.reveal = "wait";
+      observer.observe(frame);
     }
     return () => {
       observer.disconnect();
-      for (const block of blocks) delete block.dataset.reveal;
+      for (const frame of frames) delete frame.dataset.reveal;
     };
-  }, [root, reduced, key]);
+  }, [strip, reduced, key]);
 }
 
-/** True once the opening has scrolled up out of view: the rail takes over the context. */
-function usePastOpening(target: RefObject<HTMLElement>, key: unknown) {
-  const [past, setPast] = useState(false);
+/**
+ * The strip's motion: a vertical wheel moves it sideways at the same magnitude (the browser does the
+ * scrolling; no easing of ours), until it reaches an end, where the page takes the wheel back so the
+ * logo band and footer stay reachable. The progress fill follows scrollLeft, written straight to the
+ * DOM so scrolling never re-renders the page.
+ */
+function useStrip(strip: RefObject<HTMLElement>, fill: RefObject<HTMLElement>, key: unknown) {
   useEffect(() => {
-    const el = target.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[entries.length - 1];
-      if (!entry?.boundingClientRect) return;
-      setPast(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, key]);
-  return past;
+    const el = strip.current;
+    if (!el) return;
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
+      const value = stripProgress(el.scrollLeft, el.scrollWidth, el.clientWidth);
+      if (fill.current) fill.current.style.transform = `scaleX(${value})`;
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(paint);
+    };
+    const onWheel = (event: WheelEvent) => {
+      if (!isDesktop() || event.ctrlKey) return;
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? el.clientWidth : 1;
+      const delta = event.deltaY * unit;
+      const max = el.scrollWidth - el.clientWidth;
+      if ((delta < 0 && el.scrollLeft <= 0) || (delta > 0 && el.scrollLeft >= max - 1)) return;
+      event.preventDefault();
+      // Proximity snapping pulls every wheel notch back to the frame it left (measured in Chrome,
+      // 2026-11-06), so once a wheel drives the strip, snapping stays off; trackpads keep it.
+      el.dataset.wheel = "on";
+      el.scrollLeft += delta;
+    };
+    paint();
+    el.addEventListener("scroll", schedule, { passive: true });
+    el.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("resize", schedule);
+    // Images arriving widen the strip: the line re-measures as each one loads.
+    el.addEventListener("load", schedule, true);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      el.removeEventListener("scroll", schedule);
+      el.removeEventListener("wheel", onWheel);
+      window.removeEventListener("resize", schedule);
+      el.removeEventListener("load", schedule, true);
+    };
+  }, [strip, fill, key]);
 }
 
 /** Muted, looping and inline; plays while on screen. Under reduced motion it never starts on its own and shows controls. */
@@ -190,7 +221,7 @@ function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: s
   return (
     <video
       ref={ref}
-      className="story-media__item"
+      className="film-frame__item"
       src={src}
       poster={poster}
       muted
@@ -293,8 +324,8 @@ export default function Project() {
   const motionPaused = useMotionPaused();
   const [open, setOpen] = useState<number | null>(null);
   const landedRef = useRef<string | null>(null);
-  const articleRef = useRef<HTMLElement>(null);
-  const headRef = useRef<HTMLElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
 
   const { data: projectData, isPending } = useQuery<ProjectApi | null>({
     queryKey: ["project", slug],
@@ -310,37 +341,42 @@ export default function Project() {
   const site = useMemo(() => (projectData ? toSiteProject(projectData) : null), [projectData]);
 
   const cover = project && project.heroImage !== PROJECT_PLACEHOLDER_IMAGE ? project.heroImage : "";
-  const flow: MediaItem[] = useMemo(() => (project ? projectMediaSequence(project) : []), [project]);
+  const media: MediaItem[] = useMemo(
+    () => (project ? [...(cover ? [{ type: "image" as const, src: cover }] : []), ...projectMediaSequence(project)] : []),
+    [cover, project],
+  );
   const paragraphs = project?.bodySections;
-  const blocks = useMemo(() => storyBlocks(groupMedia(flow), paragraphs ?? []), [flow, paragraphs]);
-  const images = useMemo(
-    () => [...(cover ? [cover] : []), ...flow.filter((item) => item.type === "image").map((item) => item.src)],
-    [cover, flow],
-  );
-  const firstMotionBlock = blocks.findIndex(
-    (block) => block.kind === "media" && block.group.items.some((item) => item.type !== "image"),
-  );
+  const [firstParagraph = "", ...restParagraphs] = paragraphs ?? [];
+  const frames = useMemo(() => filmFrames(media, (paragraphs ?? []).slice(1)), [media, paragraphs]);
+  const images = useMemo(() => media.filter((item) => item.type === "image").map((item) => item.src), [media]);
+  const hasMotion = media.some((item) => item.type !== "image");
 
-  useReveal(articleRef, reduced, blocks);
-  const pastOpening = usePastOpening(headRef, project?.slug);
+  useFrameReveal(stripRef, reduced, frames);
+  useStrip(stripRef, fillRef, frames);
 
-  // wouter does not reset scroll. A project reached by a push starts at its top (or at the
-  // image the visitor clicked on the wall); Back/Forward keeps the browser's position.
+  // wouter does not reset scroll. A project reached by a push starts at the top of the page (on a
+  // phone with ?at=, the landing below scrolls the page to the strip instead); Back/Forward keeps
+  // the browser's position.
   const at = useMemo(() => new URLSearchParams(search).get("at") ?? "", [search]);
   useEffect(() => {
     if (consumePopNav()) return;
-    if (!at) window.scrollTo(0, 0);
+    if (!at || isDesktop()) window.scrollTo(0, 0);
   }, [slug, at]);
-  // The landing is a jump, not a glide (the visitor clicked this image a moment ago), and it is
-  // checked again once the images above have their height, in case the first jump was early.
+  // The landing is a jump, not a glide (the visitor clicked this image a moment ago): the strip puts
+  // that frame's left edge at its own left, and checks again once the frames before it have their width.
   useEffect(() => {
     if (!at || !project || landedRef.current === `${slug}:${at}`) return;
-    const target = document.querySelector<HTMLElement>(`[data-asset="${CSS.escape(at)}"]`);
-    if (!target) return;
+    const strip = stripRef.current;
+    const target = strip?.querySelector<HTMLElement>(`[data-asset="${CSS.escape(at)}"]`);
+    if (!strip || !target) return;
     landedRef.current = `${slug}:${at}`;
     const land = () => {
-      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - HEADER - 16);
-      if (Math.abs(window.scrollY - top) > 8) window.scrollTo({ top, behavior: "auto" });
+      const left = Math.max(0, frameLeft(strip, target));
+      if (Math.abs(strip.scrollLeft - left) > 2) strip.scrollTo({ left, behavior: "auto" });
+      if (!isDesktop()) {
+        const top = Math.max(0, strip.getBoundingClientRect().top + window.scrollY - HEADER - 16);
+        if (Math.abs(window.scrollY - top) > 8) window.scrollTo({ top, behavior: "auto" });
+      }
     };
     land();
     const timers = [250, 900].map((ms) => window.setTimeout(land, ms));
@@ -357,6 +393,29 @@ export default function Project() {
     [images.length],
   );
   const close = useCallback(() => setOpen(null), []);
+
+  // Left/Right step a frame, Home/End go to the ends, while the strip or a frame's image has focus.
+  // A video's own controls keep their arrows.
+  const onStripKey = useCallback(
+    (event: ReactKeyboardEvent<HTMLDivElement>) => {
+      const strip = stripRef.current;
+      if (!strip) return;
+      const target = event.target as HTMLElement;
+      if (target.closest("video, iframe")) return;
+      const max = Math.max(0, strip.scrollWidth - strip.clientWidth);
+      let left: number | null = null;
+      if (event.key === "Home") left = 0;
+      else if (event.key === "End") left = max;
+      else if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+        const lefts = Array.from(strip.querySelectorAll<HTMLElement>(".film-frame")).map((frame) => frameLeft(strip, frame));
+        left = stripStop(lefts, strip.scrollLeft, event.key === "ArrowRight" ? 1 : -1, max);
+      }
+      if (left === null) return;
+      event.preventDefault();
+      strip.scrollTo({ left, behavior: reduced ? "auto" : "smooth" });
+    },
+    [reduced],
+  );
 
   if (!slug || (!project && isPending)) return <PageShell>{null}</PageShell>;
   if (!project) return <NotFound />;
@@ -375,8 +434,8 @@ export default function Project() {
     : [];
   const stage = site?.stage && site.stage !== STAGES[0] ? site.stage : "";
   const facetLabel = (facet: (typeof facetLinks)[number]) => (facet.key === "place" ? placeLabel(facet.value) : facet.value);
-  // The cover is image 0 in the lightbox; the story's images follow in reading order.
-  let imageIndex = cover ? 0 : -1;
+  // The lightbox holds the images in strip order; the cover is the first.
+  let imageIndex = -1;
 
   return (
     <PageShell>
@@ -389,130 +448,112 @@ export default function Project() {
         structuredData={seoHead.structuredData}
       />
 
-      <article ref={articleRef} className="story">
-        <header ref={headRef} className="story-head" data-cover={cover ? "yes" : "none"}>
-          {cover ? (
-            <figure className="story-head__cover" data-asset={assetKey(cover)}>
-              <ProjectImage
-                src={cover}
-                alt={`${project.title}, image 1`}
-                sizes={HALF_SIZES}
-                widths={HALF_WIDTHS}
-                priority
-                onOpen={() => setOpen(0)}
-              />
-            </figure>
+      <article className="film" data-media={frames.length > 0 ? "yes" : "none"}>
+        <header className="film-head">
+          <h1 className="film-head__title">{project.title}</h1>
+          {project.intro ? <p className="film-head__lead">{project.intro}</p> : null}
+          {facetLinks.length > 0 ? (
+            <p className="film-head__facets" aria-label={copy.facetsLabel}>
+              {facetLinks.map((facet, index) => (
+                <span key={`${facet.key}:${facet.value}`}>
+                  {index > 0 ? <span aria-hidden="true">{facetLinks[index - 1].key === facet.key ? ", " : FACET_SEPARATOR}</span> : null}
+                  {facet.key === "discipline" && facet.value === DISCIPLINE_ON_ALL ? (
+                    facet.value
+                  ) : (
+                    <Link href={wallHrefFor(facet.key, facet.value)}>{facetLabel(facet)}</Link>
+                  )}
+                </span>
+              ))}
+              {stage ? (
+                <span>
+                  <span aria-hidden="true">{FACET_SEPARATOR}</span>
+                  {stage}
+                </span>
+              ) : null}
+            </p>
           ) : null}
-          <div className="story-head__copy">
-            <h1 className="story-head__title">{project.title}</h1>
-            {project.intro ? <p className="story-head__lead">{project.intro}</p> : null}
-            {facetLinks.length > 0 ? (
-              <p className="story-head__facets" aria-label={copy.facetsLabel}>
-                {facetLinks.map((facet, index) => (
-                  <span key={`${facet.key}:${facet.value}`}>
-                    {index > 0 ? <span aria-hidden="true">{facetLinks[index - 1].key === facet.key ? ", " : FACET_SEPARATOR}</span> : null}
-                    {facet.key === "discipline" && facet.value === DISCIPLINE_ON_ALL ? (
-                      facet.value
-                    ) : (
-                      <Link href={wallHrefFor(facet.key, facet.value)}>{facetLabel(facet)}</Link>
-                    )}
-                  </span>
-                ))}
-                {stage ? (
-                  <span>
-                    <span aria-hidden="true">{FACET_SEPARATOR}</span>
-                    {stage}
-                  </span>
-                ) : null}
-              </p>
-            ) : null}
-            {year ? <p className="story-head__facts">{year}</p> : null}
-            {proofLine ? <p className="story-head__proof">{proofLine}</p> : null}
-          </div>
+          {year ? <p className="film-head__facts">{year}</p> : null}
+          {proofLine ? <p className="film-head__proof">{proofLine}</p> : null}
+          {firstParagraph ? <p className="film-head__body">{firstParagraph}</p> : null}
+          {hasMotion ? <MotionToggle className="motion-toggle--film" /> : null}
         </header>
 
-        <div className="story-body">
-          {blocks.map((block, blockIndex) => {
-            if (block.kind === "text") {
-              return (
-                <div key={`t${blockIndex}`} className="story-block story-block--text">
-                  <p className="story-text">{block.text}</p>
-                </div>
-              );
-            }
-            const { group } = block;
-            return (
-              <div key={`m${blockIndex}`} className="story-block">
-                {blockIndex === firstMotionBlock ? <MotionToggle className="motion-toggle--story" /> : null}
-                <div className="story-media" data-kind={group.kind}>
-                  {group.items.map((item, i) => {
-                    const key = `${item.type}-${blockIndex}-${i}`;
-                    if (item.type === "image") {
-                      imageIndex += 1;
-                      const index = imageIndex;
-                      const half = group.kind === "pair";
-                      return (
-                        <figure key={key} className="story-media__figure" data-asset={assetKey(item.src)}>
-                          <ProjectImage
-                            src={item.src}
-                            alt={`${project.title}, image ${index + 1}`}
-                            sizes={half ? HALF_SIZES : COLUMN_SIZES}
-                            widths={half ? HALF_WIDTHS : COLUMN_WIDTHS}
-                            priority={index === 0}
-                            onOpen={() => setOpen(index)}
-                          />
-                        </figure>
-                      );
-                    }
-                    if (item.type === "video") {
-                      return (
-                        <figure key={key} className="story-media__figure" data-asset={assetKey(item.src)}>
-                          <ProjectVideo src={item.src} poster={item.poster} title={item.title || `${project.title}, video`} reduced={reduced} />
-                        </figure>
-                      );
-                    }
-                    return (
-                      <figure key={key} className="story-media__figure story-media__embed">
-                        <iframe
-                          src={reduced || motionPaused ? item.src : toVimeoBackgroundUrl(item.src)}
-                          title={item.title || `${project.title}, video`}
-                          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-                          allowFullScreen
-                          loading="lazy"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                        />
-                      </figure>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </article>
+        {frames.length > 0 ? (
+          <div className="film-stage">
+            <div
+              ref={stripRef}
+              className="film-strip"
+              tabIndex={0}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label={project.title}
+              onKeyDown={onStripKey}
+            >
+              {frames.map((frame, frameIndex) => {
+                if (frame.kind === "text") {
+                  return (
+                    <div key={`t${frameIndex}`} className="film-frame film-frame--text" role="group" aria-label={`${project.title}, text`}>
+                      <p className="film-frame__text">{frame.text}</p>
+                    </div>
+                  );
+                }
+                const { item } = frame;
+                const key = `${item.type}-${frameIndex}`;
+                if (item.type === "image") {
+                  imageIndex += 1;
+                  const index = imageIndex;
+                  return (
+                    <figure key={key} className="film-frame" role="group" aria-label={`${project.title}, image`} data-asset={assetKey(item.src)}>
+                      <FrameImage
+                        src={item.src}
+                        alt={`${project.title}, image`}
+                        priority={index === 0}
+                        eager={index < EAGER_FRAMES || assetKey(item.src) === at}
+                        onOpen={() => setOpen(index)}
+                      />
+                    </figure>
+                  );
+                }
+                if (item.type === "video") {
+                  return (
+                    <figure key={key} className="film-frame" role="group" aria-label={`${project.title}, video`} data-asset={assetKey(item.src)}>
+                      <ProjectVideo src={item.src} poster={item.poster} title={item.title || `${project.title}, video`} reduced={reduced} />
+                    </figure>
+                  );
+                }
+                return (
+                  <figure key={key} className="film-frame film-frame--embed" role="group" aria-label={`${project.title}, video`} style={{ "--r": ratioOf(item).toFixed(4) } as CSSProperties}>
+                    <iframe
+                      src={reduced || motionPaused ? item.src : toVimeoBackgroundUrl(item.src)}
+                      title={item.title || `${project.title}, video`}
+                      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </figure>
+                );
+              })}
+              {/* Room after the last frame, so the last piece can come to the middle. */}
+              <div className="film-strip__tail" aria-hidden="true" />
+            </div>
+            <div className="film-progress" aria-hidden="true">
+              <span ref={fillRef} className="film-progress__fill" />
+            </div>
+          </div>
+        ) : null}
 
-      {/* The rail repeats the opening once it has scrolled away (Little Plains' mini index). It is
-          context, not navigation: the opening above holds the real title and links. */}
-      <aside className="story-rail" aria-hidden="true" data-shown={pastOpening ? "yes" : "no"}>
-        {cover ? (
-          <img
-            className="story-rail__cover"
-            src={getOptimizedImageUrl(cover, { width: 400, quality: 80 }) || cover}
-            alt=""
-            width={getImageDimensions(cover)?.width}
-            height={getImageDimensions(cover)?.height}
-            loading="lazy"
-            decoding="async"
-          />
+        {/* Below 1024 the strip carries the pieces only; the story reads top to bottom under it. */}
+        {restParagraphs.length > 0 ? (
+          <div className="film-rest">
+            {restParagraphs.map((text, index) => (
+              <p key={index} className="film-rest__text">
+                {text}
+              </p>
+            ))}
+          </div>
         ) : null}
-        <p className="story-rail__title">{project.title}</p>
-        {facetLinks.length > 0 ? (
-          <p className="story-rail__facets">
-            {[...facetLinks.map(facetLabel), ...(stage ? [stage] : [])].join(", ")}
-          </p>
-        ) : null}
-        {year ? <p className="story-rail__facets">{year}</p> : null}
-      </aside>
+      </article>
 
       {open !== null && images[open] ? (
         <Lightbox images={images} index={open} title={project.title} onClose={close} onStep={step} />
