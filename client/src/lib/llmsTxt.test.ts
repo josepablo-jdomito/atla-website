@@ -49,6 +49,7 @@ describe("llms.txt source", () => {
     for (const heading of ["## Studio", "## Work by industry", "## Work and writing", "## Contact"]) {
       expect(LLMS).toContain(heading);
     }
+    expect(LLMS).toContain("filterable by sector, discipline, place and year");
   });
 });
 
@@ -62,7 +63,13 @@ describe("Selected work", () => {
     const lines = section.split("\n").filter((line) => line.startsWith("- "));
     expect(lines).toHaveLength(2);
     expect(lines[0]).toMatch(/^- \[Alpha\]\(https:\/\/www\.atla\.design\/projects\/a\): \S/);
+    expect(lines[0]).toMatch(/^- \[Alpha\]\(https:\/\/www\.atla\.design\/projects\/a\): \S/);
     expect(lines[1]).toMatch(/^- \[Bravo\]\(https:\/\/www\.atla\.design\/projects\/b\): \S/);
+  });
+
+  it("carries the sector, disciplines, place and year before the description", () => {
+    const section = buildSelectedWorkSection([project({ slug: "rustico", country: "Mexico" })]);
+    expect(section).toContain("- [Rústico](https://www.atla.design/projects/rustico): Hospitality & Travel · Brand Identity, Website · Mexico · 2026. A resort brand in the desert.");
   });
 
   it("goes in before Start a project, once, and leaves the file alone without featured work", () => {

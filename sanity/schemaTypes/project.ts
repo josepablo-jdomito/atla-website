@@ -1,4 +1,10 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { DISCIPLINES, MAX_SEARCH_TERMS, SECTORS, STAGES } from "../../shared/projectFacets";
+
+const DEPRECATED_FACET = {
+  reason: "Replaced by Sector, Disciplines, Stage and Search terms (2026-11-05). Kept until the migration runs; the site no longer reads it.",
+};
+const asOptions = (values: readonly string[]) => values.map((value) => ({ title: value, value }));
 
 function isValidVimeoUrl(value: string) {
   return /^(https?:\/\/)?(www\.)?(vimeo\.com\/\d+|player\.vimeo\.com\/video\/\d+)([/?#].*)?$/i.test(value.trim());
@@ -58,16 +64,47 @@ export const projectType = defineType({
           .max(new Date().getFullYear() + 1),
     }),
     defineField({
+      name: "sector",
+      title: "Sector",
+      type: "string",
+      group: "taxonomy",
+      description: "Who the brand serves. One value.",
+      options: { list: asOptions(SECTORS) },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "disciplines",
+      title: "Disciplines",
+      type: "array",
+      group: "taxonomy",
+      description: "What Atla delivered, as the images show it. The first one is the lead. Brand Identity goes on every project.",
+      of: [defineArrayMember({ type: "string" })],
+      options: { list: asOptions(DISCIPLINES), layout: "grid" },
+      validation: (rule) => rule.required().min(1).unique(),
+    }),
+    defineField({
+      name: "stage",
+      title: "Stage",
+      type: "string",
+      group: "taxonomy",
+      description: "Why the client came.",
+      initialValue: STAGES[0],
+      options: { list: asOptions(STAGES), layout: "radio" },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "category",
       title: "Category",
       type: "string",
       group: "taxonomy",
+      deprecated: DEPRECATED_FACET,
     }),
     defineField({
       name: "industry",
       title: "Industry",
       type: "string",
       group: "taxonomy",
+      deprecated: DEPRECATED_FACET,
       options: {
         list: [
           { title: "Hospitality", value: "Hospitality" },
@@ -83,6 +120,7 @@ export const projectType = defineType({
       title: "Region",
       type: "string",
       group: "taxonomy",
+      deprecated: DEPRECATED_FACET,
       options: {
         list: [
           { title: "America", value: "America" },
@@ -97,7 +135,9 @@ export const projectType = defineType({
       title: "Country",
       type: "string",
       group: "taxonomy",
-      description: "Country used for the interactive archive map hover states.",
+      description:
+        "Where the client is. Place on the site derives from it: United States, Mexico, United States & Mexico, United Arab Emirates (Middle East), anything else is International.",
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "locationName",
@@ -114,10 +154,29 @@ export const projectType = defineType({
       description: "Exact latitude and longitude used for map/globe placement.",
     }),
     defineField({
+      name: "searchTerms",
+      title: "Search terms",
+      type: "array",
+      group: "taxonomy",
+      description:
+        "Hidden. Product and category nouns a prospect types that the facets do not contain (mezcal, pilates, hotel). Each must name something visible in the images or stated in the description. Lowercase, at most 8.",
+      of: [defineArrayMember({ type: "string" })],
+      options: { layout: "tags" },
+      validation: (rule) =>
+        rule.max(MAX_SEARCH_TERMS).custom((terms) => {
+          if (!Array.isArray(terms)) return true;
+          const bad = terms.filter(
+            (term) => typeof term !== "string" || term !== term.toLowerCase() || term.trim().length < 2 || term.trim().length > 30,
+          );
+          return bad.length === 0 ? true : `Lowercase, 2 to 30 characters: ${bad.join(", ")}`;
+        }),
+    }),
+    defineField({
       name: "tags",
       title: "Tags",
       type: "array",
       group: "taxonomy",
+      deprecated: DEPRECATED_FACET,
       of: [defineArrayMember({ type: "string" })],
     }),
     defineField({
@@ -125,6 +184,7 @@ export const projectType = defineType({
       title: "Services",
       type: "array",
       group: "taxonomy",
+      deprecated: DEPRECATED_FACET,
       of: [defineArrayMember({ type: "string" })],
       description: "Optional service labels shown on the project page.",
     }),
@@ -427,6 +487,7 @@ export const projectType = defineType({
         ],
         layout: "radio",
       },
+      validation: (rule) => rule.required(),
     }),
   ],
   preview: {

@@ -84,10 +84,11 @@ function toProjectLite(project: Record<string, unknown>): ProjectLite {
   return {
     slug: text(project.slug),
     title: text(project.title),
-    industry: text(project.industry),
-    region: text(project.region),
-    services: list(project.services),
-    tags: list(project.tags),
+    sector: text(project.sector),
+    disciplines: list(project.disciplines),
+    stage: text(project.stage),
+    place: text(project.place),
+    searchTerms: list(project.searchTerms),
     year: Number(project.year) || 0,
     coverImage: text(project.coverImage),
   };

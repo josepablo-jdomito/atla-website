@@ -5,6 +5,7 @@
  */
 import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "@shared/schema";
 import { getOptimizedImageUrl, sanitizeImageUrls } from "@shared/imageDelivery";
+import { resolveProjectFacets } from "@shared/projectFacets";
 import { formatMetaTitle, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
 import {
   buildProjectBreadcrumb,
@@ -43,6 +44,12 @@ export type ProjectPageView = {
   locationName: string;
   services: string[];
   category: string;
+  /** The controlled facets (shared/projectFacets.ts). */
+  sector: string;
+  disciplines: string[];
+  stage: string;
+  place: string;
+  searchTerms: string[];
   dateLabel: string;
   intro: string;
   bodySections: string[];
@@ -234,6 +241,7 @@ export function buildProjectPageView(project: ProjectApi, allProjects: ProjectAp
   const category = project.category === "Uncategorized" ? "" : project.category;
   const region = project.region;
   const country = project.country || "";
+  const facets = resolveProjectFacets(project);
   const locationName = project.locationName || "";
   const bodySections = projectBodySections(
     project.body,
@@ -274,6 +282,11 @@ export function buildProjectPageView(project: ProjectApi, allProjects: ProjectAp
     locationName,
     services,
     category,
+    sector: facets.sector,
+    disciplines: facets.disciplines,
+    stage: facets.stage,
+    place: facets.place,
+    searchTerms: facets.searchTerms,
     dateLabel: String(project.year),
     intro: cleanProjectSummary(project.description),
     bodySections,
@@ -389,8 +402,8 @@ export function buildProjectSeoHead(project: ProjectPageView) {
   const description = buildProjectMetaDescription({
     title: project.title,
     client: project.client,
-    category: project.category,
-    services: project.services,
+    category: project.sector || project.category,
+    services: project.disciplines.length > 0 ? project.disciplines : project.services,
     description: project.intro,
   });
   const pathname = `/projects/${project.slug}`;
@@ -415,10 +428,12 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     heroImage: project.heroImage,
     gallery: project.gallery,
     year: project.dateLabel,
-    industry: project.category,
-    client: project.client,
-    region: project.region,
-    services: project.services,
+    sector: project.sector,
+    disciplines: project.disciplines,
+    place: project.place,
+    stage: project.stage,
+    searchTerms: project.searchTerms,
+    locationName: project.locationName,
   });
   const videoPublisherSchema = {
     "@type": "Organization",
@@ -465,7 +480,7 @@ export function buildProjectSeoHead(project: ProjectPageView) {
   ];
 
   return {
-    title: formatMetaTitle(`${project.title}${project.category ? ` ${project.category}` : ""} Case Study`, "Atla"),
+    title: formatMetaTitle(`${project.title}${project.sector || project.category ? ` ${project.sector || project.category}` : ""} Case Study`, "Atla"),
     description,
     pathname,
     image: project.heroImage,

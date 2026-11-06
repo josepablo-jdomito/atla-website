@@ -9,7 +9,7 @@ export type CardProject = {
   slug: string;
   title: string;
   client?: string;
-  industry?: string;
+  sector?: string;
   coverImage: string;
   videos?: string[];
 };
@@ -104,7 +104,7 @@ export function ProjectCard({
       </span>
       <span className="project-card__caption">
         <span className="project-card__name">{name}</span>
-        {project.industry ? <span className="project-card__meta">{project.industry}</span> : null}
+        {project.sector ? <span className="project-card__meta">{project.sector}</span> : null}
       </span>
     </Link>
   );

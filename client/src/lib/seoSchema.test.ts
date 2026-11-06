@@ -8,10 +8,12 @@ const PROJECT = {
   heroImage: "https://cdn.sanity.io/images/p/production/a-100x100.jpg",
   gallery: ["https://cdn.sanity.io/images/p/production/b-100x100.jpg"],
   year: "2026",
-  industry: "Hospitality",
-  client: "Acre Resort",
-  region: "America",
-  services: ["Branding"],
+  sector: "Hospitality & Travel",
+  disciplines: ["Brand Identity", "Website"],
+  place: "Mexico",
+  stage: "New brand",
+  searchTerms: ["resort", "boutique hotel"],
+  locationName: "Los Cabos, Mexico",
 };
 
 describe("creativeWorkSchema", () => {
@@ -24,13 +26,15 @@ describe("creativeWorkSchema", () => {
     expect(schema.image[0]).toBe(PROJECT.heroImage);
     expect(schema.creator["@type"]).toBe("Organization");
     expect(schema.dateCreated).toBe("2026");
-    expect(schema.about[0]).toBe("Hospitality");
+    expect(schema.about).toBe("Hospitality & Travel");
+    expect(schema.genre).toBe("Brand Identity");
+    expect(schema.keywords).toBe("Brand Identity, Website, resort, boutique hotel");
+    expect(schema.contentLocation).toEqual({ "@type": "Place", name: "Los Cabos, Mexico" });
   });
 
-  it("leaves out dateCreated when the year is not a number, and drops empty about entries", () => {
-    const schema = creativeWorkSchema({ ...PROJECT, year: "", industry: "", client: "" }) as Record<string, any>;
-    expect(schema).not.toHaveProperty("dateCreated");
-    expect(schema.about).toEqual(["America", "Branding"]);
+  it("leaves out dateCreated, about, genre, keywords and location when they are empty", () => {
+    const schema = creativeWorkSchema({ ...PROJECT, year: "", sector: "", disciplines: [], searchTerms: [], locationName: "" }) as Record<string, any>;
+    for (const key of ["dateCreated", "about", "genre", "keywords", "contentLocation"]) expect(schema).not.toHaveProperty(key);
     expect(() => JSON.parse(JSON.stringify(schema))).not.toThrow();
   });
 });

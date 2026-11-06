@@ -3,20 +3,25 @@
  * way offline; it has no server dependencies.
  *
  * A query token scores against each project field it appears in: title 3,
- * industry 3, services 2, tags 2, region 1; a synonym of a query word scores 1
- * per field, so "coffee" reaches the hospitality work. When nothing scores, the visitor
- * still gets work back: the 6 projects whose industry, services or tags overlap
- * the query (through a small synonym map), else the 6 most recent, flagged
- * `closest` so the UI can label them "Closest work".
+ * sector 3, disciplines 2, stage 2, searchTerms 2, place 1; a synonym of a query
+ * word scores 1 per project, so "coffee" reaches the hospitality work. When nothing
+ * scores, the visitor still gets work back: the 6 projects whose sector, disciplines,
+ * stage or search terms overlap the query (through a small synonym map), else the 6
+ * most recent, flagged `closest` so the UI can label them "Closest work".
+ *
+ * The facet values are the controlled lists in shared/projectFacets.ts.
  */
 
 export type ProjectLite = {
   slug: string;
   title: string;
-  industry: string;
-  region: string;
-  services: string[];
-  tags: string[];
+  sector: string;
+  /** Lead first. */
+  disciplines: string[];
+  stage: string;
+  place: string;
+  /** Hidden: ranked like a facet, never printed. */
+  searchTerms: string[];
   year: number;
   coverImage: string;
 };
@@ -25,41 +30,50 @@ export type RankResult = { projects: ProjectLite[]; closest: boolean };
 
 const CLOSEST_COUNT = 6;
 
-// Function words, plus words that describe every project on the site and so rank nothing.
+// Function words, plus words that describe every project on the site and so rank nothing
+// ("Brand Identity" is on every project).
 const STOPWORDS = new Set([
   "a", "an", "and", "the", "for", "of", "in", "on", "to", "with", "by", "at", "or", "from",
   "my", "our", "your", "we", "i", "me", "us", "is", "are", "be", "like", "some", "something", "show",
-  "brand", "branding", "agency", "studio", "project", "projects", "work", "company",
+  "brand", "branding", "identity", "agency", "studio", "project", "projects", "work", "company",
 ]);
 
-// Query words mapped to the industry and service words the live portfolio actually uses
-// (industries: Hospitality, Food & Beverage, Consumer Goods, SaaS, Digital;
-// services: Branding, Art Direction, Packaging, Website).
+// Query words mapped to tokens of the facet values (proposal 3.4):
+// sectors (Hospitality & Travel, Food & Drink, Health & Wellness, Fashion & Lifestyle,
+// Real Estate & Finance, Technology & Digital, Media & Education, Family & Pets),
+// stages (New brand, Rebrand) and disciplines (Packaging, Website, Signage & Spaces).
+const HOSPITALITY = ["hospitality", "travel"];
+const FOOD = ["food", "drink"];
+const HEALTH = ["health", "wellness"];
+const FASHION = ["fashion", "lifestyle"];
+const REAL_ESTATE = ["real", "estate", "finance"];
+const TECH = ["technology", "digital"];
+const MEDIA = ["media", "education"];
+const FAMILY = ["family", "pets"];
+const REBRAND = ["rebrand"];
+const NEW_BRAND = ["new"];
+const PACKAGING = ["packaging"];
+const WEBSITE = ["website"];
+const SIGNAGE = ["signage", "spaces"];
+
 const SYNONYMS: Record<string, string[]> = {
-  hotel: ["hospitality"],
-  restaurant: ["hospitality", "food", "beverage"],
-  cafe: ["hospitality", "food", "beverage"],
-  coffee: ["hospitality", "food", "beverage"],
-  food: ["food", "beverage", "consumer"],
-  drink: ["food", "beverage", "consumer"],
-  beverage: ["food", "beverage", "consumer"],
-  beauty: ["consumer"],
-  fintech: ["saas", "digital"],
-  ai: ["saas", "digital"],
-  software: ["saas", "digital"],
-  saas: ["saas", "digital"],
-  "real estate": ["hospitality"],
-  residence: ["hospitality"],
-  fashion: ["consumer"],
-  retail: ["consumer"],
-  shop: ["hospitality"],
-  store: ["consumer"],
-  bar: ["hospitality", "food", "beverage"],
-  bakery: ["hospitality", "food", "beverage"],
-  wellness: ["consumer", "hospitality"],
-  spa: ["hospitality"],
-  app: ["saas", "digital"],
-  startup: ["saas", "digital"],
+  hotel: HOSPITALITY, resort: HOSPITALITY, restaurant: HOSPITALITY, cafe: HOSPITALITY, bar: HOSPITALITY,
+  travel: HOSPITALITY, tour: HOSPITALITY, tours: HOSPITALITY,
+  drink: FOOD, drinks: FOOD, spirits: FOOD, mezcal: FOOD, tequila: FOOD, gin: FOOD, wine: FOOD, beer: FOOD,
+  water: FOOD, coffee: FOOD, snack: FOOD, snacks: FOOD, cpg: FOOD, beverage: FOOD,
+  health: HEALTH, wellness: HEALTH, clinic: HEALTH, supplement: HEALTH, supplements: HEALTH, vitamin: HEALTH,
+  vitamins: HEALTH, fitness: HEALTH, gym: HEALTH, pilates: HEALTH, beauty: HEALTH, skincare: HEALTH,
+  fashion: FASHION, apparel: FASHION, clothing: FASHION, leather: FASHION, accessories: FASHION, lifestyle: FASHION,
+  "real estate": REAL_ESTATE, building: REAL_ESTATE, tower: REAL_ESTATE, development: REAL_ESTATE,
+  developer: REAL_ESTATE, finance: REAL_ESTATE, fintech: REAL_ESTATE, investment: REAL_ESTATE, bank: REAL_ESTATE,
+  ai: TECH, app: TECH, software: TECH, saas: TECH, platform: TECH, marketplace: TECH, startup: TECH,
+  media: MEDIA, magazine: MEDIA, newsletter: MEDIA, course: MEDIA, academy: MEDIA, education: MEDIA, school: MEDIA,
+  pet: FAMILY, pets: FAMILY, dog: FAMILY, baby: FAMILY, kids: FAMILY, family: FAMILY, parenting: FAMILY,
+  rebrand: REBRAND, refresh: REBRAND, relaunch: REBRAND,
+  launch: NEW_BRAND, "new brand": NEW_BRAND, starting: NEW_BRAND, "sub brand": NEW_BRAND,
+  label: PACKAGING, bottle: PACKAGING, box: PACKAGING, pack: PACKAGING,
+  web: WEBSITE, site: WEBSITE, landing: WEBSITE,
+  sign: SIGNAGE, signage: SIGNAGE, wayfinding: SIGNAGE, space: SIGNAGE, interior: SIGNAGE,
 };
 
 /** Query words widened by the synonym map: the words a visitor types next to the words the portfolio uses. */
@@ -73,14 +87,14 @@ function widen(queryWords: string[]): Set<string> {
 }
 
 // Whitespace, ASCII punctuation, Latin-1 punctuation and general punctuation; letters of any script survive.
-const SEPARATORS = /[\s!-\/:-@[-`{-~\u00a1-\u00bf\u00d7\u00f7\u2000-\u206f]+/;
+const SEPARATORS = /[\s!-\/:-@[-`{-~¡-¿×÷ -⁯]+/;
 
 /** Lowercase, strip accents, split on separators. */
 function words(value: string): string[] {
   return value
     .toLowerCase()
     .normalize("NFKD")
-    .replace(/[\u0300-\u036f]+/g, "")
+    .replace(/[̀-ͯ]+/g, "")
     .split(SEPARATORS)
     .filter(Boolean);
 }
@@ -88,6 +102,10 @@ function words(value: string): string[] {
 const tokenSet = (values: string[]) => new Set(values.flatMap(words));
 
 const byYearDesc = (a: ProjectLite, b: ProjectLite) => (b.year || 0) - (a.year || 0);
+
+/** The facet tokens a synonym or the closest-work overlap can land on: everything but title and place. */
+const facetTokens = (project: ProjectLite) =>
+  tokenSet([project.sector, ...project.disciplines, project.stage, ...project.searchTerms]);
 
 export function rankProjects(query: string, projects: ProjectLite[]): RankResult {
   const queryWords = words(query);
@@ -98,10 +116,11 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
   const scored = projects.map((project) => {
     const fields: Array<[Set<string>, number]> = [
       [tokenSet([project.title]), 3],
-      [tokenSet([project.industry]), 3],
-      [tokenSet(project.services), 2],
-      [tokenSet(project.tags), 2],
-      [tokenSet([project.region]), 1],
+      [tokenSet([project.sector]), 3],
+      [tokenSet(project.disciplines), 2],
+      [tokenSet([project.stage]), 2],
+      [tokenSet(project.searchTerms), 2],
+      [tokenSet([project.place]), 1],
     ];
     let score = 0;
     for (const token of queryTokens) {
@@ -109,9 +128,10 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
     }
     // A synonym hit counts for one, once per project: "coffee" reaches the hospitality
     // and food projects, below anything the visitor named outright.
+    const facets = facetTokens(project);
     let synonymHit = false;
     synonyms.forEach((token) => {
-      if (fields[1][0].has(token) || fields[2][0].has(token) || fields[3][0].has(token)) synonymHit = true;
+      if (facets.has(token)) synonymHit = true;
     });
     if (synonymHit) score += 1;
     return { project, score };
@@ -123,12 +143,12 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
     return { projects: matched.map((entry) => entry.project), closest: false };
   }
 
-  // Closest work: overlap on industry, services and tags, query words widened by the synonym map.
+  // Closest work: overlap on the facets, query words widened by the synonym map.
   // Recency only orders ties, so with no overlap at all it is the 6 most recent.
   const wanted = new Set(queryTokens);
   synonyms.forEach((token) => wanted.add(token));
   const overlap = (project: ProjectLite) => {
-    const facets = tokenSet([project.industry, ...project.services, ...project.tags]);
+    const facets = facetTokens(project);
     let count = 0;
     wanted.forEach((token) => {
       if (facets.has(token)) count += 1;

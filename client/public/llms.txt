@@ -40,7 +40,7 @@ The ways in, the same on every page: Audit, Brand system, Full build, Fractional
 
 ## Work and writing
 
-- [Work archive](https://www.atla.design/): case studies filterable by region, industry, service and year
+- [Work archive](https://www.atla.design/): case studies filterable by sector, discipline, place and year
 - [Journal](https://www.atla.design/journal): essays and guides on branding, strategy and agency selection
 - [How much does branding cost](https://www.atla.design/journal/how-much-does-branding-cost)
 - [Brand audit framework](https://www.atla.design/journal/brand-audit-framework)

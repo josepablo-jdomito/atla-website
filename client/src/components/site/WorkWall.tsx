@@ -146,7 +146,7 @@ export function WorkWall() {
   const { projects } = useSiteProjects();
   const columns = useColumns();
   const reduced = useReducedMotion();
-  // The URL is the state: /?q=coffee+shop&industry=Hospitality is shareable.
+  // The URL is the state: /?q=coffee+shop&sector=hospitality-travel is shareable.
   const search = useSearch();
   const filters = useMemo(() => filtersFromSearch(search), [search]);
   const urlQuery = useMemo(() => queryFromSearch(search), [search]);
@@ -285,7 +285,7 @@ export function WorkWall() {
         }}
         onClear={() => {
           setDraft("");
-          changeFilters({ ...filters, region: ALL_VALUE, industry: ALL_VALUE, service: ALL_VALUE, year: ALL_VALUE });
+          changeFilters({ ...filters, sector: ALL_VALUE, discipline: ALL_VALUE, place: ALL_VALUE, year: ALL_VALUE });
         }}
         activeCount={activeFilterCount(filters)}
         visible

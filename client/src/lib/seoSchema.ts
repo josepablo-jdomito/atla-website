@@ -95,10 +95,14 @@ export type CreativeWorkInput = {
   gallery: string[];
   /** The project year as shown on the page; dateCreated is left out when it is not a year. */
   year: string;
-  industry: string;
-  client: string;
-  region: string;
-  services: string[];
+  /** Sector, disciplines (lead first), place and stage: the controlled facets. */
+  sector: string;
+  disciplines: string[];
+  place: string;
+  stage: string;
+  /** Hidden search terms; they reach machines through `keywords`, never the page. */
+  searchTerms: string[];
+  locationName: string;
 };
 
 /**
@@ -107,6 +111,7 @@ export type CreativeWorkInput = {
  */
 export function creativeWorkSchema(project: CreativeWorkInput) {
   const year = Number.parseInt(project.year, 10);
+  const keywords = Array.from(new Set([...project.disciplines, ...project.searchTerms].map((k) => k.trim()).filter(Boolean)));
   return {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -117,6 +122,9 @@ export function creativeWorkSchema(project: CreativeWorkInput) {
     ...(Number.isFinite(year) ? { dateCreated: String(year) } : {}),
     creator: ORGANIZATION_REF,
     publisher: ORGANIZATION_REF,
-    about: [project.industry, project.client, project.region, ...project.services].filter(Boolean),
+    ...(project.sector ? { about: project.sector } : {}),
+    ...(project.disciplines[0] ? { genre: project.disciplines[0] } : {}),
+    ...(keywords.length > 0 ? { keywords: keywords.join(", ") } : {}),
+    ...(project.locationName ? { contentLocation: { "@type": "Place", name: project.locationName } } : {}),
   };
 }

@@ -22,9 +22,11 @@ function raw(overrides: Record<string, unknown>) {
     title: "Untitled",
     client: "",
     category: "Hospitality",
-    industry: "Hospitality",
-    region: "America",
-    services: ["Branding"],
+    country: "Mexico",
+    sector: "Hospitality & Travel",
+    disciplines: ["Brand Identity", "Website"],
+    stage: "New brand",
+    searchTerms: ["resort"],
     tags: ["Branding"],
     year: 2025,
     description: "",
@@ -42,7 +44,7 @@ function raw(overrides: Record<string, unknown>) {
 const API = [
   raw({ slug: "archive-a", title: "Archive A", year: 2024 }),
   raw({ slug: "feat-two", title: "Feature Two", featured: true, homeOrder: 2 }),
-  raw({ slug: "archive-b", title: "Rústico & Co / Tulum", client: "Rústico", year: 2023, services: ["Branding", "Website"], tags: ["Hotel", "Branding"], images: [image("b1"), image("b2")] }),
+  raw({ slug: "archive-b", title: "Rústico & Co / Tulum", client: "Rústico", year: 2023, disciplines: ["Website", "Brand Identity"], stage: "Rebrand", tags: ["Hotel", "Branding"], images: [image("b1"), image("b2")] }),
   raw({ slug: "feat-one", title: "Feature One", featured: true, homeOrder: 1 }),
 ];
 
@@ -126,11 +128,33 @@ function render(slug: string) {
 }
 
 describe("Project page", () => {
-  it("shows client, year and services (not tags) in the header line", () => {
+  it("shows client and year in the facts line, then the facets as links into the filtered wall", () => {
     render("archive-b");
     // The title is the project name; the facts line names the client only when it differs from the title.
     expect(container.querySelector("h1")?.textContent).toBe("Rústico & Co / Tulum");
-    expect(container.querySelector(".story-head__facts")?.textContent).toBe("Rústico  ·  2023  ·  Branding, Website");
+    expect(container.querySelector(".story-head__facts")?.textContent).toBe("Rústico  ·  2023");
+    const facets = container.querySelector(".story-head__facets")!;
+    expect(facets.textContent).toBe("Hospitality & Travel\u00a0\u00a0·  Website, Brand Identity\u00a0\u00a0·  Mexico\u00a0\u00a0·  Rebrand");
+    const links = Array.from(facets.querySelectorAll("a")).map((a) => [a.textContent, a.getAttribute("href")]);
+    // Brand Identity is on every project, so it is text, not a link; Stage is text.
+    expect(links).toEqual([
+      ["Hospitality & Travel", "/?sector=hospitality-travel"],
+      ["Website", "/?discipline=website"],
+      ["Mexico", "/?place=mexico"],
+    ]);
+    expect(container.querySelector(".story-head__facets")?.textContent).not.toContain("Hotel");
+  });
+
+  it("shows three More like this cards, same sector, never the project itself, before Next", () => {
+    render("archive-b");
+    const cards = Array.from(container.querySelectorAll(".story-more .project-card")).map((a) => a.getAttribute("href"));
+    expect(cards).toHaveLength(3);
+    expect(cards).not.toContain("/projects/archive-b");
+    // All share Website, Mexico and a different stage, so newest first, then API order.
+    expect(cards).toEqual(["/projects/feat-two", "/projects/feat-one", "/projects/archive-a"]);
+    const more = container.querySelector(".story-more")!;
+    const next = container.querySelector(".story-next")!;
+    expect(more.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("links the brief with the title as an encoded seed", () => {

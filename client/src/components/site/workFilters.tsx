@@ -1,54 +1,93 @@
 import { useMemo } from "react";
 import { siteCopy } from "@/content/siteCopy";
 import type { SiteProject } from "@/components/site/siteProjects";
+import {
+  DISCIPLINES,
+  DISCIPLINE_ON_ALL,
+  PLACES,
+  SECTORS,
+  facetSlug,
+  matchFacetValue,
+} from "@shared/projectFacets";
 
 const { home } = siteCopy;
 
-// Filter facets, ported from PR #31 (commit 0d674e8, AtlaWork.tsx).
+/**
+ * The Explore panel's four groups (proposal 3.2, approved 2026-11-05): Sector, Discipline,
+ * Place, Year. Options come from the controlled lists in shared/projectFacets.ts, in their
+ * fixed order, showing only the values some project carries. Stage is not a group (three
+ * values, one of them on nearly every project); it stays in search and on the project line.
+ */
 export const ALL = home.filters.all;
-const REGION_OPTIONS = [ALL, "America", "Europe", "Asia", "Middle East"] as const;
-const INDUSTRY_ORDER = ["Hospitality", "Food & Beverage", "Consumer Goods", "SaaS", "Digital"] as const;
-const SERVICE_ORDER = ["Branding", "Art Direction", "Packaging", "Website"] as const;
 
-export type Filters = { region: string; industry: string; service: string; year: string };
-export const NO_FILTERS: Filters = { region: ALL, industry: ALL, service: ALL, year: ALL };
+export type Filters = { sector: string; discipline: string; place: string; year: string };
+export const NO_FILTERS: Filters = { sector: ALL, discipline: ALL, place: ALL, year: ALL };
 
-function uniqueCaseInsensitive(values: string[]) {
-  const seen = new Map<string, string>();
-  for (const raw of values) {
-    const value = raw.trim();
-    if (value && !seen.has(value.toLowerCase())) seen.set(value.toLowerCase(), value);
-  }
-  return Array.from(seen.values());
+const FILTER_KEYS: Array<keyof Filters> = ["sector", "discipline", "place", "year"];
+
+/**
+ * The URL keys and values the site used before the facets (Region, Industry, Service), so a
+ * shared or indexed link still lands on the nearest filter. Unknown values are dropped.
+ */
+const LEGACY_KEYS: Record<string, { key: keyof Filters; values: Record<string, string> }> = {
+  industry: {
+    key: "sector",
+    values: {
+      hospitality: "Hospitality & Travel",
+      "food-beverage": "Food & Drink",
+      "consumer-goods": "Food & Drink",
+      saas: "Technology & Digital",
+      digital: "Technology & Digital",
+    },
+  },
+  service: {
+    key: "discipline",
+    values: { branding: "Brand Identity", "art-direction": "Art Direction", packaging: "Packaging", website: "Website" },
+  },
+  region: {
+    key: "place",
+    values: { america: "United States", europe: "International", asia: "International", "middle-east": "Middle East" },
+  },
+};
+
+/** "All", then the list values that at least one project carries, in list order. */
+export function buildFacetOptions(values: string[], list: readonly string[], hide: readonly string[] = []) {
+  const present = new Set(values.map((value) => facetSlug(value)));
+  return [ALL, ...list.filter((value) => !hide.includes(value) && present.has(facetSlug(value)))];
 }
 
-/** "All", then the preferred order, then anything else alphabetically. "Unspecified" is never a choice. */
-export function buildFacetOptions(values: string[], preferredOrder: readonly string[]) {
-  const present = uniqueCaseInsensitive(values).filter((value) => value.toLowerCase() !== "unspecified");
-  const has = (wanted: string) => present.some((value) => value.toLowerCase() === wanted.toLowerCase());
-  const ordered = preferredOrder.filter(has);
-  const rest = present
-    .filter((value) => !preferredOrder.some((preferred) => preferred.toLowerCase() === value.toLowerCase()))
-    .sort((a, b) => a.localeCompare(b));
-  return [ALL, ...ordered, ...rest];
+function yearOptions(projects: SiteProject[]) {
+  return [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)];
 }
 
 export function matchesFilters(project: SiteProject, filters: Filters) {
-  if (filters.region !== ALL && project.region !== filters.region) return false;
-  if (filters.industry !== ALL && project.industry !== filters.industry) return false;
-  if (filters.service !== ALL && project.service !== filters.service) return false;
+  if (filters.sector !== ALL && project.sector !== filters.sector) return false;
+  if (filters.discipline !== ALL && !project.disciplines.includes(filters.discipline)) return false;
+  if (filters.place !== ALL && project.place !== filters.place) return false;
   if (filters.year !== ALL && String(project.year) !== filters.year) return false;
   return true;
 }
 
-const FILTER_KEYS: Array<keyof Filters> = ["region", "industry", "service", "year"];
+/** A URL value → the list value it names (`food-drink` or `Food & Drink`); years pass through; unknown is "". */
+function parseFilterValue(key: keyof Filters, raw: string): string {
+  if (key === "year") return /^\d{4}$/.test(raw) ? raw : "";
+  if (key === "sector") return matchFacetValue(SECTORS, raw);
+  if (key === "discipline") return matchFacetValue(DISCIPLINES, raw);
+  return matchFacetValue(PLACES, raw);
+}
 
-/** `/?industry=Hospitality&year=2025` → Filters. Unknown keys and empty values are ignored. */
+/** `/?sector=food-drink&year=2025` → Filters. Old keys (industry, service, region) are aliases; unknown values are ignored. */
 export function filtersFromSearch(search: string): Filters {
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const filters = { ...NO_FILTERS };
+  for (const [legacyKey, { key, values }] of Object.entries(LEGACY_KEYS)) {
+    const raw = params.get(legacyKey)?.trim();
+    const value = raw ? values[facetSlug(raw)] : "";
+    if (value) filters[key] = value;
+  }
   for (const key of FILTER_KEYS) {
-    const value = params.get(key)?.trim();
+    const raw = params.get(key)?.trim();
+    const value = raw ? parseFilterValue(key, raw) : "";
     if (value) filters[key] = value;
   }
   return filters;
@@ -60,22 +99,29 @@ export function queryFromSearch(search: string): string {
   return (params.get("q") ?? "").trim().slice(0, 120);
 }
 
-/** Filters and query → the query string for the wall, "" when nothing is active. */
+/** Filters and query → the query string for the wall, "" when nothing is active. Values travel as slugs. */
 export function searchFromFilters(filters: Filters, query = ""): string {
   const params = new URLSearchParams();
   if (query.trim()) params.set("q", query.trim());
-  for (const key of FILTER_KEYS) if (filters[key] !== ALL) params.set(key, filters[key]);
+  for (const key of FILTER_KEYS) {
+    if (filters[key] !== ALL) params.set(key, key === "year" ? filters[key] : facetSlug(filters[key]));
+  }
   const out = params.toString();
   return out ? `?${out}` : "";
+}
+
+/** `/?sector=food-drink`: the wall filtered to one facet value, for the project page's facet line. */
+export function wallHrefFor(key: keyof Filters, value: string) {
+  return `/${searchFromFilters({ ...NO_FILTERS, [key]: value })}`;
 }
 
 /** The four facets with their values, for the header peek and the Explore panel. */
 export function facetOptions(projects: SiteProject[]) {
   return {
-    region: [...REGION_OPTIONS],
-    industry: buildFacetOptions(projects.map((p) => p.industry), INDUSTRY_ORDER),
-    service: buildFacetOptions(projects.map((p) => p.service), SERVICE_ORDER),
-    year: [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)],
+    sector: buildFacetOptions(projects.map((p) => p.sector), SECTORS),
+    discipline: buildFacetOptions(projects.flatMap((p) => p.disciplines), DISCIPLINES, [DISCIPLINE_ON_ALL]),
+    place: buildFacetOptions(projects.map((p) => p.place), PLACES),
+    year: yearOptions(projects),
   };
 }
 
@@ -124,20 +170,15 @@ export function WorkFilters({
   filters: Filters;
   onChange: (filters: Filters) => void;
 }) {
-  const industryOptions = useMemo(() => buildFacetOptions(projects.map((p) => p.industry), INDUSTRY_ORDER), [projects]);
-  const serviceOptions = useMemo(() => buildFacetOptions(projects.map((p) => p.service), SERVICE_ORDER), [projects]);
-  const yearOptions = useMemo(
-    () => [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)],
-    [projects],
-  );
+  const options = useMemo(() => facetOptions(projects), [projects]);
   const set = (key: keyof Filters) => (value: string) => onChange({ ...filters, [key]: value });
 
   return (
     <div className="site-filters">
-      <FilterGroup label={home.filters.region} options={REGION_OPTIONS} value={filters.region} onChange={set("region")} />
-      <FilterGroup label={home.filters.industry} options={industryOptions} value={filters.industry} onChange={set("industry")} />
-      <FilterGroup label={home.filters.service} options={serviceOptions} value={filters.service} onChange={set("service")} />
-      <FilterGroup label={home.filters.year} options={yearOptions} value={filters.year} onChange={set("year")} />
+      <FilterGroup label={home.filters.sector} options={options.sector} value={filters.sector} onChange={set("sector")} />
+      <FilterGroup label={home.filters.discipline} options={options.discipline} value={filters.discipline} onChange={set("discipline")} />
+      <FilterGroup label={home.filters.place} options={options.place} value={filters.place} onChange={set("place")} />
+      <FilterGroup label={home.filters.year} options={options.year} value={filters.year} onChange={set("year")} />
     </div>
   );
 }

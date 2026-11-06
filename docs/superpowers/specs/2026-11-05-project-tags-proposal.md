@@ -299,7 +299,7 @@ The "?" cases, one line each:
 
 ---
 
-## 5. Sanity schema change (proposal, not code in the repo)
+## 5. Sanity schema change (schema and code on branch `claude/site-v2-tags-ca8c28`, 2026-11-05; schema not deployed)
 
 ### Fields
 
@@ -321,7 +321,7 @@ The "?" cases, one line each:
 
 Studio: the Taxonomy group shows Sector, Disciplines, Stage, Country, Location, Coordinates, Search terms, in that order. Deprecated fields stay hidden for one release so nothing breaks while the code moves, then get deleted with a second, trivial migration.
 
-### Code that reads the new fields (listed, not written)
+### Code that reads the new fields (written 2026-11-05, branch `claude/site-v2-tags-ca8c28`)
 
 - `server/sanity/projectService.ts`: read `sector`, `disciplines`, `stage`, `searchTerms`, compute `place` from `country`; delete `deriveFacetValues`, `INDUSTRY_KEYWORDS`, `SERVICE_KEYWORDS`, `INDUSTRY_OVERRIDES_BY_SLUG`, `TAG_CASE_OVERRIDES`.
 - `shared/schema.ts` and `shared/rankProjects.ts`: `ProjectLite` gains `sector`, `disciplines`, `place`, `stage`, `searchTerms`; loses `industry`, `services`, `tags`, `region`. New weights and synonym map (3.4).
@@ -333,20 +333,31 @@ Studio: the Taxonomy group shows Sector, Disciplines, Stage, Country, Location, 
 
 ### Migration script (runs only after JP's «mándalo»)
 
-`studio/scripts/apply-project-facets.mjs`, next to the existing `sync-projects-from-csv.mjs`:
+Implemented 2026-11-05 on branch `claude/site-v2-tags-ca8c28` as `script/migrate-project-facets.ts`, reading `script/project-facets.json` (the table in section 4 with the section 6 answers applied, generated from `FACETS_BY_SLUG` in `shared/projectFacets.ts`; the two must stay identical).
 
-1. Reads a CSV with the columns of the table in section 4 (slug, sector, disciplines, stage, searchTerms). The CSV is the table above, with every "?" resolved by JP first; the script refuses a row that still contains "?".
-2. Default mode is `--dry-run`: prints one line per document with before and after, writes nothing.
-3. `--apply` patches each document by `_id` (both the published document and its draft if one exists), sets the four new fields, unsets `service`, and leaves the deprecated fields in place.
-4. Uses `SANITY_WRITE_TOKEN` from the environment, project `dvufm78f`, dataset `production`, API version 2023-10-01. The Sanity MCP on this Mac was not used and its authorization for this project is unverified; the script does not depend on it.
-5. Verification: after `--apply`, the script re-reads every document through the public API and prints any slug whose stored values differ from the CSV. The run is done only when that list is empty.
+1. Validates every row against the controlled lists before touching the network and refuses a row that still holds a "?" or a value outside the lists.
+2. Default mode is a dry run: one block per document, before → after for `sector`, `disciplines`, `stage`, `searchTerms`, plus `service` → (unset). Writes nothing.
+3. `--write` with `SANITY_WRITE_TOKEN` patches the **draft** of each document (`drafts.<id>`): when the project has no draft, the draft is created as a copy of the published document first, then patched. Published documents are never written; JP reviews each draft in the Studio and publishes it. The deprecated fields stay.
+4. Project `dvufm78f`, dataset `production`, API version 2023-10-01, `@sanity/client` from the repo. The Sanity MCP on this Mac is not used.
+5. Verification: after the commit the script re-reads every draft and exits non-zero listing any slug whose stored values differ from the JSON. The run is done only when it prints `✓ 34 drafts match the table`.
+
+Dry run against the live dataset on 2026-11-05 (no token, so compared with the published documents): all 34 slugs found, 34 documents to change, none missing, none untouched. Nothing written.
+
+Write run on 2026-11-05 after JP's «mándalo» (KB-596): 34 drafts patched (22 created from their published documents, 12 already existed), `service` unset on all 34, published documents untouched. The first run copied the projected string slug into the 22 new drafts; those slugs were restored from the published documents the same day and the script now projects `slug.current` as `slugCurrent` beside the raw document and verifies the slug object. Dry run after the write: 0 documents to change, 34 already set.
+
+```bash
+npx tsx script/migrate-project-facets.ts                                   # dry run
+SANITY_WRITE_TOKEN=<token> npx tsx script/migrate-project-facets.ts --write   # after «mándalo»
+```
+
+Before the migration runs the site is already correct: `resolveProjectFacets` (`shared/projectFacets.ts`) falls back to the same table by slug whenever a document carries no `sector` or `disciplines`, on the server (`/api/projects`, `/api/ask`), in the client and in the build (`llms.txt`, JSON-LD). Place is derived from `country` everywhere and is never stored.
 
 ### Rollout, in order
 
-1. JP answers the "?" rows (section 4) and the question at the end of this doc.
-2. Schema change ships in `sanity/schemaTypes/project.ts` (one PR, no data).
-3. Dry run of the migration; JP reads the diff; «mándalo»; apply; verification prints nothing.
-4. Code PR: server mapping, ranking, Explore groups, project line, more like this, `llms.txt`, schema.org. Behind the same deploy as step 3 so the site never shows empty facets.
+1. JP answers the "?" rows (section 4) and the question at the end of this doc. Done 2026-11-05 (section 6).
+2. Schema change in `sanity/schemaTypes/project.ts`: new fields with validation, old fields marked deprecated, `country` and `status` required. Written; the Studio is not deployed from this branch.
+3. Dry run of the migration; JP reads the diff; «mándalo»; `--write`; verification prints the ✓ line. Done 2026-11-05 (see the write run above). Remaining: JP publishes each draft in the Studio.
+4. Code: server mapping, ranking, Explore groups, project line, more like this, `llms.txt`, schema.org. Written on the same branch; with the slug fallback the site never shows empty facets, before or after step 3.
 5. Rewrite the eight placeholder descriptions and four empty ones (separate content task; they feed `llms.txt`).
 6. One release later: delete the deprecated fields and the second migration unsets them.
 

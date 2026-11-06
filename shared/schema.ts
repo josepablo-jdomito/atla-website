@@ -72,4 +72,14 @@ export type UpdateProject = z.infer<typeof updateProjectSchema>;
 export type Project = typeof projects.$inferSelect & {
   /** Sanity-only: position among featured projects on the home page (1 = first). */
   homeOrder?: number;
+  /** The controlled facets (shared/projectFacets.ts): set in Sanity, else the fallback table by slug. */
+  sector?: string;
+  /** Lead discipline first; "Brand Identity" is on every project. */
+  disciplines?: string[];
+  stage?: string;
+  /** Derived from `country`, never stored. */
+  place?: string;
+  country?: string;
+  /** Hidden search terms: ranked, never printed. */
+  searchTerms?: string[];
 };

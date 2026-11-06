@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { Project } from "@shared/schema";
 import { featuredProjects, toSiteProject, type SiteProject } from "./siteProjects";
 import { playableVideo } from "./ProjectCard";
-import { buildFacetOptions, matchesFilters } from "./workFilters";
+import { buildFacetOptions, filtersFromSearch, matchesFilters, searchFromFilters, wallHrefFor } from "./workFilters";
+import { DISCIPLINES, SECTORS } from "@shared/projectFacets";
 
 const COVER = "https://cdn.sanity.io/images/p/production/abc-1400x868.jpg";
 
@@ -11,11 +12,12 @@ function project(overrides: Partial<SiteProject>): SiteProject {
     slug: "a",
     title: "A",
     client: "A",
-    industry: "Hospitality",
-    region: "America",
-    services: ["Branding"],
-    service: "Branding",
-    tags: [],
+    country: "United States",
+    sector: "Hospitality & Travel",
+    disciplines: ["Brand Identity"],
+    stage: "New brand",
+    place: "United States",
+    searchTerms: [],
     year: 2025,
     coverImage: COVER,
     images: [],
@@ -32,10 +34,11 @@ describe("toSiteProject", () => {
       slug: "rustico",
       title: "Rústico",
       client: "",
-      industry: "Hospitality",
-      region: "America",
-      services: ["Branding", "Website"],
-      tags: ["Hotel"],
+      country: "Mexico",
+      sector: "Hospitality & Travel",
+      disciplines: ["Brand Identity", "Website"],
+      stage: "New brand",
+      searchTerms: ["resort"],
       year: 2026,
       coverImage: COVER,
       images: [COVER, "https://cdn.sanity.io/images/p/production/def-800x600.jpg"],
@@ -45,9 +48,18 @@ describe("toSiteProject", () => {
     } as unknown as Project;
     const site = toSiteProject(raw)!;
     expect(site.client).toBe("Rústico");
-    expect(site.service).toBe("Branding");
+    expect(site.sector).toBe("Hospitality & Travel");
+    expect(site.disciplines).toEqual(["Brand Identity", "Website"]);
+    expect(site.place).toBe("Mexico");
     expect(site.images).toEqual(["https://cdn.sanity.io/images/p/production/def-800x600.jpg"]);
     expect(site.homeOrder).toBe(2);
+  });
+
+  it("falls back to the facet table by slug when the API carries no facets", () => {
+    const site = toSiteProject({ slug: "alma-brava", country: "Mexico", coverImage: COVER, images: [] } as unknown as Project)!;
+    expect(site.sector).toBe("Food & Drink");
+    expect(site.disciplines[0]).toBe("Packaging");
+    expect(site.place).toBe("Mexico");
   });
 
   it("drops projects with no usable image", () => {
@@ -78,20 +90,41 @@ describe("playableVideo", () => {
 });
 
 describe("archive filters", () => {
-  it("builds facets with All first, preferred order, no Unspecified", () => {
-    expect(buildFacetOptions(["Digital", "hospitality", "Unspecified", "Zoo", "Hospitality"], ["Hospitality", "Digital"])).toEqual([
+  it("builds options from the controlled list, in list order, only values present, and hides Brand Identity", () => {
+    expect(buildFacetOptions(["Technology & Digital", "Unspecified", "Zoo", "Hospitality & Travel"], SECTORS)).toEqual([
       "All",
-      "Hospitality",
-      "Digital",
-      "Zoo",
+      "Hospitality & Travel",
+      "Technology & Digital",
+    ]);
+    expect(buildFacetOptions(["Brand Identity", "Website", "Packaging"], DISCIPLINES, ["Brand Identity"])).toEqual([
+      "All",
+      "Packaging",
+      "Website",
     ]);
   });
 
-  it("matches every active filter", () => {
-    const p = project({ region: "Europe", industry: "SaaS", service: "Website", year: 2024 });
-    const all = { region: "All", industry: "All", service: "All", year: "All" };
+  it("matches every active filter, disciplines by inclusion", () => {
+    const p = project({ place: "International", sector: "Technology & Digital", disciplines: ["Brand Identity", "Website"], year: 2024 });
+    const all = { sector: "All", discipline: "All", place: "All", year: "All" };
     expect(matchesFilters(p, all)).toBe(true);
-    expect(matchesFilters(p, { ...all, region: "Europe", year: "2024" })).toBe(true);
-    expect(matchesFilters(p, { ...all, industry: "Hospitality" })).toBe(false);
+    expect(matchesFilters(p, { ...all, place: "International", year: "2024" })).toBe(true);
+    expect(matchesFilters(p, { ...all, discipline: "Website" })).toBe(true);
+    expect(matchesFilters(p, { ...all, discipline: "Packaging" })).toBe(false);
+    expect(matchesFilters(p, { ...all, sector: "Hospitality & Travel" })).toBe(false);
+  });
+
+  it("reads and writes slug values in the URL, and keeps the old keys as aliases", () => {
+    const filters = { sector: "Food & Drink", discipline: "Packaging", place: "All", year: "2025" };
+    expect(searchFromFilters(filters, "gin")).toBe("?q=gin&sector=food-drink&discipline=packaging&year=2025");
+    expect(filtersFromSearch("?sector=food-drink&discipline=packaging&year=2025")).toEqual({ ...filters });
+    expect(filtersFromSearch("?sector=Food%20%26%20Drink").sector).toBe("Food & Drink");
+    expect(filtersFromSearch("?sector=nope&year=abc")).toEqual({ sector: "All", discipline: "All", place: "All", year: "All" });
+    expect(filtersFromSearch("?industry=Hospitality&service=Packaging&region=Middle%20East")).toEqual({
+      sector: "Hospitality & Travel",
+      discipline: "Packaging",
+      place: "Middle East",
+      year: "All",
+    });
+    expect(wallHrefFor("sector", "Health & Wellness")).toBe("/?sector=health-wellness");
   });
 });

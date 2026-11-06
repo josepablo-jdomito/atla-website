@@ -59,13 +59,16 @@ export const siteCopy = {
     },
     explore: "Explore",
     exploreDialog: "Filter the work",
-    filters: { region: "Region", industry: "Industry", service: "Service", year: "Year", all: "All" },
+    filters: { sector: "Sector", discipline: "Discipline", place: "Place", year: "Year", all: "All" },
     close: "Close",
   },
   project: {
     ctaTitle: "Building something like this?",
     ctaLabel: "Start a project",
     nextLabel: "Next",
+    /** The facet line under the facts: each value opens the wall filtered to it. */
+    facetsLabel: "Find similar work",
+    moreLabel: "More like this",
     lightboxClose: "Close",
     lightboxPrev: "Previous image",
     lightboxNext: "Next image",
