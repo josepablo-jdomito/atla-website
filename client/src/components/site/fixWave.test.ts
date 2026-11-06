@@ -450,10 +450,17 @@ describe("Site-wide rules in the stylesheet and the document head", () => {
     expect(CSS).not.toContain(".home-section-label");
   });
 
-  it("loads the fonts without blocking the first paint", () => {
-    expect(INDEX_HTML).toMatch(/<link id="atla-fonts-stylesheet" rel="stylesheet" href="[^"]+display=swap" media="print">/);
-    expect(INDEX_HTML).toContain('<script src="/font-loader.js" defer></script>');
-    expect(INDEX_HTML).not.toMatch(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>(?![\s\S]*<\/noscript>)/);
+  it("loads self-hosted fonts without blocking the first paint (fix pass A)", () => {
+    // No Google Fonts hop: the faces are @font-face in site.css with swap; the display subset and the body Latin file are preloaded.
+    expect(INDEX_HTML).not.toContain("fonts.googleapis.com");
+    expect(INDEX_HTML).not.toContain("font-loader.js");
+    expect(INDEX_HTML).toContain('<link rel="preload" as="font" type="font/woff2" href="/fonts/ABCSyntVariable-subset.woff2" crossorigin>');
+    expect(INDEX_HTML).toContain('<link rel="preload" as="font" type="font/woff2" href="/fonts/LibreFranklin-latin.woff2" crossorigin>');
+    expect(INDEX_HTML.match(/rel="preload" as="font"/g)).toHaveLength(2);
+    expect(INDEX_HTML).toContain('<link rel="preconnect" href="https://cdn.sanity.io">');
+    for (const face of ["ABCSyntVariable-subset.woff2", "LibreFranklin-latin.woff2", "LibreFranklin-Italic-latin.woff2"]) {
+      expect(CSS).toMatch(new RegExp(`@font-face \\{[^}]*/fonts/${face.replace(".", "\\.")}[^}]*font-display: swap`));
+    }
     expect(INDEX_HTML).not.toContain("Roboto+Mono");
   });
 });

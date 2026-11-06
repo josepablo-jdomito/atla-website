@@ -1,9 +1,12 @@
 import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "../../shared/schema.ts";
 import { resolveProjectFacets } from "../../shared/projectFacets.ts";
+import { toProjectListItem, type ProjectListItem } from "../../shared/projectList.ts";
 import { getJournalSanityClient, isJournalSanityConfigured } from "./journalClient.ts";
 
 type SanityProject = {
   _id: string;
+  /** Sanity's own creation time: stable, so the API body (and its ETag) is the same on every request. */
+  _createdAt?: string;
   slug: string;
   title: string;
   client?: unknown;
@@ -130,8 +133,11 @@ export type PortfolioProjectAuditReport = {
   projects: PortfolioProjectAuditItem[];
 };
 
-const PROJECT_QUERY = `
-  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc) {
+const PROJECT_FILTER = `_type == "project" && defined(slug.current)`;
+const PROJECT_ORDER = `order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc)`;
+/** The fields every project row carries, list or detail. */
+const PROJECT_LIST_FIELDS = `
+    _createdAt,
     _id,
     "slug": slug.current,
     "title": coalesce(title, name, "Untitled project"),
@@ -160,29 +166,7 @@ const PROJECT_QUERY = `
     stage,
     searchTerms,
     vimeoVideos,
-    mediaItems[]{
-      mediaType,
-      title,
-      caption,
-      "imageUrl": image.asset->url,
-      "videoUrl": file.asset->url,
-      "mimeType": file.asset->mimeType,
-      "poster": poster.asset->url
-    },
-    videoFiles[]{
-      title,
-      caption,
-      "url": file.asset->url,
-      "mimeType": file.asset->mimeType,
-      "poster": poster.asset->url
-    },
     videos,
-    description,
-    excerpt,
-    summary,
-    body,
-    content,
-    caseStudy,
     "featured": coalesce(featured, featuredOnHomepage, false),
     homeOrder,
     "status": status,
@@ -206,9 +190,42 @@ const PROJECT_QUERY = `
       ...coalesce(body, [])[ _type == "image" ].asset->url,
       ...coalesce(content, [])[ _type == "image" ].asset->url,
       ...coalesce(caseStudy, [])[ _type == "image" ].asset->url
-    ]))
-  }
+    ]))`;
+/** The long text and the media sequence: only the project page and Ask read them. */
+const PROJECT_DETAIL_FIELDS = `
+    mediaItems[]{
+      mediaType,
+      title,
+      caption,
+      "imageUrl": image.asset->url,
+      "videoUrl": file.asset->url,
+      "mimeType": file.asset->mimeType,
+      "poster": poster.asset->url
+    },
+    videoFiles[]{
+      title,
+      caption,
+      "url": file.asset->url,
+      "mimeType": file.asset->mimeType,
+      "poster": poster.asset->url
+    },
+    description,
+    excerpt,
+    summary,
+    body,
+    content,
+    caseStudy,
 `;
+
+/** Every project, full (Ask's prompt, the build's project pages). */
+const PROJECT_QUERY = `*[${PROJECT_FILTER}] | ${PROJECT_ORDER} {${PROJECT_DETAIL_FIELDS}${PROJECT_LIST_FIELDS}
+  }`;
+/** Every project, lite (GET /api/projects, the wall, the sitemap): no body, description or case study. */
+const PROJECT_LIST_QUERY = `*[${PROJECT_FILTER}] | ${PROJECT_ORDER} {${PROJECT_LIST_FIELDS}
+  }`;
+/** One project, full, by slug or document id (GET /api/projects/:slug). */
+const PROJECT_BY_SLUG_QUERY = `*[${PROJECT_FILTER} && (slug.current == $slug || _id == $slug)][0...1] {${PROJECT_DETAIL_FIELDS}${PROJECT_LIST_FIELDS}
+  }`;
 
 const PROJECT_AUDIT_QUERY = `
   *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc) {
@@ -425,17 +442,32 @@ export const HIDDEN_PROJECT_SLUGS: readonly string[] = ["welove", "atla", "the-b
 export const dropHiddenProjects = <T extends { slug?: string | null }>(projects: T[]) =>
   projects.filter((project) => !HIDDEN_PROJECT_SLUGS.includes(String(project.slug ?? "").trim().toLowerCase()));
 
+/** Hidden and (unless included) draft projects out, featured filter and order applied. */
+function visibleProjects(rows: SanityProject[], options?: { featured?: boolean }) {
+  const normalized = dropDraftsUnlessIncluded(
+    dropHiddenProjects(rows)
+      .filter((project) => (options?.featured ? project.featured : true))
+      .map(normalizeProject),
+  );
+  return options?.featured ? sortFeatured(normalized) : normalized;
+}
+
+/** Every visible project, full: body, description, media sequence. Ask and the build read this. */
 export async function fetchProjectsFromSanity(options?: { featured?: boolean }) {
   if (!isJournalSanityConfigured()) return [];
 
   const client = getJournalSanityClient();
-  const projects = dropHiddenProjects(await client.fetch<SanityProject[]>(PROJECT_QUERY));
+  return visibleProjects(await client.fetch<SanityProject[]>(PROJECT_QUERY), options);
+}
 
-  const normalized = dropDraftsUnlessIncluded(
-    projects.filter((project) => (options?.featured ? project.featured : true)).map(normalizeProject),
+/** Every visible project, lite (shared/projectList.ts): GET /api/projects and the sitemap. */
+export async function fetchProjectListFromSanity(options?: { featured?: boolean }): Promise<ProjectListItem[]> {
+  if (!isJournalSanityConfigured()) return [];
+
+  const client = getJournalSanityClient();
+  return visibleProjects(await client.fetch<SanityProject[]>(PROJECT_LIST_QUERY), options).map((project) =>
+    toProjectListItem(project as unknown as ProjectListItem & Record<string, unknown>),
   );
-
-  return options?.featured ? sortFeatured(normalized) : normalized;
 }
 
 // Featured projects: explicit homeOrder first (1 = first), then newest year.
@@ -448,9 +480,13 @@ export function sortFeatured<T extends { homeOrder?: number | null; year?: numbe
   return [...projects].sort((a, b) => order(a) - order(b) || year(b) - year(a));
 }
 
+/** One visible project, full, by slug or document id: one document from Sanity, not the whole list. */
 export async function fetchProjectBySlugOrIdFromSanity(slugOrId: string) {
-  const projects = await fetchProjectsFromSanity();
-  return projects.find((project) => project.slug === slugOrId || project.id === slugOrId);
+  if (!isJournalSanityConfigured()) return undefined;
+
+  const client = getJournalSanityClient();
+  const rows = await client.fetch<SanityProject[]>(PROJECT_BY_SLUG_QUERY, { slug: slugOrId });
+  return visibleProjects(rows).find((project) => project.slug === slugOrId || project.id === slugOrId);
 }
 
 export function normalizeProjectFacetsForApi<T extends FacetSourceProject & Record<string, unknown>>(project: T) {
@@ -615,7 +651,8 @@ function normalizeProject(project: SanityProject): Project {
     featured: Boolean(project.featured),
     homeOrder: typeof project.homeOrder === "number" ? project.homeOrder : undefined,
     status: project.status === "draft" ? "draft" : "published",
-    createdAt: new Date(),
+    // Sanity's _createdAt, not the request time: the same document serializes the same way every time.
+    createdAt: (project._createdAt ?? null) as unknown as Date,
     locationName,
     latitude,
     longitude,

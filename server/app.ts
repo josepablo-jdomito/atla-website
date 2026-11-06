@@ -28,6 +28,13 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// Nothing a visitor sends is ever cached: every non-GET API answer (the brief, the brand check, the
+// contact form, Ask) is no-store unless its handler says otherwise (fix pass A, 2026-11-06).
+app.use("/api", (req, res, next) => {
+  if (req.method !== "GET" && req.method !== "HEAD") res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -45,7 +52,8 @@ app.use((req, res, next) => {
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
-      console.log(apiLogLine(req.method, path, res.statusCode, duration, capturedJsonResponse));
+      const length = Number(res.getHeader("content-length"));
+      console.log(apiLogLine(req.method, path, res.statusCode, duration, capturedJsonResponse, Number.isFinite(length) ? length : undefined));
     }
   });
 

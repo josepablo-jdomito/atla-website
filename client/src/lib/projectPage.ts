@@ -4,7 +4,8 @@
  * so both render the same media in the same order with the same SEO head.
  */
 import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "@shared/schema";
-import { getOptimizedImageUrl, sanitizeImageUrls } from "@shared/imageDelivery";
+import type { ProjectListItem } from "@shared/projectList";
+import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl, sanitizeImageUrls } from "@shared/imageDelivery";
 import { resolveProjectFacets } from "@shared/projectFacets";
 import { formatMetaTitle, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
 import {
@@ -16,6 +17,50 @@ import {
 } from "@/lib/projectSeo";
 import { creativeWorkSchema } from "@/lib/seoSchema";
 
+/**
+ * One image recipe for a film-strip frame (fix pass A, 2026-11-06): the <img> in Project.tsx and the
+ * prerendered preload in script/build.ts read it, so the preload is the very request the image makes
+ * (Rústico used to fetch its cover in six variants). There is no runtime preload: SeoHead can only
+ * hint a bare href, and a bare href never matches a srcset choice.
+ */
+export const FRAME_WIDTHS = [480, 800, 1200, 1600, 2000, 2400];
+export const FRAME_QUALITY = 88;
+
+/** The frame's width over height, from the asset URL; 1.5 when the URL carries no size. */
+export function frameRatio(src: string) {
+  const dims = getImageDimensions(src);
+  return dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;
+}
+
+/**
+ * Frames are height-filled and capped at the strip's width (site.css .film-stage --film-h and
+ * --film-maxw), so the slot is min(height x ratio, cap). Desktop: the strip is 100vh - 128px tall and
+ * sits right of the column (clamp(260px, 22vw, 340px)), a 24px gap and both gutters (40px from 1280,
+ * else 24px). Below 1024 it is 70vh tall and as wide as the viewport less the gutters (24px from 768,
+ * else 16px). A phone never asks for 2000w for a 380px slot.
+ */
+export function frameSizes(ratio: number) {
+  const r = Math.round(ratio * 1000) / 1000;
+  const column = "clamp(260px, 22vw, 340px)";
+  return [
+    `(min-width: 1280px) min(calc((100vh - 128px) * ${r}), calc(100vw - ${column} - 104px))`,
+    `(min-width: 1024px) min(calc((100vh - 128px) * ${r}), calc(100vw - ${column} - 72px))`,
+    `(min-width: 768px) min(calc(70vh * ${r}), calc(100vw - 48px))`,
+    `min(calc(70vh * ${r}), calc(100vw - 32px))`,
+  ].join(", ");
+}
+
+/** src, srcset and sizes for one frame: the <img> attributes and the preload hint, from one place. */
+export function frameImage(src: string) {
+  const ratio = frameRatio(src);
+  return {
+    src: getOptimizedImageUrl(src, { width: FRAME_WIDTHS[2], quality: FRAME_QUALITY }) || src,
+    srcSet: buildImageSrcSet(src, FRAME_WIDTHS, { quality: FRAME_QUALITY }),
+    sizes: frameSizes(ratio),
+    ratio,
+  };
+}
+
 /** Stand-in hero when a project has no image at all. */
 export const PROJECT_PLACEHOLDER_IMAGE = "/figmaAssets/media.png";
 
@@ -25,6 +70,25 @@ export type ProjectApi = Project & {
   videoFiles?: ProjectVideoAsset[];
   mediaItems?: ProjectMediaAsset[];
 };
+
+/**
+ * What a project page can paint before its own record arrives: the lite list item the wall already has
+ * (title, facets, cover, images), with the long text empty. React Query shows it as placeholder data, so
+ * a click on a wall tile paints at once; the body and description fill in when /api/projects/:slug answers.
+ */
+export function projectPlaceholder(item: ProjectListItem | undefined): ProjectApi | undefined {
+  if (!item) return undefined;
+  return {
+    ...item,
+    tags: [],
+    description: "",
+    body: "",
+    homeOrder: item.homeOrder,
+    createdAt: null as unknown as Date,
+    videoFiles: [],
+    mediaItems: [],
+  } as ProjectApi;
+}
 
 export function fetchProject(slug: string) {
   return async () => {
@@ -250,7 +314,10 @@ function normalizeProjectMediaItems(mediaItems?: ProjectMediaAsset[]) {
   return items;
 }
 
-export function buildProjectPageView(project: ProjectApi, allProjects: ProjectApi[]): ProjectPageView {
+/** The other projects only lend titles, slugs and facets (next, related): the lite list is enough. */
+type ProjectNeighbour = Pick<ProjectListItem, "slug" | "title" | "client" | "category" | "year">;
+
+export function buildProjectPageView(project: ProjectApi, allProjects: ProjectNeighbour[]): ProjectPageView {
   const client = project.client === "Confidential" ? "" : project.client;
   const category = project.category === "Uncategorized" ? "" : project.category;
   const region = project.region;
@@ -417,6 +484,13 @@ export function projectMediaSequence(project: ProjectPageView): ProjectMediaMosa
   return fallbackMediaItems;
 }
 
+/** The strip's first image (the cover, else the first image in the sequence): the page's LCP. */
+export function projectFirstFrame(project: ProjectPageView): string | null {
+  if (project.heroImage && project.heroImage !== PROJECT_PLACEHOLDER_IMAGE) return project.heroImage;
+  const first = projectMediaSequence(project).find((item) => item.type === "image");
+  return first ? first.src : null;
+}
+
 /** Props for SeoHead on a project page. script/build.ts writes the prerendered head from the same builders. */
 export function buildProjectSeoHead(project: ProjectPageView) {
   const description = buildProjectMetaDescription({
@@ -427,17 +501,9 @@ export function buildProjectSeoHead(project: ProjectPageView) {
     description: project.summary,
   });
   const pathname = `/projects/${project.slug}`;
-  // The cover opens the page at half the column, at its own ratio (Little Plains plate, 2026-11-06).
-  const preloadImages = [
-    getOptimizedImageUrl(project.heroImage, { width: 640, quality: 88 }) || project.heroImage,
-    getOptimizedImageUrl(project.heroImage, { width: 1000, quality: 88 }) || project.heroImage,
-    project.gallery[0]
-      ? getOptimizedImageUrl(project.gallery[0], { width: 1400, quality: 90 }) || project.gallery[0]
-      : null,
-    project.gallery[1]
-      ? getOptimizedImageUrl(project.gallery[1], { width: 1400, quality: 90 }) || project.gallery[1]
-      : null,
-  ].filter((src): src is string => Boolean(src));
+  // No runtime image preloads: the prerendered head preloads the first frame with its exact srcset and
+  // sizes (frameImage); a bare-href hint added after hydration would only fetch a second variant.
+  const preloadImages: string[] = [];
   const parsedYear = Number.parseInt(project.dateLabel, 10);
   const videoUploadDate = Number.isFinite(parsedYear) ? `${parsedYear}-01-01T00:00:00.000Z` : undefined;
   const uploadedVideos = project.videoFiles;

@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import { SECURITY_HEADERS } from "../shared/securityHeaders.ts";
 
 const config = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8")) as {
-  headers: Array<{ headers: Array<{ key: string; value: string }> }>;
+  headers: Array<{ source: string; headers: Array<{ key: string; value: string }> }>;
 };
+/** The security rules (every rule but the static-file Cache-Control ones). */
+const securityRules = config.headers.filter((rule) => !rule.headers.every((header) => header.key === "Cache-Control"));
 const csp = config.headers.flatMap((rule) => rule.headers).find((header) => header.key === "Content-Security-Policy")!.value;
 const directive = (name: string) =>
   csp
@@ -41,10 +43,22 @@ describe("vercel.json CSP", () => {
 
 describe("security headers", () => {
   it("Express sets exactly the headers vercel.json sets, from one list", () => {
-    const vercel = config.headers.flatMap((rule) => rule.headers);
+    const vercel = securityRules.flatMap((rule) => rule.headers);
     expect(SECURITY_HEADERS).toEqual(vercel);
     expect(SECURITY_HEADERS.map((h) => h.key).sort()).toEqual(
       ["Content-Security-Policy", "Permissions-Policy", "Referrer-Policy", "X-Content-Type-Options", "X-Frame-Options"],
     );
+  });
+});
+
+describe("static file caching (fix pass A)", () => {
+  const cacheFor = (source: string) =>
+    config.headers.find((rule) => rule.source === source)?.headers.find((header) => header.key === "Cache-Control")?.value;
+
+  it("hashed build assets are immutable for a year; fonts, Figma assets and logos keep 30 days", () => {
+    expect(cacheFor("/assets/(.*)")).toBe("public, max-age=31536000, immutable");
+    for (const source of ["/fonts/(.*)", "/figmaAssets/(.*)", "/logos-v2/(.*)"]) {
+      expect(cacheFor(source), source).toBe("public, max-age=2592000");
+    }
   });
 });

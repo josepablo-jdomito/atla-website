@@ -11,10 +11,24 @@ const PRIVATE_PATHS = [/^\/api\/ask(\/|$)/i, /^\/api\/brief(\/|$)/i, /^\/api\/br
 
 export const isPrivateApiPath = (path: string) => PRIVATE_PATHS.some((pattern) => pattern.test(path));
 
-export function apiLogLine(method: string, path: string, status: number, durationMs: number, responseBody?: unknown): string {
+/** Bodies larger than this are logged by size only (the project list used to write an 87 KB line). */
+export const API_LOG_MAX_BODY_BYTES = 2048;
+
+export function apiLogLine(
+  method: string,
+  path: string,
+  status: number,
+  durationMs: number,
+  responseBody?: unknown,
+  /** The response's Content-Length when known: a large body is never serialized for the log at all. */
+  bodyBytes?: number,
+): string {
   const line = `${method} ${path} ${status} in ${durationMs}ms`;
   if (responseBody === undefined || isPrivateApiPath(path)) return line;
-  return `${line} :: ${JSON.stringify(responseBody)}`;
+  if (bodyBytes !== undefined && bodyBytes > API_LOG_MAX_BODY_BYTES) return `${line} :: ${bodyBytes} bytes`;
+  const json = JSON.stringify(responseBody) ?? "";
+  if (Buffer.byteLength(json) > API_LOG_MAX_BODY_BYTES) return `${line} :: ${Buffer.byteLength(json)} bytes`;
+  return `${line} :: ${json}`;
 }
 
 /**

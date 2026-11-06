@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Project } from "@shared/schema";
+import type { ProjectListItem } from "@shared/projectList";
 import type { ProjectLite } from "@shared/rankProjects";
 import { DISCIPLINE_ON_ALL, resolveProjectFacets } from "@shared/projectFacets";
 import { sanitizeImageUrls } from "@shared/imageDelivery";
@@ -22,8 +22,9 @@ const text = (value: unknown) => (typeof value === "string" ? value.trim() : "")
 const list = (value: unknown) =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === "string" && v.trim().length > 0) : [];
 
-export function toSiteProject(raw: Project): SiteProject | null {
-  const record = raw as Project & Record<string, unknown>;
+/** From the lite list item (GET /api/projects) or a full project (GET /api/projects/:slug): both carry these fields. */
+export function toSiteProject(raw: ProjectListItem): SiteProject | null {
+  const record = raw as ProjectListItem & Record<string, unknown>;
   const images = sanitizeImageUrls(list(record.images));
   const coverImage = sanitizeImageUrls([text(record.coverImage), ...images])[0];
   if (!text(record.slug) || !coverImage) return null;
@@ -110,9 +111,9 @@ export function moreLikeThis<T extends Facets>(projects: T[], current: Facets, c
   return [...sameSector, ...sameLead].slice(0, count);
 }
 
-/** Same query key as the rest of the site, so the prerendered cache is reused. */
+/** Same query key as the rest of the site, so the prerendered cache is reused. The lite list (shared/projectList.ts). */
 export function useSiteProjects() {
-  const { data, isSuccess } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
+  const { data, isSuccess } = useQuery<ProjectListItem[]>({ queryKey: ["/api/projects"] });
   const projects = useMemo(
     () => (data ?? []).map(toSiteProject).filter((project): project is SiteProject => project !== null),
     [data],

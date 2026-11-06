@@ -33,11 +33,17 @@ export function getJournalSanityClient() {
     throw new Error("Sanity journal env vars are not configured");
   }
 
+  // Published reads go through Sanity's API CDN (apicdn.sanity.io: edge-cached, not billed as API
+  // requests), token or not (JP, 2026-11-06). The site reads published documents only; the edge already
+  // serves content up to 5 minutes old (server/routes.ts PUBLIC_CACHE). SANITY_USE_CDN=false goes to the
+  // live API, for a script that must see an edit the moment it is published.
+  const useCdn = !/^(false|0|no|off)$/i.test((process.env.SANITY_USE_CDN || "").trim());
   return createClient({
     projectId,
     dataset,
     apiVersion,
     token,
-    useCdn: token ? false : true,
+    useCdn,
+    perspective: "published",
   });
 }

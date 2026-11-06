@@ -1,10 +1,10 @@
 import React from "react";
-import { dehydrate, QueryClient, QueryClientProvider, type DehydratedState } from "@tanstack/react-query";
+import { dehydrate, QueryClient, type DehydratedState } from "@tanstack/react-query";
 import { renderToString } from "react-dom/server";
-import { Router } from "wouter";
 import type { JournalArticle, JournalCategory } from "@shared/journal";
 import type { Project } from "@shared/schema";
-import { AppRouter } from "./AppRouter";
+import type { ProjectListItem } from "@shared/projectList";
+import { AppShell } from "./App";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import About from "./pages/About";
 import Ventures from "./pages/Ventures";
@@ -29,7 +29,8 @@ import BrandCheck from "./pages/BrandCheck";
 import NotFound from "./pages/not-found";
 
 export type PrerenderRouteData = {
-  projects?: Project[];
+  /** The lite list (shared/projectList.ts), the same shape GET /api/projects answers. */
+  projects?: ProjectListItem[];
   project?: Project | null;
   articles?: JournalArticle[];
   article?: JournalArticle | null;
@@ -90,35 +91,36 @@ export function renderPrerenderedRoute(
   const queryClient = createPrerenderQueryClient();
   seedRouteData(queryClient, pathname, data);
 
+  // The same tree the browser hydrates (App.tsx AppShell), with eager pages.
   const appHtml = renderToString(
-    <QueryClientProvider client={queryClient}>
-      <Router ssrPath={pathname}>
-        <AppRouter
-          NotFound={NotFound}
-          ProjectsAdmin={ProjectsAdmin}
-          About={About}
-          Ventures={Ventures}
-          Contact={Contact}
-          Services={Services}
-          Home={Home}
-          Project={ProjectPage}
-          AtlaJournal={AtlaJournal}
-          AtlaArticle={AtlaArticle}
-          AtlaPrivacy={AtlaPrivacy}
-          AtlaTerms={AtlaTerms}
-          AtlaHospitality={AtlaHospitality}
-          AtlaHospitalityBranding={AtlaHospitalityBranding}
-          AtlaCpgBranding={AtlaCpgBranding}
-          AtlaWellnessBranding={AtlaWellnessBranding}
-          AtlaSaasBranding={AtlaSaasBranding}
-          AtlaBrandStrategy={AtlaBrandStrategy}
-          AtlaHowWeWork={AtlaHowWeWork}
-          AtlaPrograms={AtlaPrograms}
-          Brief={Brief}
-          BrandCheck={BrandCheck}
-        />
-      </Router>
-    </QueryClientProvider>,
+    <AppShell
+      client={queryClient}
+      ssrPath={pathname}
+      pages={{
+        NotFound,
+        ProjectsAdmin,
+        About,
+        Ventures,
+        Contact,
+        Services,
+        Home,
+        Project: ProjectPage,
+        AtlaJournal,
+        AtlaArticle,
+        AtlaPrivacy,
+        AtlaTerms,
+        AtlaHospitality,
+        AtlaHospitalityBranding,
+        AtlaCpgBranding,
+        AtlaWellnessBranding,
+        AtlaSaasBranding,
+        AtlaBrandStrategy,
+        AtlaHowWeWork,
+        AtlaPrograms,
+        Brief,
+        BrandCheck,
+      }}
+    />,
   );
 
   return {

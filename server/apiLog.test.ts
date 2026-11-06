@@ -8,6 +8,14 @@ describe("apiLogLine", () => {
     expect(apiLogLine("GET", "/api/projects", 200, 5, [{ slug: "a" }])).toBe('GET /api/projects 200 in 5ms :: [{"slug":"a"}]');
   });
 
+  it("logs a body over 2 KB by its size only, and never serializes it when the length is known", () => {
+    const big = [{ slug: "a", body: "x".repeat(3000) }];
+    expect(apiLogLine("GET", "/api/projects", 200, 5, big)).toMatch(/^GET \/api\/projects 200 in 5ms :: \d+ bytes$/);
+    const toJSON = vi.fn(() => "never");
+    expect(apiLogLine("GET", "/api/projects", 200, 5, { toJSON }, 90_000)).toBe("GET /api/projects 200 in 5ms :: 90000 bytes");
+    expect(toJSON).not.toHaveBeenCalled();
+  });
+
   it("never logs bodies for /api/brief/* and /api/contact", () => {
     const body = { kind: "brief", seed: "We're launching a coffee brand" };
     expect(apiLogLine("POST", "/api/brief/next", 200, 7, body)).toBe("POST /api/brief/next 200 in 7ms");

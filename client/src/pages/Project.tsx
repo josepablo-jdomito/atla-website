@@ -14,6 +14,8 @@ import {
   buildProjectPageView,
   buildProjectSeoHead,
   fetchProject,
+  frameImage,
+  projectPlaceholder,
   PROJECT_PLACEHOLDER_IMAGE,
   projectMediaSequence,
   stripProgress,
@@ -27,6 +29,7 @@ import { PRIORITY_ATTRS, useInViewPlayback, useMotionPaused } from "@/components
 import { MotionToggle } from "@/components/site/MotionToggle";
 import { trapTab } from "@/components/site/focusTrap";
 import NotFound from "@/pages/not-found";
+import type { ProjectListItem } from "@shared/projectList";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
 /**
@@ -40,12 +43,6 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
  */
 
 const { project: copy } = siteCopy;
-const FRAME_WIDTHS = [480, 800, 1200, 1600, 2000, 2400];
-/** Frames are height-filled, so the width the browser needs is the strip height times the ratio. */
-const frameSizes = (ratio: number) => {
-  const r = Math.round(ratio * 1000) / 1000;
-  return `(min-width: 1024px) calc((100vh - 128px) * ${r}), calc(70vh * ${r})`;
-};
 /** Between facets on the project line; the dot stays with the word before it when the line wraps. */
 const FACET_SEPARATOR = "  ·  ";
 /** Sticky header height, so a phone landing leaves the strip clear of it. */
@@ -110,14 +107,15 @@ function FrameImage({
   onOpen: () => void;
 }) {
   const dims = getImageDimensions(src);
-  const ratio = dims && dims.width > 0 && dims.height > 0 ? dims.width / dims.height : 1.5;
+  // The same src/srcset/sizes the prerendered head preloads for the first frame (lib/projectPage.ts).
+  const image = frameImage(src);
   return (
-    <button type="button" className="film-frame__button" onClick={onOpen} aria-label={`${alt}. Open larger`} style={{ "--r": ratio.toFixed(4) } as CSSProperties}>
+    <button type="button" className="film-frame__button" onClick={onOpen} aria-label={`${alt}. Open larger`} style={{ "--r": image.ratio.toFixed(4) } as CSSProperties}>
       <img
         className="film-frame__item"
-        src={getOptimizedImageUrl(src, { width: FRAME_WIDTHS[2], quality: 88 }) || src}
-        srcSet={buildImageSrcSet(src, FRAME_WIDTHS, { quality: 88 })}
-        sizes={frameSizes(ratio)}
+        src={image.src}
+        srcSet={image.srcSet}
+        sizes={image.sizes}
         alt={alt}
         width={dims?.width}
         height={dims?.height}
@@ -327,11 +325,14 @@ export default function Project() {
   const stripRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
 
+  const { data: allProjects } = useQuery<ProjectListItem[]>({ queryKey: ["/api/projects"] });
+  // A wall click paints at once from the list the wall already holds (title, facets, cover, images);
+  // the body and description fill in when the project's own record arrives (fix pass A).
   const { data: projectData, isPending } = useQuery<ProjectApi | null>({
     queryKey: ["project", slug],
     queryFn: fetchProject(slug),
+    placeholderData: () => projectPlaceholder(allProjects?.find((item) => item.slug === slug)),
   });
-  const { data: allProjects } = useQuery<ProjectApi[]>({ queryKey: ["/api/projects"] });
 
   const project = useMemo(
     () => (projectData ? buildProjectPageView(projectData, allProjects ?? []) : null),

@@ -67,3 +67,35 @@ describe("sitemap and feed origin", () => {
     }
   });
 });
+
+describe("cache headers (fix pass A)", () => {
+  function post(path: string, body: string) {
+    return new Promise<{ status: number; headers: http.IncomingHttpHeaders }>((resolve, reject) => {
+      const req = http.request(
+        { host: "127.0.0.1", port, path, method: "POST", headers: { "content-type": "application/json" } },
+        (res) => {
+          res.resume();
+          res.on("end", () => resolve({ status: res.statusCode ?? 0, headers: res.headers }));
+        },
+      );
+      req.on("error", reject);
+      req.end(body);
+    });
+  }
+
+  it("caches a content answer at the edge only when it is a 200", async () => {
+    const list = await get("/api/projects");
+    expect(list.status).toBe(200);
+    expect(list.headers["cache-control"]).toBe("public, s-maxage=300, stale-while-revalidate=600");
+    const missing = await get("/api/projects/no-such-project");
+    expect(missing.status).toBe(404);
+    expect(missing.headers["cache-control"]).toBe("no-store");
+  });
+
+  it("never caches what a visitor posts", async () => {
+    for (const path of ["/api/contact", "/api/brief/submit", "/api/brand-check"]) {
+      const res = await post(path, "{}");
+      expect(res.headers["cache-control"], path).toBe("no-store");
+    }
+  });
+});

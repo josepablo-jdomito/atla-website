@@ -3,19 +3,20 @@ import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import { createRequire } from "module";
 import path from "path";
-import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
+import { getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
+import { toProjectListItem, type ProjectListItem } from "../shared/projectList.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
 import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, JOURNAL_DESCRIPTION_PAD, JOURNAL_META_DESCRIPTION, JOURNAL_TITLE_SUFFIX, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
-  fetchJournalArticleBySlugFromSanity,
+  fetchJournalArticleDetailsFromSanity,
   fetchJournalCategoriesFromSanity,
 } from "../server/sanity/journalService.ts";
 import { fetchProjectsFromSanity } from "../server/sanity/projectService.ts";
 import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/lib/journalSeo.ts";
-import { buildProjectPageView, buildProjectSeoHead } from "../client/src/lib/projectPage.ts";
+import { buildProjectPageView, buildProjectSeoHead, frameImage, projectFirstFrame } from "../client/src/lib/projectPage.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
 import { buildServicesStructuredData, CONTACT_PAGE_SCHEMA } from "../client/src/lib/sitePageSchema.ts";
@@ -70,7 +71,8 @@ function ensureDescriptionLength(description: string, fallback: string) {
 }
 
 type PrerenderRouteData = {
-  projects?: Project[];
+  /** The lite list GET /api/projects answers; a project page's own full record is `project`. */
+  projects?: ProjectListItem[];
   project?: Project | null;
   articles?: JournalArticle[];
   article?: JournalArticle | null;
@@ -97,6 +99,8 @@ async function buildAll() {
   console.log("building client...");
   await viteBuild();
   await prerenderRoutes();
+  // The manifest only feeds the prerender's modulepreload tags; it is not served.
+  await rm("dist/public/.vite", { recursive: true, force: true });
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
@@ -222,7 +226,14 @@ async function loadPrerenderContentFromPublicApi(): Promise<{
     fetchPrerenderJson<unknown>(`${origin}/api/journal/categories`, []),
   ]);
 
-  const projects = Array.isArray(projectsRaw) ? (projectsRaw as Project[]) : [];
+  // GET /api/projects is the lite list; a project page needs its full record (body, description).
+  const projectList = Array.isArray(projectsRaw) ? (projectsRaw as Project[]) : [];
+  const projects = await Promise.all(
+    projectList.map(async (project) => {
+      const detail = await fetchPrerenderJson<unknown>(`${origin}/api/projects/${project.slug}`, project);
+      return (detail as Project) ?? project;
+    }),
+  );
   const articles = Array.isArray(articlesRaw) ? (articlesRaw as JournalArticle[]) : [];
   const categories = Array.isArray(categoriesRaw) ? (categoriesRaw as JournalCategory[]) : [];
 
@@ -352,38 +363,6 @@ function resolveProjectHeroImage(project: Project) {
   return project.coverImage || project.images[0] || DEFAULT_OG_IMAGE_URL;
 }
 
-function buildResponsiveImagePreload(
-  src: string | undefined,
-  widths: number[],
-  quality: number,
-  sizes: string,
-) {
-  if (!src || widths.length === 0) return {};
-
-  return {
-    preloadImage: getOptimizedImageUrl(src, { width: widths[widths.length - 1], quality }),
-    preloadImageSrcSet: buildImageSrcSet(src, widths, { quality }),
-    preloadImageSizes: sizes,
-  };
-}
-
-function buildImagePreloadEntries(
-  entries: Array<{
-    src?: string;
-    widths: number[];
-    quality: number;
-    sizes: string;
-  }>,
-) {
-  return entries
-    .filter((entry) => entry.src && entry.widths.length > 0)
-    .map((entry) => ({
-      href: getOptimizedImageUrl(entry.src, { width: entry.widths[entry.widths.length - 1], quality: entry.quality }) || entry.src!,
-      srcSet: buildImageSrcSet(entry.src!, entry.widths, { quality: entry.quality }),
-      sizes: entry.sizes,
-    }));
-}
-
 function hydrationScriptPaths(pathname: string) {
   const relativePath = pathname === "/" ? "index.js" : `${pathname.replace(/^\//, "")}.js`;
   return {
@@ -477,6 +456,80 @@ async function loadPrerenderRenderer(): Promise<PrerenderRenderer> {
   return prerenderRendererPromise;
 }
 
+/** The page module each prerendered route renders (client/src/App.tsx lazy pages), for modulepreload. */
+function routePageModule(pathname: string) {
+  const exact: Record<string, string> = {
+    "/": "Home",
+    "/work": "Home",
+    "/about": "About",
+    "/ventures": "Ventures",
+    "/contact": "Contact",
+    "/services": "Services",
+    "/hospitality": "AtlaHospitality",
+    "/hospitality-branding": "AtlaHospitalityBranding",
+    "/cpg-branding": "AtlaCpgBranding",
+    "/wellness-branding": "AtlaWellnessBranding",
+    "/saas-branding": "AtlaSaasBranding",
+    "/brand-strategy": "AtlaBrandStrategy",
+    "/how-we-work": "AtlaHowWeWork",
+    "/programs": "AtlaPrograms",
+    "/brief": "Brief",
+    "/brand-check": "BrandCheck",
+    "/journal": "AtlaJournal",
+    "/privacy": "AtlaPrivacy",
+    "/terms": "AtlaTerms",
+    "/admin/projects": "ProjectsAdmin",
+  };
+  const page =
+    exact[pathname] ??
+    (pathname.startsWith("/projects/")
+      ? "Project"
+      : pathname.startsWith("/journal/category/")
+        ? "AtlaJournal"
+        : pathname.startsWith("/journal/")
+          ? "AtlaArticle"
+          : "not-found");
+  return `src/pages/${page}.tsx`;
+}
+
+type ViteManifest = Record<string, { file: string; imports?: string[]; isEntry?: boolean }>;
+let viteManifest: ViteManifest | null = null;
+
+async function loadViteManifest(): Promise<ViteManifest> {
+  if (viteManifest) return viteManifest;
+  const manifestPath = path.resolve("dist/public/.vite/manifest.json");
+  viteManifest = JSON.parse(await readFile(manifestPath, "utf8")) as ViteManifest;
+  return viteManifest;
+}
+
+/**
+ * <link rel="modulepreload"> for the route's page chunk and every chunk it imports statically, minus
+ * the entry (already a module script). Without them the page chunks start only after the entry has run
+ * (one more round trip before hydration; the home used to wait for Home, SeoHead and workFilters).
+ * Only gated routes get them (see PRERENDER_GATED_ROUTES): there the content waits on hydration, so the
+ * chunks are on the critical path. Everywhere else the prerender paints alone and the preloads only take
+ * bandwidth from the CSS: Lighthouse mobile on /brief/ went from FCP 2.3 s to 3.0 s with them (fix pass A).
+ */
+async function routeModulePreloadTags(pathname: string) {
+  const manifest = await loadViteManifest();
+  const key = routePageModule(pathname);
+  if (!manifest[key]) {
+    throw new Error(`[build] ${key} is not in the Vite manifest; route ${pathname} would get no modulepreload`);
+  }
+  const files = new Set<string>();
+  const visit = (chunkKey: string) => {
+    const chunk = manifest[chunkKey];
+    if (!chunk || chunk.isEntry || files.has(chunk.file)) return;
+    files.add(chunk.file);
+    for (const child of chunk.imports ?? []) visit(child);
+  };
+  visit(key);
+  return Array.from(files).map((file) => `<link rel="modulepreload" crossorigin href="/${file}">`);
+}
+
+/** Routes whose prerendered markup differs from the desktop layout until hydration (index.html gate). */
+const PRERENDER_GATED_ROUTES = new Set(["/", "/work", "/hospitality"]);
+
 async function injectPrerenderedApp(
   template: string,
   pathname: string,
@@ -492,10 +545,13 @@ async function injectPrerenderedApp(
   // script must precede the app bundle, or main.tsx renders with an empty query
   // cache, wipes the prerendered markup and refetches (CLS ~0.8 on the home).
   const hydrationTag = `<script defer src="${publicPath}"></script>`;
-  // data-prerender-gate: see the #root rule in client/index.html.
+  // data-prerender-gate: see the #root rule in client/index.html. Only routes whose first render is the
+  // phone layout by script (the wall's columns, /hospitality's useIsMobile) wait on wide screens; every
+  // other route is pure CSS layout and paints its prerender at once.
+  const gate = PRERENDER_GATED_ROUTES.has(pathname) ? " data-prerender-gate" : "";
   const withRoot = template.replace(
     '<div id="root"></div>',
-    `<div id="root" data-prerender-gate>${appHtml}</div>`,
+    `<div id="root"${gate}>${appHtml}</div>`,
   );
   const moduleTag = withRoot.match(/<script type="module"[^>]*>/);
 
@@ -503,7 +559,13 @@ async function injectPrerenderedApp(
     throw new Error(`[build] App bundle <script type="module"> not found while prerendering ${pathname}`);
   }
 
-  return withRoot.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
+  const modulePreloads = PRERENDER_GATED_ROUTES.has(pathname)
+    ? (await routeModulePreloadTags(pathname)).join("\n    ")
+    : "";
+  const withPreloads = modulePreloads
+    ? withRoot.replace("</head>", `    ${modulePreloads}\n  </head>`)
+    : withRoot;
+  return withPreloads.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
 }
 
 async function writeRoutePage(route: string, html: string) {
@@ -516,13 +578,14 @@ async function writeRoutePage(route: string, html: string) {
 function getStaticRoutePrerenderData(
   pathname: string,
   content: {
-    projects: Project[];
+    projects: ProjectListItem[];
     articles: JournalArticle[];
     categories: JournalCategory[];
   },
 ): PrerenderRouteData {
-  // /ventures shows each venture's project cover, so its prerender carries the projects too.
-  if (pathname === "/" || pathname === "/work" || pathname === "/ventures") {
+  // /ventures shows each venture's project cover, and /services and /about show project covers too, so
+  // their prerender carries the lite list: the photos are in the HTML instead of arriving after a fetch.
+  if (["/", "/work", "/ventures", "/services", "/about"].includes(pathname)) {
     return { projects: content.projects };
   }
 
@@ -537,6 +600,8 @@ async function prerenderRoutes() {
   const templatePath = path.resolve("dist/public/index.html");
   const template = await readFile(templatePath, "utf8");
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
+  // What the pages' ["/api/projects"] cache holds: the same lite list the API answers.
+  const projectList = projects.map((project) => toProjectListItem(project as unknown as ProjectListItem & Record<string, unknown>));
   const workFeaturedProject = projects[0];
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
 
@@ -709,7 +774,7 @@ async function prerenderRoutes() {
     const body = await injectPrerenderedApp(
       template,
       route.pathname,
-      getStaticRoutePrerenderData(route.pathname, { projects, articles, categories }),
+      getStaticRoutePrerenderData(route.pathname, { projects: projectList, articles, categories }),
     );
     // The home preloads exactly the images its markup marks high priority, so the hints always match a real request.
     const preloadImages = route.pathname === "/" ? eagerImagePreloads(body) : route.preloadImages;
@@ -755,17 +820,14 @@ async function prerenderRoutes() {
   for (const project of projects) {
     // The Project page's own SeoHead builder (lib/projectPage.ts), so the prerendered head and the
     // hydrated one carry the same title, description and JSON-LD (CreativeWork, breadcrumb, videos).
-    const seoHead = buildProjectSeoHead(buildProjectPageView(project, projects));
+    const view = buildProjectPageView(project, projects);
+    const seoHead = buildProjectSeoHead(view);
 
     const pathname = `/projects/${project.slug}`;
-    const projectGalleryPreloads = buildImagePreloadEntries(
-      (project.images.length > 0 ? project.images.slice(0, 2) : [resolveProjectHeroImage(project)]).map((src) => ({
-        src,
-        widths: [600, 900, 1200],
-        quality: 82,
-        sizes: "(max-width: 767px) 100vw, 50vw",
-      })),
-    );
+    // One preload, the strip's first frame, with the exact src/srcset/sizes its <img> carries
+    // (lib/projectPage.ts frameImage), so the hint and the image are one request.
+    const firstFrame = projectFirstFrame(view);
+    const firstFrameImage = firstFrame ? frameImage(firstFrame) : null;
     const html = await injectPrerenderedApp(
       replaceHead(
         template,
@@ -774,19 +836,15 @@ async function prerenderRoutes() {
           description: seoHead.description,
           pathname,
           image: resolveProjectHeroImage(project),
-          ...buildResponsiveImagePreload(
-            resolveProjectHeroImage(project),
-            [600, 900, 1200, 1400],
-            84,
-            "(max-width: 767px) 100vw, 55vw",
-          ),
-          preloadImages: projectGalleryPreloads,
+          preloadImages: firstFrameImage
+            ? [{ href: firstFrameImage.src, srcSet: firstFrameImage.srcSet, sizes: firstFrameImage.sizes, fetchPriority: "high" }]
+            : [],
           structuredData: seoHead.structuredData,
         }),
       ),
       pathname,
       {
-        projects,
+        projects: projectList,
         project,
       },
     );
@@ -876,20 +934,14 @@ async function loadPrerenderContent(): Promise<{
     console.log(`[build] No Sanity env set; reading the public dataset ${PUBLIC_SANITY_PROJECT_ID}/${PUBLIC_SANITY_DATASET} directly.`);
   }
   try {
-    const [projects, articles, categories] = await Promise.all([
+    // Four queries in parallel; every article's detail comes in one query (was one per article).
+    const [projects, articles, categories, details] = await Promise.all([
       fetchProjectsFromSanity(),
       fetchJournalArticlesFromSanity(),
       fetchJournalCategoriesFromSanity(),
+      fetchJournalArticleDetailsFromSanity(),
     ]);
-
-    const articleDetails = Object.fromEntries(
-      await Promise.all(
-        articles.map(async (article) => {
-          const detail = await fetchJournalArticleBySlugFromSanity(article.slug);
-          return [article.slug, detail ?? article] as const;
-        }),
-      ),
-    );
+    const articleDetails = Object.fromEntries(articles.map((article) => [article.slug, details[article.slug] ?? article] as const));
 
     console.log(
       `[build] Prerender data source: Sanity (${projects.length} projects, ${articles.length} articles, ${categories.length} categories).`,
