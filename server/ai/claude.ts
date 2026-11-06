@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { aiBudgetAvailable, recordAiCall } from "../limits/guards.ts";
+import { reserveAiCall } from "../limits/guards.ts";
 
 /**
  * The one place the server talks to Claude. Server-only: the key never leaves
@@ -10,8 +10,9 @@ import { aiBudgetAvailable, recordAiCall } from "../limits/guards.ts";
  * (Current models reject a forced tool_choice, so it stays "auto".)
  *
  * Returns null, never throws, when there is no key, the monthly budget is
- * spent, the call times out (8 s, no retries) or errors, or the model does not
- * call the tool. Callers fall back to their non-AI path on null.
+ * spent, the AI is off (production without Upstash), the call times out
+ * (8 s, no retries) or errors, or the model does not call the tool. Callers
+ * fall back to their non-AI path on null.
  */
 
 const DEFAULT_MODEL = "claude-sonnet-5-5";
@@ -27,6 +28,12 @@ export type ClaudeJsonOptions = {
   maxTokens?: number;
 };
 
+/**
+ * For visitor text serialised as JSON inside a `<visitor>` block: `<` and `>` become \u003c and
+ * \u003e, which still decode to the same characters as JSON but can never form a closing tag.
+ */
+export const escapeAngles = (json: string) => json.replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+
 let client: Anthropic | null = null;
 let clientKey = "";
 
@@ -41,10 +48,8 @@ function getClient(apiKey: string) {
 export async function callClaudeJson<T>(opts: ClaudeJsonOptions): Promise<T | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY || "";
   if (!apiKey) return null;
-  if (!(await aiBudgetAvailable())) return null;
-
-  // Counted before the request: a call that times out or errors still costs.
-  await recordAiCall();
+  // One atomic check-and-count before the request: a call that times out or errors still costs.
+  if (!(await reserveAiCall())) return null;
 
   try {
     const response = await getClient(apiKey).messages.create({

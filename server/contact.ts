@@ -128,7 +128,7 @@ const siteKey = (host: string) => host.toLowerCase().replace(/^www\./, "");
  * the form. Returns the foreign host when it names another site; null when it is
  * ours or unknown ("null" from privacy tooling or sandboxed frames, or absent).
  */
-function foreignPostSource(req: Request): string | null {
+export function foreignPostSource(req: Request): string | null {
   const origin = headerValue(req, "origin");
   const source = origin && origin !== "null" ? origin : headerValue(req, "referer");
   if (!source) return null;
@@ -312,7 +312,7 @@ export function registerContactRoute(app: Express) {
     const honeypot = body[HONEYPOT_FIELD];
     if (typeof honeypot === "string" && honeypot.trim()) {
       isRateLimited(ip);
-      console.warn(`Contact form: honeypot hit from ${ip}`);
+      console.warn("Contact form: honeypot hit");
       return answer("sent");
     }
 

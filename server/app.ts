@@ -1,7 +1,7 @@
-import express, { type Request, type Response, type NextFunction } from "express";
+import express from "express";
 import { createServer } from "http";
 import { registerRoutes } from "./routes.ts";
-import { apiLogLine, isPrivateApiPath } from "./apiLog.ts";
+import { apiErrorHandler, apiLogLine, isPrivateApiPath } from "./apiLog.ts";
 
 const app = express();
 const httpServer = createServer(app);
@@ -43,13 +43,7 @@ app.use((req, res, next) => {
 const ready: Promise<void> = (async () => {
   await registerRoutes(httpServer, app);
 
-  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    console.error("Internal Server Error:", err);
-    if (res.headersSent) return next(err);
-    return res.status(status).json({ message });
-  });
+  app.use(apiErrorHandler);
 })();
 
 export { app, httpServer, ready };

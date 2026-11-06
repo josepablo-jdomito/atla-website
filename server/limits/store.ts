@@ -5,7 +5,9 @@
  * Upstash Redis (plain REST, no SDK), so every Vercel instance shares them.
  * Without them, counters fall back to a per-process Map: on Vercel each
  * instance then keeps its own, which is a brake, not a control. That fallback
- * is logged once per process.
+ * is logged once per process. In production (NODE_ENV=production) the AI is
+ * also switched off while Upstash is missing (fail closed, see guards.ts), and
+ * the one log line says so.
  */
 
 const UPSTASH_TIMEOUT_MS = 2_000;
@@ -15,16 +17,25 @@ type MemoryEntry = { count: number; expiresAt: number };
 const memory = new Map<string, MemoryEntry>();
 let warnedNoUpstash = false;
 
+export const isProduction = () => process.env.NODE_ENV === "production";
+
 function upstashConfig() {
   const url = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/+$/, "");
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || "";
   if (url && token) return { url, token };
   if (!warnedNoUpstash) {
     warnedNoUpstash = true;
-    console.error("[limits] Upstash not configured, using per-instance memory");
+    console.error(
+      isProduction()
+        ? "[limits] UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not set in production: AI is OFF (fail closed); rate limits and brief idempotency use per-instance memory"
+        : "[limits] Upstash not configured, using per-instance memory",
+    );
   }
   return null;
 }
+
+/** True when counters are shared across instances (Upstash). Logs the fallback once per process. */
+export const sharedStoreConfigured = () => upstashConfig() !== null;
 
 async function upstash(config: { url: string; token: string }, path: string, body: unknown): Promise<unknown> {
   const res = await fetch(`${config.url}${path}`, {
@@ -52,7 +63,11 @@ function liveMemoryEntry(key: string, now: number): MemoryEntry | undefined {
   return entry;
 }
 
-/** Increment `key` and return the new value. The expiry is set only when the key is new (fixed window). */
+/**
+ * Increment `key` and return the new value: the check-and-increment is this one atomic INCR,
+ * so callers compare the result with their cap. The expiry is set only when the key is new
+ * (fixed window), in the same request.
+ */
 export async function incrWithExpiry(key: string, ttlSeconds: number): Promise<number> {
   const config = upstashConfig();
   if (config) {
@@ -77,13 +92,13 @@ export async function incrWithExpiry(key: string, ttlSeconds: number): Promise<n
   return entry.count;
 }
 
-/** Current value of `key`, 0 when missing or expired. */
-export async function getCount(key: string): Promise<number> {
+/** Remove `key`, so a counter starts again (an idempotency mark whose delivery failed). */
+export async function deleteKey(key: string): Promise<void> {
   const config = upstashConfig();
   if (config) {
-    const json = (await upstash(config, "", ["GET", key])) as { result?: unknown; error?: unknown } | null;
-    if (!json || json.error) throw new Error(`Upstash GET failed: ${String(json?.error ?? "no result")}`);
-    return toCount(json.result);
+    const json = (await upstash(config, "", ["DEL", key])) as { error?: unknown } | null;
+    if (!json || json.error) throw new Error(`Upstash DEL failed: ${String(json?.error ?? "no result")}`);
+    return;
   }
-  return liveMemoryEntry(key, Date.now())?.count ?? 0;
+  memory.delete(key);
 }
