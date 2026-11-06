@@ -343,6 +343,8 @@ Implemented 2026-11-05 on branch `claude/site-v2-tags-ca8c28` as `script/migrate
 
 Dry run against the live dataset on 2026-11-05 (no token, so compared with the published documents): all 34 slugs found, 34 documents to change, none missing, none untouched. Nothing written.
 
+Write run on 2026-11-05 after JP's «mándalo» (KB-596): 34 drafts patched (22 created from their published documents, 12 already existed), `service` unset on all 34, published documents untouched. The first run copied the projected string slug into the 22 new drafts; those slugs were restored from the published documents the same day and the script now projects `slug.current` as `slugCurrent` beside the raw document and verifies the slug object. Dry run after the write: 0 documents to change, 34 already set.
+
 ```bash
 npx tsx script/migrate-project-facets.ts                                   # dry run
 SANITY_WRITE_TOKEN=<token> npx tsx script/migrate-project-facets.ts --write   # after «mándalo»
@@ -354,7 +356,7 @@ Before the migration runs the site is already correct: `resolveProjectFacets` (`
 
 1. JP answers the "?" rows (section 4) and the question at the end of this doc. Done 2026-11-05 (section 6).
 2. Schema change in `sanity/schemaTypes/project.ts`: new fields with validation, old fields marked deprecated, `country` and `status` required. Written; the Studio is not deployed from this branch.
-3. Dry run of the migration; JP reads the diff; «mándalo»; `--write`; verification prints the ✓ line. Waiting on the «mándalo».
+3. Dry run of the migration; JP reads the diff; «mándalo»; `--write`; verification prints the ✓ line. Done 2026-11-05 (see the write run above). Remaining: JP publishes each draft in the Studio.
 4. Code: server mapping, ranking, Explore groups, project line, more like this, `llms.txt`, schema.org. Written on the same branch; with the slug fallback the site never shows empty facets, before or after step 3.
 5. Rewrite the eight placeholder descriptions and four empty ones (separate content task; they feed `llms.txt`).
 6. One release later: delete the deprecated fields and the second migration unsets them.

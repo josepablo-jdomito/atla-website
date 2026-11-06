@@ -27,7 +27,8 @@ type Row = { slug: string; sector: string; disciplines: string[]; stage: string;
 type Doc = {
   _id: string;
   _type: string;
-  slug?: string;
+  /** slug.current, projected beside the raw document so the slug object itself is never overwritten. */
+  slugCurrent?: string;
   sector?: string;
   disciplines?: string[];
   stage?: string;
@@ -86,7 +87,7 @@ async function main() {
   console.log(`${write ? "WRITE" : "DRY RUN"} against ${PROJECT_ID}/${DATASET}${token ? "" : " (no token: drafts cannot be read, diff is against published)"}`);
 
   const docs = await client.fetch<Doc[]>(
-    `*[_type == "project" && defined(slug.current)]{ ..., "slug": slug.current }`,
+    `*[_type == "project" && defined(slug.current)]{ ..., "slugCurrent": slug.current }`,
   );
   const published = new Map<string, Doc>();
   const drafts = new Map<string, Doc>();
@@ -95,8 +96,8 @@ async function main() {
     else published.set(doc._id, doc);
   }
   const bySlug = new Map<string, { baseId: string; published?: Doc; draft?: Doc }>();
-  for (const [id, doc] of published) bySlug.set(doc.slug!, { baseId: id, published: doc, draft: drafts.get(id) });
-  for (const [id, doc] of drafts) if (!bySlug.has(doc.slug!)) bySlug.set(doc.slug!, { baseId: id, draft: doc });
+  for (const [id, doc] of published) bySlug.set(doc.slugCurrent!, { baseId: id, published: doc, draft: drafts.get(id) });
+  for (const [id, doc] of drafts) if (!bySlug.has(doc.slugCurrent!)) bySlug.set(doc.slugCurrent!, { baseId: id, draft: doc });
 
   const transaction = client.transaction();
   let changes = 0;
@@ -123,7 +124,8 @@ async function main() {
     if (dropService) console.log(`    service: ${show(current.service)}  →  (unset)`);
     if (write) {
       if (!found.draft && found.published) {
-        const { _rev, _updatedAt, _createdAt, ...rest } = found.published;
+        // Copy the raw published document (slug object included); drop the projection and the system fields.
+        const { _rev, _updatedAt, _createdAt, slugCurrent, ...rest } = found.published;
         transaction.createIfNotExists({ ...rest, _id: draftId } as Doc & { _type: string });
       }
       transaction.patch(draftId, (patch) => patch.set(after).unset(["service"]));
@@ -141,14 +143,19 @@ async function main() {
 
   await transaction.commit();
   console.log("Committed. Verifying…");
-  const after = await client.fetch<Doc[]>(`*[_type == "project" && _id in path("drafts.**")]{ ..., "slug": slug.current }`);
-  const afterBySlug = new Map(after.map((doc) => [doc.slug, doc]));
+  const after = await client.fetch<Doc[]>(
+    `*[_type == "project" && _id in path("drafts.**")]{ ..., "slugCurrent": slug.current }`,
+  );
+  const afterBySlug = new Map(after.map((doc) => [doc.slugCurrent, doc]));
   const wrong: string[] = [];
   for (const row of rows) {
     const doc = afterBySlug.get(row.slug);
     if (!doc) {
       if (bySlug.has(row.slug)) wrong.push(`${row.slug}: no draft after the write`);
       continue;
+    }
+    if (!doc.slug || typeof doc.slug !== "object" || (doc.slug as { current?: string }).current !== row.slug) {
+      wrong.push(`${row.slug}.slug: not a slug object`);
     }
     for (const key of ["sector", "disciplines", "stage", "searchTerms"] as const) {
       if (!same(doc[key], row[key])) wrong.push(`${row.slug}.${key}: ${show(doc[key])} ≠ ${show(row[key])}`);
