@@ -98,7 +98,7 @@ describe("phone menu card", () => {
     const current = sheet.querySelectorAll('[aria-current="page"]');
     expect(current).toHaveLength(1);
     expect(current[0].textContent).toBe("Services");
-    expect(CSS).toMatch(/\.site-sheet__link\[aria-current="page"\] \{[^}]*#ececec/);
+    expect(CSS).toMatch(/\.site-sheet__link\[aria-current="page"\] \{[^}]*#eaeaea/);
     expect(isCurrentRoute("/", "/projects/acre")).toBe(true);
     expect(isCurrentRoute("/", "/services")).toBe(false);
   });
@@ -176,10 +176,10 @@ describe("phone menu card", () => {
   });
 
   it("keeps the motion budget and switches it off under reduced motion", () => {
-    expect(CSS).toContain("animation: site-menu-in 220ms var(--site-ease) both");
-    expect(CSS).toContain('.site-sheet[data-state="closing"] .site-sheet__card { animation: site-menu-out 160ms var(--site-ease) both; }');
+    expect(CSS).toContain("animation: site-menu-in 180ms cubic-bezier(0.4, 0, 0.2, 1) both"); // lg2: the button becomes the card
+    expect(CSS).toContain('.site-sheet[data-state="closing"] .site-sheet__card { animation: site-menu-out 150ms cubic-bezier(0.4, 0, 0.2, 1) both; }');
     expect(CSS).toContain("animation-delay: calc(var(--i, 0) * 25ms)");
-    expect(CSS).toMatch(/from \{ opacity: 0; transform: translateY\(-12px\); \}/);
+    expect(CSS).toMatch(/from \{ clip-path: inset\(16px 16px calc\(100% - 60px\) calc\(100% - 60px\) round 8px\); \}/);
     expect(CSS).toMatch(/backdrop-filter: blur\(8px\)/);
     expect(CSS).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\n  \.site-sheet__card,\n  \.site-sheet__backdrop,/);
   });
