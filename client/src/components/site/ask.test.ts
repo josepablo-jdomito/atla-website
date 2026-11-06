@@ -274,9 +274,9 @@ describe("askClient", () => {
 
   it("maps 503 to the kind unavailable line, 429 to the limit line", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 503 })));
-    expect(await streamAsk([{ role: "visitor", text: "hi" }], { onDelta() {}, onReset() {} })).toEqual({ kind: "note", text: copy.unavailable, unavailable: true });
+    expect(await streamAsk([{ role: "visitor", text: "hi" }], { onDelta() {}, onReset() {} })).toEqual({ kind: "note", text: copy.unavailable, note: "unavailable" });
     vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 429 })));
-    expect(await streamAsk([{ role: "visitor", text: "hi" }], { onDelta() {}, onReset() {} })).toEqual({ kind: "note", text: copy.limited });
+    expect(await streamAsk([{ role: "visitor", text: "hi" }], { onDelta() {}, onReset() {} })).toEqual({ kind: "note", text: copy.limited, note: "limited" });
   });
 
   it("keeps the conversation in sessionStorage only, and never in localStorage", async () => {

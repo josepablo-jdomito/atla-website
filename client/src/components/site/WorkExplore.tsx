@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { siteCopy } from "@/content/siteCopy";
 import { looksLikeQuestion } from "@/lib/askClient";
 import { ASK_MAX_CHARS } from "@shared/ask";
+import { EXPLORE_FIELD_ID } from "@/components/site/SiteHeader";
 
 const { home, ask: askCopy } = siteCopy;
 
@@ -85,6 +86,8 @@ export function WorkExplore({
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  /** Escape hands focus back to the field; that focus must not reopen the panel (keyboard walk F7). */
+  const quietFocus = useRef(false);
   const [mode, setMode] = useState<Mode>("search");
   const [askDraft, setAskDraft] = useState("");
   /** True once the visitor picks a mode by hand: no more switching on their behalf until the panel closes. */
@@ -153,6 +156,7 @@ export function WorkExplore({
       if (event.key === "Escape") {
         event.preventDefault();
         closeNow();
+        if (document.activeElement !== inputRef.current) quietFocus.current = true;
         inputRef.current?.focus({ preventScroll: true });
       }
     };
@@ -198,6 +202,7 @@ export function WorkExplore({
         </svg>
         <input
           ref={inputRef}
+          id={EXPLORE_FIELD_ID}
           type="search"
           className="site-explore__input"
           value={asking ? askDraft : query}
@@ -230,6 +235,10 @@ export function WorkExplore({
             if (event.key === "Escape") event.preventDefault();
           }}
           onFocus={(event) => {
+            if (quietFocus.current) {
+              quietFocus.current = false;
+              return;
+            }
             openPanel();
             // On a touch screen the first tap opens the filters and leaves the keyboard down, so the
             // keyboard never covers them (red team 18). A second tap on the field brings the keyboard.

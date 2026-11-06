@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
 import { buildWallSequence, placeInColumns, wallPass, type WallTile } from "@/components/site/wallLayout";
@@ -27,19 +28,61 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
 const WIDTHS = [320, 480, 640, 800, 1000, 1280];
 const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw";
 /**
- * The first pieces load eagerly and win the network race (fetchpriority="high"): about three rows of
- * the current column count, never fewer than one phone screen. The rest wait for the scroll. The
- * prerender (phone layout) also preloads the first three from its markup (script/build.ts).
+ * Only the tiles of the first viewport load eagerly (perf-network 2: 88 image requests starved the entry
+ * script). At most 8 on a desktop and 4 on the phone; one of them, the first, asks for high priority.
+ * Everything else is lazy. The prerender has no window and measures a 375 x 812 phone.
  */
-const EAGER_MIN = 8;
-const EAGER_ROWS = 3;
-export const eagerCount = (columns: number) => Math.max(EAGER_MIN, columns * EAGER_ROWS);
+export const EAGER_MAX_DESKTOP = 8;
+export const EAGER_MAX_PHONE = 4;
+const HEADER_HEIGHT = 64;
+const PRERENDER_VIEWPORT = { width: 375, height: 812 };
+
+function wallGap(width: number) {
+  return width >= 1200 ? 24 : width >= 768 ? 20 : 16;
+}
+
 /**
- * How many pieces one pass shows at most; the next pass arrives as the visitor nears the end.
- * The open wall never stops (JP, 2026-11-05, UX interview 8): no pass cap, no "More" link, and the
- * home shows no footer under it. A search is finite and ends with its last match.
+ * The keys of the tiles that start inside the first viewport, in reading order, capped. Heights are in
+ * column widths (1 / ratio), the same unit placeInColumns uses, so nothing is measured in the DOM.
  */
+export function firstViewportKeys<T extends { ratio: number; key: string }>(
+  placed: T[][],
+  order: T[],
+  columns: number,
+  viewport: { width: number; height: number } = typeof window === "undefined"
+    ? PRERENDER_VIEWPORT
+    : { width: window.innerWidth, height: window.innerHeight },
+): Set<string> {
+  const cap = columns <= 2 ? EAGER_MAX_PHONE : EAGER_MAX_DESKTOP;
+  const gap = wallGap(viewport.width);
+  const columnWidth = Math.max(1, (viewport.width - gap * (Math.max(1, columns) + 1)) / Math.max(1, columns));
+  const limit = Math.max(0, viewport.height - HEADER_HEIGHT) / columnWidth;
+  const inView = new Set<string>();
+  for (const column of placed) {
+    let top = 0;
+    for (const tile of column) {
+      if (top >= limit) break;
+      inView.add(tile.key);
+      top += 1 / tile.ratio + gap / columnWidth;
+    }
+  }
+  const keys = new Set<string>();
+  for (const tile of order) {
+    if (keys.size >= cap) break;
+    if (inView.has(tile.key)) keys.add(tile.key);
+  }
+  return keys;
+}
+/** How many pieces one pass shows at most; the next pass arrives as the visitor nears the end. */
 const PAGE = 72;
+/**
+ * The open wall stops after three passes and the footer comes out (JP, 2026-11-06: "el muro para y sale
+ * el footer"), so Privacy, Terms and the cookies control are reachable from the home. After that a
+ * quiet "More work" link adds one pass at a time. A search is finite and ends with its last match.
+ */
+export const AUTO_PASSES = 3;
+/** The placeholder grid while /api/projects loads: colour blocks in the wall's rhythm, no images. */
+const PLACEHOLDER_RATIOS = [1.5, 0.8, 1.25, 0.75, 1.33, 1, 0.8, 1.5, 0.75, 1.25, 1, 1.33];
 /**
  * Column count follows the viewport, like Cosmos (8 columns on a wide desktop,
  * JP 2026-11-05): a column is about 240 px plus the gutter, between 2 and 8.
@@ -97,8 +140,10 @@ function VideoTile({ tile, reduced }: { tile: WallTile; reduced: boolean }) {
   );
 }
 
-/** Exported for tests. */
-export function Tile({
+/**
+ * Exported for tests. Memoized: a wall re-render (typing in Explore) leaves every settled tile alone.
+ */
+export const Tile = memo(function Tile({
   tile,
   eager,
   priority = false,
@@ -148,12 +193,82 @@ export function Tile({
       )}
     </Link>
   );
+});
+
+/**
+ * The Explore pill with Ask. It owns the Ask conversation, so a streamed token re-renders this subtree
+ * (the pill and the panel) and never the wall (perf-frontend 1).
+ */
+function WallExplore({
+  projects,
+  tools,
+  query,
+  onQuery,
+  onClear,
+  activeCount,
+  visible,
+  children,
+}: {
+  projects: SiteProjectT[];
+  tools: ReactNode;
+  query: string;
+  onQuery: (value: string) => void;
+  onClear: () => void;
+  activeCount: number;
+  visible: boolean;
+  children: ReactNode;
+}) {
+  const ask = useAsk();
+  return (
+    <WorkExplore
+      tools={tools}
+      query={query}
+      onQuery={onQuery}
+      onClear={onClear}
+      activeCount={activeCount}
+      visible={visible}
+      ask={{
+        available: ask.available,
+        pending: ask.pending,
+        onOpen: ask.probe,
+        onAsk: ask.send,
+        panel: (send) => (
+          <AskPanel
+            turns={ask.turns}
+            pending={ask.pending}
+            partial={ask.partial}
+            projects={projects}
+            onAsk={send}
+            onRetry={ask.retry}
+            onRestart={ask.restart}
+          />
+        ),
+      }}
+    >
+      {children}
+    </WorkExplore>
+  );
+}
+
+/** The pill hides while the footer is on screen, so it never sits on Privacy, Terms or the cookies control. */
+function useFooterInView(enabled: boolean) {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    if (!enabled || typeof IntersectionObserver === "undefined") return setInView(false);
+    const footer = document.querySelector(".site-footer");
+    if (!footer) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [enabled]);
+  return inView;
 }
 
 /** The home: the work, from the first pixel. Fixed columns, native ratios, the whole gallery. */
 export function WorkWall() {
   const { projects } = useSiteProjects();
-  const ask = useAsk();
+  // The same query useSiteProjects reads (one cache entry, no second request): here for its states.
+  const { isPending, isError, refetch, isFetching } = useQuery({ queryKey: ["/api/projects"] });
   const columns = useColumns();
   const reduced = useReducedMotion();
   // The URL is the state: /?q=coffee+shop&sector=hospitality-travel is shareable.
@@ -225,9 +340,14 @@ export function WorkWall() {
     return all;
   }, [sequence, shown, urlQuery]);
   const placed = useMemo(() => placeInColumns(tiles, columns), [tiles, columns]);
-  const eagerKeys = useMemo(() => new Set(tiles.slice(0, eagerCount(columns)).map((tile) => tile.key)), [tiles, columns]);
+  const eagerKeys = useMemo(() => firstViewportKeys(placed, tiles, columns), [placed, tiles, columns]);
+  const priorityKey = tiles[0]?.key;
   // Whether more exists past what is shown: a search ends with its last match; the open wall loops.
   const hasMore = sequence.length > 0 && (urlQuery ? shown < sequence.length : true);
+  // A search loads to its end on its own; the open wall stops after three passes.
+  const autoLoad = hasMore && (urlQuery ? true : shown < PAGE * AUTO_PASSES);
+  // Watched once the wall has stopped (or never started: loading, an error), when the footer can show.
+  const footerInView = useFooterInView(projects.length === 0 || !autoLoad);
 
   const changeFilters = (next: Filters) => {
     window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next, urlQuery)}`);
@@ -238,7 +358,7 @@ export function WorkWall() {
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel || !hasMore) return;
+    if (!sentinel || !autoLoad) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setShown((current) => current + PAGE);
@@ -247,9 +367,63 @@ export function WorkWall() {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, shown]);
+  }, [autoLoad, shown]);
 
-  if (projects.length === 0) return null;
+  const clearAll = () => {
+    setDraft("");
+    changeFilters({ ...filters, sector: ALL_VALUE, discipline: ALL_VALUE, place: ALL_VALUE, year: ALL_VALUE });
+  };
+  const onQuery = (value: string) => {
+    typed.current = true;
+    setDraft(value);
+  };
+
+  if (projects.length === 0) {
+    // No list yet: a placeholder grid while it loads, one line and Try again if it failed. The pill stays.
+    const failed = isError && !isFetching;
+    return (
+      <section className="work-wall" aria-label="Work" aria-busy={failed ? undefined : true}>
+        {failed ? (
+          <p className="work-wall__error" role="alert">
+            {siteCopy.home.results.error}{" "}
+            <button type="button" className="site-link work-wall__retry" onClick={() => void refetch()}>
+              {siteCopy.home.results.retry}
+            </button>
+          </p>
+        ) : isPending || isFetching ? (
+          <>
+            <p className="site-sr" role="status">
+              {siteCopy.home.loading}
+            </p>
+            <div className="work-wall__columns" aria-hidden="true" style={{ ["--wall-columns" as string]: columns }}>
+              {Array.from({ length: columns }, (_, column) => (
+                <div className="work-wall__column" key={column}>
+                  {Array.from({ length: 6 }, (_, row) => (
+                    <span
+                      key={row}
+                      className="wall-tile wall-tile--placeholder"
+                      style={{ aspectRatio: `${PLACEHOLDER_RATIOS[(column * 5 + row * 3) % PLACEHOLDER_RATIOS.length]}` }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : null}
+        <WallExplore
+          projects={projects}
+          tools={null}
+          query={draft}
+          onQuery={onQuery}
+          onClear={clearAll}
+          activeCount={activeFilterCount(filters)}
+          visible={!footerInView}
+        >
+          {null}
+        </WallExplore>
+      </section>
+    );
+  }
 
   return (
     <section className="work-wall" aria-label="Work" data-fade={fade ? "" : undefined}>
@@ -274,7 +448,7 @@ export function WorkWall() {
                   key={tile.key}
                   tile={tile}
                   eager={eagerKeys.has(tile.key)}
-                  priority={eagerKeys.has(tile.key)}
+                  priority={tile.key === priorityKey}
                   reduced={reduced}
                 />
               ))}
@@ -283,38 +457,24 @@ export function WorkWall() {
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
-      <WorkExplore
+      {hasMore && !autoLoad ? (
+        <div className="work-wall__more">
+          <button type="button" className="site-link work-wall__more-link" onClick={() => setShown((current) => current + PAGE)}>
+            {siteCopy.home.results.more}
+          </button>
+        </div>
+      ) : null}
+      <WallExplore
+        projects={projects}
         tools={tiles.some((tile) => tile.kind === "video") ? <MotionToggle /> : null}
         query={draft}
-        onQuery={(value) => {
-          typed.current = true;
-          setDraft(value);
-        }}
-        onClear={() => {
-          setDraft("");
-          changeFilters({ ...filters, sector: ALL_VALUE, discipline: ALL_VALUE, place: ALL_VALUE, year: ALL_VALUE });
-        }}
+        onQuery={onQuery}
+        onClear={clearAll}
         activeCount={activeFilterCount(filters)}
-        visible
-        ask={{
-          available: ask.available,
-          pending: ask.pending,
-          onOpen: ask.probe,
-          onAsk: ask.send,
-          panel: (send) => (
-            <AskPanel
-              turns={ask.turns}
-              pending={ask.pending}
-              partial={ask.partial}
-              projects={projects}
-              onAsk={send}
-              onRestart={ask.restart}
-            />
-          ),
-        }}
+        visible={!footerInView}
       >
         <WorkFilters projects={projects} filters={filters} onChange={changeFilters} />
-      </WorkExplore>
+      </WallExplore>
     </section>
   );
 }

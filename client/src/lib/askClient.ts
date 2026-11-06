@@ -13,8 +13,17 @@ import { trackAskTurn } from "@/lib/askEvents";
 export type AskTurn =
   | { role: "visitor"; text: string }
   | { role: "atla"; text: string; slugs: string[]; links: AskLink[] }
-  /** A fixed line from the site (an error or a limit), never sent back to the server. */
-  | { role: "note"; text: string };
+  /**
+   * A fixed line from the site, never sent back to the server. `kind` picks what sits under it: an error
+   * offers Try again, a limit or Ask resting offers the page links (older stored notes have no kind).
+   */
+  | { role: "note"; text: string; kind?: AskNoteKind };
+
+export type AskNoteKind = "error" | "limited" | "unavailable";
+const NOTE_KINDS: readonly string[] = ["error", "limited", "unavailable"];
+
+/** A request with no word back for this long ends as an error note with Try again (states report 7). */
+export const ASK_TIMEOUT_MS = 25_000;
 
 export const ASK_STORAGE_KEY = "atla-ask";
 const AVAILABLE_KEY = "atla-ask-available";
@@ -42,7 +51,8 @@ function isStoredTurn(t: unknown): t is AskTurn {
   if (!t || typeof t !== "object") return false;
   const turn = t as Record<string, unknown>;
   if (typeof turn.text !== "string") return false;
-  if (turn.role === "visitor" || turn.role === "note") return true;
+  if (turn.role === "visitor") return true;
+  if (turn.role === "note") return turn.kind === undefined || NOTE_KINDS.includes(turn.kind as string);
   if (turn.role !== "atla") return false;
   if (!Array.isArray(turn.slugs) || !turn.slugs.every((s) => typeof s === "string")) return false;
   return (
@@ -103,8 +113,14 @@ export function parseAskEvents(buffer: string): { events: AskEvent[]; rest: stri
   return { events, rest };
 }
 
-type StreamHandlers = { onDelta: (text: string) => void; onReset: () => void; signal?: AbortSignal };
-export type AskOutcome = { kind: "answer"; answer: AskAnswer } | { kind: "note"; text: string; unavailable?: boolean };
+type StreamHandlers = {
+  onDelta: (text: string) => void;
+  onReset: () => void;
+  /** Called on every sign of life (the response, each event), so a timeout can measure silence, not length. */
+  onProgress?: () => void;
+  signal?: AbortSignal;
+};
+export type AskOutcome = { kind: "answer"; answer: AskAnswer } | { kind: "note"; text: string; note: AskNoteKind };
 
 const newKey = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `ask-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -121,11 +137,12 @@ export async function streamAsk(turns: AskTurn[], handlers: StreamHandlers): Pro
       signal: handlers.signal,
     });
   } catch {
-    return { kind: "note", text: ask.error };
+    return { kind: "note", text: ask.error, note: "error" };
   }
-  if (res.status === 503) return { kind: "note", text: ask.unavailable, unavailable: true };
-  if (res.status === 429) return { kind: "note", text: ask.limited };
-  if (!res.ok || !res.body) return { kind: "note", text: ask.error };
+  handlers.onProgress?.();
+  if (res.status === 503) return { kind: "note", text: ask.unavailable, note: "unavailable" };
+  if (res.status === 429) return { kind: "note", text: ask.limited, note: "limited" };
+  if (!res.ok || !res.body) return { kind: "note", text: ask.error, note: "error" };
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -136,18 +153,19 @@ export async function streamAsk(turns: AskTurn[], handlers: StreamHandlers): Pro
       buffer += decoder.decode(value, { stream: !done });
       const { events, rest } = parseAskEvents(done ? `${buffer}\n\n` : buffer);
       buffer = rest;
+      if (events.length) handlers.onProgress?.();
       for (const event of events) {
         if (event.type === "delta") handlers.onDelta(event.text);
         else if (event.type === "reset") handlers.onReset();
         else if (event.type === "done") return { kind: "answer", answer: event.answer };
-        else if (event.type === "error") return { kind: "note", text: ask.error };
+        else if (event.type === "error") return { kind: "note", text: ask.error, note: "error" };
       }
       if (done) break;
     }
   } catch {
-    return { kind: "note", text: ask.error };
+    return { kind: "note", text: ask.error, note: "error" };
   }
-  return { kind: "note", text: ask.error };
+  return { kind: "note", text: ask.error, note: "error" };
 }
 
 function readAvailable(): boolean | null {
@@ -215,21 +233,36 @@ export function useAsk() {
       setPartial("");
       const controller = new AbortController();
       abortRef.current = controller;
+      // 25 s of silence (no response, no event) aborts the request and ends in the error note.
+      let timedOut = false;
+      let timer = 0;
+      const arm = () => {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          timedOut = true;
+          controller.abort();
+        }, ASK_TIMEOUT_MS);
+      };
+      arm();
       const outcome = await streamAsk(asked, {
         signal: controller.signal,
+        onProgress: arm,
         onDelta: (delta) => setPartial((current) => current + delta),
         onReset: () => setPartial(""),
       });
+      window.clearTimeout(timer);
+      // A restart aborted it on purpose: nothing to add. A timeout falls through to the error note.
+      if (abortRef.current !== controller) return;
       abortRef.current = null;
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted && !timedOut) return;
       setPending(false);
       setPartial("");
       if (outcome.kind === "answer") {
         commit([...asked, { role: "atla", ...outcome.answer }]);
         trackAskTurn(outcome.answer.slugs.length, outcome.answer.links.length);
       } else {
-        commit([...asked, { role: "note", text: outcome.text }]);
-        if (outcome.unavailable) {
+        commit([...asked, { role: "note", text: outcome.text, kind: outcome.note }]);
+        if (outcome.note === "unavailable") {
           setAvailable(false);
           try {
             storage()?.setItem(AVAILABLE_KEY, "0");
@@ -242,6 +275,23 @@ export function useAsk() {
     [commit],
   );
 
+  /** Try again: the last question goes again, and the failed note (and that question) leave the log first. */
+  const retry = useCallback(() => {
+    if (abortRef.current) return;
+    const turns = turnsRef.current;
+    let last = -1;
+    for (let i = turns.length - 1; i >= 0; i -= 1) {
+      if (turns[i].role === "visitor") {
+        last = i;
+        break;
+      }
+    }
+    if (last < 0) return;
+    const text = turns[last].text;
+    commit(turns.slice(0, last));
+    void send(text);
+  }, [commit, send]);
+
   const restart = useCallback(() => {
     abortRef.current?.abort();
     abortRef.current = null;
@@ -250,7 +300,7 @@ export function useAsk() {
     commit([]);
   }, [commit]);
 
-  return { turns, available, pending, partial, send, restart, probe };
+  return { turns, available, pending, partial, send, retry, restart, probe };
 }
 
 export type AskController = ReturnType<typeof useAsk>;

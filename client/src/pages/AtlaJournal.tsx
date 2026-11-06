@@ -12,7 +12,7 @@ import {
 } from "@shared/siteSeo";
 import { useRoute } from "wouter";
 import { trackEvent } from "@/hooks/use-analytics";
-import { PageShell } from "@/components/site/PageShell";
+import { PageError, PageShell, PageSkeleton } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticles, fetchJournalCategories } from "@/lib/journalApi";
@@ -41,11 +41,21 @@ export default function AtlaJournal() {
   const [, categoryParams] = useRoute("/journal/category/:slug");
   const activeCategorySlug = categoryParams?.slug ?? null;
 
-  const { data: articlesData, isPending: areArticlesPending } = useQuery({
+  const {
+    data: articlesData,
+    isPending: areArticlesPending,
+    isError: articlesFailed,
+    refetch: refetchArticles,
+  } = useQuery({
     queryKey: ["/api/journal"],
     queryFn: fetchJournalArticles,
   });
-  const { data: categoriesData, isPending: areCategoriesPending } = useQuery({
+  const {
+    data: categoriesData,
+    isPending: areCategoriesPending,
+    isError: categoriesFailed,
+    refetch: refetchCategories,
+  } = useQuery({
     queryKey: ["/api/journal/categories"],
     queryFn: fetchJournalCategories,
   });
@@ -59,12 +69,32 @@ export default function AtlaJournal() {
     [categories, activeCategorySlug],
   );
 
+  // A failed request is an error, never "Nothing here yet" and never a 404 (states report 6).
+  if ((!articlesData && articlesFailed) || (activeCategorySlug && !categoriesData && categoriesFailed)) {
+    return (
+      <PageShell>
+        <PageError
+          onRetry={() => {
+            void refetchArticles();
+            void refetchCategories();
+          }}
+        />
+      </PageShell>
+    );
+  }
+
   if (activeCategorySlug && !areCategoriesPending && !activeCategory) {
     return <NotFound />;
   }
 
-  if (!articlesData && areArticlesPending) {
-    return null;
+  // Loading keeps the header and footer; a category route also waits for its category, so the generic
+  // heading never flashes before the category's own.
+  if ((!articlesData && areArticlesPending) || (activeCategorySlug && !categoriesData && areCategoriesPending)) {
+    return (
+      <PageShell>
+        <PageSkeleton />
+      </PageShell>
+    );
   }
 
   const filteredArticles = activeCategory

@@ -34,7 +34,7 @@ describe("Explore panel keyboard order", () => {
     expect(panel).not.toBeNull();
     expect(input.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(root_.querySelector("[tabindex]:not([tabindex='-1']):not([tabindex='0'])")).toBeNull();
-    const focusable = Array.from(root_.querySelectorAll<HTMLElement>("input, button")).map((el) => el.id || el.textContent || el.className);
+    const focusable = Array.from(root_.querySelectorAll<HTMLElement>("input, button")).map((el) => el.className || el.textContent || el.id);
     expect(focusable[0]).toContain("site-explore__input");
     act(() => {
       const outside = document.createElement("button");

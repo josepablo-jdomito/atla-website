@@ -5,7 +5,7 @@ import type { AskTurn } from "@/lib/askClient";
 import { pieceHref } from "@/lib/askPieces";
 import { getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
 
-const { ask: copy } = siteCopy;
+const { ask: copy, home } = siteCopy;
 
 /** What a piece needs from the wall's project list. */
 export type AskPieceProject = { slug: string; title: string; client?: string; coverImage: string; coverColor?: string };
@@ -21,6 +21,7 @@ export function AskPanel({
   partial,
   projects,
   onAsk,
+  onRetry,
   onRestart,
 }: {
   turns: AskTurn[];
@@ -28,6 +29,8 @@ export function AskPanel({
   partial: string;
   projects: AskPieceProject[];
   onAsk: (text: string) => void;
+  /** Sends the last question again (an error note's Try again). */
+  onRetry?: () => void;
   onRestart: () => void;
 }) {
   const bySlug = useMemo(() => new Map(projects.map((p) => [p.slug, p])), [projects]);
@@ -56,9 +59,24 @@ export function AskPanel({
       ) : (
         <ol className="ask__log" aria-label={copy.dialog}>
           {turns.map((turn, index) => (
-            <li key={index} className="ask__turn" data-role={turn.role}>
-              <span className="ask__sr">{turn.role === "visitor" ? copy.visitor : copy.atla}: </span>
+            <li key={index} className="ask__turn" data-role={turn.role} data-kind={turn.role === "note" ? turn.kind : undefined}>
+              <span className="ask__sr">{turn.role === "visitor" ? copy.visitor : turn.role === "note" ? home.askNote : copy.atla}: </span>
               <p className="ask__text">{turn.text}</p>
+              {turn.role === "note" ? (
+                <p className="ask__links">
+                  {/* Only the newest error can be tried again; an older one already has its answer below it. */}
+                  {turn.kind === "error" && onRetry && index === turns.length - 1 && !pending ? (
+                    <button type="button" className="ask__retry" onClick={onRetry}>
+                      {home.askRetry}
+                    </button>
+                  ) : null}
+                  {home.askLinks.map((link) => (
+                    <Link key={link.href} href={link.href} className="site-link">
+                      {link.label}
+                    </Link>
+                  ))}
+                </p>
+              ) : null}
               {turn.role === "atla" ? <AskPieces slugs={turn.slugs} bySlug={bySlug} /> : null}
               {turn.role === "atla" && turn.links.length ? (
                 <p className="ask__links">
@@ -88,7 +106,8 @@ export function AskPanel({
       <p className="ask__sr" aria-live="polite">
         {!pending && turns.at(-1)?.role !== "visitor" ? turns.at(-1)?.text ?? "" : ""}
       </p>
-      {turns.length > 0 && !pending ? (
+      {/* Start over shows while a turn is pending too: it is also the way out of a hung request. */}
+      {turns.length > 0 ? (
         <button type="button" className="ask__restart" onClick={onRestart}>
           {copy.restart}
         </button>

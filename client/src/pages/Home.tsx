@@ -1,22 +1,19 @@
 import { useMemo } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 import { HOME_META_DESCRIPTION, ORGANIZATION_SCHEMA, SITE_ORIGIN, formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { WorkWall } from "@/components/site/WorkWall";
-import { queryFromSearch } from "@/components/site/workFilters";
 import { HOME_FEATURED_LIMIT, featuredProjects, useSiteProjects } from "@/components/site/siteProjects";
 import { SeoHead } from "@/components/seo/SeoHead";
 
 /**
  * The home opens with the work and nothing else: no headline, no bar, no
  * sections (JP, 2026-10-04 and 2026-11-05). The sales argument lives on
- * /services. The open wall loops forever, so the logo band and footer only
- * appear when a typed search makes it finite (UX interview 8, 2026-11-05).
+ * /services. The wall stops after three passes and the logo band and footer
+ * come out under it (JP, 2026-11-06: "el muro para y sale el footer").
  */
 export default function Home() {
   const [location] = useLocation();
-  const search = useSearch();
-  const finite = Boolean(queryFromSearch(search));
   const { projects } = useSiteProjects();
   const featured = useMemo(() => featuredProjects(projects, HOME_FEATURED_LIMIT), [projects]);
 
@@ -42,7 +39,7 @@ export default function Home() {
   );
 
   return (
-    <PageShell tail={finite}>
+    <PageShell>
       <SeoHead
         title={formatMetaTitle("Atla", "Strategy-Led Branding Studio")}
         description={HOME_META_DESCRIPTION}

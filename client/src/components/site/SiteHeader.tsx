@@ -13,6 +13,9 @@ const { header, menu } = siteCopy;
 /** The id of PageShell's <main>, the skip link's target. */
 export const MAIN_CONTENT_ID = "main";
 
+/** The Explore field's id, the second skip link's target (home only; the pill lives on the wall). */
+export const EXPLORE_FIELD_ID = "explore-field";
+
 /** How long the card takes to leave (site.css `site-menu-out`). */
 export const MENU_CLOSE_MS = 160;
 
@@ -30,7 +33,10 @@ export function isCurrentRoute(href: string, location: string) {
 
 type Phase = "closed" | "open" | "closing";
 
-/** The rows: a picture and the page name. Mounted only while the card shows, so projects load on demand. */
+/**
+ * The rows: a picture and the page name. Mounted only while the card shows, so the project list behind
+ * the thumbnails is fetched when the menu opens, never on page load (perf-frontend 4).
+ */
 function MenuRows({ seed, location, onPick }: { seed: number; location: string; onPick: () => void }) {
   const { projects } = useSiteProjects();
   const thumbs = useMemo(
@@ -141,6 +147,21 @@ export function SiteHeader() {
       <a href={`#${MAIN_CONTENT_ID}`} className="site-skip-link">
         {header.skipLink}
       </a>
+      {/* Home only: the second stop goes straight to the Explore field (keyboard walk F6: it was 72 Tabs away). */}
+      {location === "/" || location === "/work" ? (
+        <a
+          href={`#${EXPLORE_FIELD_ID}`}
+          className="site-skip-link"
+          onClick={(event) => {
+            const field = document.getElementById(EXPLORE_FIELD_ID);
+            if (!field) return;
+            event.preventDefault();
+            field.focus();
+          }}
+        >
+          {header.skipSearch}
+        </a>
+      ) : null}
       <nav className="site-header__bar" aria-label={header.navLabel}>
         <div className="site-header__left">
           <ul className="site-header__links">

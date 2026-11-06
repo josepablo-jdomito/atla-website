@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { trackEvent, useScrollDepthTracking } from "@/hooks/use-analytics";
 import { JournalPortableText } from "@/components/journal/JournalPortableText";
-import { PageShell } from "@/components/site/PageShell";
+import { PageError, PageShell, PageSkeleton } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
@@ -16,11 +16,21 @@ import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
 export default function AtlaArticle() {
   const [, params] = useRoute("/journal/:slug");
   const slug = params?.slug ?? "";
-  const { data: articleData, isPending: isArticlePending } = useQuery({
+  const {
+    data: articleData,
+    isPending: isArticlePending,
+    isError: articleFailed,
+    refetch: refetchArticle,
+  } = useQuery({
     queryKey: ["/api/journal", slug],
     queryFn: () => fetchJournalArticle(slug),
   });
-  const { data: articlesData, isPending: areArticlesPending } = useQuery({
+  const {
+    data: articlesData,
+    isPending: areArticlesPending,
+    isError: articlesFailed,
+    refetch: refetchArticles,
+  } = useQuery({
     queryKey: ["/api/journal"],
     queryFn: fetchJournalArticles,
   });
@@ -33,8 +43,28 @@ export default function AtlaArticle() {
   );
   useScrollDepthTracking(article?.slug ?? "", article?.category, "journal_article");
 
+  // Loading keeps the header and footer (states report 6).
   if (!slug || (!article && (isArticlePending || areArticlesPending))) {
-    return null;
+    return (
+      <PageShell>
+        <PageSkeleton rows={1} />
+      </PageShell>
+    );
+  }
+
+  // A failure to load says so, with Try again, instead of "page not found" (a missing slug comes back
+  // as null from fetchJournalArticle, not as an error).
+  if (!article && (articlesFailed || articleFailed)) {
+    return (
+      <PageShell>
+        <PageError
+          onRetry={() => {
+            void refetchArticle();
+            void refetchArticles();
+          }}
+        />
+      </PageShell>
+    );
   }
 
   if (!article) {

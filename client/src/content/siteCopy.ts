@@ -31,11 +31,32 @@ export const siteCopy = {
     menuClose: "Close",
     homeLabel: "Atla, home",
     skipLink: "Skip to the work",
+    // The second skip link, home only: straight to the Explore field (keyboard walk F6).
+    skipSearch: "Skip to search",
   },
   // The phone menu card's own words.
   menu: {
     navLabel: "Menu",
     closeLabel: "Close menu",
+  },
+  // A page whose content did not arrive (journal, article): said plainly, never as an empty state.
+  states: {
+    loading: "Loading",
+    error: "This did not load.",
+    errorBody: "The page is still here. Try again, or go back to the work.",
+    retry: "Try again",
+    home: "See the work",
+  },
+  // The analytics cookie notice (AnalyticsConsent). Escape closes it without choosing: nothing changes,
+  // which is what the privacy page promises (cookies stay off in Europe until Accept).
+  consent: {
+    label: "Analytics cookies",
+    bodyAll:
+      "We use Google Analytics, Microsoft Clarity and the Meta Pixel to see which pages lead to projects and to measure our own campaigns. They load only if you accept.",
+    bodyGa: "We use Google Analytics cookies to see which pages lead to projects.",
+    privacy: "Privacy policy",
+    accept: "Accept",
+    decline: "Decline",
   },
   footer: {
     navLabel: "Footer",
@@ -89,7 +110,18 @@ export const siteCopy = {
       startBrief: "Start a project",
       clear: "Clear",
       // The quiet text link under the wall once auto-loading stops. Placeholder text: the content pass owns the wording.
+      more: "More work",
+      retry: "Try again",
     },
+    // While /api/projects loads, the wall is colour blocks with no images; this names them for screen readers.
+    loading: "Loading the work",
+    // Ask's fixed notes (an error, a limit, Ask resting): their own label, never read as "Atla:".
+    askNote: "Note",
+    askRetry: "Try again",
+    askLinks: [
+      { label: "Services", href: "/services" },
+      { label: "Start a project", href: "/brief" },
+    ],
     explore: "Explore",
     exploreDialog: "Filter the work",
     filters: { sector: "Sector", discipline: "Discipline", place: "Place", year: "Year", all: "All" },

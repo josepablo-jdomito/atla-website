@@ -15,7 +15,7 @@ import Services from "@/pages/Services";
 import Ventures from "@/pages/Ventures";
 import { SiteHeader } from "./SiteHeader";
 import { WorkExplore } from "./WorkExplore";
-import { Tile, WorkWall } from "./WorkWall";
+import { AUTO_PASSES, EAGER_MAX_DESKTOP, EAGER_MAX_PHONE, Tile, WorkWall, firstViewportKeys } from "./WorkWall";
 import { trapTab } from "./focusTrap";
 
 vi.mock("@/lib/ga", () => ({ trackBarSearch: vi.fn(), ga4Event: vi.fn() }));
@@ -190,7 +190,7 @@ describe("Menu sheet", () => {
       ["Start a project", "/brief"],
     ]);
     expect(document.documentElement.getAttribute("data-menu")).toBe("open");
-    expect(CSS).toMatch(/html\[data-menu="open"\] \.site-explore \{ display: none; \}/);
+    expect(CSS).toMatch(/html\[data-menu="open"\] \.site-explore,\s*html\[data-consent="open"\] \.site-explore \{ display: none; \}/);
     act(() => {
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     });
@@ -277,13 +277,22 @@ describe("Wall tiles", () => {
     return createElement(QueryClientProvider, { client }, createElement(Router, routerProps, createElement(WorkWall)));
   }
 
-  it("server HTML has no fade gate; three rows of tiles load eagerly and all ask for high priority", () => {
+  it("server HTML has no fade gate; only the first viewport loads eagerly and one tile asks for high priority", () => {
     stubMedia();
     const html = renderToString(wall(projects(30), true));
     expect(html).not.toContain("data-fade");
-    // jsdom is 1024 wide: four columns, three rows. The real prerender has no window and renders the phone's two (the minimum, eight).
-    expect(html.match(/loading="eager"/g)).toHaveLength(12);
-    expect(html.match(/fetchpriority="high"/g)).toHaveLength(12);
+    // jsdom is 1024 x 768: four columns, about five 3:2 tiles each start in view, capped at eight on a desktop.
+    expect(html.match(/loading="eager"/g)).toHaveLength(EAGER_MAX_DESKTOP);
+    expect(html.match(/fetchpriority="high"/g)).toHaveLength(1);
+    expect(html.match(/loading="lazy"/g)!.length).toBe(72 - EAGER_MAX_DESKTOP);
+  });
+
+  it("the first viewport is measured from the columns: a phone takes four at most, a short desktop fewer than the cap", () => {
+    const tiles = Array.from({ length: 40 }, (_, i) => ({ key: `t${i}`, ratio: 1.5 }));
+    const columns = (n: number) => Array.from({ length: n }, (_, c) => tiles.filter((_, i) => i % n === c));
+    expect(firstViewportKeys(columns(2), tiles, 2, { width: 375, height: 812 }).size).toBe(EAGER_MAX_PHONE);
+    // A 1440 x 200 strip: six columns, only the first row starts inside it.
+    expect([...firstViewportKeys(columns(6), tiles, 6, { width: 1440, height: 200 })]).toEqual(["t0", "t1", "t2", "t3", "t4", "t5"]);
   });
 
   it("a typed search that matches nothing says so, with the way in, and shows no unrelated work", () => {
@@ -302,7 +311,7 @@ describe("Wall tiles", () => {
     }
   });
 
-  it("loops forever: every sentinel hit loads another pass and no More link exists (UX interview 8)", () => {
+  it("auto-loads three passes, then stops and offers a quiet More link (JP, 2026-11-06: the wall stops, the footer comes out)", () => {
     stubMedia();
     act(() => root.render(wall(projects(30))));
     expect(container.querySelector(".work-wall")?.hasAttribute("data-fade")).toBe(true);
@@ -316,13 +325,17 @@ describe("Wall tiles", () => {
       });
     const count = () => container.querySelectorAll(".wall-tile").length;
     expect(count()).toBe(72);
+    expect(container.querySelector(".work-wall__more")).toBeNull();
     sentinelHit();
+    sentinelHit();
+    expect(count()).toBe(AUTO_PASSES * 72);
+    // Third pass shown: the sentinel is no longer watched, so the footer can be reached.
     sentinelHit();
     expect(count()).toBe(216);
-    sentinelHit();
-    sentinelHit();
-    expect(count()).toBe(360);
-    expect(container.querySelector(".work-wall__more")).toBeNull();
+    const more = container.querySelector<HTMLButtonElement>(".work-wall__more button")!;
+    expect(more.textContent).toBe(siteCopy.home.results.more);
+    act(() => more.click());
+    expect(count()).toBe(288);
   });
 });
 
