@@ -18,7 +18,7 @@ import { join } from "node:path";
 
 const PROJECT_ID = process.env.SANITY_PROJECT_ID || "dvufm78f";
 const DATASET = process.env.SANITY_DATASET || "production";
-const FILE = "docs/superpowers/specs/2026-11-06-sanity-copy-fix/patches.json";
+const DEFAULT_FILE = "docs/superpowers/specs/2026-11-06-sanity-copy-fix/patches.json";
 
 type Entry = {
   _id: string;
@@ -45,6 +45,8 @@ async function main() {
   const write = args.includes("--write");
   const includeArg = args[args.indexOf("--include") + 1];
   const include = new Set(args.includes("--include") && includeArg ? includeArg.split(",") : []);
+  const fileArg = args[args.indexOf("--file") + 1];
+  const FILE = args.includes("--file") && fileArg ? fileArg : DEFAULT_FILE;
   const token = process.env.SANITY_WRITE_TOKEN || cliToken();
   if (!token) throw new Error("No Sanity token: set SANITY_WRITE_TOKEN or log in with the Sanity CLI.");
 
