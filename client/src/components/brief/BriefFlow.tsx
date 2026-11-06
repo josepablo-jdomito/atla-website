@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useEffect,
   useId,
   useRef,
@@ -20,8 +19,8 @@ import {
 } from "@shared/brief";
 import { siteCopy } from "@/content/siteCopy";
 import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
-import { fetchNextStep, submitBrief } from "./briefApi";
-import { clearBrief, loadBrief, momentFromParam, saveBrief, type BriefStep, type SavedBrief } from "./briefStorage";
+import { submitBrief } from "./briefApi";
+import { clearBrief, loadBrief, saveBrief, takeSeedFromUrl, type BriefStep, type SavedBrief } from "./briefStorage";
 
 const copy = siteCopy.brief;
 
@@ -55,8 +54,8 @@ function cleanSeed(seed: string | null | undefined): string | undefined {
   return value ? value : undefined;
 }
 
-function freshBrief(seed: string | undefined, moment?: string): SavedBrief {
-  return { seed, answers: moment ? { moment } : {}, submissionId: newSubmissionId(), path: [], index: 0 };
+function freshBrief(seed: string | undefined): SavedBrief {
+  return { seed, answers: {}, submissionId: newSubmissionId(), path: [], index: 0 };
 }
 
 function stepKey(brief: SavedBrief): string {
@@ -68,74 +67,42 @@ function isBookable(url: string | undefined): url is string {
   return !!url && /^https:\/\//.test(url);
 }
 
-/**
- * Screens in the whole brief. The seed answers "What are you building?" and a `?moment=` link answers
- * "What is the moment?", so those are skipped. A moment answered on screen is still counted.
- */
-function totalSteps(brief: SavedBrief): number {
-  const momentPreset = !!brief.answers.moment && !brief.path.some((step) => step.id === "moment");
-  return BRIEF_QUESTION_IDS.length - (brief.seed ? 1 : 0) - (momentPreset ? 1 : 0);
+/** Screens in the whole brief: the five questions and the contact form. */
+const TOTAL_STEPS = BRIEF_QUESTION_IDS.length;
+
+/** The screen after the current answers: the next question, or the contact form once all five are in. */
+function nextStep(brief: SavedBrief): BriefStep {
+  const next = nextFixedQuestion(brief);
+  return "kind" in next ? next : { id: "contact" };
 }
 
-export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: string | null }) {
+export function BriefFlow() {
   const [brief, setBrief] = useState<SavedBrief | null>(null);
-  const [pending, setPending] = useState(false);
   const [direction, setDirection] = useState<Direction>("forward");
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
-  const request = useRef(0);
   const userMoved = useRef(false);
   // brief_start: once per brief, when its first question is on screen. Nothing typed goes with it.
-  const seededVisit = useRef(Boolean(cleanSeed(seed) || momentFromParam(moment)));
+  const seededVisit = useRef(false);
   const startTracked = useRef(false);
 
-  const commit = useCallback((next: SavedBrief) => {
+  const commit = (next: SavedBrief) => {
     saveBrief(next);
     setBrief(next);
-  }, []);
+  };
 
-  /** Appends the next screen after the last one. A failing API never stalls the flow (fetchNextStep falls back). */
-  const appendNextStep = useCallback(
-    async (base: SavedBrief) => {
-      const token = ++request.current;
-      setPending(true);
-      const next = await fetchNextStep(base);
-      if (token !== request.current) return;
-      // "done" only comes back once contact is valid, and the visitor still has to send it from the contact screen.
-      const step: BriefStep = "kind" in next ? next : { id: "contact" };
-      setPending(false);
-      setDirection("forward");
-      commit({ ...base, path: [...base.path, step], index: base.path.length });
-    },
-    [commit],
-  );
-
-  const start = useCallback(
-    (seedText: string | undefined, momentOption?: string) => {
-      const fresh = freshBrief(seedText, momentOption);
-      if (seedText) {
-        commit(fresh);
-        void appendNextStep(fresh);
-        return;
-      }
-      // Without a seed the first question is always "What are you building?": no wait for it.
-      const first = nextFixedQuestion(fresh);
-      commit({ ...fresh, path: ["kind" in first ? first : { id: "contact" }] });
-    },
-    [appendNextStep, commit],
-  );
+  const start = (seedText: string | undefined) => {
+    const fresh = freshBrief(seedText);
+    commit({ ...fresh, path: [nextStep(fresh)] });
+  };
 
   useEffect(() => {
-    const seedText = cleanSeed(seed);
-    const momentOption = momentFromParam(moment);
+    // The seed (/brief?seed=Like <title>) is taken out of the URL here and travels with the submission; it answers nothing.
+    const seedText = cleanSeed(takeSeedFromUrl());
+    seededVisit.current = Boolean(seedText);
     const saved = loadBrief();
-    const sameSeed = !seedText || seedText === saved?.seed;
-    const sameMoment = !momentOption || momentOption === saved?.answers.moment;
-    if (saved && sameSeed && sameMoment) setBrief(saved);
-    else start(seedText, momentOption);
-    return () => {
-      request.current++;
-    };
-    // Runs once per mount: a new seed or moment in the URL is a new visit to the page.
+    if (saved && (!seedText || seedText === saved.seed)) setBrief(saved);
+    else start(seedText);
+    // Runs once per mount: a new seed in the URL is a new visit to the page.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -150,7 +117,7 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
   // the first question, which is where a fresh brief starts.
   if (!brief) {
     return (
-      <BriefFrame progress={0} pending={false}>
+      <BriefFrame progress={0}>
         <div className="brief-form">
           <h1 className="brief-prompt">{BRIEF_QUESTIONS[0].prompt}</h1>
         </div>
@@ -158,10 +125,9 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
     );
   }
 
-  const total = totalSteps(brief);
   const done = brief.calendlyUrl !== undefined;
   const step = brief.path[brief.index];
-  const progress = done ? 1 : Math.min(1, (brief.index + (pending ? 1 : 0)) / total);
+  const progress = done ? 1 : Math.min(1, brief.index / TOTAL_STEPS);
 
   const answer = (id: string, value: Answer) => {
     userMoved.current = true;
@@ -171,12 +137,12 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
       commit({ ...answered, index: brief.index + 1 });
       return;
     }
-    commit(answered);
-    void appendNextStep(answered);
+    setDirection("forward");
+    commit({ ...answered, path: [...answered.path, nextStep(answered)], index: answered.path.length });
   };
 
   const back = () => {
-    if (pending || submitStatus === "sending" || brief.index === 0) return;
+    if (submitStatus === "sending" || brief.index === 0) return;
     userMoved.current = true;
     setDirection("back");
     setSubmitStatus("idle");
@@ -217,11 +183,10 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
   return (
     <BriefFrame
       progress={progress}
-      pending={pending}
       meta={
         // Back is the only thing up here: no label, no step count (no numbers on the site).
         done || brief.index === 0 ? null : (
-          <button type="button" className="brief-back" onClick={back} disabled={pending || submitStatus === "sending"}>
+          <button type="button" className="brief-back" onClick={back} disabled={submitStatus === "sending"}>
             {copy.back}
           </button>
         )
@@ -246,7 +211,6 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
               fieldRef={fieldRef}
               question={step as BriefQuestion}
               value={brief.answers[step.id]}
-              disabled={pending}
               onAnswer={(value) => answer(step.id, value)}
             />
           )
@@ -258,17 +222,15 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
 
 function BriefFrame({
   progress,
-  pending,
   meta,
   children,
 }: {
   progress: number;
-  pending: boolean;
   meta?: ReactNode;
   children?: ReactNode;
 }) {
   return (
-    <section className="brief" aria-busy={pending || undefined}>
+    <section className="brief">
       <div
         className="brief-progress"
         role="progressbar"
@@ -277,7 +239,7 @@ function BriefFrame({
         aria-valuemax={100}
         aria-valuenow={Math.round(progress * 100)}
       >
-        <div className="brief-progress__fill" data-pending={pending || undefined} style={{ transform: `scaleX(${progress})` }} />
+        <div className="brief-progress__fill" style={{ transform: `scaleX(${progress})` }} />
       </div>
       <div className="brief__inner">
         <div className="brief-meta">{meta}</div>
@@ -323,14 +285,14 @@ function BriefScreen({
 function QuestionScreen({
   question,
   value,
-  disabled,
+  disabled = false,
   onAnswer,
   headingRef,
   fieldRef,
 }: {
   question: BriefQuestion;
   value: Answer | undefined;
-  disabled: boolean;
+  disabled?: boolean;
   onAnswer: (value: Answer) => void;
   headingRef: RefObject<HTMLHeadingElement>;
   fieldRef: RefObject<HTMLElement>;
@@ -411,9 +373,9 @@ function QuestionScreen({
 
   const options = question.options ?? [];
   const multi = question.kind === "multi";
-  const toggle = (option: string) => {
+  const toggle = (value: string) => {
     setEmpty(false);
-    setChosen((current) => (current.includes(option) ? current.filter((o) => o !== option) : [...current, option]));
+    setChosen((current) => (current.includes(value) ? current.filter((v) => v !== value) : [...current, value]));
   };
 
   return (
@@ -426,18 +388,18 @@ function QuestionScreen({
       ) : null}
       <div className="brief-options" role="group" aria-labelledby={headingId} aria-describedby={multi ? hintId : undefined}>
         {options.map((option) => {
-          const selected = multi ? chosen.includes(option) : value === option;
+          const selected = multi ? chosen.includes(option.value) : value === option.value;
           return (
             <button
-              key={option}
+              key={option.value}
               type="button"
               className="brief-option"
               data-kind={question.kind}
               aria-pressed={selected}
               disabled={disabled}
-              onClick={() => (multi ? toggle(option) : onAnswer(option))}
+              onClick={() => (multi ? toggle(option.value) : onAnswer(option.value))}
             >
-              <span className="brief-option__label">{option}</span>
+              <span className="brief-option__label">{option.label}</span>
             </button>
           );
         })}
@@ -450,7 +412,7 @@ function QuestionScreen({
             disabled={disabled}
             onClick={() => {
               if (chosen.length === 0) setEmpty(true);
-              else onAnswer(options.filter((o) => chosen.includes(o)));
+              else onAnswer(options.filter((o) => chosen.includes(o.value)).map((o) => o.value));
             }}
           >
             {copy.continue}
@@ -515,6 +477,7 @@ function ContactScreen({
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">
         {copy.contact.prompt}
       </h1>
+      <p className="brief-lead brief-lead--muted">{copy.contact.body}</p>
       <div className="brief-fields">
         {CONTACT_FIELDS.map((field, i) => {
           const id = `${baseId}-${field.key}`;

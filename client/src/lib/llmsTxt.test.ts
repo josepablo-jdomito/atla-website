@@ -38,7 +38,7 @@ describe("llms.txt source", () => {
 
   it("lists the four moments, the brief, and the ventures by name", () => {
     for (const moment of siteCopy.services.moments) {
-      expect(LLMS).toContain(`- [${moment.title}](https://www.atla.design/brief?moment=${moment.brief})`);
+      expect(LLMS).toContain(`- [${moment.title}](https://www.atla.design/services)`);
     }
     expect(LLMS).toContain("## Start a project");
     expect(LLMS).toContain("(https://www.atla.design/brief)");

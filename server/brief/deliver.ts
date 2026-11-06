@@ -1,4 +1,4 @@
-import { BRIEF_QUESTIONS, type BriefContact, type BriefState } from "../../shared/brief.ts";
+import { BRIEF_QUESTIONS, optionLabel, type BriefContact, type BriefState } from "../../shared/brief.ts";
 import { addPersonNote, findOrCreatePerson, singleLine } from "../contact.ts";
 
 /**
@@ -18,18 +18,14 @@ const RESEND_TIMEOUT_MS = 8_000;
 const DEFAULT_BRIEF_TO_EMAIL = "josepablo@atla.design";
 const NOTE_TITLE = "Brief · atla.design";
 
-const PROMPTS = new Map(BRIEF_QUESTIONS.map((q) => [q.id, q.prompt]));
+const QUESTIONS = new Map(BRIEF_QUESTIONS.map((q) => [q.id, q]));
 
 const normalizeText = (value: string) => value.replace(/\r\n?/g, "\n").trim();
 
-function answerText(value: string | string[] | undefined): string {
-  if (Array.isArray(value)) return value.map((v) => singleLine(v)).filter(Boolean).join(", ");
-  return typeof value === "string" ? normalizeText(value) : "";
-}
-
 /**
- * English, deterministic, no AI. Labels are the bank's own prompts (the AI may
- * have reworded them for the visitor); free-text answers are kept as written.
+ * English, deterministic, no AI. Labels are the bank's own prompts; an answer
+ * reads as the option the visitor saw followed by its stored value, so the
+ * note matches the waitlist's values in Attio. Free text is kept as written.
  */
 export function formatBriefSummary(state: BriefState): string {
   const lines: string[] = ["New brief from atla.design", ""];
@@ -46,17 +42,22 @@ export function formatBriefSummary(state: BriefState): string {
   }
 
   const seed = state.seed ? normalizeText(state.seed) : "";
-  const building = answerText(state.answers.building);
-  if (seed && seed !== building) lines.push("Typed in the search bar", seed, "");
+  if (seed) lines.push("Came from", seed, "");
 
   const bankIds = BRIEF_QUESTIONS.map((q) => q.id);
   const otherIds = Object.keys(state.answers)
     .filter((id) => !bankIds.includes(id))
     .sort();
   for (const id of [...bankIds, ...otherIds]) {
-    const text = id === "building" && !building ? seed : answerText(state.answers[id]);
+    const question = QUESTIONS.get(id);
+    const raw = state.answers[id];
+    const values = Array.isArray(raw) ? raw : typeof raw === "string" ? [raw] : [];
+    const text = values
+      .map((v) => (question?.options ? `${singleLine(optionLabel(question, v))} [${singleLine(v)}]` : normalizeText(v)))
+      .filter(Boolean)
+      .join(", ");
     if (!text) continue;
-    lines.push(PROMPTS.get(id) ?? id, text, "");
+    lines.push(question?.prompt ?? id, text, "");
   }
 
   return lines.join("\n").trimEnd();

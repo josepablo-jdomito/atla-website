@@ -288,7 +288,6 @@ describe("page_location never carries the query or the hash", () => {
 // ---------------------------------------------------------------- the brief
 
 const SEED = "Quokka orchard cider from Patagonia";
-const BUILDING = "Zanzibar marmalade cooperative";
 const CONTACT = { name: "Zebulon Thistlewood", email: "zeb@thistlewood-example.org", company: "Marigold Foundry" };
 
 const prompt = () => container.querySelector(".brief-prompt")?.textContent ?? "";
@@ -315,21 +314,13 @@ function setField(element: HTMLInputElement | HTMLTextAreaElement, value: string
   });
 }
 
-/** Answers every question with the first option (or `BUILDING` for text) and returns the answers chosen. */
+/** Answers every question with the first option and returns the labels and values chosen. */
 async function answerAll(): Promise<string[]> {
   const chosen: string[] = [];
   for (let guard = 0; guard < 10 && !container.querySelector('[data-field="name"]'); guard += 1) {
-    const textarea = container.querySelector<HTMLTextAreaElement>(".brief-text");
-    if (textarea) {
-      setField(textarea, BUILDING);
-      chosen.push(BUILDING);
-      await click(container.querySelector(".brief-primary"));
-      continue;
-    }
     const option = container.querySelector<HTMLButtonElement>(".brief-option");
     chosen.push(option!.textContent ?? "");
     await click(option);
-    if (option!.dataset.kind === "multi") await click(container.querySelector(".brief-primary"));
   }
   return chosen;
 }
@@ -347,11 +338,12 @@ async function sendContact() {
 describe("brief events", () => {
   it("brief_start {seeded: true}, brief_complete and calendly_click fire once each, at the right moment", async () => {
     localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
+    window.history.replaceState(null, "", `/brief?seed=${encodeURIComponent(SEED)}`);
     await act(async () => {
-      root.render(createElement(BriefFlow, { seed: SEED, moment: "grow" }));
+      root.render(createElement(BriefFlow));
     });
     await flush();
-    expect(prompt()).toBe("Which world is it in?");
+    expect(prompt()).toBe("What's your brand actually costing you right now?");
     expect(fired()).toEqual([{ name: "brief_start", params: { seeded: true } }]);
 
     const answers = await answerAll();
@@ -371,20 +363,19 @@ describe("brief events", () => {
       { name: "calendly_click", params: {} },
     ]);
     expectCleanShape(events);
-    expectNoLeak(events, [SEED, "Grow / scale", ...answers, ...Object.values(CONTACT)]);
+    expectNoLeak(events, [SEED, ...answers, ...Object.values(CONTACT)]);
   });
 
-  it("brief_start {seeded: false} without a seed or moment; a typed answer never rides along", async () => {
+  it("brief_start {seeded: false} without a seed; the answers never ride along", async () => {
     localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
     await act(async () => {
       root.render(createElement(BriefFlow, {}));
     });
     await flush();
-    expect(prompt()).toBe("What are you building?");
+    expect(prompt()).toBe("What's your brand actually costing you right now?");
     expect(fired()).toEqual([{ name: "brief_start", params: { seeded: false } }]);
 
     const answers = await answerAll();
-    expect(answers[0]).toBe(BUILDING);
     await sendContact();
 
     const events = fired();
@@ -395,8 +386,9 @@ describe("brief events", () => {
 
   it("sends nothing before consent where the banner asks", async () => {
     setTimeZone("Europe/Berlin");
+    window.history.replaceState(null, "", `/brief?seed=${encodeURIComponent(SEED)}`);
     await act(async () => {
-      root.render(createElement(BriefFlow, { seed: SEED }));
+      root.render(createElement(BriefFlow));
     });
     await flush();
     await answerAll();

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { SavedBrief } from "./briefStorage";
 
-const KEY = "atla-brief-v1";
+const KEY = "atla-brief-v2";
 
 function memoryStorage(): Storage {
   const data = new Map<string, string>();
@@ -26,11 +26,20 @@ function throwingStorage(): Storage {
 
 const saved: SavedBrief = {
   seed: "A mezcal brand for export",
-  answers: { industry: "Consumer / CPG", deliverables: ["Naming", "Identity"] },
+  answers: { q2: "launched" },
   contact: { name: "Ana", email: "ana@example.com", company: "", website: "", phone: "" },
   submissionId: "3f0c2a8e-7d1b-4c55-9a51-0f6f6b1d2e11",
   path: [
-    { id: "industry", prompt: "Which world is it in?", kind: "single", options: ["Hospitality", "Consumer / CPG"] },
+    {
+      id: "q2",
+      name: "stage",
+      prompt: "Where is your business today?",
+      kind: "single",
+      options: [
+        { value: "pre_launch", label: "Pre-launch. Building the foundation." },
+        { value: "launched", label: "Launched. Finding traction." },
+      ],
+    },
     { id: "contact" },
   ],
   index: 1,

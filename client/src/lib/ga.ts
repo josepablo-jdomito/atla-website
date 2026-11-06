@@ -151,7 +151,7 @@ function siteEvent(event: SiteEvent) {
 /** A typed search on the work wall settled. `closest` is true when nothing matched and the wall shows the nearest work. */
 export const trackBarSearch = (kind: "results" | "brief", closest: boolean) =>
   siteEvent({ name: "bar_search", params: { kind, closest } });
-/** The brief showed its first question. `seeded` is true when the visit came with a seed or a ?moment=. */
+/** The brief showed its first question. `seeded` is true when the visit came with a seed (/brief?seed=). */
 export const trackBriefStart = (seeded: boolean) => siteEvent({ name: "brief_start", params: { seeded } });
 export const trackBriefComplete = () => siteEvent({ name: "brief_complete", params: {} });
 export const trackCalendlyClick = () => siteEvent({ name: "calendly_click", params: {} });

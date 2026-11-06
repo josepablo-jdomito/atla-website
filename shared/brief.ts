@@ -6,30 +6,78 @@ export type BriefState = {
   answers: Record<string, string | string[]>;
   contact?: BriefContact;
 };
-export type BriefQuestion = { id: string; prompt: string; kind: "single" | "multi" | "text"; options?: string[] };
+/** An option on screen: `label` is what the visitor reads, `value` is what is stored and sent. */
+export type BriefOption = { value: string; label: string };
+/** `name` is the semantic name of the question (stable `id`s are for analytics, like the waitlist's q1..q5). */
+export type BriefQuestion = { id: string; name?: string; prompt: string; kind: "single" | "multi" | "text"; options?: BriefOption[] };
 
+/**
+ * The same five questions as start.atla.design/waitlist (atla-start, src/lib/quiz/definitions/waitlist.ts):
+ * same wording, same labels, same values (waitlist-scoring.ts), so Attio and GA stay comparable.
+ * The budget ranges are the one place on the site where dollar figures are allowed.
+ */
 export const BRIEF_QUESTIONS: BriefQuestion[] = [
-  { id: "building", prompt: "What are you building?", kind: "text" },
   {
-    id: "industry",
-    prompt: "Which world is it in?",
+    id: "q1",
+    name: "brand_cost",
+    prompt: "What's your brand actually costing you right now?",
     kind: "single",
-    options: ["Hospitality", "Consumer / CPG", "Tech / startup", "Real estate / lifestyle", "Other"],
+    options: [
+      { value: "lost_deals", label: "Lost deals. Clients can't see what we're worth." },
+      { value: "wrong_audience", label: "Wrong audience. We attract the people we don't want." },
+      { value: "inconsistent", label: "Inconsistent execution. Every touchpoint feels different." },
+      { value: "stalled", label: "Stalled growth. We've outgrown what we built." },
+      { value: "not_sure", label: "Honestly not sure. That's why I'm here." },
+    ],
   },
-  { id: "stage", prompt: "Where is it today?", kind: "single", options: ["Idea", "Pre-launch", "Launched", "Established"] },
   {
-    id: "moment",
-    prompt: "What is the moment?",
+    id: "q2",
+    name: "stage",
+    prompt: "Where is your business today?",
     kind: "single",
-    options: ["Launch", "Raise capital", "Grow / scale", "Reposition"],
+    options: [
+      { value: "pre_launch", label: "Pre-launch. Building the foundation." },
+      { value: "launched", label: "Launched. Finding traction." },
+      { value: "scaling", label: "Established. Growing and ready to scale." },
+      { value: "plateau", label: "Established. Plateaued and need a new chapter." },
+      { value: "project_specific", label: "Project-specific (rebrand, sub-brand, naming, strategic refresh)." },
+    ],
   },
   {
-    id: "deliverables",
-    prompt: "What do you need from us?",
-    kind: "multi",
-    options: ["Naming", "Identity", "Packaging", "Website", "Motion", "Campaign", "Not sure"],
+    id: "q3",
+    name: "differentiation",
+    prompt: "Can you explain what makes your brand different in one sentence?",
+    kind: "single",
+    options: [
+      { value: "yes_easily", label: "Yes, easily." },
+      { value: "sort_of", label: "Sort of. It shifts depending on who I'm talking to." },
+      { value: "no", label: "No, and that's part of the problem." },
+    ],
   },
-  { id: "timing", prompt: "When do you want to start?", kind: "single", options: ["This month", "1–3 months", "3–6 months", "Exploring"] },
+  {
+    id: "q4",
+    name: "budget",
+    prompt: "What's your investment range for this?",
+    kind: "single",
+    options: [
+      { value: "5_15k", label: "$5K \u2013 $15K" },
+      { value: "15_35k", label: "$15K \u2013 $35K" },
+      { value: "35_75k", label: "$35K \u2013 $75K" },
+      { value: "75k_plus", label: "$75K+" },
+    ],
+  },
+  {
+    id: "q5",
+    name: "timeline",
+    prompt: "When do you want this live?",
+    kind: "single",
+    options: [
+      { value: "30_days", label: "In the next 30 days." },
+      { value: "1_3_months", label: "1 \u2013 3 months." },
+      { value: "3_6_months", label: "3 \u2013 6 months." },
+      { value: "no_timeline", label: "No fixed timeline." },
+    ],
+  },
 ];
 
 /** Ordered ids of the whole flow, including the contact step. */
@@ -50,22 +98,20 @@ function isAnswered(value: string | string[] | undefined): boolean {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-/** The seed counts as the answer to `building` when it was not copied into answers. */
-function hasAnswer(state: BriefState, id: string): boolean {
-  if (isAnswered(state.answers[id])) return true;
-  return id === "building" && isAnswered(state.seed);
-}
-
 export function nextFixedQuestion(state: BriefState): BriefQuestion | { id: "contact" } | { id: "done" } {
-  for (const q of BRIEF_QUESTIONS) if (!hasAnswer(state, q.id)) return q;
+  for (const q of BRIEF_QUESTIONS) if (!isAnswered(state.answers[q.id])) return q;
   return state.contact && briefContactSchema.safeParse(state.contact).success ? { id: "done" } : { id: "contact" };
 }
 
 export function isComplete(state: BriefState): boolean {
   return (
-    hasAnswer(state, "building") &&
-    hasAnswer(state, "moment") &&
+    BRIEF_QUESTIONS.every((q) => isAnswered(state.answers[q.id])) &&
     !!state.contact &&
     briefContactSchema.safeParse(state.contact).success
   );
+}
+
+/** The label of a stored answer value (a label when the value is not one of the question's options). */
+export function optionLabel(question: BriefQuestion | undefined, value: string): string {
+  return question?.options?.find((o) => o.value === value)?.label ?? value;
 }

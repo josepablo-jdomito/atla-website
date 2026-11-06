@@ -9,7 +9,6 @@ import Services from "./Services";
 import About from "./About";
 import Contact from "./Contact";
 import { ContactForm } from "@/components/site/ContactForm";
-import { momentFromParam } from "@/components/brief/briefStorage";
 import { siteCopy } from "@/content/siteCopy";
 import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
@@ -66,7 +65,7 @@ describe("Services page", () => {
     expect(titles).toEqual(siteCopy.services.disciplines.map((d) => d.title));
   });
 
-  it("every discipline lists what is included and links to the brief; a moment pre-answers it", () => {
+  it("every discipline lists what is included and links to the brief; a moment changes nothing in the link", () => {
     render(Services, "/services");
     const sections = Array.from(main().querySelectorAll<HTMLElement>("section.discipline"));
     expect(sections.length).toBe(siteCopy.services.disciplines.length);
@@ -80,9 +79,7 @@ describe("Services page", () => {
     const narrowed = Array.from(main().querySelectorAll<HTMLElement>("section.discipline"));
     expect(narrowed.length).toBe(siteCopy.services.disciplines.filter((d) => (d.moments as readonly string[]).includes("raise")).length);
     const href = narrowed[0].querySelector<HTMLAnchorElement>("a.discipline__cta")!.getAttribute("href")!;
-    expect(href).toBe(`/brief?moment=${encodeURIComponent(raise.brief)}`);
-    const param = new URL(href, "https://x.test").searchParams.get("moment");
-    expect(momentFromParam(param)).toBe(raise.title);
+    expect(href).toBe("/brief");
   });
 
   it("shows no prices", () => {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BRIEF_QUESTIONS, type BriefContact, type BriefQuestion, type BriefState } from "@shared/brief";
+import { type BriefContact, type BriefQuestion, type BriefState } from "@shared/brief";
 
 /** A screen in the flow: a question from the bank or the contact form. */
 export type BriefStep = BriefQuestion | { id: "contact" };
@@ -16,24 +16,10 @@ export type SavedBrief = BriefState & {
   calendlyUrl?: string;
 };
 
-const STORAGE_KEY = "atla-brief-v1";
+// v2: the waitlist questions replaced the six-question brief; v1 sessions hold screens that no longer exist.
+const STORAGE_KEY = "atla-brief-v2";
 /** The seed a link brought (`/brief?seed=`), held here so it never stays in the URL. */
 const SEED_KEY = "atla-brief-seed";
-
-/** `/brief?moment=<id>` (the Services page) pre-answers "What is the moment?" with one of its options. */
-const MOMENT_PARAMS: Record<string, string> = {
-  launch: "Launch",
-  raise: "Raise capital",
-  grow: "Grow / scale",
-  reposition: "Reposition",
-};
-const MOMENT_OPTIONS = BRIEF_QUESTIONS.find((q) => q.id === "moment")?.options ?? [];
-
-/** The moment option a `?moment=` value stands for; unknown values are ignored. */
-export function momentFromParam(param: string | null | undefined): string | undefined {
-  const option = param ? MOMENT_PARAMS[param.trim().toLowerCase()] : undefined;
-  return option && MOMENT_OPTIONS.includes(option) ? option : undefined;
-}
 
 const contactSchema: z.ZodType<BriefContact> = z.object({
   name: z.string(),
@@ -46,9 +32,10 @@ const contactSchema: z.ZodType<BriefContact> = z.object({
 const stepSchema: z.ZodType<BriefStep> = z.union([
   z.object({
     id: z.string(),
+    name: z.string().optional(),
     prompt: z.string(),
     kind: z.enum(["single", "multi", "text"]),
-    options: z.array(z.string()).optional(),
+    options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
   }),
   z.object({ id: z.literal("contact") }),
 ]);
@@ -106,7 +93,7 @@ export function clearBrief(): void {
 
 /**
  * The brief's seed, read from `?seed=` once. The first call moves it into sessionStorage and
- * rewrites the URL without it (`?moment=` and anything else stay), so the visitor's words never
+ * rewrites the URL without it (anything else stays), so the visitor's words never
  * sit in the address bar, history, Referer or analytics. Later calls read it back from storage.
  * Safe to call on every render; returns null on the server or when there is no seed.
  */

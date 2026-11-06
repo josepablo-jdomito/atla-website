@@ -22,12 +22,12 @@ Every discipline, one team. Each link opens that discipline on the services page
 - [Website and decks](https://www.atla.design/services#website): Websites and decks that make the case when nobody from your team is in the room.
 - [Motion and campaigns](https://www.atla.design/services#motion): The brand in movement, without a second system.
 
-The moments Atla is hired for. Each link starts a brief with that moment answered:
+The moments Atla is hired for. Each one narrows the services page to what matters at that moment:
 
-- [Launch](https://www.atla.design/brief?moment=launch)
-- [Raise capital](https://www.atla.design/brief?moment=raise)
-- [Grow / scale](https://www.atla.design/brief?moment=grow)
-- [Reposition](https://www.atla.design/brief?moment=reposition)
+- [Launch](https://www.atla.design/services)
+- [Raise capital](https://www.atla.design/services)
+- [Grow / scale](https://www.atla.design/services)
+- [Reposition](https://www.atla.design/services)
 
 The ways in, the same on every page: Audit, Brand system, Full build, Fractional brand director.
 
@@ -48,7 +48,7 @@ The ways in, the same on every page: Audit, Brand system, Full build, Fractional
 
 ## Start a project
 
-- [Start a project](https://www.atla.design/brief): a short brief, one question at a time; José Pablo reads every brief and replies by email
+- [Start a project](https://www.atla.design/brief): five questions, one at a time; José Pablo reads every application and replies by email
 
 ## Contact
 

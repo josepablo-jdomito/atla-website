@@ -72,12 +72,12 @@ export const siteCopy = {
     lightboxClose: "Close",
     lightboxPrev: "Previous image",
     lightboxNext: "Next image",
-    // Pre-fills the brief's first answer: /brief?seed=Like <title>
+    // Travels with the brief as context: /brief?seed=Like <title> (taken out of the URL on arrival; it answers nothing)
     seed: (title: string) => `Like ${title}`,
   },
   brief: {
     metaTitle: "Start a project",
-    metaDescription: "A few questions about what you are building, one at a time. José Pablo reads every brief and replies by email.",
+    metaDescription: "Five questions, one at a time. José Pablo reads every application and replies by email.",
     label: "Brief",
     progressLabel: "Brief progress",
     stepSeparator: "/",
@@ -90,7 +90,8 @@ export const siteCopy = {
     emptyText: "A sentence is enough to start.",
     emptyChoice: "Pick one to go on.",
     contact: {
-      prompt: "Where do we write back?",
+      prompt: "Where should we send our reply?",
+      body: "Every application gets a 48-hour read. Name and email are required so we can reach back, including when there's a faster path than working with us directly.",
       fields: {
         name: "Name",
         email: "Email",
@@ -99,7 +100,7 @@ export const siteCopy = {
         phone: "Phone",
       },
       optional: "Optional",
-      submit: "Send",
+      submit: "Submit application",
       sending: "Sending",
       nameError: "We need a name.",
       emailError: "We need an email we can reply to.",
@@ -131,26 +132,22 @@ export const siteCopy = {
     includesClose: "Close",
     cta: "Start a project",
     exampleLabel: "From the work",
-    // `brief` is the /brief?moment= value: it pre-answers the moment question (briefStorage momentFromParam).
     moments: [
-      { id: "launch", title: "Launch", line: "You get one first impression. We build the brand before anyone sees it.", brief: "launch" },
+      { id: "launch", title: "Launch", line: "You get one first impression. We build the brand before anyone sees it." },
       {
         id: "raise",
         title: "Raise capital",
         line: "Investors judge the company before they open the deck. We make sure the brand survives that first look.",
-        brief: "raise",
       },
       {
         id: "grow",
         title: "Grow / scale",
         line: "More products, more markets. Every new person touches the brand. We keep it one brand.",
-        brief: "grow",
       },
       {
         id: "reposition",
         title: "Reposition",
         line: "The company changed and the brand did not. We start with what your customers already say about you.",
-        brief: "reposition",
       },
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.

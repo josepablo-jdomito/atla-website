@@ -18,10 +18,6 @@ const copy = siteCopy.services;
 const structuredData = buildServicesStructuredData();
 const COVER_WIDTHS = [480, 720, 960, 1280];
 
-function briefHref(moment: string) {
-  return `/brief?moment=${encodeURIComponent(moment)}`;
-}
-
 export default function Services() {
   const { projects } = useSiteProjects();
   const [moment, setMoment] = useState<string>("");
@@ -102,7 +98,7 @@ export default function Services() {
         {moment ? (
           <p className="moments-strip__line">
             {copy.moments.find((item) => item.id === moment)?.line}{" "}
-            <Link href={briefHref(copy.moments.find((item) => item.id === moment)?.brief ?? moment)} className="site-link moments-strip__brief">
+            <Link href="/brief" className="site-link moments-strip__brief">
               {copy.cta}
             </Link>
           </p>
@@ -150,7 +146,7 @@ export default function Services() {
                     ))}
                   </ul>
                 </details>
-                <Link href={moment ? briefHref(moment) : "/brief"} className="site-link discipline__cta">
+                <Link href="/brief" className="site-link discipline__cta">
                   {copy.cta}
                 </Link>
               </section>
