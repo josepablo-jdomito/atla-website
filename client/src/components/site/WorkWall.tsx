@@ -269,8 +269,8 @@ export function WorkWall() {
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
-      {tiles.some((tile) => tile.kind === "video") ? <MotionToggle className="motion-toggle--wall" /> : null}
       <WorkExplore
+        tools={tiles.some((tile) => tile.kind === "video") ? <MotionToggle /> : null}
         query={draft}
         onQuery={(value) => {
           typed.current = true;

@@ -485,7 +485,8 @@ html body {
   .brief-field[data-field="phone"] { grid-column: 1 / -1; max-width: calc(50% - 12px); }
 }
 
-/* The single pause control for looping video (WCAG 2.2.2). Text only, like the Explore filters. */
+/* The single pause control for looping video (WCAG 2.2.2). Text only; on the home it sits in the
+   Explore panel head, so the wall carries no second pill (JP, 2026-11-05). */
 .motion-toggle {
   min-height: 44px;
   padding: 0 4px;
@@ -499,22 +500,7 @@ html body {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
-.motion-toggle--wall {
-  position: fixed;
-  right: var(--site-gutter);
-  bottom: max(20px, env(safe-area-inset-bottom));
-  z-index: 60;
-  min-height: 48px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: var(--site-surface);
-  border: 1px solid var(--site-line);
-  text-decoration: none;
-}
-@media (max-width: 640px) {
-  /* Above the centred pill, so the two never overlap on a phone. */
-  .motion-toggle--wall { bottom: calc(max(20px, env(safe-area-inset-bottom)) + 60px); }
-}
+.site-explore__head-actions .motion-toggle { min-height: 0; padding: 0; text-decoration: none; }
 .motion-toggle--story { align-self: flex-start; }
 
 .brief-privacy { margin: 24px 0 0; font-size: 13px; color: var(--site-muted); }

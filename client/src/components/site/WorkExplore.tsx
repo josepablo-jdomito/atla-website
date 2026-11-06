@@ -23,6 +23,7 @@ export function WorkExplore({
   activeCount,
   visible,
   children,
+  tools,
 }: {
   query: string;
   onQuery: (value: string) => void;
@@ -32,6 +33,8 @@ export function WorkExplore({
   /** The pill only shows while the wall is on screen. */
   visible: boolean;
   children: ReactNode;
+  /** Quiet page tools that live in the panel head, like the pause control for looping video. */
+  tools?: ReactNode;
 }) {
   const [state, setState] = useState<PanelState>("closed");
   const open = state === "open";
@@ -154,6 +157,7 @@ export function WorkExplore({
           <div className="site-explore__head">
             <p>{home.exploreDialog}</p>
             <div className="site-explore__head-actions">
+              {tools}
               {query || activeCount > 0 ? (
                 <button type="button" onClick={onClear} data-action="clear">
                   {home.results.clear}
