@@ -100,7 +100,7 @@ export function LongformSection({
 }) {
   return (
     <section className="page-section longform-section">
-      <h2 className="longform-section__title">{title}</h2>
+      <h2 className="site-section-title longform-section__title">{title}</h2>
       <div className="longform-section__body">{children}</div>
     </section>
   );
@@ -119,10 +119,10 @@ export function LongformFaqItem({ children }: { children: ReactNode }) {
   return <div className="longform-faq">{children}</div>;
 }
 
-/** The primary action on a landing: the dark pill used across v2. */
+/** The landing's one action. */
 export function LongformAction({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a href={href} className="brief-primary">
+    <a href={href} className="site-action">
       {children}
     </a>
   );
@@ -139,7 +139,7 @@ export function LongformCta({
 }) {
   return (
     <section className="page-section longform-section">
-      <h2 className="longform-section__title">{title}</h2>
+      <h2 className="site-section-title longform-section__title">{title}</h2>
       <div className="longform-section__body">
         <p className="longform-text">{description}</p>
         <div className="longform-actions">
@@ -147,7 +147,7 @@ export function LongformCta({
             <a
               key={action.href}
               href={action.href}
-              className={index === 0 ? "brief-primary" : "longform-link longform-link--action"}
+              className={index === 0 ? "site-action" : "site-text-button"}
             >
               {action.label}
             </a>

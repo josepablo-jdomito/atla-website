@@ -99,7 +99,7 @@ const PROOF: NumberedItem[] = [
 function SectionRow({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
     <section className="page-section" aria-labelledby={id}>
-      <h2 id={id} className="page-section__title">
+      <h2 id={id} className="site-section-title page-section__title">
         {title}
       </h2>
       <div className="page-section__body">{children}</div>
@@ -113,7 +113,7 @@ function NumberedList({ items }: { items: NumberedItem[] }) {
       {items.map((item) => (
         <li key={item.title} className="numbered-list__item">
           <div className="numbered-list__text">
-            <h3 className="numbered-list__title">
+            <h3 className="site-item-title numbered-list__title">
               {item.href ? (
                 <a href={item.href} className="longform-link">
                   {item.title}
@@ -237,7 +237,7 @@ export default function AtlaPrograms() {
           <p className="longform-text">
             Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next step.
           </p>
-          <a href="/brief" className="brief-primary">
+          <a href="/brief" className="site-action">
             Start a project
           </a>
         </SectionRow>

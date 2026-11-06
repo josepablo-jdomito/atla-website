@@ -66,7 +66,7 @@ export function AskPanel({
                 <p className="ask__links">
                   {/* Only the newest error can be tried again; an older one already has its answer below it. */}
                   {turn.kind === "error" && onRetry && index === turns.length - 1 && !pending ? (
-                    <button type="button" className="ask__retry" onClick={onRetry}>
+                    <button type="button" className="site-action ask__retry" onClick={onRetry}>
                       {home.askRetry}
                     </button>
                   ) : null}
@@ -108,7 +108,7 @@ export function AskPanel({
       </p>
       {/* Start over shows while a turn is pending too: it is also the way out of a hung request. */}
       {turns.length > 0 ? (
-        <button type="button" className="ask__restart" onClick={onRestart}>
+        <button type="button" className="site-text-button ask__restart" onClick={onRestart}>
           {copy.restart}
         </button>
       ) : null}

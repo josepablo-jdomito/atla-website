@@ -76,10 +76,10 @@ export function AnalyticsConsent() {
         </a>
       </p>
       <div className="consent__actions">
-        <button ref={acceptRef} type="button" className="consent__button" data-variant="accept" onClick={() => choose("granted")}>
+        <button ref={acceptRef} type="button" className="site-action" onClick={() => choose("granted")}>
           {copy.accept}
         </button>
-        <button type="button" className="consent__button" onClick={() => choose("denied")}>
+        <button type="button" className="site-text-button" onClick={() => choose("denied")}>
           {copy.decline}
         </button>
       </div>

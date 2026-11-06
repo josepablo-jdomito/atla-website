@@ -37,14 +37,14 @@ export default function About() {
         </header>
 
         <section className="page-section" aria-labelledby="why-thesis">
-          <h2 id="why-thesis" className="site-label">
+          <h2 id="why-thesis" className="site-section-title">
             {copy.thesisLabel}
           </h2>
           <div className="page-section__body">
             <ol className="how-steps why-thesis">
               {copy.thesis.map((item) => (
                 <li key={item.title} className="how-step">
-                  <h3 className="how-step__title why-thesis__title">{item.title}</h3>
+                  <h3 className="site-item-title how-step__title why-thesis__title">{item.title}</h3>
                   <p className="how-step__body">{item.body}</p>
                 </li>
               ))}
@@ -53,7 +53,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="about-how">
-          <h2 id="about-how" className="site-label">
+          <h2 id="about-how" className="site-section-title">
             {copy.howLabel}
           </h2>
           <div className="page-section__body">
@@ -61,7 +61,7 @@ export default function About() {
             <ol className="how-steps">
               {copy.how.map((step) => (
                 <li key={step.title} className="how-step">
-                  <h3 className="how-step__title">{step.title}</h3>
+                  <h3 className="site-item-title how-step__title">{step.title}</h3>
                   <p className="how-step__body">{step.body}</p>
                 </li>
               ))}
@@ -70,7 +70,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="why-proof">
-          <h2 id="why-proof" className="site-label">
+          <h2 id="why-proof" className="site-section-title">
             {copy.proofLabel}
           </h2>
           <div className="page-section__body">
@@ -96,7 +96,7 @@ export default function About() {
         </section>
 
         <section className="page-section" aria-labelledby="why-ways">
-          <h2 id="why-ways" className="site-label">
+          <h2 id="why-ways" className="site-section-title">
             {copy.engagementsLabel}
           </h2>
           <div className="page-section__body">
@@ -104,19 +104,19 @@ export default function About() {
             <ol className="how-steps">
               {engagements.engagements.map((item) => (
                 <li key={item.title} className="how-step">
-                  <h3 className="how-step__title">{item.title}</h3>
+                  <h3 className="site-item-title how-step__title">{item.title}</h3>
                   <p className="how-step__body">{item.line}</p>
                 </li>
               ))}
             </ol>
-            <Link href="/brief" className="site-link why-cta">
+            <Link href="/brief" className="site-action why-cta">
               {copy.cta}
             </Link>
           </div>
         </section>
 
         <section className="page-section" aria-labelledby="about-team" data-block="team">
-          <h2 id="about-team" className="site-label">
+          <h2 id="about-team" className="site-section-title">
             {copy.teamLabel}
           </h2>
           <div className="page-section__body">

@@ -123,7 +123,7 @@ export default function BrandCheck() {
         </header>
 
         <section className="bcheck-facts" aria-labelledby={`${baseId}-facts`}>
-          <h2 id={`${baseId}-facts`} className="bcheck-label">
+          <h2 id={`${baseId}-facts`} className="site-label bcheck-label">
             {copy.factsLabel}
           </h2>
           <ul className="bcheck-facts__list">
@@ -139,7 +139,7 @@ export default function BrandCheck() {
         <section className="bcheck-ask" aria-labelledby={`${baseId}-ask`}>
           {done ? (
             <div className="bcheck-done">
-              <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="bcheck-ask__title">
+              <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="site-section-title bcheck-ask__title">
                 {copy.doneTitle}
               </h2>
               <p className="bcheck-done__line">{copy.done}</p>
@@ -148,7 +148,7 @@ export default function BrandCheck() {
                   <p className="bcheck-done__line bcheck-done__line--muted">{copy.callLead}</p>
                   <div className="brief-actions">
                     <a
-                      className="brief-primary"
+                      className="site-action"
                       href={done.calendlyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -162,7 +162,7 @@ export default function BrandCheck() {
             </div>
           ) : (
             <>
-              <h2 id={`${baseId}-ask`} className="bcheck-ask__title">
+              <h2 id={`${baseId}-ask`} className="site-section-title bcheck-ask__title">
                 {copy.formTitle}
               </h2>
               <form className="bcheck-form" onSubmit={submit} noValidate>
@@ -273,7 +273,7 @@ export default function BrandCheck() {
                   {copy.privacyNotice} <Link href="/privacy">{copy.privacyLink}</Link>
                 </p>
                 <div className="brief-actions">
-                  <button type="submit" className="brief-primary" disabled={sending}>
+                  <button type="submit" className="site-action" disabled={sending}>
                     {sending ? copy.sending : status === "failed" ? copy.retry : copy.submit}
                   </button>
                   <p className="brief-status bcheck-status" role="status" data-tone={status === "idle" || sending ? undefined : "error"}>

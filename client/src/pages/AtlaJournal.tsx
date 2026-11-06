@@ -208,7 +208,7 @@ export default function AtlaJournal() {
                 ) : null}
                 <div className="journal-card__text">
                   <p className="site-label">{article.category}</p>
-                  <h2 className="journal-card__title">{article.title}</h2>
+                  <h2 className="site-item-title journal-card__title">{article.title}</h2>
                   <p className="journal-card__excerpt">{article.excerpt}</p>
                   <p className="journal-card__date">{article.date}</p>
                 </div>
@@ -217,7 +217,7 @@ export default function AtlaJournal() {
           </div>
         ) : (
           <div className="journal-empty">
-            <p className="journal-empty__title">{JOURNAL_EMPTY.title}</p>
+            <h2 className="site-section-title journal-empty__title">{JOURNAL_EMPTY.title}</h2>
             <p className="longform-text">{JOURNAL_EMPTY.body}</p>
           </div>
         )}

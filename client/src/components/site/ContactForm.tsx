@@ -145,7 +145,7 @@ export function ContactForm() {
             {siteCopy.contact.formNotice} <a href="/privacy">{siteCopy.contact.formNoticeLink}</a>
           </p>
           <div className="brief-actions">
-            <button type="submit" disabled={isSubmitting} className="brief-primary">
+            <button type="submit" disabled={isSubmitting} className="site-action">
               {isSubmitting ? "Sending…" : "Send message"}
             </button>
           </div>

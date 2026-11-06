@@ -391,7 +391,7 @@ export function WorkWall() {
         {failed ? (
           <p className="work-wall__error" role="alert">
             {siteCopy.home.results.error}{" "}
-            <button type="button" className="site-link work-wall__retry" onClick={() => void refetch()}>
+            <button type="button" className="site-action work-wall__retry" onClick={() => void refetch()}>
               {siteCopy.home.results.retry}
             </button>
           </p>
@@ -440,7 +440,7 @@ export function WorkWall() {
       {sequence.length === 0 ? (
         <p className="work-wall__empty" role="status">
           {siteCopy.home.results.empty}{" "}
-          <Link href="/brief" className="site-link">
+          <Link href="/brief" className="site-action">
             {siteCopy.home.results.startBrief}
           </Link>
         </p>
@@ -464,7 +464,7 @@ export function WorkWall() {
       <div ref={sentinelRef} aria-hidden="true" />
       {hasMore && !autoLoad ? (
         <div className="work-wall__more">
-          <button type="button" className="site-link work-wall__more-link" onClick={() => setShown((current) => current + PAGE)}>
+          <button type="button" className="site-text-button work-wall__more-link" onClick={() => setShown((current) => current + PAGE)}>
             {siteCopy.home.results.more}
           </button>
         </div>

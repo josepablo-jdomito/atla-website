@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="legal-section">
-      <h2 className="site-label">{title}</h2>
+      <h2 className="site-item-title legal-section__title">{title}</h2>
       <div className="legal-section__body">{children}</div>
     </section>
   );

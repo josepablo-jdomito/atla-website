@@ -98,7 +98,8 @@ describe("phone menu card", () => {
     const current = sheet.querySelectorAll('[aria-current="page"]');
     expect(current).toHaveLength(1);
     expect(current[0].textContent).toBe("Services");
-    expect(CSS).toMatch(/\.site-sheet__link\[aria-current="page"\] \{[^}]*#eaeaea/);
+    expect(CSS).toMatch(/\.site-sheet__link\[aria-current="page"\] \{[^}]*var\(--site-sheet-tint\)/);
+    expect(CSS).toContain("--site-sheet-tint: #eaeaea;");
     expect(isCurrentRoute("/", "/projects/acre")).toBe(true);
     expect(isCurrentRoute("/", "/services")).toBe(false);
   });

@@ -195,7 +195,7 @@ export default function AtlaArticle() {
         </div>
 
         <section className="page-section article-more" aria-labelledby="article-more">
-          <h2 id="article-more" className="site-label">
+          <h2 id="article-more" className="site-section-title">
             More from the journal
           </h2>
           <div className="page-section__body">
@@ -227,7 +227,7 @@ export default function AtlaArticle() {
                   ) : null}
                   <div className="journal-card__text">
                     <p className="site-label">{item.category}</p>
-                    <h3 className="journal-card__title">{item.title}</h3>
+                    <h3 className="site-item-title journal-card__title">{item.title}</h3>
                     <p className="journal-card__excerpt">{item.excerpt}</p>
                     <p className="journal-card__date">{item.date}</p>
                   </div>
@@ -236,11 +236,11 @@ export default function AtlaArticle() {
             </div>
             <div className="longform-actions">
               {article.categorySlug ? (
-                <a href={`/journal/category/${article.categorySlug}`} className="longform-link longform-link--action">
+                <a href={`/journal/category/${article.categorySlug}`} className="site-action">
                   More in {article.category}
                 </a>
               ) : null}
-              <a href="/journal" className="longform-link longform-link--action">
+              <a href="/journal" className="site-text-button">
                 Browse all journal articles
               </a>
             </div>

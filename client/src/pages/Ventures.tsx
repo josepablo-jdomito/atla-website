@@ -46,7 +46,7 @@ export default function Ventures() {
             const inner = (
               <>
                 <span className="ventures-list__text">
-                  <span className="ventures-list__name">{item.name}</span>
+                  <span className="site-item-title ventures-list__name">{item.name}</span>
                   <span className="ventures-list__line">{item.line}</span>
                 </span>
                 {project ? (

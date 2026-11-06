@@ -145,7 +145,7 @@ describe("Chrome copy (fix wave 3, group C)", () => {
     expect(CSS).toMatch(/\.brief-option:hover:not\(:disabled\):not\(\[aria-pressed="true"\]\)::after \{ border-color: var\(--site-muted\); \}/);
     expect(CSS).toContain(".brief-option:focus-visible::after");
     expect(CSS).toMatch(/\.brief-option\[aria-pressed="true"\]::after \{[^}]*background: var\(--site-ink\);/);
-    expect(CSS).toMatch(/\.brief-prompt \{[^}]*font-family: var\(--site-display\);/);
+    expect(CSS).toMatch(/\.brief-prompt,[^{]*\.page-intro__title,[^{]*\{[^}]*font-family: var\(--site-display\);[^}]*font-size: var\(--t-h1\);/);
     // Still no boxes: no background or full border on a row.
     expect(CSS).not.toMatch(/\.brief-option \{[^}]*border: 1px solid/);
   });

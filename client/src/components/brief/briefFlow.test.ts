@@ -86,7 +86,7 @@ describe("BriefFlow: the waitlist's questions", () => {
     });
     expect(prompt()).toBe(siteCopy.brief.contact.prompt);
     expect(container.querySelector(".brief-lead")?.textContent).toBe(siteCopy.brief.contact.body);
-    expect(container.querySelector("button.brief-primary")?.textContent).toBe("Send the brief");
+    expect(container.querySelector("button.site-action")?.textContent).toBe("Send the brief");
   });
 
   it("the budget screen shows the dollar ranges exactly", async () => {

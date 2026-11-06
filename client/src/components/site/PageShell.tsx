@@ -82,10 +82,10 @@ export function PageError({ onRetry }: { onRetry: () => void }) {
       <h1 className="site-error__title">{siteCopy.states.error}</h1>
       <p className="site-error__body">{siteCopy.states.errorBody}</p>
       <p className="site-error__actions">
-        <button type="button" className="site-link site-error__action" onClick={onRetry}>
+        <button type="button" className="site-action site-error__action" onClick={onRetry}>
           {siteCopy.states.retry}
         </button>
-        <Link href="/" className="site-link site-error__action">
+        <Link href="/" className="site-text-button site-error__action">
           {siteCopy.states.home}
         </Link>
       </p>

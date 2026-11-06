@@ -187,7 +187,7 @@ export function BriefFlow() {
       meta={
         // Back is the only thing up here: no label, no step count (no numbers on the site).
         done || brief.index === 0 ? null : (
-          <button type="button" className="brief-back" onClick={back} disabled={submitStatus === "sending"}>
+          <button type="button" className="site-text-button brief-back" onClick={back} disabled={submitStatus === "sending"}>
             {copy.back}
           </button>
         )
@@ -360,7 +360,7 @@ function QuestionScreen({
           disabled={disabled}
         />
         <div className="brief-actions">
-          <button type="submit" className="brief-primary" disabled={disabled}>
+          <button type="submit" className="site-action" disabled={disabled}>
             {copy.continue}
           </button>
           <span id={hintId} className="brief-hint brief-hint--enter">
@@ -409,7 +409,7 @@ function QuestionScreen({
         <div className="brief-actions">
           <button
             type="button"
-            className="brief-primary"
+            className="site-action"
             disabled={disabled}
             onClick={() => {
               if (chosen.length === 0) setEmpty(true);
@@ -522,7 +522,7 @@ function ContactScreen({
         {copy.contact.privacyNotice} <Link href="/privacy">{copy.contact.privacyLink}</Link>
       </p>
       <div className="brief-actions">
-        <button type="submit" className="brief-primary" disabled={sending}>
+        <button type="submit" className="site-action" disabled={sending}>
           {sending ? copy.contact.sending : status === "failed" ? copy.errors.retry : copy.contact.submit}
         </button>
         <p className="brief-status" role="status">
@@ -552,11 +552,11 @@ function DoneScreen({
       {bookable ? <p className="brief-lead brief-lead--muted">{copy.callLead}</p> : null}
       <div className="brief-actions">
         {bookable ? (
-          <a className="brief-primary" href={calendlyUrl} target="_blank" rel="noopener noreferrer" onClick={trackCalendlyClick}>
+          <a className="site-action" href={calendlyUrl} target="_blank" rel="noopener noreferrer" onClick={trackCalendlyClick}>
             {copy.bookCall}
           </a>
         ) : null}
-        <button type="button" className="brief-quiet" onClick={onRestart}>
+        <button type="button" className="site-text-button" onClick={onRestart}>
           {copy.restart}
         </button>
       </div>
