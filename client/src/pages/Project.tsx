@@ -49,7 +49,7 @@ const FACET_SEPARATOR = "\u00a0\u00a0·  ";
 const HEADER = 64;
 
 type MediaItem = ProjectMediaMosaicItem | { type: "image"; src: string; sourceIndex?: number };
-type Group = { kind: "full"; items: MediaItem[] } | { kind: "pair"; items: MediaItem[] };
+type Group = { kind: "opener" | "full" | "pair"; items: MediaItem[] };
 
 function ratioOf(item: MediaItem) {
   if (item.type !== "image") return 16 / 9;
@@ -74,6 +74,18 @@ export function groupMedia(items: MediaItem[]): Group[] {
   }
   flush();
   return groups;
+}
+
+/**
+ * One template for every project (JP, 2026-11-05, UX interview 17: "unifica todo, hoy cada
+ * proyecto hace lo que quiere"): the page always opens with its first piece alone, in the same
+ * 4:3 frame at the column's width, whatever the image's own ratio. The rest follows the story
+ * rhythm (landscapes full, portraits in pairs).
+ */
+export function groupStory(items: MediaItem[]): Group[] {
+  if (items.length === 0) return [];
+  const [first, ...rest] = items;
+  return [{ kind: "opener", items: [first] }, ...groupMedia(rest)];
 }
 
 function ProjectImage({
@@ -244,7 +256,7 @@ export default function Project() {
         : [],
     [project],
   );
-  const groups = useMemo(() => groupMedia(media), [media]);
+  const groups = useMemo(() => groupStory(media), [media]);
   const images = useMemo(() => media.filter((item) => item.type === "image").map((item) => item.src), [media]);
   const paragraphs = project?.bodySections ?? [];
   // One paragraph after every third group, while paragraphs last.

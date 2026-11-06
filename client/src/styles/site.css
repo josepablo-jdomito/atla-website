@@ -715,6 +715,12 @@ html body {
 .story-body { display: flex; flex-direction: column; gap: 12px; }
 .story-media { display: grid; gap: 12px; }
 .story-media[data-kind="pair"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* The opener: one frame of the same shape on every project (UX interview 17, 2026-11-05). */
+.story-media[data-kind="opener"] .story-media__button,
+.story-media[data-kind="opener"] .story-media__figure { aspect-ratio: 4 / 3; overflow: hidden; }
+.story-media[data-kind="opener"] .story-media__item { width: 100%; height: 100%; object-fit: cover; }
+.story-media[data-kind="opener"] + .story-media,
+.story-media[data-kind="opener"] + div { margin-top: 28px; }
 .story-media__figure { margin: 0; min-width: 0; }
 .story-media__button {
   display: block;

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Router } from "wouter";
 import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import Project from "./Project";
+import Project, { groupStory } from "./Project";
 import { nextProjectInSiteOrder, siteOrder, toSiteProject } from "@/components/site/siteProjects";
 import type { Project as ProjectRecord } from "@shared/schema";
 
@@ -47,6 +47,19 @@ const API = [
   raw({ slug: "archive-b", title: "Rústico & Co / Tulum", client: "Rústico", year: 2023, disciplines: ["Website", "Brand Identity"], stage: "Rebrand", tags: ["Hotel", "Branding"], images: [image("b1"), image("b2")] }),
   raw({ slug: "feat-one", title: "Feature One", featured: true, homeOrder: 1 }),
 ];
+
+describe("groupStory", () => {
+  const portrait = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-800x1200.jpg` });
+  const landscape = (id: string) => ({ type: "image" as const, src: `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg` });
+  it("opens every project with its first piece alone in the opener frame, whatever its ratio", () => {
+    const groups = groupStory([portrait("a"), portrait("b"), portrait("c"), landscape("d")]);
+    expect(groups[0]).toEqual({ kind: "opener", items: [portrait("a")] });
+    expect(groups.slice(1).map((group) => group.kind)).toEqual(["pair", "full"]);
+  });
+  it("renders nothing for a project without media", () => {
+    expect(groupStory([])).toEqual([]);
+  });
+});
 
 describe("siteOrder", () => {
   const projects = API.map(toSiteProject).filter((p) => p !== null);

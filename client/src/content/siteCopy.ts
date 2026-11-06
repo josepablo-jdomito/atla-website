@@ -76,7 +76,7 @@ export const siteCopy = {
   },
   brief: {
     metaTitle: "Start a project",
-    metaDescription: "Five questions, one at a time. José Pablo reads every application and replies by email.",
+    metaDescription: "A few questions, one at a time. José Pablo reads every application and replies by email.",
     label: "Brief",
     progressLabel: "Brief progress",
     stepSeparator: "/",
