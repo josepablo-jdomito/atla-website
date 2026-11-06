@@ -89,7 +89,7 @@ export default function AtlaPrivacy() {
 
           <Section title="How we use information">
             <p className="longform-text">
-              We use what you send through the brief and the brand check to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
+              We use what you send through the brief, the brand check and the hospitality page's form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
             </p>
           </Section>
 
