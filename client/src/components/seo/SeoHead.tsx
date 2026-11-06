@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
+import { getOptimizedImageUrl } from "@shared/imageDelivery";
 import { toAbsoluteUrl } from "@/lib/seoSchema";
 
 type SeoHeadProps = {
@@ -70,7 +71,9 @@ export function SeoHead({
     const canonicalUrl = new URL(pathname, origin).toString();
     // Share images resolve against the production origin, never the current host: crawlers
     // need an absolute URL, and a preview host's URL would expire.
-    const imageUrl = toAbsoluteUrl(image || DEFAULT_OG_IMAGE_URL);
+    // Share images from Sanity go out at 1200 wide (crawlers fetched the raw multi-megabyte file).
+    const shareImage = image || DEFAULT_OG_IMAGE_URL;
+    const imageUrl = toAbsoluteUrl(getOptimizedImageUrl(shareImage, { width: 1200, quality: 82 }) || shareImage);
     const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
     document.title = fullTitle;

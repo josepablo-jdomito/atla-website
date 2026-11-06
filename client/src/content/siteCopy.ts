@@ -224,7 +224,7 @@ export const siteCopy = {
         happens: [
           "The name has to clear legal, and the website has to explain a company nobody has heard of.",
         ],
-        project: "casa-colora",
+        project: "rustico",
         projectLine: "A new brand in Mexico, designed for its first impression.",
       },
       {
@@ -244,7 +244,7 @@ export const siteCopy = {
         happens: [
           "Different teams and agencies each take the brand their own way.",
         ],
-        project: "hanks-leather",
+        project: "casa-colora",
         projectLine: "A heritage leather house from Upstate New York, rebuilt for the way it sells today.",
       },
       {
@@ -254,7 +254,7 @@ export const siteCopy = {
         happens: [
           "Your customers already say something about you that the brand does not.",
         ],
-        project: "rustico",
+        project: "hanks-leather",
         projectLine: "An identity for dinners under the stars.",
       },
     ],

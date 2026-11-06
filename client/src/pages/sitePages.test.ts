@@ -138,10 +138,10 @@ describe("Services page, one route per moment", () => {
 
   it("the moments map to the projects JP named", () => {
     expect(Object.fromEntries(services.moments.map((m) => [m.id, m.project]))).toEqual({
-      launch: "casa-colora",
+      launch: "rustico",
       raise: "anything-ai",
-      grow: "hanks-leather",
-      reposition: "rustico",
+      grow: "casa-colora",
+      reposition: "hanks-leather",
     });
   });
 
