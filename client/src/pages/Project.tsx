@@ -96,12 +96,14 @@ function isDesktop() {
 function FrameImage({
   src,
   alt,
+  index,
   priority,
   eager,
   onOpen,
 }: {
   src: string;
   alt: string;
+  index: number;
   priority: boolean;
   eager: boolean;
   onOpen: () => void;
@@ -110,7 +112,7 @@ function FrameImage({
   // The same src/srcset/sizes the prerendered head preloads for the first frame (lib/projectPage.ts).
   const image = frameImage(src);
   return (
-    <button type="button" className="film-frame__button" onClick={onOpen} aria-label={`${alt}. Open larger`} style={{ "--r": image.ratio.toFixed(4) } as CSSProperties}>
+    <button type="button" className="film-frame__button" data-image-index={index} onClick={onOpen} aria-label={`${alt}. Open larger`} style={{ "--r": image.ratio.toFixed(4) } as CSSProperties}>
       <img
         className="film-frame__item"
         src={image.src}
@@ -288,7 +290,7 @@ function Lightbox({
         className="lightbox__image"
         src={getOptimizedImageUrl(src, { width: 2000, quality: 90 }) || src}
         srcSet={buildImageSrcSet(src, [1280, 1600, 2000, 2400], { quality: 90 })}
-        sizes="92vw"
+        sizes="(max-width: 767px) calc(100vw - 112px), calc(100vw - 160px)"
         alt={title}
         width={dims?.width}
         height={dims?.height}
@@ -393,7 +395,19 @@ export default function Project() {
     (delta: number) => setOpen((current) => (current === null ? null : (current + delta + images.length) % images.length)),
     [images.length],
   );
-  const close = useCallback(() => setOpen(null), []);
+  // Closing returns focus to the frame being viewed (it may differ from the one that opened the lightbox).
+  const close = useCallback(() => {
+    setOpen((current) => {
+      if (current !== null) {
+        requestAnimationFrame(() => {
+          const button = document.querySelector<HTMLElement>(`.film-frame__button[data-image-index="${current}"]`);
+          button?.scrollIntoView({ block: "nearest", inline: "center" });
+          button?.focus({ preventScroll: true });
+        });
+      }
+      return null;
+    });
+  }, []);
 
   // Left/Right step a frame, Home/End go to the ends, while the strip or a frame's image has focus.
   // A video's own controls keep their arrows.
@@ -508,6 +522,7 @@ export default function Project() {
                       <FrameImage
                         src={item.src}
                         alt={`${project.title}, image`}
+                        index={index}
                         priority={index === 0}
                         eager={index < EAGER_FRAMES || assetKey(item.src) === at}
                         onOpen={() => setOpen(index)}

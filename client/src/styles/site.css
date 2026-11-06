@@ -339,6 +339,11 @@ html[data-consent="open"] .site-explore { display: none; }
 .site-footer__link { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; }
 .site-footer__link:hover,
 .site-footer__link:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+/* Desktop rows sit 32 apart, as in JP's Figma; the 44 px line box is for touch. */
+@media (min-width: 768px) and (hover: hover) {
+  .site-footer__link, .site-footer__cities li { min-height: 32px; }
+  .site-footer__list { margin-top: -7px; }
+}
 .site-footer__line { grid-area: line; align-self: end; max-width: 320px; margin: 0; font-size: 0.875rem; font-weight: 500; line-height: 1.4; }
 /* A detail, not the main asset (JP, 2026-11-06): small, at the right of the line. A mask, so it takes
    the ink colour on paper and on the dark page alike. */

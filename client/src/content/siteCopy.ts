@@ -106,7 +106,7 @@ export const siteCopy = {
       closest: "The closest things we have made",
       count: (n: number) => (n === 1 ? "One project" : "Projects"),
       empty: "Nothing in the archive matches that. Tell us what you are building instead.",
-      error: "Search is down. Here is what we have.",
+      error: "The work did not load. Try again.",
       startBrief: "Start a project",
       clear: "Clear",
       // The quiet text link under the wall once auto-loading stops. Placeholder text: the content pass owns the wording.

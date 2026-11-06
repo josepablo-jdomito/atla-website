@@ -282,9 +282,10 @@ describe("Wall tiles", () => {
     const html = renderToString(wall(projects(30), true));
     expect(html).not.toContain("data-fade");
     // jsdom is 1024 x 768: four columns, about five 3:2 tiles each start in view, capped at eight on a desktop.
-    expect(html.match(/loading="eager"/g)).toHaveLength(EAGER_MAX_DESKTOP);
+    // The server (and the first client render, for hydration) lays out the phone wall: 2 columns, 4 eager.
+    expect(html.match(/loading="eager"/g)).toHaveLength(EAGER_MAX_PHONE);
     expect(html.match(/fetchpriority="high"/g)).toHaveLength(1);
-    expect(html.match(/loading="lazy"/g)!.length).toBe(72 - EAGER_MAX_DESKTOP);
+    expect(html.match(/loading="lazy"/g)!.length).toBe(72 - EAGER_MAX_PHONE);
   });
 
   it("the first viewport is measured from the columns: a phone takes four at most, a short desktop fewer than the cap", () => {

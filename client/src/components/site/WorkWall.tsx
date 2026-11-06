@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearch } from "wouter";
 import { useSiteProjects, type SiteProject as SiteProjectT } from "@/components/site/siteProjects";
@@ -101,9 +101,10 @@ function readColumns() {
   return Math.max(3, Math.min(MAX_COLUMNS, Math.floor((width - gap) / (COLUMN_TARGET + gap))));
 }
 
+/** Hydration-safe: the first client render matches the server (2 columns), the real count lands before paint. */
 function useColumns() {
-  const [columns, setColumns] = useState(readColumns);
-  useEffect(() => {
+  const [columns, setColumns] = useState(2);
+  useLayoutEffect(() => {
     let frame = 0;
     const update = () => {
       cancelAnimationFrame(frame);
@@ -283,8 +284,12 @@ export function WorkWall() {
   const [fade, setFade] = useState(false);
   useEffect(() => setFade(true), []);
 
-  // One fresh shuffle per page load; the prerender (no window) keeps the site order.
-  const [seed] = useState(() => (typeof window === "undefined" ? 0 : 1 + Math.floor(Math.random() * 2 ** 31)));
+  // One fresh shuffle per page load. The first client render keeps the server's order (seed 0) so
+  // hydration matches; the seed changes in a layout effect, before the first paint.
+  const [seed, setSeed] = useState(0);
+  useLayoutEffect(() => {
+    setSeed(1 + Math.floor(Math.random() * 2 ** 31));
+  }, []);
   const filtered = useMemo(() => projects.filter((project) => matchesFilters(project, filters)), [projects, filters]);
 
   // Typing narrows the wall as you go: the same ranking the search bar uses, in the browser.
