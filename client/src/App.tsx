@@ -27,6 +27,7 @@ const AtlaBrandStrategy = lazy(() => import("@/pages/AtlaBrandStrategy"));
 const AtlaHowWeWork = lazy(() => import("@/pages/AtlaHowWeWork"));
 const AtlaPrograms = lazy(() => import("@/pages/AtlaPrograms"));
 const Brief = lazy(() => import("@/pages/Brief"));
+const BrandCheck = lazy(() => import("@/pages/BrandCheck"));
 const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
 const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));
 
@@ -71,6 +72,7 @@ function Router() {
         AtlaHowWeWork={AtlaHowWeWork}
         AtlaPrograms={AtlaPrograms}
         Brief={Brief}
+        BrandCheck={BrandCheck}
       />
     </Suspense>
   );

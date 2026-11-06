@@ -43,8 +43,9 @@ afterEach(() => {
   analytics.ga4Event.mockClear();
 });
 
-function render(Page: ComponentType, path: string) {
+function render(Page: ComponentType, path: string, seed?: (client: QueryClient) => void) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, enabled: false } } });
+  seed?.(client);
   const location = memoryLocation({ path });
   act(() =>
     root.render(
@@ -55,86 +56,176 @@ function render(Page: ComponentType, path: string) {
 
 const main = () => container.querySelector("main")!;
 
-describe("Services page", () => {
+describe("Services page, one route per moment", () => {
   const services = siteCopy.services;
+  const IMAGE = (id: string) => `https://cdn.sanity.io/images/p/production/${id}-1200x800.jpg`;
+  // Every project the page can show, so "From the work" has its cover.
+  const PROJECTS = Array.from(
+    new Set([...services.moments.map((m) => m.project), services.anyProject.slug, ...services.disciplines.map((d) => d.project)]),
+  ).map((slug, i) => ({ slug, title: `Project ${slug}`, coverImage: IMAGE(`s${i}`), images: [] }));
+  const show = (search = "") => {
+    window.history.replaceState(null, "", `/services${search}`);
+    render(Services, "/services", (client) => client.setQueryData(["/api/projects"], PROJECTS));
+  };
   const radios = () => Array.from(main().querySelectorAll<HTMLButtonElement>('[role="radiogroup"] [role="radio"]'));
   const radio = (id: string) => main().querySelector<HTMLButtonElement>(`[role="radio"][data-moment="${id}"]`)!;
-  const rowIds = (group?: string) =>
-    Array.from(main().querySelectorAll<HTMLElement>(`section.discipline${group ? `[data-group="${group}"]` : ""}`)).map((s) => s.id);
+  const rowIds = () => Array.from(main().querySelectorAll<HTMLElement>(".services-rows [data-discipline]")).map((s) => s.dataset.discipline);
   const reset = () => main().querySelector<HTMLButtonElement>(".services-what__reset");
-  const actTwo = () => main().querySelector(".services-what__title")!.textContent;
-  const lineOf = (id: string) => main().querySelector(`section.discipline#${id} .discipline__line`)!.textContent;
+  const actTitle = () => main().querySelector(".services-what__title")!.textContent;
+  const lineOf = (id: string) => main().querySelector(`.services-rows [data-discipline="${id}"] .discipline__line`)!.textContent;
+  const happens = () => Array.from(main().querySelectorAll(".services-happens__line")).map((p) => p.textContent);
+  const engagementTitles = () => Array.from(main().querySelectorAll(".engagements .how-step__title")).map((h) => h.textContent);
   const key = (target: Element, k: string) =>
     act(() => {
       target.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true }));
     });
+  const fitFor = (id: (typeof services.moments)[number]["id"]) =>
+    services.disciplines.filter((d) => (d.moments as readonly string[]).includes(id)).map((d) => d.id);
 
   afterEach(() => window.history.replaceState(null, "", "/"));
 
-  it("opens with one h1 asking where you are, the four moments as a radiogroup, then the disciplines as h2 rows", () => {
-    render(Services, "/services");
+  it("opens with the page title and what Atla does, then Where are you? labelling the four moments as a radiogroup", () => {
+    show();
     const h1s = main().querySelectorAll("h1");
     expect(h1s).toHaveLength(1);
     expect(h1s[0].textContent).toBe(services.title);
+    expect(main().querySelector(".services-intro .page-intro__lead")?.textContent).toBe(services.lead);
     const group = main().querySelector('[role="radiogroup"]')!;
-    expect(group.getAttribute("aria-labelledby")).toBe(h1s[0].id);
-    // The picker comes before every discipline row.
-    expect(group.compareDocumentPosition(main().querySelector("section.discipline")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const label = document.getElementById(group.getAttribute("aria-labelledby")!)!;
+    expect(label.textContent).toBe(services.pickerTitle);
     expect(radios().map((r) => r.querySelector(".moment-picker__title")?.textContent)).toEqual(services.moments.map((m) => m.title));
     for (const m of services.moments) expect(radio(m.id).textContent).toContain(m.line);
-    expect(services.moments.map((m) => m.title)).toContain("Grow");
-    const titles = Array.from(main().querySelectorAll("section.discipline > h2")).map((h) => h.textContent);
-    expect(titles).toEqual(services.disciplines.map((d) => d.title));
   });
 
-  it("with no moment, no radio is checked, act two reads What we do., and every discipline shows its general line", () => {
-    render(Services, "/services");
+  it("reads top to bottom in the chosen order: picker, what happens, what we do, engagements, the work, two doors, the index", () => {
+    show("?moment=raise");
+    const order = [
+      '[role="radiogroup"]',
+      ".services-happens",
+      ".services-what",
+      ".engagements",
+      ".services-work",
+      ".services-doors",
+      ".services-index",
+    ].map((selector) => main().querySelector(selector)!);
+    for (let i = 1; i < order.length; i += 1) {
+      expect(order[i - 1].compareDocumentPosition(order[i]) & Node.DOCUMENT_POSITION_FOLLOWING, `step ${i}`).toBeTruthy();
+    }
+  });
+
+  it("each moment is its own route: its two lines, only its three or four disciplines, only its engagements, its project", () => {
+    for (const m of services.moments) {
+      act(() => root.unmount());
+      root = createRoot(container);
+      show(`?moment=${m.id}`);
+      expect(happens()).toEqual(m.happens);
+      expect(m.happens).toHaveLength(2);
+      const fit = fitFor(m.id);
+      expect(fit.length, m.id).toBeGreaterThanOrEqual(3);
+      expect(fit.length, m.id).toBeLessThanOrEqual(4);
+      expect(rowIds()).toEqual(fit);
+      for (const id of fit) expect(lineOf(id)).toBe(services.disciplines.find((d) => d.id === id)!.byMoment[m.id]);
+      expect(actTitle()).toBe(services.disciplinesTitleByMoment[m.id]);
+      expect(main().querySelector(".engagements__lead")?.textContent).toBe(services.engagementsByMoment[m.id]);
+      expect(engagementTitles()).toEqual(services.engagementsFit[m.id]);
+      expect(engagementTitles().length).toBeLessThanOrEqual(2);
+      const work = main().querySelector<HTMLAnchorElement>(".services-work__link")!;
+      expect(work.getAttribute("href")).toBe(`/projects/${m.project}`);
+      expect(work.querySelector(".services-work__line")?.textContent).toBe(m.projectLine);
+      expect(work.querySelector("img")?.getAttribute("src")).toBeTruthy();
+    }
+  });
+
+  it("the moments map to the projects JP named", () => {
+    expect(Object.fromEntries(services.moments.map((m) => [m.id, m.project]))).toEqual({
+      launch: "casa-colora",
+      raise: "anything-ai",
+      grow: "hanks-leather",
+      reposition: "rustico",
+    });
+  });
+
+  it("with any moment, every act shows its general version and none is empty", () => {
+    show();
     expect(radios().filter((r) => r.getAttribute("aria-checked") === "true")).toHaveLength(0);
     expect(radios().map((r) => r.tabIndex)).toEqual([0, -1, -1, -1]);
-    expect(actTwo()).toBe(services.disciplinesTitle);
+    expect(happens()).toEqual(services.happensAny);
+    expect(actTitle()).toBe(services.disciplinesTitle);
     expect(reset()).toBeNull();
-    expect(rowIds()).toEqual(services.disciplines.map((d) => d.id));
-    expect(rowIds("also")).toEqual([]);
-    expect(main().querySelector(".services-also")).toBeNull();
-    for (const d of services.disciplines) expect(lineOf(d.id)).toBe(d.line);
+    expect(rowIds()).toEqual(services.anyDisciplines);
+    for (const id of rowIds()) expect(lineOf(id!)).toBe(services.disciplines.find((d) => d.id === id)!.line);
     expect(main().querySelector(".engagements__lead")?.textContent).toBe(services.engagementsLead);
+    expect(engagementTitles()).toEqual(services.engagements.map((e) => e.title));
+    expect(main().querySelector(".services-work__link")?.getAttribute("href")).toBe(`/projects/${services.anyProject.slug}`);
+    for (const selector of [".services-happens", ".services-rows", ".how-steps", ".services-work", ".services-doors", ".services-index__list"]) {
+      expect(main().querySelector(selector)?.textContent?.trim(), selector).toBeTruthy();
+    }
+  });
+
+  it("the index after the doors always lists every discipline, with its general line, Includes and its anchor", () => {
+    for (const search of ["", "?moment=reposition"]) {
+      act(() => root.unmount());
+      root = createRoot(container);
+      show(search);
+      const rows = Array.from(main().querySelectorAll<HTMLElement>(".services-index__row"));
+      expect(main().querySelector(".services-index__title")?.textContent).toBe(services.indexTitle);
+      expect(rows.map((r) => r.id)).toEqual(services.disciplines.map((d) => d.id));
+      for (const [i, d] of services.disciplines.entries()) {
+        expect(rows[i].querySelector(".services-index__name")?.textContent).toBe(d.title);
+        expect(rows[i].querySelector(".services-index__line")?.textContent).toBe(d.line);
+        expect(Array.from(rows[i].querySelectorAll(".discipline__list li")).map((li) => li.textContent)).toEqual(d.includes);
+      }
+    }
+  });
+
+  it("two doors side by side: Start a project to /brief and Ask for a brand check to /brand-check, each with its line", () => {
+    show("?moment=grow");
+    const doors = Array.from(main().querySelectorAll(".services-door"));
+    expect(doors).toHaveLength(2);
+    expect(doors.map((d) => d.querySelector("a")?.textContent)).toEqual(["Start a project", "Ask for a brand check"]);
+    expect(doors.map((d) => d.querySelector("a")?.getAttribute("href"))).toEqual(["/brief", "/brand-check"]);
+    for (const [i, door] of doors.entries()) expect(door.querySelector(".services-door__line")?.textContent).toBe(services.doors[i].line);
+    for (const a of Array.from(main().querySelectorAll<HTMLAnchorElement>("a")).filter((a) => a.textContent === services.cta)) {
+      expect(a.getAttribute("href")).toBe("/brief");
+    }
   });
 
   it("arriving with ?moment= pre-selects it; an unknown moment reads as any moment", () => {
-    window.history.replaceState(null, "", "/services?moment=raise");
-    render(Services, "/services");
+    show("?moment=raise");
     expect(radio("raise").getAttribute("aria-checked")).toBe("true");
     expect(radio("raise").tabIndex).toBe(0);
     expect(radios().filter((r) => r.tabIndex === 0)).toHaveLength(1);
     act(() => root.unmount());
     root = createRoot(container);
-    window.history.replaceState(null, "", "/services?moment=someday");
-    render(Services, "/services");
+    show("?moment=someday");
     expect(radios().filter((r) => r.getAttribute("aria-checked") === "true")).toHaveLength(0);
-    expect(actTwo()).toBe(services.disciplinesTitle);
+    expect(actTitle()).toBe(services.disciplinesTitle);
   });
 
-  it("choosing a moment writes it to the URL and echoes it in act two; the Any moment reset beside it clears both", () => {
-    window.history.replaceState(null, "", "/services");
-    render(Services, "/services");
+  it("choosing a moment writes it to the URL and swaps the route; the Any moment reset clears both", () => {
+    show();
     act(() => radio("grow").click());
     expect(window.location.search).toBe("?moment=grow");
     expect(radio("grow").getAttribute("aria-checked")).toBe("true");
-    expect(actTwo()).toBe(services.disciplinesTitleByMoment.grow);
+    expect(happens()).toEqual(services.moments.find((m) => m.id === "grow")!.happens);
+    expect(rowIds()).toEqual(fitFor("grow"));
+    // The route fades in once after a change: one wrapper, opacity only (CSS), never on arrival.
+    expect(main().querySelector(".services-route")?.classList.contains("services-fade")).toBe(true);
     expect(reset()?.textContent).toBe(services.allMoments);
-    // The reset sits in the act-two header, beside its heading, not in the picker.
-    expect(reset()!.closest(".services-what")).not.toBeNull();
     expect(reset()!.closest('[role="radiogroup"]')).toBeNull();
     act(() => reset()!.click());
     expect(window.location.search).toBe("");
     expect(radios().filter((r) => r.getAttribute("aria-checked") === "true")).toHaveLength(0);
-    expect(actTwo()).toBe(services.disciplinesTitle);
-    expect(reset()).toBeNull();
+    expect(actTitle()).toBe(services.disciplinesTitle);
+  });
+
+  it("does not fade on arrival", () => {
+    show("?moment=launch");
+    expect(main().querySelector(".services-route")?.classList.contains("services-fade")).toBe(false);
   });
 
   it("arrow keys move the choice with roving tabindex, wrap around, and Home/End jump", () => {
-    window.history.replaceState(null, "", "/services?moment=launch");
-    render(Services, "/services");
+    show("?moment=launch");
     radio("launch").focus();
     key(radio("launch"), "ArrowDown");
     expect(window.location.search).toBe("?moment=raise");
@@ -147,7 +238,6 @@ describe("Services page", () => {
     key(radio("raise"), "ArrowLeft");
     key(radio("launch"), "ArrowLeft");
     expect(document.activeElement).toBe(radio("reposition"));
-    expect(window.location.search).toBe("?moment=reposition");
     key(radio("reposition"), "ArrowRight");
     expect(window.location.search).toBe("?moment=launch");
     key(radio("launch"), "End");
@@ -156,32 +246,9 @@ describe("Services page", () => {
     expect(radio("launch").getAttribute("aria-checked")).toBe("true");
   });
 
-  it("reads every discipline through the moment; the rest drop to Also, when you need it, and none vanish", () => {
-    for (const m of services.moments) {
-      window.history.replaceState(null, "", `/services?moment=${m.id}`);
-      render(Services, "/services");
-      const applies = services.disciplines.filter((d) => (d.moments as readonly string[]).includes(m.id));
-      const rest = services.disciplines.filter((d) => !(d.moments as readonly string[]).includes(m.id));
-      expect(rowIds("relevant")).toEqual(applies.map((d) => d.id));
-      expect(rowIds("also")).toEqual(rest.map((d) => d.id));
-      expect(rowIds()).toHaveLength(services.disciplines.length);
-      expect(actTwo()).toBe(services.disciplinesTitleByMoment[m.id]);
-      for (const d of applies) expect(lineOf(d.id)).toBe(d.byMoment[m.id]);
-      for (const d of rest) expect(lineOf(d.id)).toBe(d.line);
-      const also = main().querySelector(".services-also");
-      if (rest.length) {
-        expect(also?.textContent).toBe(services.alsoLabel);
-        // The label sits between the two groups.
-        const firstAlso = main().querySelector(`section.discipline#${rest[0].id}`)!;
-        expect(also!.compareDocumentPosition(firstAlso) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-      } else expect(also).toBeNull();
-      expect(main().querySelector(".engagements__lead")?.textContent).toBe(services.engagementsByMoment[m.id]);
-    }
-  });
-
-  it("announces the change once in one polite live region, not per row", () => {
-    render(Services, "/services");
-    const live = main().querySelectorAll('[aria-live]');
+  it("announces the change once in one polite live region", () => {
+    show();
+    const live = main().querySelectorAll("[aria-live]");
     expect(live).toHaveLength(1);
     expect(live[0].getAttribute("aria-live")).toBe("polite");
     expect(live[0].textContent).toBe("");
@@ -191,49 +258,48 @@ describe("Services page", () => {
     expect(live[0].textContent).toBe(services.liveAny);
   });
 
-  it("every Start a project link goes to /brief, plain, whatever the moment", () => {
-    window.history.replaceState(null, "", "/services?moment=raise");
-    render(Services, "/services");
-    const sections = Array.from(main().querySelectorAll<HTMLElement>("section.discipline"));
-    expect(sections.length).toBe(services.disciplines.length);
-    for (const section of sections) {
-      expect(section.querySelectorAll(".discipline__list li").length).toBeGreaterThan(0);
-      expect(section.querySelector<HTMLAnchorElement>("a.discipline__cta")?.getAttribute("href")).toBe("/brief");
-    }
-    for (const a of Array.from(main().querySelectorAll<HTMLAnchorElement>("a")).filter((a) => a.textContent === services.cta)) {
-      expect(a.getAttribute("href")).toBe("/brief");
-    }
-  });
-
   it("shows no prices", () => {
-    render(Services, "/services");
-    const text = main().textContent ?? "";
-    expect(text).not.toMatch(/\$|USD|€|£|\b\d+\s?[kK]\b|\bper (month|hour|project)\b|pricing|price/i);
+    for (const search of ["", "?moment=launch", "?moment=raise", "?moment=grow", "?moment=reposition"]) {
+      act(() => root.unmount());
+      root = createRoot(container);
+      show(search);
+      expect(main().textContent ?? "").not.toMatch(/\$|USD|€|£|\b\d+\s?[kK]\b|\bper (month|hour|project)\b|pricing|price/i);
+    }
   });
 });
 
 describe("Services copy read through a moment", () => {
   const services = siteCopy.services;
-  const BANNED = /game-?changer|elevate|authentic|next level|synergy|leverage|robust/i;
+  const BANNED =
+    /game-?changer|elevate|authentic|next level|synergy|leverage|robust|seamless|journey|vibrant|delve|landscape|tapestry|testament|unlock/i;
   const lines = [
     ...services.disciplines.flatMap((d) => services.moments.map((m) => [`${d.id}.${m.id}`, d.byMoment[m.id]] as const)),
     ...services.moments.map((m) => [`engagements.${m.id}`, services.engagementsByMoment[m.id]] as const),
     ...services.moments.map((m) => [`actTwo.${m.id}`, services.disciplinesTitleByMoment[m.id]] as const),
+    ...services.moments.flatMap((m) => m.happens.map((line, i) => [`happens.${m.id}.${i}`, line] as const)),
+    ...services.moments.map((m) => [`project.${m.id}`, m.projectLine] as const),
+    ...services.happensAny.map((line, i) => [`happensAny.${i}`, line] as const),
+    ...services.doors.map((door) => [`door.${door.href}`, `${door.label} ${door.line}`] as const),
+    ["lead", services.lead] as const,
+    ["index", services.indexTitle] as const,
   ];
 
-  it("every discipline has exactly one line for each of the four moments", () => {
+  it("every discipline has one line per moment, and every moment its engagements by real titles", () => {
     for (const d of services.disciplines) {
       expect(Object.keys(d.byMoment).sort()).toEqual(services.moments.map((m) => m.id).sort());
     }
     expect(Object.keys(services.engagementsByMoment).sort()).toEqual(services.moments.map((m) => m.id).sort());
-    expect(Object.keys(services.disciplinesTitleByMoment).sort()).toEqual(services.moments.map((m) => m.id).sort());
+    expect(Object.keys(services.engagementsFit).sort()).toEqual(services.moments.map((m) => m.id).sort());
+    const titles = services.engagements.map((e) => e.title);
+    for (const fit of Object.values(services.engagementsFit)) for (const t of fit) expect(titles).toContain(t);
+    for (const id of services.anyDisciplines) expect(services.disciplines.map((d) => d.id)).toContain(id);
   });
 
   it("no line is empty, has a digit, an em dash or a banned word", () => {
     for (const [where, line] of lines) {
       expect(line.trim(), where).not.toBe("");
       expect(line, where).not.toMatch(/\d/);
-      expect(line, where).not.toMatch(/\u2014|\u2013/);
+      expect(line, where).not.toMatch(/—|–/);
       expect(line, where).not.toMatch(BANNED);
       expect(line, where).not.toMatch(/\$|price|pricing/i);
     }

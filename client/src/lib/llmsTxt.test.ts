@@ -36,12 +36,13 @@ describe("llms.txt source", () => {
     }
   });
 
-  it("lists the four moments, the brief, and the ventures by name", () => {
+  it("lists the four moments as their own routes, the brief, the brand check, and the ventures by name", () => {
     for (const moment of siteCopy.services.moments) {
-      expect(LLMS).toContain(`- [${moment.title}](https://www.atla.design/services)`);
+      expect(LLMS).toContain(`- [${moment.title}](https://www.atla.design/services?moment=${moment.id})`);
     }
     expect(LLMS).toContain("## Start a project");
     expect(LLMS).toContain("(https://www.atla.design/brief)");
+    expect(LLMS).toContain("- [Brand check](https://www.atla.design/brand-check)");
     for (const venture of siteCopy.ventures.items) expect(LLMS).toContain(venture.name);
   });
 

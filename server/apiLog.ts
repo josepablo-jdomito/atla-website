@@ -2,12 +2,12 @@ import type { NextFunction, Request, Response } from "express";
 
 /**
  * The /api request log line. Paths that carry visitor free text or contact
- * details (the search bar, the brief, the contact form) are logged without
+ * details (the search bar, the brief, the brand check, the contact form) are logged without
  * bodies: method, path, status and duration only. Matching ignores case,
  * because Express routing does too (/api/BRIEF reaches the brief handler).
  */
 
-const PRIVATE_PATHS = [/^\/api\/brief(\/|$)/i, /^\/api\/contact(\/|$)/i];
+const PRIVATE_PATHS = [/^\/api\/brief(\/|$)/i, /^\/api\/brand-check(\/|$)/i, /^\/api\/contact(\/|$)/i];
 
 export const isPrivateApiPath = (path: string) => PRIVATE_PATHS.some((pattern) => pattern.test(path));
 

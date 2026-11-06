@@ -4,6 +4,8 @@ import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
 import { SITE_ORIGIN } from "../shared/siteSeo.ts";
 import { registerBriefRoutes } from "./brief/route.ts";
+import { registerBrandCheckRoutes } from "./brandCheck/route.ts";
+import { registerAskRoutes } from "./ask/route.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
@@ -129,6 +131,8 @@ export async function registerRoutes(
 
   registerContactRoute(app);
   registerBriefRoutes(app);
+  registerBrandCheckRoutes(app);
+  registerAskRoutes(app);
 
   // The legacy admin and the project writes are retired (Sanity is the source). They answer 410 whatever
   // the environment holds, so removing a Sanity variable can never switch a password login back on.
@@ -332,6 +336,7 @@ export async function registerRoutes(
           "/about",
           "/contact",
           "/services",
+          "/brand-check",
           "/hospitality",
           "/hospitality-branding",
           "/cpg-branding",

@@ -45,6 +45,8 @@ export const siteCopy = {
     links: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
+      // The free brand check (JP, 2026-11-06). Footer only; the phone menu rows do not change.
+      { label: "Brand check", href: "/brand-check" },
       { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
       { label: "Journal", href: "/journal" },
@@ -163,17 +165,27 @@ export const siteCopy = {
   // Services after tbp.studio/services (JP, 2026-11-05): rows by discipline, an Includes list that
   // opens, a real project photo beside each row. Every line below comes from the current /services
   // page and the SEO landings. Nothing new.
-  // JP, 2026-11-06: the visitor picks the moment first ("Where are you?"), then reads every
-  // discipline and every engagement through it. `byMoment` and `engagementsByMoment` are written
-  // only from the discipline's own line and the moment's own line: no new claims, no numbers.
+  // JP, 2026-11-06 (second pass): the page is one route per moment. Once a moment is chosen it reads
+  // top to bottom as that moment's route: what usually happens, the disciplines that matter, the
+  // engagements that fit, one project, two doors, then the full index. `happens`, `byMoment` and
+  // `engagementsByMoment` are written only from the moment's own line and the discipline lines: no
+  // new claims, no numbers.
   services: {
     metaTitle: "Brand Strategy, Identity, and Digital Design Services",
     metaDescription:
       "Brand strategy, naming, identity, packaging, websites and motion from Atla, for companies launching, raising, growing or starting over.",
-    title: "Where are you?",
-    lead: "Every discipline, one team. Pick the moment your company is in and read each one through it.",
+    title: "Services",
+    // The same sentence the footer and index.html use to say what Atla does.
+    lead: "Strategy, identity and creative direction for companies that take their brand seriously.",
+    pickerTitle: "Where are you?",
     momentsLabel: "The moment",
     allMoments: "Any moment",
+    happensTitle: "What usually happens",
+    // With no moment chosen: the general version, from the strategy, identity and engagement lines.
+    happensAny: [
+      "The brand gets built in pieces, by different teams and agencies.",
+      "Each piece is fine on its own, and together they stop looking like one company.",
+    ],
     disciplinesTitle: "What we do.",
     // Act two echoes the chosen moment (coordinator, 2026-11-06).
     disciplinesTitleByMoment: {
@@ -182,35 +194,76 @@ export const siteCopy = {
       grow: "What we do when you grow",
       reposition: "What we do when you reposition",
     },
-    alsoLabel: "Also, when you need it",
+    // With no moment chosen, the disciplines every moment leans on. The rest live in the index.
+    anyDisciplines: ["strategy", "identity", "website"],
     // Read once by screen readers when the moment changes; never shown.
-    liveAny: "Every discipline, for any moment.",
-    liveFor: "Every discipline, read for",
+    liveAny: "Services for any moment.",
+    liveFor: "Services for",
     includesLabel: "What is included",
     includesOpen: "See what is included",
     includesClose: "Close",
     cta: "Start a project",
     exampleLabel: "From the work",
+    workTitle: "From the work",
+    // With no moment chosen, the project in "From the work".
+    anyProject: { slug: "rustico", line: "An identity for dinners under the stars." },
+    // The two ways forward, side by side. No durations.
+    doors: [
+      { label: "Start a project", href: "/brief", line: "A few questions. José Pablo reads every one and replies by email." },
+      { label: "Ask for a brand check", href: "/brand-check", line: "Free. A short video and a written check of what is in your way." },
+    ],
+    doorsLabel: "Ways to start",
+    indexTitle: "Everything we do",
+    // `project` is the one piece of work shown in "From the work" for that moment, with its line
+    // taken from the project's own description.
     moments: [
-      { id: "launch", title: "Launch", line: "You get one first impression. We build the brand before anyone sees it." },
+      {
+        id: "launch",
+        title: "Launch",
+        line: "You get one first impression. We build the brand before anyone sees it.",
+        happens: [
+          "You get one first impression, and the brand has to be ready before anyone sees it.",
+          "The name has to clear legal, and the website has to make the case before anyone has heard of you.",
+        ],
+        project: "casa-colora",
+        projectLine: "A new brand in Mexico, built before anyone saw it.",
+      },
       {
         id: "raise",
         title: "Raise capital",
         line: "Investors judge the company before they open the deck. We make sure the brand survives that first look.",
+        happens: [
+          "Investors judge the company before they open the deck.",
+          "The deck has to make the case when nobody from your team is in the room.",
+        ],
+        project: "anything-ai",
+        projectLine: "An AI app builder from San Francisco, underestimated, with a launch date already on the calendar.",
       },
       {
         id: "grow",
         title: "Grow",
         line: "More products, more markets. Every new person touches the brand. We keep it one brand.",
+        happens: [
+          "More products, more markets, and every new person touches the brand.",
+          "In the hands of your third agency and your newest hire, it stops looking like one brand.",
+        ],
+        project: "hanks-leather",
+        projectLine: "A heritage leather house from Upstate New York, rebuilt for the way it sells today.",
       },
       {
         id: "reposition",
         title: "Reposition",
         line: "The company changed and the brand did not. We start with what your customers already say about you.",
+        happens: [
+          "The company changed and the brand did not.",
+          "Your customers already say something about you that the brand does not.",
+        ],
+        project: "rustico",
+        projectLine: "An identity for dinners under the stars.",
       },
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.
-    engagementsTitle: "Working with a company your size",
+    engagementsTitle: "How we work together",
     engagementsLead: "Every way in is senior-led. Nobody sits between you and the work.",
     engagements: [
       { title: "Audit", line: "A look inside your brand. Findings ranked by what to fix first, and a roadmap." },
@@ -223,6 +276,13 @@ export const siteCopy = {
       raise: "Before a raise, a Brand system with the pitch deck, or an Audit when the brand exists and needs fixing first.",
       grow: "While the company grows, a Fractional brand director keeps every new product and market one brand.",
       reposition: "A reposition usually starts with an Audit: findings ranked by what to fix first, then the system.",
+    },
+    // The engagements each moment shows, by title; the others are not shown for that moment.
+    engagementsFit: {
+      launch: ["Brand system", "Full build"],
+      raise: ["Brand system", "Audit"],
+      grow: ["Fractional brand director"],
+      reposition: ["Audit", "Brand system"],
     },
     // `project` is the slug whose cover sits beside the row. JP can swap any of them.
     disciplines: [
@@ -293,7 +353,7 @@ export const siteCopy = {
           grow: "Packaging across the whole range, so every new product still reads as one brand.",
           reposition: "Packaging that carries the change to the shelf, recognizable at arm's length.",
         },
-        moments: ["launch", "grow"],
+        moments: ["grow"],
         project: "reggie",
       },
       {
@@ -327,10 +387,50 @@ export const siteCopy = {
           grow: "Creative direction for every campaign as you grow, without a second system.",
           reposition: "The new brand in movement across social and product, without a second system.",
         },
-        moments: ["launch", "grow"],
+        moments: ["grow"],
         project: "bond-and-bloom",
       },
     ],
+  },
+  // The free brand check (JP, 2026-11-06, "necesitamos algo así: baked.design/design-check"), in
+  // atla's words: no counts, no durations. The option labels live in shared/brandCheck.ts.
+  brandCheck: {
+    metaTitle: "Free brand check",
+    metaDescription:
+      "A free brand check from Atla. We look at your brand as it lives today, find the biggest opportunities and show you what we would change first.",
+    title: "What is holding your brand back?",
+    lead: "A free brand check from the team behind the work on this site. We look at your brand as it lives today, find the biggest opportunities, and show you what we would change first. For founders and teams who take their brand seriously.",
+    factsLabel: "What you get",
+    facts: ["A short video", "What is in your way, in the order to fix it", "A written brand check at atla.design/audit/your-brand"],
+    capacity: "A few each week, first come first served.",
+    formTitle: "Ask for yours",
+    fields: {
+      name: "Name",
+      email: "Email",
+      site: "Website or Instagram",
+      moment: "Your moment",
+      size: "Company size",
+      investing: "Investing in brand this year?",
+      message: "Message",
+    },
+    sitePlaceholder: "brand.com or @brand",
+    messagePlaceholder: "Anything we should look at first.",
+    optional: "Optional",
+    privacyNotice: "We use this to reply and to manage your inquiry.",
+    privacyLink: "Privacy",
+    submit: "Ask for a brand check",
+    sending: "Sending",
+    retry: "Try again",
+    nameError: "We need a name.",
+    emailError: "We need an email we can reply to.",
+    siteError: "We need a website or an Instagram to look at.",
+    choiceError: "Pick one.",
+    rateLimited: "Too many tries. Try again soon.",
+    network: "That did not go through. What you wrote is still here.",
+    doneTitle: "Sent.",
+    done: "Check your inbox for a note from José Pablo.",
+    callLead: "If you would rather talk it through, pick a time.",
+    bookCall: "Book a call",
   },
   // Why Atla (JP, 2026-11-05, "si soy un CMO de Starbucks no veo por qué contratarte"): the argument,
   // on one page, at /about. PENDING JP APPROVAL. Proof lines come from the hospitality page and the
@@ -472,6 +572,29 @@ export const siteCopy = {
       { name: "Persona", line: "Nutrition, made personal.", href: "/projects/persona" },
       { name: "WeLoveDaily", line: "A daily curation of the brands we love.", href: "https://welovedaily.net" },
     ],
+  },
+  // Ask: the concierge mode of the Explore pill (JP, 2026-11-06, after Little Plains). The answers are
+  // written by the model inside the site's rules (server/ask); these are the fixed lines around them.
+  ask: {
+    modeLabel: "Mode",
+    search: "Search",
+    ask: "Ask",
+    dialog: "Ask Atla",
+    inputLabel: "Ask Atla a question",
+    placeholder: "Ask us about the work",
+    greeting: "How can we help?",
+    chipsLabel: "Suggestions",
+    chips: ["Show me hospitality work", "What happens after I send a brief?", "Who have you worked with?"],
+    visitor: "You",
+    atla: "Atla",
+    thinking: "Atla is answering",
+    piecesLabel: "Work",
+    restart: "Start over",
+    // Said in place of an answer. No durations, no numbers, like everything else here.
+    fallback: "We would rather answer that properly. Start a project and José Pablo replies himself.",
+    error: "That did not go through. Ask again, or start a project.",
+    limited: "That is a lot of questions. The brief is the quickest way to reach us.",
+    unavailable: "Ask is resting for now. Search still works, and the brief reaches us directly.",
   },
 } as const;
 

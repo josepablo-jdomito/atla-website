@@ -2,7 +2,7 @@ import { createHmac } from "node:crypto";
 import { incrWithExpiry } from "./store.ts";
 
 /**
- * Rate limits per address for the brief and the contact form.
+ * Rate limits per address for the brief, the brand check and the contact form.
  *
  * - Rate limits fail open when the counter store errors: the visitor never sees an error.
  *
@@ -14,6 +14,7 @@ import { incrWithExpiry } from "./store.ts";
 const RATE_LIMITS = {
   brief: { max: 20, windowSeconds: 10 * 60 },
   submit: { max: 5, windowSeconds: 10 * 60 },
+  brandCheck: { max: 5, windowSeconds: 10 * 60 },
 } as const;
 
 const APP_SALT = "atla-site-v2-rate-limit";

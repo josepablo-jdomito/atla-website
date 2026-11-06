@@ -798,11 +798,21 @@ html[data-menu="open"] .site-explore { display: none; }
   .project-card:hover .project-card__media { transform: scale(1.03); }
 }
 
-/* ---- Services as discipline rows with a sticky example (v2, 2026-11-05, after tbp.studio) ---- */
-/* Act one (JP, 2026-11-06): "Where are you?" The four moments are the point of the page, so they
-   are set at display size as a list of rows, not a filter strip. Chosen: ink with the accent
-   underline; the others step back to muted. Nothing chosen: all four in ink. */
-.services .services-intro { padding-bottom: 32px; }
+/* ---- Services as one route per moment (v2, 2026-11-06; rows and sticky example after tbp.studio) ---- */
+/* The page title and what Atla does, then "Where are you?": the four moments set at display size as
+   a list of rows. Chosen: ink with the accent underline; the others step back to muted. Nothing
+   chosen: all four in ink. Once a moment is chosen the page below reads as that moment's route:
+   what usually happens, what we do, how we work together, one project, two doors, then the index. */
+.services .services-intro { padding-bottom: 40px; }
+.services-picker { display: flex; flex-direction: column; gap: 16px; }
+.services-picker__title,
+.services-act__label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--site-muted);
+}
 .moment-picker { display: flex; flex-direction: column; margin: 0; border-bottom: 1px solid var(--site-line); }
 .moment-picker__option {
   display: grid;
@@ -862,9 +872,25 @@ html[data-menu="open"] .site-explore { display: none; }
   white-space: nowrap;
   border: 0;
 }
-/* Act two heading echoes the moment: the discipline titles' type, one step larger, one section
-   rhythm under the picker. "Any moment" sits beside it as a small muted reset. */
-.services-what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; margin: 64px 0 0; }
+/* Each act opens one section rhythm under the last: 64px on the phone, 96px from 1024. */
+.services-act { margin-top: 64px; }
+/* Act: what usually happens. Two lines, the problem said plainly, at reading-display size. */
+.services-happens { display: grid; gap: 16px; }
+.services-happens__lines { display: grid; gap: 12px; }
+.services-happens__line {
+  margin: 0;
+  font-family: var(--site-display);
+  max-width: 26ch;
+  font-size: clamp(26px, 1.4vw + 18px, 40px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.services-happens__line + .services-happens__line { color: var(--site-muted); }
+/* Act: what we do. The heading echoes the moment, the discipline titles' type one step larger.
+   "Any moment" sits beside it as a small muted reset. */
+.services-what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; margin: 0; }
 .services-what__title { margin: 0; font-size: 32px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; text-wrap: balance; }
 .services-what__reset {
   min-height: 44px;
@@ -880,20 +906,16 @@ html[data-menu="open"] .site-explore { display: none; }
   cursor: pointer;
   transition: color 160ms var(--site-ease);
 }
-/* The disciplines that do not apply to the moment: still the whole offer, one step quieter. */
-.services-also { margin: 48px 0 0; padding: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--site-muted); }
 /* Read through a moment, the line for that moment is the news: ink, not muted. */
-.services-grid:not([data-moment="any"]) .discipline[data-group="relevant"] .discipline__line { color: var(--site-ink); }
-.discipline[data-group="also"] .discipline__title { font-size: 22px; color: var(--site-muted); }
-.discipline[data-group="also"] { padding: 22px 0; gap: 10px; }
-/* Act three: the engagement line for the chosen moment reads in ink. */
+.services-route:not([data-moment="any"]) .discipline__line,
 .site-root .services .engagements__lead--moment { color: var(--site-ink); }
-/* The moment change crossfades the lines in: opacity only, 200ms, ease-out. Nothing else moves. */
+/* A moment change fades the route in: opacity only, 200ms, ease-out. Nothing else moves. */
 .services-fade { animation: services-fade-in 200ms ease-out both; }
 @keyframes services-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .services-fade { animation: none; }
-  .moment-picker__title { transition: none; }
+  .moment-picker__title,
+  .services-door__link { transition: none; }
 }
 .services-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 16px; }
 .services-rows { display: flex; flex-direction: column; }
@@ -909,7 +931,9 @@ html[data-menu="open"] .site-explore { display: none; }
 .discipline__line { margin: 0; max-width: 44ch; font-size: 16px; line-height: 1.5; color: var(--site-muted); }
 .discipline__includes { margin: 4px 0 0; }
 .discipline__summary {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   list-style: none;
   cursor: pointer;
   font-size: 14px;
@@ -921,21 +945,75 @@ html[data-menu="open"] .site-explore { display: none; }
 }
 .discipline__summary::-webkit-details-marker { display: none; }
 .discipline__includes[open] .discipline__summary { color: var(--site-muted); text-decoration: none; }
-.discipline__list { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15px; line-height: 1.5; }
-.discipline__cta { align-self: flex-start; font-weight: 500; }
+.discipline__list { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15px; line-height: 1.5; }
 .discipline__example { display: grid; gap: 8px; color: inherit; text-decoration: none; }
 .discipline__example img { display: block; width: 100%; height: auto; background: var(--site-line); }
 .discipline__example-name { font-size: 13px; color: var(--site-muted); }
 .services-aside { display: none; }
+/* Act: how we work together. The one or two engagements that fit, never the whole list. */
+.site-root .services .engagements { margin-top: 64px; padding-top: 0; border-top: 0; }
+.site-root .services .engagements__body { display: grid; gap: 16px; }
+.site-root .services .engagements__lead { margin: 0; }
+/* Act: from the work. One project, its cover and one line; the whole block is the link. */
+.services-work { display: grid; gap: 16px; }
+.services-work__link { display: grid; gap: 16px; color: inherit; text-decoration: none; }
+.services-work__text { display: grid; gap: 6px; align-content: start; }
+.services-work__name { font-size: 28px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; }
+.services-work__line { max-width: 40ch; font-size: 16px; line-height: 1.5; color: var(--site-muted); text-wrap: pretty; }
+.services-work__cover { display: block; width: 100%; height: auto; background: var(--site-line); border-radius: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .services-work__name { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; transition: text-decoration-color 160ms var(--site-ease); }
+  .services-work__link:hover .services-work__name { text-decoration-color: var(--site-accent); }
+}
+/* Two doors, side by side from 768: the brief and the brand check. Display type, the accent
+   underline on hover, one line under each. No boxes. */
+.services-doors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-top: 72px;
+  border-top: 1px solid var(--site-line);
+}
+.services-door { display: grid; gap: 10px; align-content: start; padding: 24px 0 28px; }
+.services-door + .services-door { border-top: 1px solid var(--site-line); }
+.services-door__link {
+  justify-self: start;
+  font-family: var(--site-display);
+  font-size: clamp(32px, 2vw + 20px, 52px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--site-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--site-line);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.14em;
+  transition: text-decoration-color 160ms var(--site-ease);
+}
+.services-door__link:hover { text-decoration-color: var(--site-accent); }
+.services-door__line { margin: 0; max-width: 36ch; font-size: 16px; line-height: 1.5; color: var(--site-muted); text-wrap: pretty; }
+/* The full index, below a rule: every discipline with its general line and Includes. */
+.services-index { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--site-ink); }
+.services-index__title { margin: 0 0 16px; font-size: 28px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; }
+.services-index__list { margin: 0; padding: 0; list-style: none; }
+.services-index__row { display: grid; gap: 6px; padding: 18px 0 14px; border-top: 1px solid var(--site-line); scroll-margin-top: 88px; }
+.services-index__row:last-child { border-bottom: 1px solid var(--site-line); }
+.services-index__name { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.services-index__body { display: grid; gap: 0; }
+.services-index__line { margin: 0; max-width: 48ch; font-size: 15px; line-height: 1.5; color: var(--site-muted); }
+@media (min-width: 768px) {
+  .services-doors { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; }
+  .services-door + .services-door { border-top: 0; }
+  .services-door { padding: 32px 0 36px; }
+  .services-index__row { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 56px; align-items: baseline; }
+}
 @media (min-width: 1024px) {
   .services-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 56px; align-items: start; }
   .services-aside { display: block; position: sticky; top: 88px; }
   .discipline__example--inline { display: none; }
   .discipline { padding: 36px 0; gap: 14px; }
   .discipline__title { font-size: 36px; }
-  .discipline[data-group="also"] .discipline__title { font-size: 26px; }
-  .discipline[data-group="also"] { padding: 26px 0; }
-  .services .services-intro { padding-bottom: 40px; }
+  .services .services-intro { padding-bottom: 48px; }
   .moment-picker__option {
     /* Same columns as the rows and the photo below, so the line sits over the photo's edge. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
@@ -943,8 +1021,111 @@ html[data-menu="open"] .site-explore { display: none; }
     gap: 56px;
     padding: 26px 0 28px;
   }
-  .services-what { margin-top: 96px; }
+  .services-act { margin-top: 96px; }
+  .site-root .services .engagements { margin-top: 96px; }
   .services-what__title { font-size: 44px; }
+  /* The label and the lines on the same two columns as everything else on the page. */
+  .services-happens,
+  .services-work,
+  .site-root .services .engagements { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); column-gap: 56px; align-items: baseline; }
+  .services-happens__lines { grid-column: 1 / -1; grid-row: 2; }
+  .services-work__link { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 56px; align-items: start; }
+  .services-work__name { font-size: 36px; }
+  .site-root .services .engagements__title { grid-column: 1; }
+  .site-root .services .engagements__body { grid-column: 2; }
+  .site-root .services .how-steps { grid-template-columns: minmax(0, 1fr); }
+  .services-doors { margin-top: 112px; }
+  .services-index { margin-top: 112px; }
+  .services-index__title { font-size: 36px; }
+}
+
+/* ---- Brand check ---- */
+/* /brand-check (JP, 2026-11-06, after baked.design/design-check): the question as the title, what
+   you get as a quiet row of three, then the form. The form reads like the brief's contact step
+   (.brief-field, .brief-input, .brief-primary); the choices are rows of words with the brief's
+   quiet ring, never pills or boxes. */
+.bcheck .bcheck-intro { padding-bottom: 48px; }
+.bcheck .bcheck-intro__title { max-width: 16ch; }
+.bcheck .bcheck-intro__lead { max-width: 38rem; }
+.bcheck-label { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--site-muted); }
+.bcheck-facts { display: grid; gap: 16px; }
+.bcheck-facts__list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); }
+.bcheck-facts__item {
+  padding: 14px 0 16px;
+  border-top: 1px solid var(--site-line);
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+.bcheck-capacity { margin: 0; font-size: 15px; line-height: 1.5; color: var(--site-muted); }
+.bcheck-ask { display: grid; gap: 28px; margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--site-ink); }
+.bcheck-ask__title {
+  margin: 0;
+  font-family: var(--site-display);
+  font-size: clamp(30px, 1.8vw + 20px, 46px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+.bcheck-ask__title:focus { outline: none; }
+.bcheck-form { display: flex; flex-direction: column; gap: 32px; max-width: 640px; }
+.bcheck-fields .brief-field[data-wide] { grid-column: 1 / -1; }
+.bcheck-message { resize: vertical; min-height: 3lh; font-size: 18px; }
+.bcheck-choice { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.bcheck-choice__legend { padding: 0; }
+.bcheck-choice__options { display: flex; flex-wrap: wrap; gap: 0 28px; border-bottom: 1px solid var(--site-ink); padding-bottom: 4px; }
+.bcheck-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 18px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+/* The native radio stays in the page for the keyboard and screen readers; the ring is drawn. */
+.bcheck-option__input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.bcheck-option::before {
+  content: "";
+  flex: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid color-mix(in srgb, var(--site-ink) 35%, transparent);
+  border-radius: 50%;
+  transition: border-color 160ms var(--site-ease), background-color 160ms var(--site-ease);
+}
+.bcheck-option:has(:checked)::before {
+  border-color: var(--site-ink);
+  background: var(--site-ink);
+  box-shadow: inset 0 0 0 3px var(--site-bg);
+}
+.bcheck-option:has(:checked) .bcheck-option__label { font-weight: 500; }
+.bcheck-option:has(:focus-visible) { outline: 2px solid var(--site-ink); outline-offset: 3px; border-radius: 2px; }
+.bcheck-choice:disabled .bcheck-option { opacity: 0.45; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .bcheck-option:hover:not(:has(:checked))::before { border-color: var(--site-ink); }
+}
+.bcheck-privacy { margin-top: 0; }
+.bcheck-status[data-tone="error"] { color: var(--site-ink); font-weight: 500; }
+.bcheck-done { display: grid; gap: 16px; max-width: 40rem; }
+.bcheck-done__line { margin: 0; font-size: 18px; line-height: 1.5; }
+.bcheck-done__line--muted { color: var(--site-muted); }
+@media (min-width: 768px) {
+  .bcheck-facts__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
+  .bcheck-facts__item { font-size: 20px; padding-right: 16px; }
+}
+@media (min-width: 1024px) {
+  /* Same two columns as Services: the label on the left, the form on the right. */
+  .bcheck-ask { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); column-gap: 56px; margin-top: 112px; padding-top: 32px; align-items: start; }
+  .bcheck-ask__title { position: sticky; top: 104px; max-width: 12ch; }
+  .bcheck-form { grid-column: 2; }
+  .bcheck-done { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bcheck-option::before { transition: none; }
 }
 
 /* Why Atla + engagements (2026-11-05) */
@@ -1756,3 +1937,127 @@ html[data-menu="open"] .site-explore { display: none; }
   text-decoration: none;
 }
 .site-root .site-main:focus { outline: none; }
+
+/* ---- Ask ---- */
+/* The concierge mode of the Explore pill (JP, 2026-11-06, after Little Plains). Paper and ink, Franklin
+   15px, no bubbles, no avatars, no icons: the pieces are the answer and the text is their caption. */
+.site-explore__modes { display: flex; align-items: center; gap: 8px; }
+.site-explore__modes span { color: var(--site-muted); }
+.site-explore .site-explore__modes button { color: var(--site-muted); }
+.site-explore .site-explore__modes button[aria-pressed="true"] {
+  color: var(--site-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--site-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.site-explore .site-explore__modes button:disabled { opacity: 0.4; cursor: default; }
+.site-explore[data-mode="ask"] .site-explore__panel { max-height: min(78vh, 720px); }
+.site-explore[data-mode="ask"][data-open="true"] .site-explore__input { width: min(52ch, 70vw); }
+.site-explore[data-mode="ask"] .site-explore__head {
+  position: sticky;
+  top: -16px;
+  z-index: 1;
+  margin-top: -16px;
+  padding-top: 16px;
+  background: var(--site-surface);
+}
+.ask { font-size: 15px; line-height: 1.5; }
+.ask__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.ask__greeting { margin: 0 0 12px; color: var(--site-ink); }
+.ask__chips { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+.ask__chip,
+.ask__restart {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--site-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 160ms var(--site-ease);
+}
+.ask__chip:disabled { cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .ask__chip:hover,
+  .ask__restart:hover { color: var(--site-ink); }
+}
+.ask__log { display: flex; flex-direction: column; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.ask__turn { display: flex; flex-direction: column; gap: 12px; }
+.ask__turn[data-role="visitor"] { align-items: flex-end; }
+.ask__turn[data-role="visitor"] .ask__text { max-width: 80%; color: var(--site-muted); text-align: right; }
+.ask__turn[data-role="note"] .ask__text { color: var(--site-muted); }
+.ask__text { margin: 0; max-width: 62ch; color: var(--site-ink); white-space: pre-line; }
+.ask__links { display: flex; flex-wrap: wrap; gap: 0 20px; margin: 0; }
+.ask__pieces {
+  display: grid;
+  /* Six pieces sit in one row on a desktop panel; fewer stay card-sized, left-aligned. */
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ask__piece { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; }
+.ask__piece-media { display: block; overflow: hidden; border-radius: 3px; background: var(--site-line); aspect-ratio: 4 / 5; }
+.ask__piece-media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: opacity 200ms var(--site-ease); }
+.ask__piece-title { font-size: 13px; color: var(--site-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .ask__piece:hover .ask__piece-media img { opacity: 0.85; }
+  .ask__piece:hover .ask__piece-title { color: var(--site-ink); }
+}
+.ask__piece:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; border-radius: 3px; }
+.ask__restart { align-self: flex-start; margin-top: 8px; font-size: 14px; }
+/* Thinking: one quiet dot, no spinner. */
+.ask__dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 9px 0;
+  border-radius: 50%;
+  background: var(--site-ink);
+  animation: ask-dot 1.2s ease-in-out infinite;
+}
+@keyframes ask-dot {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ask__dot { animation: none; opacity: 0.6; }
+}
+/* Phone: Ask is a bottom sheet holding the pill, flush with the screen's bottom edge. */
+@media (max-width: 767px) {
+  .site-explore[data-mode="ask"][data-open="true"] {
+    bottom: 0;
+    width: 100vw;
+    gap: 0;
+    padding: 0 16px max(12px, env(safe-area-inset-bottom));
+    border: 1px solid var(--site-line);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--site-surface);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.12);
+    pointer-events: auto;
+  }
+  .site-explore[data-mode="ask"][data-open="true"] .site-explore__panel {
+    max-height: 72dvh;
+    padding: 8px 0 16px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .site-explore[data-mode="ask"][data-open="true"] .site-explore__pill { width: 100%; box-shadow: none; }
+  .site-explore[data-mode="ask"][data-open="true"] .site-explore__input { flex: 1; width: auto; }
+  .ask__pieces { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+}

@@ -580,6 +580,14 @@ async function prerenderRoutes() {
       includeInSitemap: true,
     },
     {
+      pathname: "/brand-check",
+      // Same title and description as the Brand check page's SeoHead.
+      title: formatMetaTitle(siteCopy.brandCheck.metaTitle, "Atla"),
+      description: siteCopy.brandCheck.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
       pathname: "/services",
       // Same title and description as the Services page's SeoHead.
       title: formatMetaTitle(siteCopy.services.metaTitle, "Atla"),
