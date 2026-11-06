@@ -55,7 +55,6 @@ export const siteCopy = {
       startBrief: "Start a project",
       clear: "Clear",
       // The quiet text link under the wall once auto-loading stops. Placeholder text: the content pass owns the wording.
-      more: "More work",
     },
     explore: "Explore",
     exploreDialog: "Filter the work",

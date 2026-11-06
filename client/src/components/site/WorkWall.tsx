@@ -26,13 +26,12 @@ const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1
 const EAGER = 8;
 /** The first few of those win the network race (fetchpriority="high"). */
 const PRIORITY = 3;
-/** How many pieces one pass shows at most; the next pass arrives as the visitor nears the end. */
-const PAGE = 72;
 /**
- * Auto-loading stops after this many passes so the footer can be reached (critique H2, 2026-11-05).
- * After that a quiet "More" text link loads one pass at a time.
+ * How many pieces one pass shows at most; the next pass arrives as the visitor nears the end.
+ * The open wall never stops (JP, 2026-11-05, UX interview 8): no pass cap, no "More" link, and the
+ * home shows no footer under it. A search is finite and ends with its last match.
  */
-const AUTO_PASSES = 3;
+const PAGE = 72;
 /**
  * Column count follows the viewport, like Cosmos (8 columns on a wide desktop,
  * JP 2026-11-05): a column is about 240 px plus the gutter, between 2 and 8.
@@ -219,7 +218,6 @@ export function WorkWall() {
   const priorityKeys = useMemo(() => new Set(tiles.slice(0, PRIORITY).map((tile) => tile.key)), [tiles]);
   // Whether more exists past what is shown: a search ends with its last match; the open wall loops.
   const hasMore = sequence.length > 0 && (urlQuery ? shown < sequence.length : true);
-  const autoLoad = hasMore && shown < PAGE * AUTO_PASSES;
 
   const changeFilters = (next: Filters) => {
     window.history.replaceState(null, "", `${window.location.pathname}${searchFromFilters(next, urlQuery)}`);
@@ -230,7 +228,7 @@ export function WorkWall() {
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel || !autoLoad) return;
+    if (!sentinel || !hasMore) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setShown((current) => current + PAGE);
@@ -239,7 +237,7 @@ export function WorkWall() {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [autoLoad, shown]);
+  }, [hasMore, shown]);
 
   if (projects.length === 0) return null;
 
@@ -270,13 +268,6 @@ export function WorkWall() {
         </div>
       )}
       <div ref={sentinelRef} aria-hidden="true" />
-      {hasMore && !autoLoad ? (
-        <div className="work-wall__more">
-          <button type="button" className="site-link work-wall__more-link" onClick={() => setShown((current) => current + PAGE)}>
-            {siteCopy.home.results.more}
-          </button>
-        </div>
-      ) : null}
       <WorkExplore
         query={draft}
         onQuery={(value) => {

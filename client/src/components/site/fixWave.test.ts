@@ -227,7 +227,7 @@ describe("Wall tiles", () => {
     expect(html.match(/fetchpriority="high"/g)).toHaveLength(3);
   });
 
-  it("auto-loads three passes, then stops and offers a quiet More link", () => {
+  it("loops forever: every sentinel hit loads another pass and no More link exists (UX interview 8)", () => {
     stubMedia();
     act(() => root.render(wall(projects(30))));
     expect(container.querySelector(".work-wall")?.hasAttribute("data-fade")).toBe(true);
@@ -241,17 +241,13 @@ describe("Wall tiles", () => {
       });
     const count = () => container.querySelectorAll(".wall-tile").length;
     expect(count()).toBe(72);
+    sentinelHit();
+    sentinelHit();
+    expect(count()).toBe(216);
+    sentinelHit();
+    sentinelHit();
+    expect(count()).toBe(360);
     expect(container.querySelector(".work-wall__more")).toBeNull();
-    sentinelHit();
-    sentinelHit();
-    expect(count()).toBe(216);
-    // Third pass shown: the sentinel is no longer watched, and the footer can be reached.
-    sentinelHit();
-    expect(count()).toBe(216);
-    const more = container.querySelector<HTMLButtonElement>(".work-wall__more button")!;
-    expect(more.textContent).toBe(siteCopy.home.results.more);
-    act(() => more.click());
-    expect(count()).toBe(288);
   });
 });
 

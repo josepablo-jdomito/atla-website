@@ -272,8 +272,11 @@ html body {
   gap: var(--wall-gap);
   min-width: 0;
 }
+/* Corners like Cosmos (JP, 2026-11-05, UX interview 3). Nothing happens on hover (answer 4). */
 .wall-tile {
   display: block;
+  overflow: hidden;
+  border-radius: 3px;
   background: var(--site-line);
   line-height: 0;
 }
@@ -287,22 +290,8 @@ html body {
 /* The fade gate only exists once the client has hydrated (WorkWall sets data-fade): the prerendered
    tiles in the server HTML are never held at opacity 0 waiting for the bundle. */
 .work-wall[data-fade] .wall-tile[data-loaded="false"] img { opacity: 0; }
-.work-wall__more { display: flex; justify-content: center; padding: 40px 0 8px; }
-.work-wall__more-link {
-  min-height: 44px;
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-}
 .wall-tile video { display: block; width: 100%; height: auto; object-fit: cover; }
 .work-wall__empty { margin: 48px 0; font-size: 15px; color: var(--site-muted); }
-@media (hover: hover) and (pointer: fine) {
-  /* Hover is tens of times a visit: shortest budget, plain `ease` for a color change. */
-  .wall-tile img { transition: opacity 320ms var(--site-ease), filter 160ms ease; }
-  .wall-tile:hover img { filter: brightness(0.94); }
-}
 @media (min-width: 768px) {
   .work-wall { --wall-gap: 20px; padding-top: 12px; }
 }

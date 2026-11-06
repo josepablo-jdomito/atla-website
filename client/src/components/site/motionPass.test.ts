@@ -147,7 +147,8 @@ describe("page shell route fade", () => {
 describe("site.css motion rules", () => {
   it("keeps the budgets from the motion pass", () => {
     expect(CSS).toMatch(/\.wall-tile img \{[^}]*transition: opacity 320ms var\(--site-ease\);/);
-    expect(CSS).toContain("filter 160ms ease");
+    // Nothing happens on hover (UX interview 4, 2026-11-05).
+    expect(CSS).not.toContain(".wall-tile:hover");
     expect(CSS).toContain('.site-explore__panel[data-state="closing"]');
     expect(CSS).toContain("animation: site-page-in 200ms var(--site-ease) both");
     expect(CSS).not.toContain("@keyframes site-explore-in");

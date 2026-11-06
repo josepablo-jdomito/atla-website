@@ -9,7 +9,11 @@ import { ClientLogos } from "@/components/site/ClientLogos";
 // 200 ms CSS keyframe so the fade stays smooth while the new page's images decode (no framer-motion).
 let landed = false;
 
-export function PageShell({ children }: { children: ReactNode }) {
+/**
+ * `tail={false}` drops the logo band and the footer: the open home wall loops forever and nothing
+ * sits under it (JP, 2026-11-05, UX interview 8). Every other page keeps both.
+ */
+export function PageShell({ children, tail = true }: { children: ReactNode; tail?: boolean }) {
   const [location] = useLocation();
   const [firstPaint] = useState(() => !landed);
 
@@ -25,8 +29,8 @@ export function PageShell({ children }: { children: ReactNode }) {
           {children}
         </div>
       </main>
-      <ClientLogos />
-      <SiteFooter />
+      {tail ? <ClientLogos /> : null}
+      {tail ? <SiteFooter /> : null}
     </div>
   );
 }
