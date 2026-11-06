@@ -416,7 +416,12 @@ export const dropDraftsUnlessIncluded = <T extends { status?: string }>(projects
  * on /ventures). Applied to every project query, so the wall, the project API, next/related, the sitemap
  * and the prerender all agree. The Sanity document stays; only the site stops listing it.
  */
-export const HIDDEN_PROJECT_SLUGS: readonly string[] = ["welove"];
+/**
+ * Off the wall, the sitemap, next and related (JP, 2026-11-06, after the red team): welove (WeLoveDaily
+ * lives on /ventures), atla (in-house, images only), the-bridge ("the case is not that strong", lorem
+ * ipsum in the gallery), conscious-care-co (no client named). Nothing is deleted in Sanity.
+ */
+export const HIDDEN_PROJECT_SLUGS: readonly string[] = ["welove", "atla", "the-bridge", "conscious-care-co"];
 export const dropHiddenProjects = <T extends { slug?: string | null }>(projects: T[]) =>
   projects.filter((project) => !HIDDEN_PROJECT_SLUGS.includes(String(project.slug ?? "").trim().toLowerCase()));
 

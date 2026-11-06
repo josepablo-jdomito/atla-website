@@ -66,7 +66,7 @@ describe("SANITY_INCLUDE_DRAFTS", () => {
 
 describe("hidden projects", () => {
   it("WeLoveDaily never renders outside /ventures: the welove project is dropped from every query", () => {
-    expect(HIDDEN_PROJECT_SLUGS).toContain("welove");
+    expect(HIDDEN_PROJECT_SLUGS).toEqual(["welove", "atla", "the-bridge", "conscious-care-co"]);
     const kept = dropHiddenProjects([{ slug: "rustico" }, { slug: "welove" }, { slug: "WeLove " }, { slug: "munda" }]);
     expect(kept.map((p) => p.slug)).toEqual(["rustico", "munda"]);
   });
