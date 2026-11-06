@@ -5,9 +5,11 @@
  * A query token scores against each project field it appears in: title 3,
  * sector 3, disciplines 2, stage 2, searchTerms 2, place 1; a synonym of a query
  * word scores 1 per project, so "coffee" reaches the hospitality work. When nothing
- * scores, the visitor still gets work back: the 6 projects whose sector, disciplines,
- * stage or search terms overlap the query (through a small synonym map), else the 6
- * most recent, flagged `closest` so the UI can label them "Closest work".
+ * scores, the visitor gets the (up to) 6 projects whose sector, disciplines, stage or search
+ * terms overlap the query through a small synonym map, flagged `closest` so the UI can label
+ * them "Closest work". When the query names something and nothing overlaps at all, the result
+ * is empty (still flagged `closest`) and the UI says so instead of padding with unrelated work.
+ * A query of only function words ("brand identity") names nothing, so it gets the 6 most recent.
  *
  * The facet values are the controlled lists in shared/projectFacets.ts.
  */
@@ -158,6 +160,8 @@ export function rankProjects(query: string, projects: ProjectLite[]): RankResult
 
   const closest = projects
     .map((project) => ({ project, overlap: overlap(project) }))
+    // A query that names something needs some overlap to be "closest"; one that names nothing does not.
+    .filter((entry) => queryTokens.length === 0 || entry.overlap > 0)
     .sort((a, b) => b.overlap - a.overlap || byYearDesc(a.project, b.project))
     .slice(0, CLOSEST_COUNT)
     .map((entry) => entry.project);

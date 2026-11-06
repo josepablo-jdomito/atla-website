@@ -109,6 +109,26 @@ describe("Explore field", () => {
     expect(document.querySelector(".site-explore")!.textContent).not.toMatch(/\d/);
   });
 
+  it("on a touch screen the first tap opens the filters without the keyboard; the second tap types", () => {
+    const { input } = renderExplore();
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({ matches: query.includes("coarse"), media: query, addEventListener() {}, removeEventListener() {} })) as unknown as typeof window.matchMedia;
+    try {
+      act(() => input.focus());
+      expect(document.querySelector(".site-explore__panel")).not.toBeNull();
+      expect(document.activeElement).not.toBe(input);
+      act(() => input.focus());
+      expect(document.activeElement).toBe(input);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it("draws one focus ring, on the pill: the field inside never draws its own", () => {
+    expect(CSS).toContain(".site-explore__pill:focus-within { outline: 2px solid var(--site-ink); outline-offset: 3px; }");
+    expect(CSS).toMatch(/\.site-explore \.site-explore__input:focus-visible \{\s*outline: 0;/);
+  });
+
   it("Escape closes the panel, keeps the query and leaves focus on the field", () => {
     const { input, onQuery } = renderExplore();
     act(() => input.focus());
@@ -146,6 +166,22 @@ describe("Menu sheet", () => {
     });
     expect(tab.defaultPrevented).toBe(true);
     expect(document.activeElement).toBe(button);
+  });
+
+  it("offers Work, Services, Why Atla, Start a project and Contact, and hides the Explore pill while open", () => {
+    const { button, sheet } = renderHeader();
+    act(() => button.click());
+    expect(Array.from(sheet.querySelectorAll("a")).map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+      ["Work", "/"],
+      ["Services", "/services"],
+      ["Why Atla", "/about"],
+      ["Start a project", "/brief"],
+      ["Contact", "/contact"],
+    ]);
+    expect(document.documentElement.getAttribute("data-menu")).toBe("open");
+    expect(CSS).toMatch(/html\[data-menu="open"\] \.site-explore \{ display: none; \}/);
+    act(() => button.click());
+    expect(document.documentElement.hasAttribute("data-menu")).toBe(false);
   });
 
   it("closes and gives the page its scroll back when the viewport crosses 768 px", () => {
@@ -188,6 +224,13 @@ describe("Wall tiles", () => {
     expect(container.querySelector("img")?.hasAttribute("fetchpriority")).toBe(false);
   });
 
+  it("paints the image's dominant colour under a tile that has one", () => {
+    act(() => root.render(createElement(Tile, { tile: { ...tile, color: "#336699" }, eager: true, reduced: false })));
+    expect((container.querySelector(".wall-tile") as HTMLElement).style.background).toBe("rgb(51, 102, 153)");
+    act(() => root.render(createElement(Tile, { tile, eager: true, reduced: false })));
+    expect((container.querySelector(".wall-tile") as HTMLElement).style.background).toBe("");
+  });
+
   it("the opacity gate only applies once the client has hydrated the wall", () => {
     expect(CSS).not.toMatch(/\.wall-tile img \{[^}]*opacity: 0/);
     expect(CSS).toContain('.work-wall[data-fade] .wall-tile[data-loaded="false"] img { opacity: 0; }');
@@ -219,12 +262,29 @@ describe("Wall tiles", () => {
     return createElement(QueryClientProvider, { client }, createElement(Router, routerProps, createElement(WorkWall)));
   }
 
-  it("server HTML has no fade gate; eight tiles load eagerly and the first three ask for high priority", () => {
+  it("server HTML has no fade gate; three rows of tiles load eagerly and all ask for high priority", () => {
     stubMedia();
     const html = renderToString(wall(projects(30), true));
     expect(html).not.toContain("data-fade");
-    expect(html.match(/loading="eager"/g)).toHaveLength(8);
-    expect(html.match(/fetchpriority="high"/g)).toHaveLength(3);
+    // jsdom is 1024 wide: four columns, three rows. The real prerender has no window and renders the phone's two (the minimum, eight).
+    expect(html.match(/loading="eager"/g)).toHaveLength(12);
+    expect(html.match(/fetchpriority="high"/g)).toHaveLength(12);
+  });
+
+  it("a typed search that matches nothing says so, with the way in, and shows no unrelated work", () => {
+    stubMedia();
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+    client.setQueryData(["/api/projects"], projects(6));
+    window.history.replaceState(null, "", "/?q=quokka");
+    try {
+      act(() => root.render(createElement(QueryClientProvider, { client }, createElement(WorkWall))));
+    expect(container.querySelector(".work-wall__empty")?.textContent).toContain(siteCopy.home.results.empty);
+    expect(container.querySelector(".work-wall__empty a")?.getAttribute("href")).toBe("/brief");
+    expect(container.querySelector(".work-wall__note")).toBeNull();
+    expect(container.querySelectorAll(".wall-tile")).toHaveLength(0);
+    } finally {
+      window.history.replaceState(null, "", "/");
+    }
   });
 
   it("loops forever: every sentinel hit loads another pass and no More link exists (UX interview 8)", () => {

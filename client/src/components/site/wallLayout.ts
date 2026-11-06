@@ -1,5 +1,5 @@
 import type { SiteProject } from "@/components/site/siteProjects";
-import { siteOrder } from "@/components/site/siteProjects";
+import { featuredProjects, siteOrder } from "@/components/site/siteProjects";
 import { getImageDimensions } from "@shared/imageDelivery";
 
 /**
@@ -21,6 +21,8 @@ export type WallTile = {
   poster?: string;
   /** width / height; 1.5 when unknown. */
   ratio: number;
+  /** The image's dominant colour (Sanity palette), the tile's colour until the image arrives. Covers only. */
+  color?: string;
 };
 
 /** Atla's own brand, the founder's course and WeLoveDaily are not client work. */
@@ -50,11 +52,12 @@ export function directVideo(src: string) {
 
 function tilesOf(project: SiteProject): WallTile[] {
   const base = { slug: project.slug, title: project.title };
-  const images = [project.coverImage, ...project.images].map((src) => ({
+  const images = [project.coverImage, ...project.images].map((src, index) => ({
     ...base,
     src,
     kind: "image" as const,
     ratio: coverRatio(src),
+    ...(index === 0 && project.coverColor ? { color: project.coverColor } : null),
   }));
   const videos = project.videos.filter(directVideo).map((src) => ({
     ...base,
@@ -96,6 +99,13 @@ function shuffled<T>(items: T[], random: () => number): T[] {
 }
 
 /**
+ * How many tiles open every shuffled wall with a featured project's cover (fix wave 3, red team 9:
+ * the first screen was "chosen by dice"). The order among them is shuffled; the covers are the
+ * pieces JP chose to lead with, so the first screen is always good work, never a text-heavy comp.
+ */
+export const WALL_LEAD = 12;
+
+/**
  * `seed` 0 keeps the site order (the prerender). Any other seed shuffles the
  * projects and every project's pieces, so each load of the page deals a new
  * wall (JP, 2026-11-05).
@@ -107,10 +117,21 @@ export function buildWallSequence(projects: SiteProject[], seed = 0, ordered = f
     .filter(isClientWork)
     .map(tilesOf)
     .filter((deck) => deck.length > 0);
-  if (random) decks = shuffled(decks.map((deck) => shuffled(deck, random)), random);
-  const cursors = decks.map(() => 0);
-  const total = decks.reduce((sum, deck) => sum + deck.length, 0);
   const sequence: WallTile[] = [];
+  if (random) {
+    // The lead: covers of featured client projects, shuffled, taken out of their decks before those shuffle.
+    const lead = new Set(featuredProjects(projects.filter(isClientWork), WALL_LEAD).map((project) => project.slug));
+    const covers: WallTile[] = [];
+    decks = decks.map((deck) => {
+      if (!lead.has(deck[0].slug) || deck[0].kind !== "image") return deck;
+      covers.push(deck[0]);
+      return deck.slice(1);
+    }).filter((deck) => deck.length > 0);
+    sequence.push(...shuffled(covers, random));
+    decks = shuffled(decks.map((deck) => shuffled(deck, random)), random);
+  }
+  const cursors = decks.map(() => 0);
+  const total = sequence.length + decks.reduce((sum, deck) => sum + deck.length, 0);
   while (sequence.length < total) {
     const last = sequence[sequence.length - 1];
     const candidates = decks

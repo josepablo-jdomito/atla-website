@@ -23,10 +23,14 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
 
 const WIDTHS = [320, 480, 640, 800, 1000, 1280];
 const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw";
-/** The first pieces load eagerly (about one phone screen and most of a desktop one); the rest wait for the scroll. */
-const EAGER = 8;
-/** The first few of those win the network race (fetchpriority="high"). */
-const PRIORITY = 3;
+/**
+ * The first pieces load eagerly and win the network race (fetchpriority="high"): about three rows of
+ * the current column count, never fewer than one phone screen. The rest wait for the scroll. The
+ * prerender (phone layout) also preloads the first three from its markup (script/build.ts).
+ */
+const EAGER_MIN = 8;
+const EAGER_ROWS = 3;
+export const eagerCount = (columns: number) => Math.max(EAGER_MIN, columns * EAGER_ROWS);
 /**
  * How many pieces one pass shows at most; the next pass arrives as the visitor nears the end.
  * The open wall never stops (JP, 2026-11-05, UX interview 8): no pass cap, no "More" link, and the
@@ -117,6 +121,8 @@ export function Tile({
       className="wall-tile"
       aria-label={tile.title}
       data-loaded={loaded}
+      // The image's own dominant colour holds the place until it arrives (the palette Sanity computed).
+      style={tile.color ? { background: tile.color } : undefined}
     >
       {tile.kind === "video" ? (
         <VideoTile tile={tile} reduced={reduced} />
@@ -215,8 +221,7 @@ export function WorkWall() {
     return all;
   }, [sequence, shown, urlQuery]);
   const placed = useMemo(() => placeInColumns(tiles, columns), [tiles, columns]);
-  const eagerKeys = useMemo(() => new Set(tiles.slice(0, EAGER).map((tile) => tile.key)), [tiles]);
-  const priorityKeys = useMemo(() => new Set(tiles.slice(0, PRIORITY).map((tile) => tile.key)), [tiles]);
+  const eagerKeys = useMemo(() => new Set(tiles.slice(0, eagerCount(columns)).map((tile) => tile.key)), [tiles, columns]);
   // Whether more exists past what is shown: a search ends with its last match; the open wall loops.
   const hasMore = sequence.length > 0 && (urlQuery ? shown < sequence.length : true);
 
@@ -250,7 +255,12 @@ export function WorkWall() {
         </p>
       ) : null}
       {sequence.length === 0 ? (
-        <p className="work-wall__empty">{siteCopy.home.results.empty}</p>
+        <p className="work-wall__empty" role="status">
+          {siteCopy.home.results.empty}{" "}
+          <Link href="/brief" className="site-link">
+            {siteCopy.home.results.startBrief}
+          </Link>
+        </p>
       ) : (
         <div className="work-wall__columns" style={{ ["--wall-columns" as string]: columns }}>
           {placed.map((column, index) => (
@@ -260,7 +270,7 @@ export function WorkWall() {
                   key={tile.key}
                   tile={tile}
                   eager={eagerKeys.has(tile.key)}
-                  priority={priorityKeys.has(tile.key)}
+                  priority={eagerKeys.has(tile.key)}
                   reduced={reduced}
                 />
               ))}

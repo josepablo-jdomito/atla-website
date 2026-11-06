@@ -14,7 +14,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function AtlaPrivacy() {
   return (
-    <PageShell>
+    <PageShell logos={false}>
       <SeoHead
         title={formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data")}
         description="How Atla handles what you send through the brief and the contact form, the analytics on the site, browser storage and the providers that process data."

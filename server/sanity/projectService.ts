@@ -412,7 +412,7 @@ export const dropDraftsUnlessIncluded = <T extends { status?: string }>(projects
   include ? projects : projects.filter((project) => project.status !== "draft");
 
 /**
- * Projects that exist in Sanity but never render on the site (JP, 2026-10-09 rule: WeLoveDaily lives only
+ * Projects that exist in Sanity but never render on the site (JP's rule: WeLoveDaily lives only
  * on /ventures). Applied to every project query, so the wall, the project API, next/related, the sitemap
  * and the prerender all agree. The Sanity document stays; only the site stops listing it.
  */

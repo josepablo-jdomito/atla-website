@@ -12,8 +12,9 @@ let landed = false;
 /**
  * `tail={false}` drops the logo band and the footer: the open home wall loops forever and nothing
  * sits under it (JP, 2026-11-05, UX interview 8). Every other page keeps both.
+ * `logos={false}` keeps the footer but not the client marks: the legal pages and the 404 are not a sales moment.
  */
-export function PageShell({ children, tail = true }: { children: ReactNode; tail?: boolean }) {
+export function PageShell({ children, tail = true, logos = true }: { children: ReactNode; tail?: boolean; logos?: boolean }) {
   const [location] = useLocation();
   const [firstPaint] = useState(() => !landed);
 
@@ -29,7 +30,7 @@ export function PageShell({ children, tail = true }: { children: ReactNode; tail
           {children}
         </div>
       </main>
-      {tail ? <ClientLogos /> : null}
+      {tail && logos ? <ClientLogos /> : null}
       {tail ? <SiteFooter /> : null}
     </div>
   );

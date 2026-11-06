@@ -14,7 +14,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function AtlaTerms() {
   return (
-    <PageShell>
+    <PageShell logos={false}>
       <SeoHead
         title={formatMetaTitle("Atla Terms of Use", "Website and Content Access")}
         description="Review the terms governing access to the Atla website, intellectual property, third-party services, and permitted use of site content."

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SiteProject } from "./siteProjects";
-import { buildWallSequence, directVideo, isClientWork, placeInColumns, wallPass } from "./wallLayout";
+import { buildWallSequence, directVideo, isClientWork, placeInColumns, WALL_LEAD, wallPass } from "./wallLayout";
 
 const portrait = "https://cdn.sanity.io/images/p/production/a-1200x1600.jpg";
 const landscape = "https://cdn.sanity.io/images/p/production/b-1600x900.jpg";
@@ -113,6 +113,58 @@ describe("buildWallSequence shuffle", () => {
     const a = buildWallSequence(pool, 42);
     expect(buildWallSequence(pool, 42)).toEqual(a);
     for (let i = 1; i < a.length; i += 1) expect(a[i].slug).not.toBe(a[i - 1].slug);
+  });
+});
+
+describe("buildWallSequence lead", () => {
+  const cover = (slug: string) => `https://cdn.sanity.io/images/p/production/${slug}-cover-1600x900.jpg`;
+  const extra = (slug: string, i: number) => `https://cdn.sanity.io/images/p/production/${slug}-x${i}-1200x1600.jpg`;
+  const make = (slug: string, featured: boolean, color?: string) =>
+    project(slug, cover(slug), {
+      featured,
+      images: [extra(slug, 1), extra(slug, 2), extra(slug, 3)],
+      ...(color ? { coverColor: color } : null),
+    });
+  const pool = [
+    ...Array.from({ length: 5 }, (_, i) => make(`f${i}`, true)),
+    ...Array.from({ length: 15 }, (_, i) => make(`a${i}`, false)),
+  ];
+
+  it("opens every shuffled wall with the covers of featured projects, in an order that changes per seed", () => {
+    const leads = new Set<string>();
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const sequence = buildWallSequence(pool, seed);
+      const first = sequence.slice(0, 5);
+      expect(first.map((tile) => tile.src).sort(), String(seed)).toEqual(
+        pool.slice(0, 5).map((p) => p.coverImage).sort(),
+      );
+      leads.add(first.map((tile) => tile.slug).join());
+    }
+    expect(leads.size).toBeGreaterThan(1);
+  });
+
+  it("still uses every piece once and never repeats a project back to back", () => {
+    const sequence = buildWallSequence(pool, 99);
+    expect(sequence).toHaveLength(pool.length * 4);
+    expect(new Set(sequence.map((tile) => tile.src)).size).toBe(sequence.length);
+    for (let i = 1; i < sequence.length; i += 1) expect(sequence[i].slug).not.toBe(sequence[i - 1].slug);
+  });
+
+  it("leads with at most WALL_LEAD covers, and a search keeps its ranked order", () => {
+    const many = Array.from({ length: WALL_LEAD + 6 }, (_, i) => make(`m${i}`, true));
+    const first = buildWallSequence(many, 5).slice(0, WALL_LEAD);
+    expect(first.every((tile) => tile.src.includes("-cover-"))).toBe(true);
+    const ordered = buildWallSequence(pool, 5, true);
+    expect(ordered[0].slug).toBe("f0");
+    expect(ordered[1].slug).toBe("f1");
+  });
+
+  it("gives a cover tile its image's dominant colour and no other tile", () => {
+    const coloured = [make("c1", true, "#336699"), make("c2", false)];
+    const sequence = buildWallSequence(coloured, 3);
+    const colours = sequence.filter((tile) => tile.color);
+    expect(colours.map((tile) => [tile.slug, tile.color])).toEqual([["c1", "#336699"]]);
+    expect(colours[0].src).toBe(cover("c1"));
   });
 });
 

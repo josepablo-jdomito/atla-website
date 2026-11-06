@@ -1,4 +1,4 @@
-// Every string the v2 site shows. PENDING JP APPROVAL until he signs off.
+// Every string the v2 site shows.
 // Voice: José Pablo's. Short lines, plain words, specific nouns. No prices, no
 // durations, no counts. Nothing invented.
 
@@ -17,6 +17,14 @@ export const siteCopy = {
     ],
     // JP, 2026-10-04: the header reads "Start a project". It opens the brief.
     cta: { label: "Start a project", href: "/brief" },
+    // The phone menu (below 768 px) lists the three header links, then the two ways in (red team 19).
+    sheetLinks: [
+      { label: "Work", href: "/" },
+      { label: "Services", href: "/services" },
+      { label: "Why Atla", href: "/about" },
+      { label: "Start a project", href: "/brief" },
+      { label: "Contact", href: "/contact" },
+    ],
     menuOpen: "Menu",
     menuClose: "Close",
     homeLabel: "Atla, home",
@@ -24,15 +32,14 @@ export const siteCopy = {
   },
   footer: {
     navLabel: "Footer",
+    // One line (UX interview 15): the pages a buyer goes to. Journal, Programs and Hospitality stay
+    // reachable by their addresses and in the sitemap; they are not footer links (red team 17, 24).
     links: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
       { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
       { label: "Contact", href: "/contact" },
-      { label: "Journal", href: "/journal" },
-      { label: "Programs", href: "/programs" },
-      { label: "Hospitality", href: "/hospitality" },
     ],
     legal: [
       { label: "Privacy", href: "/privacy" },
@@ -40,9 +47,7 @@ export const siteCopy = {
     ],
     cookiesLabel: "Analytics cookies",
     citiesLabel: "Studio cities",
-    // JP, 2026-10-04: the footer line, verbatim.
-    line: "When your brand has to change, start here.",
-    rights: "Atla. All rights reserved.",
+    rights: "Atla",
   },
   // One control per page for every looping video (WCAG 2.2.2).
   motion: {

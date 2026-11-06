@@ -60,10 +60,21 @@ function yearOptions(projects: SiteProject[]) {
   return [ALL, ...Array.from(new Set(projects.map((p) => p.year).filter(Boolean))).sort((a, b) => b - a).map(String)];
 }
 
+/** The joint value is not a place a visitor picks: it answers to both of its countries. */
+const BOTH_PLACE = "United States & Mexico";
+const BOTH_PLACES = ["United States", "Mexico"];
+
+/** What a place value is called on the page: "International" tells a visitor nothing. */
+const PLACE_LABELS: Record<string, string> = { International: "Other countries" };
+export const placeLabel = (place: string) => PLACE_LABELS[place] ?? place;
+
 export function matchesFilters(project: SiteProject, filters: Filters) {
   if (filters.sector !== ALL && project.sector !== filters.sector) return false;
   if (filters.discipline !== ALL && !project.disciplines.includes(filters.discipline)) return false;
-  if (filters.place !== ALL && project.place !== filters.place) return false;
+  if (filters.place !== ALL && project.place !== filters.place) {
+    // A project in both countries shows under each of them.
+    if (!(project.place === BOTH_PLACE && BOTH_PLACES.includes(filters.place))) return false;
+  }
   if (filters.year !== ALL && String(project.year) !== filters.year) return false;
   return true;
 }
@@ -120,7 +131,7 @@ export function facetOptions(projects: SiteProject[]) {
   return {
     sector: buildFacetOptions(projects.map((p) => p.sector), SECTORS),
     discipline: buildFacetOptions(projects.flatMap((p) => p.disciplines), DISCIPLINES, [DISCIPLINE_ON_ALL]),
-    place: buildFacetOptions(projects.map((p) => p.place), PLACES),
+    place: buildFacetOptions(projects.map((p) => p.place), PLACES, [BOTH_PLACE]),
     year: yearOptions(projects),
   };
 }
@@ -134,11 +145,13 @@ function FilterGroup({
   options,
   value,
   onChange,
+  labelFor,
 }: {
   label: string;
   options: readonly string[];
   value: string;
   onChange: (value: string) => void;
+  labelFor?: (option: string) => string;
 }) {
   return (
     <fieldset className="site-filter">
@@ -152,7 +165,7 @@ function FilterGroup({
             aria-pressed={value === option}
             onClick={() => onChange(option)}
           >
-            {option}
+            {labelFor ? labelFor(option) : option}
           </button>
         ))}
       </div>
@@ -177,7 +190,7 @@ export function WorkFilters({
     <div className="site-filters">
       <FilterGroup label={home.filters.sector} options={options.sector} value={filters.sector} onChange={set("sector")} />
       <FilterGroup label={home.filters.discipline} options={options.discipline} value={filters.discipline} onChange={set("discipline")} />
-      <FilterGroup label={home.filters.place} options={options.place} value={filters.place} onChange={set("place")} />
+      <FilterGroup label={home.filters.place} options={options.place} value={filters.place} onChange={set("place")} labelFor={placeLabel} />
       <FilterGroup label={home.filters.year} options={options.year} value={filters.year} onChange={set("year")} />
     </div>
   );

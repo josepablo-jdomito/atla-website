@@ -154,6 +154,8 @@ html body {
   .site-sheet:not([hidden]) { opacity: 0; }
 }
 .site-sheet ul { list-style: none; margin: 0; padding: 0; }
+/* The Explore pill never floats over the open menu (red team 19). */
+html[data-menu="open"] .site-explore { display: none; }
 .site-sheet__link {
   display: block;
   padding: 12px 0;
@@ -172,45 +174,27 @@ html body {
 }
 
 .site-footer {
-  border-top: 1px solid var(--site-line);
-  padding: 56px var(--site-gutter) 24px;
-  margin-top: 96px;
-}
-/* The one line the studio says for itself (JP, 2026-10-04). Serif, like the hospitality page. */
-.site-footer__line {
-  margin: 0 0 56px;
-  font-family: var(--site-serif);
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  text-wrap: balance;
-  max-width: 18ch;
-}
-.site-footer__cities li { font-size: 14px; line-height: 1.6; }
-.site-footer__grid {
-  display: grid;
-  gap: 32px;
-  grid-template-columns: 1fr;
-}
-.site-footer__list { list-style: none; margin: 0; padding: 0; }
-.site-footer__base {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 56px;
-  padding-top: 16px;
+  align-items: baseline;
+  gap: 12px 28px;
   border-top: 1px solid var(--site-line);
+  padding: 20px var(--site-gutter) 24px;
+  margin-top: 96px;
   font-size: 13px;
+  line-height: 1.5;
   color: var(--site-muted);
 }
-.site-footer__legal { display: flex; flex-wrap: wrap; gap: 20px; }
-.site-footer__button { font-size: 14px; }
-
-@media (min-width: 768px) {
-  .site-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .site-footer__line { font-size: 44px; margin-bottom: 72px; }
+.site-footer__part { margin: 0; }
+.site-footer__list { display: flex; flex-wrap: wrap; gap: 4px 16px; list-style: none; margin: 0; padding: 0; }
+.site-footer__cities { gap: 4px 10px; }
+.site-footer__cities li + li::before { content: "\00b7"; margin-right: 10px; }
+.site-footer__email { color: inherit; }
+/* The legal row closes the line: at the right on a wide screen, under it on a phone. */
+.site-footer__legal { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.site-footer__button { font-size: 13px; }
+@media (min-width: 1100px) {
+  .site-footer__legal { margin-left: auto; }
 }
 
 /* ---- Client marks above the footer (v2, 2026-11-05) ---- */
@@ -240,6 +224,11 @@ html body {
   opacity: 0.55;
 }
 .client-logos__mark img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); }
+/* The marks are drawn in black: on the dark page they are inverted to light, or they vanish (red team 11). */
+@media (prefers-color-scheme: dark) {
+  .client-logos__mark { opacity: 0.7; }
+  .client-logos__mark img { filter: invert(1) grayscale(1); }
+}
 @keyframes client-logos-left { to { transform: translateX(-50%); } }
 @keyframes client-logos-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
@@ -840,6 +829,7 @@ html body {
   position: relative;
   max-width: 92vw;
   max-height: 88vh;
+  max-height: 88dvh;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -921,7 +911,7 @@ html body {
   font-weight: 500;
   cursor: text;
   margin: 0;
-  transition: width 200ms var(--site-ease);
+  /* The field's width animates inside it; the pill itself never needs a width of its own. */
 }
 .site-explore__input {
   width: 7ch;
@@ -935,7 +925,17 @@ html body {
   transition: width 200ms var(--site-ease);
 }
 .site-explore__input::placeholder { color: var(--site-ink); opacity: 1; }
-/* The ring sits on the pill, not on the bare input inside it. */
+/* One ring, on the pill. The field inside never draws its own (not the engine's, not index.css's
+   :where(input):focus-visible), so there are never two outlines and the ring follows the pill as it grows. */
+.site-explore .site-explore__input,
+.site-explore .site-explore__input:focus,
+.site-explore .site-explore__input:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
 .site-explore__pill:focus-within { outline: 2px solid var(--site-ink); outline-offset: 3px; }
 .site-explore__input::-webkit-search-cancel-button { -webkit-appearance: none; }
 .site-explore[data-open="true"] .site-explore__input,

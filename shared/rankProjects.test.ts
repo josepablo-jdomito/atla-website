@@ -54,12 +54,24 @@ describe("rankProjects", () => {
     expect(closest).toBe(true);
   });
 
-  it("no exact match returns closest", () => {
-    const { projects, closest } = rankProjects("brand for a hospital", FIXTURES);
-    expect(closest).toBe(true);
+  it("a query that names something nothing overlaps returns nothing, not the most recent work", () => {
+    for (const query of ["brand for a hospital", "zzqx", "airline"]) {
+      const { projects, closest } = rankProjects(query, FIXTURES);
+      expect(closest, query).toBe(true);
+      expect(projects, query).toEqual([]);
+    }
+  });
+
+  it("a query that only widens through a synonym is closest work, not empty", () => {
+    // "bottle" -> Packaging: no direct score, but the facets overlap.
+    const tagged = [...FIXTURES, p("casa-norte", "Food & Drink", ["Brand Identity", "Packaging"], [], 2010)];
+    const { projects } = rankProjects("a bottle", tagged);
     expect(projects.length).toBeGreaterThan(0);
-    expect(projects.length).toBeLessThanOrEqual(6);
-    // Nothing overlaps, so the 6 most recent.
+  });
+
+  it("a query of only function words names nothing, so it gets the 6 most recent", () => {
+    const { projects, closest } = rankProjects("the brand identity", FIXTURES);
+    expect(closest).toBe(true);
     expect(projects.map((x) => x.slug)).toEqual(["anything-ai", "sexto-abismo", "the-bridge", "angeles-wellness", "ando", "hanks-leather"]);
   });
 
@@ -92,7 +104,7 @@ describe("rankProjects", () => {
 
   it("empty or junk query returns closest without throwing", () => {
     expect(rankProjects("", FIXTURES).closest).toBe(true);
-    expect(rankProjects("<script>alert(1)</script>", FIXTURES).closest).toBe(true);
+    expect(rankProjects("<script>alert(1)</script>", FIXTURES)).toEqual({ projects: [], closest: true });
     expect(rankProjects("", []).projects).toEqual([]);
   });
 });

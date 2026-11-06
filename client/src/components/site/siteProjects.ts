@@ -14,6 +14,8 @@ export type SiteProject = ProjectLite & {
   videos: string[];
   featured: boolean;
   homeOrder: number | null;
+  /** The cover's dominant colour (hex) when Sanity has it: the wall tile paints it while the image loads. */
+  coverColor?: string;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value.trim() : "");
@@ -43,6 +45,7 @@ export function toSiteProject(raw: Project): SiteProject | null {
     videos: list(record.videos),
     featured: record.featured === true,
     homeOrder: typeof record.homeOrder === "number" ? record.homeOrder : null,
+    ...(/^#[0-9a-f]{3,8}$/i.test(text(record.coverColor)) ? { coverColor: text(record.coverColor) } : null),
   };
 }
 
@@ -77,7 +80,9 @@ type Facets = Pick<SiteProject, "slug" | "sector" | "disciplines" | "place" | "s
 /**
  * "More like this" (proposal 3.3): same sector first, never the project itself. Among those,
  * a shared discipline other than Brand Identity, then same place, then same stage, then newest.
- * When the sector gives fewer than `count`, projects with the same lead discipline fill in, newest first.
+ * When the sector gives fewer than `count`, projects sharing the lead discipline fill in, newest first,
+ * unless that lead is Brand Identity: it is on every project, so it relates nothing (a fashion label would
+ * get a software company). Fewer than `count` cards is fine.
  */
 export function moreLikeThis<T extends Facets>(projects: T[], current: Facets, count = MORE_LIKE_THIS_COUNT): T[] {
   const others = projects.filter((project) => project.slug !== current.slug);
@@ -95,11 +100,11 @@ export function moreLikeThis<T extends Facets>(projects: T[], current: Facets, c
         )
     : [];
   if (sameSector.length >= count) return sameSector.slice(0, count);
-  const lead = current.disciplines[0];
+  const lead = current.disciplines[0] === DISCIPLINE_ON_ALL ? current.disciplines.find((d) => d !== DISCIPLINE_ON_ALL) : current.disciplines[0];
   const picked = new Set(sameSector.map((project) => project.slug));
   const sameLead = lead
     ? others
-        .filter((project) => !picked.has(project.slug) && project.disciplines[0] === lead)
+        .filter((project) => !picked.has(project.slug) && project.disciplines.includes(lead))
         .sort((a, b) => b.year - a.year)
     : [];
   return [...sameSector, ...sameLead].slice(0, count);

@@ -138,7 +138,12 @@ export function WorkExplore({
             // A search field clears itself on Escape; here Escape never loses the visitor's words.
             if (event.key === "Escape") event.preventDefault();
           }}
-          onFocus={openPanel}
+          onFocus={(event) => {
+            openPanel();
+            // On a touch screen the first tap opens the filters and leaves the keyboard down, so the
+            // keyboard never covers them (red team 18). A second tap on the field brings the keyboard.
+            if (!open && window.matchMedia?.("(pointer: coarse)")?.matches === true) event.currentTarget.blur();
+          }}
           onClick={openPanel}
         />
       </form>

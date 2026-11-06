@@ -4,7 +4,8 @@ import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { moreLikeThis, nextProjectInSiteOrder, toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
-import { wallHrefFor } from "@/components/site/workFilters";
+import { placeLabel, wallHrefFor } from "@/components/site/workFilters";
+import { isClientWork } from "@/components/site/wallLayout";
 import { DISCIPLINE_ON_ALL, STAGES } from "@shared/projectFacets";
 import { assetKey } from "@/components/site/wallLayout";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -256,10 +257,13 @@ export default function Project() {
     () => (projectData ? buildProjectPageView(projectData, allProjects ?? []) : null),
     [allProjects, projectData],
   );
-  const next = useMemo(() => nextProjectInSiteOrder(projects, slug), [projects, slug]);
+  // Next and More like this are client work only: the studio's own pages and the course never turn up
+  // as a neighbour (red team 25); the page being read stays in the list so "next" still finds its place.
+  const clientWork = useMemo(() => projects.filter((item) => item.slug === slug || isClientWork(item)), [projects, slug]);
+  const next = useMemo(() => nextProjectInSiteOrder(clientWork, slug), [clientWork, slug]);
   // The facets (sector, disciplines, place, stage) come with the project; the related block reads the wall's list.
   const site = useMemo(() => (projectData ? toSiteProject(projectData) : null), [projectData]);
-  const related = useMemo(() => (site ? moreLikeThis(projects, site) : []), [projects, site]);
+  const related = useMemo(() => (site ? moreLikeThis(clientWork, site) : []), [clientWork, site]);
 
   const media: MediaItem[] = useMemo(
     () =>
@@ -356,7 +360,7 @@ export default function Project() {
                   {facet.key === "discipline" && facet.value === DISCIPLINE_ON_ALL ? (
                     facet.value
                   ) : (
-                    <Link href={wallHrefFor(facet.key, facet.value)}>{facet.value}</Link>
+                    <Link href={wallHrefFor(facet.key, facet.value)}>{facet.key === "place" ? placeLabel(facet.value) : facet.value}</Link>
                   )}
                 </span>
               ))}

@@ -398,6 +398,9 @@ async function writeHydrationScript(pathname: string, dehydratedState: unknown) 
   );
 }
 
+/** How many wall tiles the prerendered home preloads (red team 10: the first screen was grey slabs). */
+const HOME_PRELOADS = 3;
+
 const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 
 /**
@@ -407,7 +410,8 @@ const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&q
  */
 function eagerImagePreloads(html: string) {
   const entries: Array<{ href: string; srcSet?: string; sizes?: string; fetchPriority: "high" }> = [];
-  for (const tag of html.match(/<img\b[^>]*\bfetchpriority="high"[^>]*>/g) ?? []) {
+  // Every eager tile is fetchpriority="high" in the markup; only the first three get a preload hint.
+  for (const tag of (html.match(/<img\b[^>]*\bfetchpriority="high"[^>]*>/g) ?? []).slice(0, HOME_PRELOADS)) {
     const attr = (name: string) => {
       const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
       return match ? unescapeAttr(match[1]) : undefined;

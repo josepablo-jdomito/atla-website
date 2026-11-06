@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Project } from "@shared/schema";
-import { featuredProjects, toSiteProject, type SiteProject } from "./siteProjects";
+import { featuredProjects, moreLikeThis, toSiteProject, type SiteProject } from "./siteProjects";
 import { playableVideo } from "./ProjectCard";
-import { buildFacetOptions, filtersFromSearch, matchesFilters, searchFromFilters, wallHrefFor } from "./workFilters";
+import { buildFacetOptions, facetOptions, filtersFromSearch, matchesFilters, placeLabel, searchFromFilters, wallHrefFor } from "./workFilters";
 import { DISCIPLINES, SECTORS } from "@shared/projectFacets";
 
 const COVER = "https://cdn.sanity.io/images/p/production/abc-1400x868.jpg";
@@ -111,6 +111,32 @@ describe("archive filters", () => {
     expect(matchesFilters(p, { ...all, discipline: "Website" })).toBe(true);
     expect(matchesFilters(p, { ...all, discipline: "Packaging" })).toBe(false);
     expect(matchesFilters(p, { ...all, sector: "Hospitality & Travel" })).toBe(false);
+  });
+
+  it("More like this never pads with unrelated work because everything carries Brand Identity", () => {
+    const fashion = project({ slug: "hanks", sector: "Fashion & Lifestyle", disciplines: ["Brand Identity", "Packaging"], year: 2025 });
+    const software = project({ slug: "anything", sector: "Technology & Digital", disciplines: ["Brand Identity", "Website"], year: 2026 });
+    const label = project({ slug: "curated", sector: "Fashion & Lifestyle", disciplines: ["Brand Identity"], year: 2024 });
+    const box = project({ slug: "box", sector: "Food & Drink", disciplines: ["Brand Identity", "Packaging"], year: 2023 });
+    // Same sector first, then the shared non-Brand-Identity discipline; the software company never qualifies.
+    expect(moreLikeThis([fashion, software, label, box], fashion).map((p) => p.slug)).toEqual(["curated", "box"]);
+    const lone = project({ slug: "lone", sector: "Real Estate & Finance", disciplines: ["Brand Identity"], year: 2025 });
+    expect(moreLikeThis([lone, software, label, box], lone)).toEqual([]);
+  });
+
+  it("a project in both countries shows under each, and the joint value is not an option of its own", () => {
+    const both = project({ place: "United States & Mexico" });
+    const all = { sector: "All", discipline: "All", place: "All", year: "All" };
+    expect(matchesFilters(both, { ...all, place: "United States" })).toBe(true);
+    expect(matchesFilters(both, { ...all, place: "Mexico" })).toBe(true);
+    expect(matchesFilters(both, { ...all, place: "Middle East" })).toBe(false);
+    expect(facetOptions([both, project({ place: "Mexico" }), project({ place: "International" })]).place).toEqual([
+      "All",
+      "Mexico",
+      "International",
+    ]);
+    expect(placeLabel("International")).toBe("Other countries");
+    expect(placeLabel("Mexico")).toBe("Mexico");
   });
 
   it("reads and writes slug values in the URL, and keeps the old keys as aliases", () => {

@@ -45,10 +45,13 @@ export function SiteHeader() {
     };
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // The Explore pill is portaled to <body>; this flag lets the stylesheet hide it under the open menu.
+    document.documentElement.setAttribute("data-menu", "open");
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = previous;
+      document.documentElement.removeAttribute("data-menu");
     };
   }, [open]);
 
@@ -99,7 +102,7 @@ export function SiteHeader() {
         hidden={!open}
       >
         <ul>
-          {header.links.map((link) => (
+          {header.sheetLinks.map((link) => (
             <li key={link.href}>
               <Link href={link.href} className="site-sheet__link">
                 {link.label}
