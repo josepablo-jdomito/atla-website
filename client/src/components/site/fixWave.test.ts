@@ -425,7 +425,10 @@ describe("Site-wide rules in the stylesheet and the document head", () => {
 
   it("has no mono uppercase eyebrows and no pill class", () => {
     expect(CSS).not.toContain("Roboto Mono");
-    expect(CSS).not.toMatch(/text-transform:\s*uppercase/);
+    // One exception: the footer's base line is JP's own Figma (BACK TO TOP, the rights), 2026-11-06.
+    const uppercase = CSS.match(/text-transform:\s*uppercase/g) ?? [];
+    expect(uppercase).toHaveLength(1);
+    expect(CSS).toMatch(/\.site-footer__base \{[^}]*text-transform: uppercase/);
     expect(CSS).not.toContain(".site-pill");
     expect(CSS).not.toContain(".home-section-label");
   });

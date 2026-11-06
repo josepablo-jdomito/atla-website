@@ -271,28 +271,85 @@ html[data-menu="open"] .site-explore { display: none; }
   .site-header__brand { width: 64px; }
 }
 
+/* JP's Figma footer (4546:2280) on paper (2026-11-06): three columns, a paragraph, the Atlas symbol at
+   the right, a rule, then Back to top, the legal links and the rights in small caps. Columns 72px apart,
+   heads bold 14, items 14 Medium 12px apart, 24px under the head. */
 .site-footer {
+  margin-top: 120px;
+  padding: 0 var(--site-gutter) 20px;
+  color: var(--site-ink);
+  font-size: 14px;
+  line-height: 1.3;
+}
+.site-footer__body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "columns symbol" "line symbol";
+  column-gap: 48px;
+  row-gap: 120px;
+  padding-top: 20px;
+  border-top: 1px solid var(--site-line);
+}
+.site-footer__columns { grid-area: columns; display: flex; flex-wrap: wrap; gap: 32px 72px; }
+.site-footer__column { min-width: 140px; }
+.site-footer__head { margin: 0 0 24px; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.site-footer__list { display: flex; flex-direction: column; gap: 12px; list-style: none; margin: 0; padding: 0; font-weight: 500; }
+.site-footer__link { color: inherit; text-decoration: none; }
+.site-footer__link:hover,
+.site-footer__link:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.site-footer__line { grid-area: line; align-self: end; max-width: 320px; margin: 0; font-size: 14px; font-weight: 500; line-height: 1.4; }
+/* The symbol is a mask, so it takes the ink colour on paper and on the dark page alike. */
+.site-footer__symbol {
+  grid-area: symbol;
+  align-self: stretch;
+  display: block;
+  width: 180px;
+  min-height: 312px;
+  background: currentColor;
+  -webkit-mask: url("/figmaAssets/v2/atlas-symbol.svg") no-repeat center / contain;
+  mask: url("/figmaAssets/v2/atlas-symbol.svg") no-repeat center / contain;
+}
+.site-footer__base {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 12px 28px;
-  border-top: 1px solid var(--site-line);
-  padding: 20px var(--site-gutter) 24px;
-  margin-top: 96px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--site-muted);
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: 40px;
+  padding-top: 12px;
+  border-top: 1px solid var(--site-ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.48px;
+  text-transform: uppercase;
 }
-.site-footer__part { margin: 0; }
-.site-footer__list { display: flex; flex-wrap: wrap; gap: 4px 16px; list-style: none; margin: 0; padding: 0; }
-.site-footer__cities { gap: 4px 10px; }
-.site-footer__cities li + li::before { content: "\00b7"; margin-right: 10px; }
-.site-footer__email { color: inherit; }
-/* The legal row closes the line: at the right on a wide screen, under it on a phone. */
-.site-footer__legal { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
-.site-footer__button { font-size: 13px; }
-@media (min-width: 1100px) {
-  .site-footer__legal { margin-left: auto; }
+.site-footer__legal { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.site-footer__base-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.site-footer__base-link:hover,
+.site-footer__base-link:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.site-footer__rights { white-space: nowrap; }
+@media (max-width: 767px) {
+  /* Phone (4546:2795): the symbol on top at the right, then the columns, the paragraph, the base at 10px. */
+  .site-footer { margin-top: 80px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .site-footer__body { grid-template-columns: 1fr; grid-template-areas: "symbol" "columns" "line"; row-gap: 40px; }
+  .site-footer__symbol { justify-self: end; width: 96px; min-height: 166px; }
+  .site-footer__columns { gap: 28px 40px; }
+  .site-footer__column { min-width: 120px; }
+  .site-footer__base { font-size: 10px; margin-top: 32px; }
+}
+@media (max-width: 420px) {
+  .site-footer__base { justify-content: flex-start; }
 }
 
 /* ---- Client marks above the footer (v2, 2026-11-05) ---- */

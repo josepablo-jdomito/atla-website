@@ -51,19 +51,23 @@ function render(Page: ComponentType, location = "/") {
   );
 }
 
-describe("The footer JP chose: paper, one line, links, cities (UX interview 15)", () => {
-  it("is one row: links, cities, the email, then the legal row with the cookie control; no display line, no columns", () => {
+describe("The footer: JP's Figma on paper (2026-11-06)", () => {
+  it("has three columns (Atla, Socials, Studios), a line, the symbol, then the base line", () => {
     render(SiteFooter);
     const footer = container.querySelector(".site-footer")!;
-    expect(footer.querySelector(".site-footer__line, .site-footer__grid, h2, h3")).toBeNull();
-    expect(Array.from(footer.children).map((el) => el.tagName.toLowerCase())).toEqual(["nav", "ul", "a", "div"]);
+    expect(Array.from(footer.querySelectorAll(".site-footer__head")).map((h) => h.textContent)).toEqual(["Atla", "Socials", "Studios"]);
     expect(Array.from(footer.querySelectorAll("nav a")).map((a) => a.textContent)).toEqual(siteCopy.footer.links.map((l) => l.label));
     expect(siteCopy.footer.links.map((l) => l.label)).toContain("Journal"); // kept: indexed, linked, would be orphaned
     expect(Array.from(footer.querySelectorAll(".site-footer__cities li")).map((li) => li.textContent)).toEqual(SITE_CITIES.map((c) => c.label));
     expect(footer.querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)).not.toBeNull();
+    expect(footer.querySelector(".site-footer__line")?.textContent).toBe(siteCopy.footer.line);
+    expect(footer.querySelector(".site-footer__symbol")?.getAttribute("role")).toBe("img");
+    expect(footer.querySelector(".site-footer__top")?.textContent).toContain("Back to top");
     expect(Array.from(footer.querySelectorAll(".site-footer__legal a")).map((a) => a.textContent)).toEqual(["Privacy", "Terms"]);
     // Privacy promises this control in the footer.
     expect(footer.querySelector(".site-footer__button")?.textContent).toBe("Analytics cookies");
+    // No clocks beside the cities: no numbers on the site.
+    expect(footer.querySelector(".site-footer__cities")?.textContent).not.toMatch(/\d/);
   });
 });
 

@@ -55,8 +55,16 @@ export const siteCopy = {
       { label: "Terms", href: "/terms" },
     ],
     cookiesLabel: "Analytics cookies",
-    citiesLabel: "Studio cities",
-    rights: "Atla",
+    // JP's Figma footer on paper (2026-11-06): three columns, one line, the Atlas symbol, the base line.
+    pagesLabel: "Atla",
+    socialsLabel: "Socials",
+    citiesLabel: "Studios",
+    emailLabel: "Email",
+    // The same sentence the site already uses to describe itself (index.html og:description).
+    line: "Strategy, identity and creative direction for companies that take their brand seriously.",
+    symbolLabel: "Atla symbol",
+    backToTop: "Back to top",
+    rights: "Atla. All rights reserved.",
   },
   // One control per page for every looping video (WCAG 2.2.2).
   motion: {
