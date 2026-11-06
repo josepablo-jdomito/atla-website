@@ -148,40 +148,55 @@ describe("Menu sheet", () => {
   function renderHeader() {
     const media = stubMedia();
     const location = memoryLocation({ path: "/services" });
-    act(() => root.render(createElement(Router, { hook: location.hook }, createElement(SiteHeader))));
+    const client = new QueryClient({ defaultOptions: { queries: { queryFn: async () => [], retry: false } } });
+    act(() =>
+      root.render(
+        createElement(
+          QueryClientProvider,
+          { client },
+          createElement(Router, { hook: location.hook }, createElement(SiteHeader)),
+        ),
+      ),
+    );
     const button = container.querySelector<HTMLButtonElement>(".site-header__menu")!;
     const sheet = container.querySelector<HTMLElement>("#site-menu-sheet")!;
     return { media, button, sheet };
   }
 
-  it("is a dialog; Tab cycles between its links and the Close button", () => {
+  it("is a dialog; Tab cycles inside the card, from its last stop back to Close", () => {
     const { button, sheet } = renderHeader();
     expect(sheet.getAttribute("role")).toBe("dialog");
     act(() => button.click());
-    const links = Array.from(sheet.querySelectorAll<HTMLAnchorElement>("a"));
-    act(() => links[links.length - 1].focus());
+    const stops = Array.from(sheet.querySelectorAll<HTMLElement>("a[href], button"));
+    act(() => stops[stops.length - 1].focus());
     const tab = new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true });
     act(() => {
       window.dispatchEvent(tab);
     });
     expect(tab.defaultPrevented).toBe(true);
-    expect(document.activeElement).toBe(button);
+    expect(document.activeElement).toBe(sheet.querySelector(".site-sheet__close"));
   });
 
-  it("offers Work, Services, Why Atla, Start a project and Contact, and hides the Explore pill while open", () => {
+  it("offers Work, Services, Why Atla, Ventures, Contact and Start a project, and hides the Explore pill while open", () => {
+    vi.useFakeTimers();
     const { button, sheet } = renderHeader();
     act(() => button.click());
-    expect(Array.from(sheet.querySelectorAll("a")).map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+    expect(Array.from(sheet.querySelectorAll(".site-sheet__link")).map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
       ["Work", "/"],
       ["Services", "/services"],
       ["Why Atla", "/about"],
-      ["Start a project", "/brief"],
+      ["Ventures", "/ventures"],
       ["Contact", "/contact"],
+      ["Start a project", "/brief"],
     ]);
     expect(document.documentElement.getAttribute("data-menu")).toBe("open");
     expect(CSS).toMatch(/html\[data-menu="open"\] \.site-explore \{ display: none; \}/);
-    act(() => button.click());
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    });
+    act(() => vi.advanceTimersByTime(200));
     expect(document.documentElement.hasAttribute("data-menu")).toBe(false);
+    vi.useRealTimers();
   });
 
   it("closes and gives the page its scroll back when the viewport crosses 768 px", () => {

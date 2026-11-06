@@ -78,7 +78,7 @@ function tilesOf(project: SiteProject): WallTile[] {
  * and the ratio alternates whenever a candidate allows it.
  */
 /** Small seeded PRNG (mulberry32), so one page load keeps one order across re-renders. */
-function seededRandom(seed: number) {
+export function seededRandom(seed: number) {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -89,7 +89,7 @@ function seededRandom(seed: number) {
   };
 }
 
-function shuffled<T>(items: T[], random: () => number): T[] {
+export function shuffled<T>(items: T[], random: () => number): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i -= 1) {
     const j = Math.floor(random() * (i + 1));
@@ -174,3 +174,4 @@ export function placeInColumns<T extends { ratio: number; slug?: string }>(tiles
   }
   return placed;
 }
+
