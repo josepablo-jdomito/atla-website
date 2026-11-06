@@ -229,13 +229,17 @@ html body {
 .client-logos__row[data-direction="right"] { animation: client-logos-right 60s linear infinite; }
 .client-logos__track { display: flex; flex-shrink: 0; align-items: center; gap: 48px; padding-right: 48px; }
 .client-logos__mark {
-  display: inline-grid;
-  place-items: center;
+  /* Flex with a fixed height: in a grid or aspect-ratio box the img's percentage height resolved to auto and
+     stacked marks (Vyv, Pax & Beneficia) overflowed the row. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   width: 128px;
-  aspect-ratio: 3 / 1;
+  height: 40px;
   opacity: 0.55;
 }
-.client-logos__mark img { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(1); }
+.client-logos__mark img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); }
 @keyframes client-logos-left { to { transform: translateX(-50%); } }
 @keyframes client-logos-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
@@ -246,7 +250,7 @@ html body {
 }
 @media (min-width: 768px) {
   .client-logos { padding-top: 96px; }
-  .client-logos__mark { width: 176px; }
+  .client-logos__mark { width: 176px; height: 56px; }
   .client-logos__track { gap: 64px; padding-right: 64px; }
 }
 

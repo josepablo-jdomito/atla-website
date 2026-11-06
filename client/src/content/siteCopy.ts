@@ -327,7 +327,27 @@ export const siteCopy = {
   logos: {
     label: "Clients",
     line: "Brands we have worked with.",
-    items: [] as ReadonlyArray<{ name: string; src: string }>,
+    // Order = JP's selected-client list (2026-10-04), then the featured projects. Sources per mark in
+    // docs/superpowers/specs/2026-11-05-client-logos.md. Missing on purpose until JP sends files:
+    // Aimee Kestenberg, PrettyBoy, Casa Colora, Reggie.
+    items: [
+      { name: "Temakase", src: "/logos-v2/temakase.svg" },
+      { name: "Rústico", src: "/logos-v2/rustico.svg" },
+      { name: "Pax & Beneficia", src: "/logos-v2/pax-beneficia.svg" },
+      { name: "Persona", src: "/logos-v2/persona.svg" },
+      { name: "Brick", src: "/logos-v2/brick.svg" },
+      { name: "Anything", src: "/logos-v2/anything.svg" },
+      { name: "Sexto Abismo", src: "/logos-v2/sexto-abismo.svg" },
+      { name: "Bond&Bloom", src: "/logos-v2/bond-bloom.svg" },
+      { name: "Hanks Leather Goods", src: "/logos-v2/hanks.svg" },
+      { name: "The Curated Outfit", src: "/logos-v2/the-curated-outfit.svg" },
+      { name: "Vyv", src: "/logos-v2/vyv.svg" },
+      { name: "Arc Studio", src: "/logos-v2/arc-studio.svg" },
+      { name: "Tequila Unido", src: "/logos-v2/tequila-unido.svg" },
+      { name: "Angeles Wellness", src: "/logos-v2/angeles-wellness.svg" },
+      { name: "TigreTigre", src: "/logos-v2/tigretigre.svg" },
+      { name: "Alma Brava", src: "/logos-v2/alma-brava.svg" },
+    ] as ReadonlyArray<{ name: string; src: string }>,
   },
   // JP, 2026-11-05: a quiet page. Names and one line each, no detail, no logos.
   ventures: {
