@@ -73,7 +73,7 @@ export function configureGa4() {
   const stored = readStoredConsent();
   if (stored) gtag("consent", "update", consentState(stored));
   gtag("js", new Date());
-  gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });
+  gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false, ...cleanPageLocation() });
 }
 
 export function setAnalyticsConsent(value: AnalyticsConsent) {
@@ -97,10 +97,28 @@ export function likelyNeedsConsentPrompt() {
   }
 }
 
+/**
+ * The page as GA may see it: origin and path, never the query or the hash. The wall writes the
+ * typed search into `?q=` and old links carry `?seed=`; gtag would otherwise read both from
+ * document.location for every event.
+ */
+export function cleanPageLocation(href?: string): { page_location: string; page_path: string } {
+  const base = typeof window === "undefined" ? "https://atla.design/" : window.location.href;
+  let url: URL;
+  try {
+    url = new URL(href ?? base, base);
+  } catch {
+    url = new URL(base);
+  }
+  return { page_location: `${url.origin}${url.pathname}`, page_path: url.pathname };
+}
+
+/** Every event carries a clean page_location and page_path; a caller's own value is cleaned too. */
 export function ga4Event(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   configureGa4();
-  gtag("event", name, params ?? {});
+  const given = typeof params?.page_location === "string" ? params.page_location : undefined;
+  gtag("event", name, { ...(params ?? {}), ...cleanPageLocation(given) });
 }
 
 /**

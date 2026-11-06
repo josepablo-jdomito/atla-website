@@ -17,6 +17,8 @@ export type SavedBrief = BriefState & {
 };
 
 const STORAGE_KEY = "atla-brief-v1";
+/** The seed a link brought (`/brief?seed=`), held here so it never stays in the URL. */
+const SEED_KEY = "atla-brief-seed";
 
 /** `/brief?moment=<id>` (the Services page) pre-answers "What is the moment?" with one of its options. */
 const MOMENT_PARAMS: Record<string, string> = {
@@ -96,7 +98,44 @@ export function saveBrief(brief: SavedBrief): void {
 export function clearBrief(): void {
   try {
     storage()?.removeItem(STORAGE_KEY);
+    storage()?.removeItem(SEED_KEY);
   } catch {
     // Nothing to clear when storage is unavailable.
+  }
+}
+
+/**
+ * The brief's seed, read from `?seed=` once. The first call moves it into sessionStorage and
+ * rewrites the URL without it (`?moment=` and anything else stay), so the visitor's words never
+ * sit in the address bar, history, Referer or analytics. Later calls read it back from storage.
+ * Safe to call on every render; returns null on the server or when there is no seed.
+ */
+export function takeSeedFromUrl(): string | null {
+  if (typeof window === "undefined") return null;
+  let url: URL;
+  try {
+    url = new URL(window.location.href);
+  } catch {
+    return null;
+  }
+  const fromUrl = url.searchParams.get("seed");
+  if (fromUrl !== null) {
+    try {
+      storage()?.setItem(SEED_KEY, fromUrl);
+    } catch {
+      // Storage blocked: the seed still works for this render, it just will not survive a reload.
+    }
+    url.searchParams.delete("seed");
+    try {
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    } catch {
+      // A sandboxed frame can refuse replaceState; nothing else to do.
+    }
+    return fromUrl;
+  }
+  try {
+    return storage()?.getItem(SEED_KEY) ?? null;
+  } catch {
+    return null;
   }
 }

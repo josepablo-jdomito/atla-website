@@ -31,7 +31,7 @@ const PAGE = 72;
  * Prerender has no window and renders the phone layout.
  */
 const COLUMN_TARGET = 220;
-/** A typed search counts once it has rested this long (after the URL debounce and any /api/ask answer). */
+/** A typed search counts once it has rested this long (after the URL debounce). */
 const SEARCH_EVENT_SETTLE_MS = 1000;
 const MAX_COLUMNS = 8;
 
@@ -154,17 +154,11 @@ export function WorkWall() {
   const filtered = useMemo(() => projects.filter((project) => matchesFilters(project, filters)), [projects, filters]);
 
   // Typing narrows the wall as you go: the same ranking the search bar uses, in the browser.
-  // When nothing scores locally, /api/ask gets one try (synonyms, AI); its answer replaces "closest".
-  const [remote, setRemote] = useState<{ query: string; slugs: string[]; closest: boolean } | null>(null);
+  // No AI and no server call (JP, 2026-11-05): when nothing scores, the wall shows the closest work.
   const ranked = useMemo(() => {
     if (!urlQuery) return { projects: filtered, closest: false };
-    if (remote && remote.query === urlQuery && remote.slugs.length > 0) {
-      const bySlug = new Map(filtered.map((project) => [project.slug, project]));
-      const hits = remote.slugs.map((slug) => bySlug.get(slug)).filter((p): p is SiteProjectT => Boolean(p));
-      if (hits.length > 0) return { projects: hits, closest: remote.closest };
-    }
     return rankProjects(urlQuery, filtered) as { projects: SiteProjectT[]; closest: boolean };
-  }, [urlQuery, filtered, remote]);
+  }, [urlQuery, filtered]);
   const sequence = useMemo(
     () => buildWallSequence(ranked.projects, seed, Boolean(urlQuery)),
     [ranked.projects, seed, urlQuery],
@@ -182,30 +176,6 @@ export function WorkWall() {
   }, [draft, urlQuery, filters]);
   // The URL can change under us (Back, a link); keep the field in step.
   useEffect(() => setDraft(urlQuery), [urlQuery]);
-
-  useEffect(() => {
-    if (!urlQuery || urlQuery.length < 3 || !ranked.closest) return;
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => {
-      fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: urlQuery }),
-        signal: controller.signal,
-      })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((body: { kind?: string; projects?: Array<{ slug: string }>; closest?: boolean } | null) => {
-          if (body?.kind === "results" && Array.isArray(body.projects)) {
-            setRemote({ query: urlQuery, slugs: body.projects.map((p) => p.slug), closest: body.closest === true });
-          }
-        })
-        .catch(() => undefined);
-    }, 400);
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
-    };
-  }, [urlQuery, ranked.closest]);
 
   // bar_search: once per settled typed query, never per keystroke, and never for a ?q= the visitor
   // arrived with. Only whether it matched goes to analytics, never the text.

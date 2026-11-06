@@ -10,7 +10,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
-import { configureGa4, ga4Event } from "@/lib/ga";
+import { cleanPageLocation, configureGa4, ga4Event } from "@/lib/ga";
 
 declare global {
   interface Window {
@@ -30,22 +30,19 @@ export function usePageAnalytics() {
   useEffect(() => {
     if (typeof document === "undefined" || typeof window === "undefined") return;
 
-    const pageLocation = new URL(location, window.location.origin).toString();
+    // Origin and path only: the query can hold what the visitor typed (?q=, ?seed=).
+    const page = cleanPageLocation(new URL(location, window.location.origin).toString());
 
     pushToDataLayer({
       event: "page_view",
-      page_path: location,
+      page_path: page.page_path,
       page_title: document.title,
-      page_location: pageLocation,
+      page_location: page.page_location,
     });
 
     configureGa4();
-    // GA4 derives the path from page_location; page_path is a Universal
-    // Analytics field and is kept above only for GTM.
-    ga4Event("page_view", {
-      page_title: document.title,
-      page_location: pageLocation,
-    });
+    // ga4Event adds the same clean page_location and page_path.
+    ga4Event("page_view", { page_title: document.title });
   }, [location]);
 }
 
@@ -79,7 +76,7 @@ export function useFunnelClickTracking() {
       }
 
       if (url.hostname === "start.atla.design" || url.pathname.startsWith("/waitlist")) {
-        ga4Event("start_click", { page, link_text: label, link_url: url.toString() });
+        ga4Event("start_click", { page, link_text: label, link_url: `${url.origin}${url.pathname}` });
       } else if (url.origin === window.location.origin && url.pathname === "/contact" && page !== "/contact") {
         ga4Event("cta_click", { page, link_text: label, cta_type: "contact" });
       }

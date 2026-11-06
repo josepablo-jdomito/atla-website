@@ -12,7 +12,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextFixedQuestion, type BriefState } from "@shared/brief";
 import { WorkWall } from "@/components/site/WorkWall";
 import { BriefFlow } from "@/components/brief/BriefFlow";
-import { CONSENT_STORAGE_KEY, setAnalyticsConsent } from "./ga";
+import { CONSENT_STORAGE_KEY, ga4Event, setAnalyticsConsent, trackBarSearch } from "./ga";
 
 vi.mock("@/components/brief/briefApi", () => ({
   fetchNextStep: vi.fn(async (state: BriefState) => nextFixedQuestion(state)),
@@ -31,12 +31,24 @@ const FIXED_STRINGS = new Set(["results", "brief"]);
 
 type Fired = { name: string; params: Record<string, unknown> };
 
-/** gtag("event", name, params) calls, read back from the dataLayer stub. */
-function fired(): Fired[] {
+/** gtag("event", name, params) calls, as raw argument arrays. */
+function rawEvents(): unknown[][] {
   return (window.dataLayer ?? [])
     .map((entry) => Array.from(entry as unknown as ArrayLike<unknown>))
-    .filter((args) => args[0] === "event")
-    .map((args) => ({ name: String(args[1]), params: (args[2] ?? {}) as Record<string, unknown> }));
+    .filter((args) => args[0] === "event");
+}
+
+/**
+ * gtag("event", name, params) calls, read back from the dataLayer stub. Every event carries
+ * page_location and page_path; both must be origin + path only, and are dropped from the result.
+ */
+function fired(): Fired[] {
+  return rawEvents().map((args) => {
+    const { page_location, page_path, ...params } = (args[2] ?? {}) as Record<string, unknown>;
+    expect(page_location).toBe(`${window.location.origin}${window.location.pathname}`);
+    expect(page_path).toBe(window.location.pathname);
+    return { name: String(args[1]), params };
+  });
 }
 
 /** Every event is allowed, carries exactly its keys, and only booleans or the fixed strings. */
@@ -112,10 +124,8 @@ beforeEach(() => {
     observe() {}
     disconnect() {}
   };
+  // The wall uses no AI and no server search (JP, 2026-11-05): any fetch is a bug.
   globalThis.fetch = vi.fn(async (url: RequestInfo | URL) => {
-    if (String(url).includes("/api/ask")) {
-      return new Response(JSON.stringify({ kind: "results", projects: [], closest: true }), { status: 200 });
-    }
     throw new Error(`unexpected fetch ${String(url)}`);
   }) as typeof fetch;
   container = document.createElement("div");
@@ -171,7 +181,7 @@ async function typeInto(text: string) {
   }
 }
 
-/** Past the URL debounce, the /api/ask try and the settle delay. */
+/** Past the URL debounce and the settle delay. */
 async function settle() {
   for (let i = 0; i < 10; i += 1) {
     await act(async () => {
@@ -217,6 +227,10 @@ describe("bar_search on the work wall", () => {
     ]);
     expectCleanShape(events);
     expectNoLeak(events, ["hotel", "quokka orchard"]);
+    // The URL holds ?q=quokka orchard by now; it must not reach GA either.
+    expect(window.location.search).toContain("q=");
+    expect(JSON.stringify(rawEvents()).toLowerCase()).not.toContain("quokka");
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it("does not fire for a ?q= the visitor arrived with", async () => {
@@ -248,6 +262,26 @@ describe("bar_search on the work wall", () => {
     await typeInto("hotel");
     await settle();
     expect(fired()).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------- page_location
+
+describe("page_location never carries the query or the hash", () => {
+  it("an event fired on /?q=secret carries no secret anywhere in the dataLayer", () => {
+    localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
+    window.history.replaceState(null, "", "/?q=secret#secret-hash");
+    trackBarSearch("results", true);
+    ga4Event("cta_click", { page: "/", cta_type: "contact" });
+    ga4Event("page_view", { page_location: "https://atla.design/brief?seed=secret#secret" });
+    const entries = (window.dataLayer ?? []).map((entry) => Array.from(entry as unknown as ArrayLike<unknown>));
+    expect(JSON.stringify(entries)).not.toContain("secret");
+    const events = rawEvents();
+    expect(events).toHaveLength(3);
+    expect((events[0][2] as Record<string, unknown>).page_location).toBe(`${window.location.origin}/`);
+    expect((events[0][2] as Record<string, unknown>).page_path).toBe("/");
+    expect((events[2][2] as Record<string, unknown>).page_location).toBe("https://atla.design/brief");
+    expect((events[2][2] as Record<string, unknown>).page_path).toBe("/brief");
   });
 });
 
