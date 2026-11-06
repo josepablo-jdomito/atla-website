@@ -24,9 +24,9 @@ export default function AtlaPrivacy() {
         <header className="page-intro">
           <h1 className="page-intro__title">Privacy Policy</h1>
         </header>
-        {/* DRAFT FOR JP'S APPROVAL, rewritten 2026-11-05 against the code at 5e8cfcb (brief with no AI, work search
-            in the browser, Meta Pixel and Clarity behind consent). Items marked [JP to confirm] are decisions, not facts
-            from the code: the retention period, the 30-day reply, the transfer basis. Nothing here is legal advice. */}
+        {/* Rewritten 2026-11-05 against the code at 5e8cfcb (brief with no AI, work search in the browser, Meta Pixel
+            and Clarity behind consent). JP approved this text, the two-year retention, the 30-day reply and the
+            transfer basis on 2026-11-05 ("Si"). Nothing here is legal advice. */}
         <div className="legal-body">
           <p className="longform-text">Last updated: November 5, 2026.</p>
           <p className="longform-text">
@@ -85,7 +85,6 @@ export default function AtlaPrivacy() {
           </Section>
 
           <Section title="How we use information">
-            {/* [JP to confirm] the two-year period is a proposal, not a fact from the code. */}
             <p className="longform-text">
               We use what you send through the brief and the contact form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
             </p>
@@ -101,14 +100,12 @@ export default function AtlaPrivacy() {
           </Section>
 
           <Section title="International transfers">
-            {/* [JP to confirm] the transfer basis; the compliance review asks to check each provider's DPF or SCC status first. */}
             <p className="longform-text">
               Atla & WeLoveDaily, LLC is based in the United States, and most of the providers named above store and process data there. If you contact us or browse the site from outside the United States, including from Mexico, the rest of Latin America, or the European Union, your information is transferred to and handled in the United States under this policy. Where your local law requires a specific safeguard for that transfer, we rely on the contractual data protection terms of each provider and on your consent given by sending us your inquiry.
             </p>
           </Section>
 
           <Section title="Your rights">
-            {/* [JP to confirm] the 30-day reply is a commitment; GDPR allows one month. */}
             <p className="longform-text">
               You can ask us at <a href={`mailto:${CONTACT_EMAIL}`} className="longform-link">{CONTACT_EMAIL}</a> to show you, correct, delete or restrict the personal data we hold about you, to give you a copy of it, or to stop using it for a purpose. You can withdraw consent at any time, including for analytics cookies, from the "Analytics cookies" link in the footer. In Mexico these are your ARCO rights (access, rectification, cancellation and opposition). We reply within 30 days, and we may ask you to confirm who you are before we act, to protect your data from someone else. If you are in the European Economic Area you can also complain to your data protection authority; in Spain that is the Agencia Española de Protección de Datos (aepd.es).
             </p>
