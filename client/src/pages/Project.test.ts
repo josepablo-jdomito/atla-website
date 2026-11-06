@@ -221,29 +221,11 @@ describe("Project page", () => {
     }
   });
 
-  it("shows three More like this cards, same sector, never the project itself, before Next", () => {
-    render("archive-b");
-    const cards = Array.from(container.querySelectorAll(".story-more .project-card")).map((a) => a.getAttribute("href"));
-    expect(cards).toHaveLength(3);
-    expect(cards).not.toContain("/projects/archive-b");
-    // All share Website, Mexico and a different stage, so newest first, then API order.
-    expect(cards).toEqual(["/projects/feat-two", "/projects/feat-one", "/projects/archive-a"]);
-    const more = container.querySelector(".story-more")!;
-    const next = container.querySelector(".story-next")!;
-    expect(more.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
   it("links the brief with the title as an encoded seed", () => {
     render("archive-b");
     const cta = container.querySelector<HTMLAnchorElement>(".story-cta a");
     expect(cta?.getAttribute("href")).toBe(`/brief?seed=${encodeURIComponent("Like Rústico & Co / Tulum")}`);
     expect(new URL(cta!.href, "https://x.test").searchParams.get("seed")).toBe("Like Rústico & Co / Tulum");
-  });
-
-  it("sends the last project in site order to the first", () => {
-    render("archive-b");
-    const next = container.querySelector<HTMLAnchorElement>(".story-next a");
-    expect(next?.getAttribute("href")).toBe("/projects/feat-one");
   });
 
   it("renders the media in order, cover first", () => {
@@ -255,14 +237,13 @@ describe("Project page", () => {
     expect(sources[2]).toContain("b2");
   });
 
-  it("renders the header, brief and next blocks for a project with no media", () => {
+  it("renders the header and brief blocks for a project with no media", () => {
     API.push(raw({ slug: "bare", title: "Bare", coverImage: "", images: [] }));
     try {
       render("bare");
       expect(container.querySelector(".story-media")).toBeNull();
       expect(container.querySelector(".story-head")?.textContent).toContain("Bare");
       expect(container.querySelector(".story-cta a")?.getAttribute("href")).toBe("/brief?seed=Like%20Bare");
-      expect(container.querySelector(".story-next a")?.getAttribute("href")).toBe("/projects/feat-one");
     } finally {
       API.pop();
     }

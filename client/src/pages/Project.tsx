@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
-import { ProjectCard } from "@/components/site/ProjectCard";
-import { moreLikeThis, nextProjectInSiteOrder, toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
+import { toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
 import { placeLabel, wallHrefFor } from "@/components/site/workFilters";
 import { isClientWork } from "@/components/site/wallLayout";
 import { DISCIPLINE_ON_ALL, STAGES } from "@shared/projectFacets";
@@ -257,13 +256,9 @@ export default function Project() {
     () => (projectData ? buildProjectPageView(projectData, allProjects ?? []) : null),
     [allProjects, projectData],
   );
-  // Next and More like this are client work only: the studio's own pages and the course never turn up
-  // as a neighbour (red team 25); the page being read stays in the list so "next" still finds its place.
-  const clientWork = useMemo(() => projects.filter((item) => item.slug === slug || isClientWork(item)), [projects, slug]);
-  const next = useMemo(() => nextProjectInSiteOrder(clientWork, slug), [clientWork, slug]);
-  // The facets (sector, disciplines, place, stage) come with the project; the related block reads the wall's list.
+  // The facets (sector, disciplines, place, stage) come with the project. No "More like this" and no
+  // "Next" under the story (JP, 2026-11-06: "tampoco me gustan"); the wall is the way to the next piece.
   const site = useMemo(() => (projectData ? toSiteProject(projectData) : null), [projectData]);
-  const related = useMemo(() => (site ? moreLikeThis(clientWork, site) : []), [clientWork, site]);
 
   const media: MediaItem[] = useMemo(
     () =>
@@ -451,33 +446,6 @@ export default function Project() {
           </Link>
         </section>
 
-        {related.length > 0 ? (
-          <section className="story-more" aria-labelledby="project-more-label">
-            <h2 id="project-more-label" className="story-more__label">
-              {copy.moreLabel}
-            </h2>
-            <ul className="story-more__grid">
-              {related.map((item) => (
-                <li key={item.slug}>
-                  <ProjectCard project={item} size="grid" />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {next ? (
-          <section className="story-next" aria-labelledby="project-next-label">
-            <h2 id="project-next-label" className="story-next__label">
-              {copy.nextLabel}
-              {" "}
-              <Link href={`/projects/${next.slug}`} className="story-next__title">
-                {next.title}
-              </Link>
-            </h2>
-            <ProjectCard project={next} size="next" />
-          </section>
-        ) : null}
       </article>
 
       {open !== null && images[open] ? (
