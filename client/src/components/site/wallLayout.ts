@@ -165,12 +165,32 @@ export function placeInColumns<T extends { ratio: number; slug?: string }>(tiles
   const count = Math.max(1, columns);
   const heights = new Array<number>(count).fill(0);
   const placed: T[][] = Array.from({ length: count }, () => []);
+  // Vertical span of every placed tile, per column, so a project never sits beside itself either:
+  // JP, 2026-11-06, "que nunca se vean proyectos seguidos para que parezca que tenemos más".
+  const spans: Array<Array<{ top: number; bottom: number; slug?: string }>> = Array.from({ length: count }, () => []);
+  const touches = (column: number, slug: string, top: number, bottom: number) =>
+    spans[column].some((span) => span.slug === slug && span.top < bottom && span.bottom > top);
   for (const tile of tiles) {
+    const height = 1 / tile.ratio;
     const byHeight = heights.map((h, i) => i).sort((a, b) => heights[a] - heights[b] || a - b);
-    const target =
-      byHeight.find((i) => !tile.slug || placed[i][placed[i].length - 1]?.slug !== tile.slug) ?? byHeight[0];
+    const conflicts = (i: number) => {
+      if (!tile.slug) return 0;
+      const top = heights[i];
+      const bottom = top + height;
+      let n = 0;
+      if (placed[i][placed[i].length - 1]?.slug === tile.slug) n += 2;
+      if (i > 0 && touches(i - 1, tile.slug, top, bottom)) n += 1;
+      if (i < count - 1 && touches(i + 1, tile.slug, top, bottom)) n += 1;
+      return n;
+    };
+    // The shortest column with no neighbour of the same project; failing that, the least bad one.
+    let target = byHeight.find((i) => conflicts(i) === 0);
+    if (target === undefined) {
+      target = byHeight.reduce((best, i) => (conflicts(i) < conflicts(best) ? i : best), byHeight[0]);
+    }
     placed[target].push(tile);
-    heights[target] += 1 / tile.ratio;
+    spans[target].push({ top: heights[target], bottom: heights[target] + height, slug: tile.slug });
+    heights[target] += height;
   }
   return placed;
 }

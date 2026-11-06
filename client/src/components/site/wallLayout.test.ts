@@ -190,3 +190,32 @@ describe("placeInColumns", () => {
     }
   });
 });
+
+describe("no project beside or below itself (JP, 2026-11-06)", () => {
+  it("keeps the same slug out of every vertical and horizontal neighbourhood in 5 columns", () => {
+    const tiles = Array.from({ length: 240 }, (_, i) => ({
+      slug: `p${i % 30}`,
+      ratio: [1, 1.5, 0.75, 1.33, 0.8][i % 5],
+    }));
+    // A spread sequence like buildWallSequence makes: project i appears every 30 tiles.
+    const columns = placeInColumns(tiles, 5);
+    const spans = columns.map((column) => {
+      let top = 0;
+      return column.map((tile) => {
+        const span = { slug: tile.slug, top, bottom: top + 1 / tile.ratio };
+        top = span.bottom;
+        return span;
+      });
+    });
+    for (let c = 0; c < spans.length; c += 1) {
+      for (let i = 1; i < spans[c].length; i += 1) expect(spans[c][i].slug).not.toBe(spans[c][i - 1].slug);
+      if (c === 0) continue;
+      for (const a of spans[c]) {
+        for (const b of spans[c - 1]) {
+          const overlap = a.top < b.bottom && a.bottom > b.top;
+          if (overlap) expect(a.slug).not.toBe(b.slug);
+        }
+      }
+    }
+  });
+});
