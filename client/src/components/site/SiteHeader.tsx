@@ -5,9 +5,7 @@ import { siteCopy } from "@/content/siteCopy";
 import { focusablesIn, trapTab } from "@/components/site/focusTrap";
 import { useSiteProjects } from "@/components/site/siteProjects";
 import { menuThumbs } from "@/components/site/menuThumbs";
-import { MotionToggle } from "@/components/site/MotionToggle";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { CONTACT_EMAIL } from "@shared/siteSeo";
 import { getOptimizedImageUrl } from "@shared/imageDelivery";
 
 const { header, menu } = siteCopy;
@@ -197,12 +195,6 @@ export function SiteHeader() {
           <nav aria-label={menu.navLabel}>
             {shown ? <MenuRows seed={seed} location={location} onPick={() => setPhase("closed")} /> : null}
           </nav>
-          <div className="site-sheet__bar">
-            <a href={`mailto:${CONTACT_EMAIL}`} className="site-sheet__email">
-              {CONTACT_EMAIL}
-            </a>
-            {shown ? <MotionToggle className="site-sheet__motion" /> : null}
-          </div>
         </div>
       </div>
     </header>

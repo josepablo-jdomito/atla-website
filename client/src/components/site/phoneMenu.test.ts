@@ -9,7 +9,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Router } from "wouter";
 import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { CONTACT_EMAIL } from "@shared/siteSeo";
 import { siteCopy } from "@/content/siteCopy";
 import { MENU_CLOSE_MS, SiteHeader, isCurrentRoute } from "./SiteHeader";
 import { ABOUT_HERO, menuThumbs } from "./menuThumbs";
@@ -104,12 +103,11 @@ describe("phone menu card", () => {
     expect(isCurrentRoute("/", "/services")).toBe(false);
   });
 
-  it("ends with the email and the motion control, no language switch", () => {
+  it("has no bar under the rows: no email, no motion control (JP, 2026-11-06)", () => {
     const { button, sheet } = renderHeader();
     act(() => button.click());
-    const bar = sheet.querySelector(".site-sheet__bar")!;
-    expect(bar.querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)?.textContent).toBe(CONTACT_EMAIL);
-    expect(bar.querySelector(".motion-toggle")?.textContent).toBe(siteCopy.motion.pause);
+    expect(sheet.querySelector(".site-sheet__bar")).toBeNull();
+    expect(sheet.querySelector(".motion-toggle")).toBeNull();
   });
 
   it("renders no motion control while closed, so a page keeps one", () => {
