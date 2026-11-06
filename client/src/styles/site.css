@@ -1,7 +1,7 @@
 /* atla.design v2 tokens. Additive: old pages keep using index.css rules. */
 @font-face {
   font-family: "ABC Synt";
-  src: url("/fonts/ABCSyntVariable.ttf") format("truetype");
+  src: url("/fonts/ABCSyntVariable.woff2") format("woff2"), url("/fonts/ABCSyntVariable.ttf") format("truetype");
   font-weight: 400 900;
   font-display: swap;
 }

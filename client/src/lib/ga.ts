@@ -5,8 +5,9 @@
  * allowlist, with no 'unsafe-inline' and no nonce. Google's copy-paste
  * snippet puts the bootstrap in an inline <script>, which that policy
  * blocks, so the split here is deliberate: index.html loads gtag.js from
- * the allowlisted googletagmanager host, and every command runs from the
- * bundle, which is 'self'.
+ * the allowlisted googletagmanager host (injected from the bundle after load
+ * and idle, loadGtagLater), and every command runs from the bundle, which is
+ * 'self'.
  *
  * The config call suppresses gtag's own page_view. usePageAnalytics sends
  * one per wouter location including the first, so leaving it on would count
@@ -66,10 +67,36 @@ function consentState(analytics: AnalyticsConsent) {
   return { analytics_storage: analytics, ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" };
 }
 
+const GTAG_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+
+/**
+ * Loads gtag.js once the page has loaded and the browser is idle, so its ~200 kB never competes
+ * with the first paint (web audit 2026-11-06). The commands queued on dataLayer by then are read
+ * by gtag.js when it arrives, so no event is lost.
+ */
+function loadGtagLater() {
+  const load = () => {
+    if (document.querySelector("script[data-atla-gtag]")) return;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = GTAG_SRC;
+    script.setAttribute("data-atla-gtag", "");
+    document.head.appendChild(script);
+  };
+  const whenIdle = () => {
+    const idle = (window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
+    if (idle) idle(load, { timeout: 3000 });
+    else window.setTimeout(load, 1500);
+  };
+  if (document.readyState === "complete") whenIdle();
+  else window.addEventListener("load", whenIdle, { once: true });
+}
+
 /** Idempotent: safe to call from a hook that runs on every navigation. */
 export function configureGa4() {
   if (configured || typeof window === "undefined") return;
   configured = true;
+  loadGtagLater();
   gtag("consent", "default", { ...consentState("granted") });
   gtag("consent", "default", { ...consentState("denied"), region: CONSENT_REGIONS });
   const stored = readStoredConsent();

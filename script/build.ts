@@ -175,6 +175,9 @@ async function hydrateBuildEnvFromLocalFile() {
   }
 }
 
+const PUBLIC_SANITY_PROJECT_ID = "dvufm78f";
+const PUBLIC_SANITY_DATASET = "production";
+
 function resolvePrerenderApiOrigin() {
   const configuredOrigin = (process.env.PRERENDER_API_ORIGIN || process.env.SITE_ORIGIN || SITE_ORIGIN).trim();
   return configuredOrigin.replace(/\/+$/, "");
@@ -210,7 +213,7 @@ async function loadPrerenderContentFromPublicApi(): Promise<{
   categories: JournalCategory[];
 }> {
   const origin = resolvePrerenderApiOrigin();
-  console.warn(`[build] Falling back to remote prerender API: ${origin}`);
+  console.warn(`[build] Prerender data source: remote API ${origin} (Sanity was not used).`);
 
   const [projectsRaw, articlesRaw, categoriesRaw] = await Promise.all([
     fetchPrerenderJson<unknown>(`${origin}/api/projects`, []),
@@ -399,7 +402,7 @@ async function writeHydrationScript(pathname: string, dehydratedState: unknown) 
 }
 
 /** How many wall tiles the prerendered home preloads (red team 10: the first screen was grey slabs). */
-const HOME_PRELOADS = 3;
+const HOME_PRELOADS = 1;
 
 const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 
@@ -410,7 +413,7 @@ const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&q
  */
 function eagerImagePreloads(html: string) {
   const entries: Array<{ href: string; srcSet?: string; sizes?: string; fetchPriority: "high" }> = [];
-  // Every eager tile is fetchpriority="high" in the markup; only the first three get a preload hint.
+  // Every eager tile is fetchpriority="high" in the markup; only the first gets a preload hint (the LCP tile; more would compete for bandwidth).
   for (const tag of (html.match(/<img\b[^>]*\bfetchpriority="high"[^>]*>/g) ?? []).slice(0, HOME_PRELOADS)) {
     const attr = (name: string) => {
       const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
@@ -865,7 +868,11 @@ async function loadPrerenderContent(): Promise<{
   categories: JournalCategory[];
 }> {
   if (!isJournalSanityConfigured()) {
-    return loadPrerenderContentFromPublicApi();
+    // The studio's dataset is public for published documents (the same one the images are served from),
+    // so a build without env files (a fresh worktree, CI) still reads live Sanity instead of the remote API.
+    process.env.SANITY_PROJECT_ID = process.env.SANITY_PROJECT_ID || PUBLIC_SANITY_PROJECT_ID;
+    process.env.SANITY_DATASET = process.env.SANITY_DATASET || PUBLIC_SANITY_DATASET;
+    console.log(`[build] No Sanity env set; reading the public dataset ${PUBLIC_SANITY_PROJECT_ID}/${PUBLIC_SANITY_DATASET} directly.`);
   }
   try {
     const [projects, articles, categories] = await Promise.all([
@@ -883,6 +890,9 @@ async function loadPrerenderContent(): Promise<{
       ),
     );
 
+    console.log(
+      `[build] Prerender data source: Sanity (${projects.length} projects, ${articles.length} articles, ${categories.length} categories).`,
+    );
     return {
       projects,
       articles,
@@ -890,7 +900,7 @@ async function loadPrerenderContent(): Promise<{
       categories,
     };
   } catch (error) {
-    console.warn("[build] Sanity prerender fetch failed; using public API fallback.", error);
+    console.warn("[build] Sanity unreachable; using the remote prerender API fallback.", error);
     return loadPrerenderContentFromPublicApi();
   }
 }

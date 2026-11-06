@@ -9,6 +9,7 @@
     <meta property="og:description" content="Strategy, identity, and creative direction for companies that take their brand seriously.">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" >
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/ABCSyntVariable.woff2" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Fonts never block the first paint: preloaded, applied by /font-loader.js once they arrive
@@ -31,10 +32,6 @@
         to { visibility: visible; }
       }
     </style>
-    <!-- GA4. Loader only: the CSP in vercel.json has no 'unsafe-inline' for
-         script-src, so the bootstrap lives in client/src/lib/ga.ts instead of
-         an inline block here. -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
   </head>
   <body>
     <div id="root"></div>

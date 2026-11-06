@@ -91,7 +91,8 @@ export function SeoHead({
     upsertLink("canonical", canonicalUrl);
     const preloadSet = new Set<string>([
       new URL("/figmaAssets/logo.svg", origin).toString(),
-      new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString(),
+      // Never the share image: it is the raw, full-size asset (a 3 MB PNG on a case study). Pages pass
+      // their own sized preloads; the share image stays a meta tag for crawlers.
       ...preloadImages.filter(Boolean),
     ]);
     syncImagePreloads(Array.from(preloadSet));
