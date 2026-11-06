@@ -156,7 +156,7 @@ export function BriefFlow() {
     setSubmitStatus("sending");
     const result = await submitBrief({ ...brief, contact }, brief.submissionId, honeypot);
     if (result.status === "ok") {
-      trackBriefComplete();
+      trackBriefComplete(brief.submissionId);
       userMoved.current = true;
       setSubmitStatus("idle");
       setDirection("forward");

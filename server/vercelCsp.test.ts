@@ -13,8 +13,9 @@ const directive = (name: string) =>
     ?.slice(1) ?? [];
 
 describe("vercel.json CSP", () => {
-  it("loads nothing from Clarity or Bing", () => {
-    expect(csp).not.toMatch(/clarity|bing/i);
+  it("allows Meta and Clarity only for the consent-gated loaders, and nothing from Bing", () => {
+    expect(directive("script-src")).toEqual(expect.arrayContaining(["https://connect.facebook.net", "https://www.clarity.ms"]));
+    expect(csp).not.toMatch(/bing/i);
   });
 
   it("connect-src names its hosts: self, Sanity, GA, Vimeo, Calendly, and no blanket https:", () => {
@@ -22,7 +23,7 @@ describe("vercel.json CSP", () => {
     expect(hosts).not.toContain("https:");
     expect(hosts).toEqual(expect.arrayContaining(["'self'", "https://cdn.sanity.io", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://player.vimeo.com", "https://calendly.com"]));
     for (const host of hosts.filter((h) => h !== "'self'")) {
-      expect(host, host).toMatch(/^https:\/\/(\*\.)?[a-z0-9.-]*(sanity\.io|google-analytics\.com|analytics\.google\.com|googletagmanager\.com|vimeo\.com|calendly\.com)$/);
+      expect(host, host).toMatch(/^https:\/\/(\*\.)?[a-z0-9.-]*(sanity\.io|google-analytics\.com|analytics\.google\.com|googletagmanager\.com|vimeo\.com|calendly\.com|facebook\.com|facebook\.net|clarity\.ms)$/);
     }
   });
 

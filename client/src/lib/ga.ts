@@ -17,6 +17,8 @@
  * receives everything without a second migration.
  */
 
+import { applyThirdPartyConsent, trackMetaLead, trackThirdPartyPageView } from "@/lib/consent-tags";
+
 export const GA4_MEASUREMENT_ID = "G-X4ZD7PGXE3";
 
 /**
@@ -85,6 +87,9 @@ export function setAnalyticsConsent(value: AnalyticsConsent) {
   }
   configureGa4();
   gtag("consent", "update", consentState(value));
+  // Meta and Clarity load only on an explicit "granted", and are removed on "denied".
+  applyThirdPartyConsent(value);
+  if (value === "granted") trackThirdPartyPageView(window.location.pathname, value);
   window.dispatchEvent(new CustomEvent("atla:analytics-consent"));
 }
 
@@ -141,6 +146,7 @@ export type SiteEvent =
   | { name: "bar_search"; params: { kind: "results" | "brief"; closest: boolean } }
   | { name: "brief_start"; params: { seeded: boolean } }
   | { name: "brief_complete"; params: Record<string, never> }
+  | { name: "generate_lead"; params: { form: "brief"; event_id: string } }
   | { name: "calendly_click"; params: Record<string, never> };
 
 function siteEvent(event: SiteEvent) {
@@ -153,5 +159,15 @@ export const trackBarSearch = (kind: "results" | "brief", closest: boolean) =>
   siteEvent({ name: "bar_search", params: { kind, closest } });
 /** The brief showed its first question. `seeded` is true when the visit came with a seed (/brief?seed=). */
 export const trackBriefStart = (seeded: boolean) => siteEvent({ name: "brief_start", params: { seeded } });
-export const trackBriefComplete = () => siteEvent({ name: "brief_complete", params: {} });
+/**
+ * The brief was delivered. `submissionId` is the brief's idempotency key (shared/brief.ts); it is
+ * the event_id on GA4's recommended generate_lead and on Meta's Lead, which is what lets Meta
+ * deduplicate a retry. It is a random id, never anything the visitor typed.
+ */
+export const trackBriefComplete = (submissionId?: string) => {
+  siteEvent({ name: "brief_complete", params: {} });
+  if (!submissionId) return;
+  siteEvent({ name: "generate_lead", params: { form: "brief", event_id: submissionId } });
+  trackMetaLead(submissionId);
+};
 export const trackCalendlyClick = () => siteEvent({ name: "calendly_click", params: {} });

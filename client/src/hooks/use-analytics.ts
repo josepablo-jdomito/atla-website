@@ -10,7 +10,8 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
-import { cleanPageLocation, configureGa4, ga4Event } from "@/lib/ga";
+import { trackThirdPartyPageView } from "@/lib/consent-tags";
+import { cleanPageLocation, configureGa4, ga4Event, readStoredConsent } from "@/lib/ga";
 
 declare global {
   interface Window {
@@ -43,6 +44,8 @@ export function usePageAnalytics() {
     configureGa4();
     // ga4Event adds the same clean page_location and page_path.
     ga4Event("page_view", { page_title: document.title });
+    // Meta PageView; loads Meta and Clarity first when "granted" is stored.
+    trackThirdPartyPageView(page.page_path, readStoredConsent());
   }, [location]);
 }
 

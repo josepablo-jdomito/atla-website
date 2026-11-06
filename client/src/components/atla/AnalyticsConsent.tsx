@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { hasThirdPartyTags } from "@/lib/consent-tags";
 import { likelyNeedsConsentPrompt, readStoredConsent, setAnalyticsConsent } from "@/lib/ga";
 
 /**
- * Cookie notice for Google Analytics. It shows only to visitors on a European
- * time zone who have not chosen yet, or when the footer's "Analytics cookies"
+ * Cookie notice for Google Analytics and, when their ids are set, Microsoft
+ * Clarity and the Meta Pixel. It shows to visitors on a European time zone
+ * who have not chosen yet, to everyone who has not chosen once Meta or
+ * Clarity is configured (they load only on Accept), or when the footer's "Analytics cookies"
  * link asks for it. Consent defaults themselves live in lib/ga.ts.
  */
 export const OPEN_CONSENT_EVENT = "atla:open-analytics-consent";
@@ -32,7 +35,7 @@ export function AnalyticsConsent() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!readStoredConsent() && likelyNeedsConsentPrompt()) setOpen(true);
+    if (!readStoredConsent() && (likelyNeedsConsentPrompt() || hasThirdPartyTags())) setOpen(true);
     const reopen = () => setOpen(true);
     window.addEventListener(OPEN_CONSENT_EVENT, reopen);
     return () => window.removeEventListener(OPEN_CONSENT_EVENT, reopen);
@@ -67,7 +70,9 @@ export function AnalyticsConsent() {
       }}
     >
       <p style={textStyle}>
-        We use Google Analytics cookies to see which pages lead to projects. Nothing is used for ads.{" "}
+        {hasThirdPartyTags()
+          ? "We use Google Analytics, Microsoft Clarity and the Meta Pixel to see which pages lead to projects and to measure our own campaigns. They load only if you accept."
+          : "We use Google Analytics cookies to see which pages lead to projects. Nothing is used for ads."}{" "}
         <a href="/privacy" style={{ color: "#222" }}>
           Privacy policy
         </a>

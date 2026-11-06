@@ -25,9 +25,11 @@ const ALLOWED: Record<string, string[]> = {
   bar_search: ["kind", "closest"],
   brief_start: ["seeded"],
   brief_complete: [],
+  generate_lead: ["form", "event_id"],
   calendly_click: [],
 };
 const FIXED_STRINGS = new Set(["results", "brief"]);
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 type Fired = { name: string; params: Record<string, unknown> };
 
@@ -56,7 +58,11 @@ function expectCleanShape(events: Fired[]) {
   for (const event of events) {
     expect(Object.keys(ALLOWED)).toContain(event.name);
     expect(Object.keys(event.params).sort()).toEqual([...ALLOWED[event.name]].sort());
-    for (const value of Object.values(event.params)) {
+    for (const [key, value] of Object.entries(event.params)) {
+      if (key === "event_id") {
+        expect(String(value)).toMatch(UUID);
+        continue;
+      }
       expect(typeof value === "boolean" || (typeof value === "string" && FIXED_STRINGS.has(value))).toBe(true);
     }
   }
@@ -350,7 +356,7 @@ describe("brief events", () => {
     expect(fired()).toHaveLength(1);
 
     await sendContact();
-    expect(fired().map((event) => event.name)).toEqual(["brief_start", "brief_complete"]);
+    expect(fired().map((event) => event.name)).toEqual(["brief_start", "brief_complete", "generate_lead"]);
 
     const calendly = container.querySelector<HTMLAnchorElement>('a[href="https://calendly.com/atla/intro"]');
     calendly!.addEventListener("click", (event) => event.preventDefault());
@@ -360,6 +366,7 @@ describe("brief events", () => {
     expect(events).toEqual([
       { name: "brief_start", params: { seeded: true } },
       { name: "brief_complete", params: {} },
+      { name: "generate_lead", params: { form: "brief", event_id: expect.any(String) } },
       { name: "calendly_click", params: {} },
     ]);
     expectCleanShape(events);
@@ -379,7 +386,7 @@ describe("brief events", () => {
     await sendContact();
 
     const events = fired();
-    expect(events.map((event) => event.name)).toEqual(["brief_start", "brief_complete"]);
+    expect(events.map((event) => event.name)).toEqual(["brief_start", "brief_complete", "generate_lead"]);
     expectCleanShape(events);
     expectNoLeak(events, [...answers, ...Object.values(CONTACT)]);
   });
