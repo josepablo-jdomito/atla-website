@@ -63,14 +63,19 @@ export const siteCopy = {
     close: "Close",
   },
   project: {
-    ctaTitle: "Building something like this?",
-    ctaLabel: "Start a project",
-    nextLabel: "Next",
+    // Bracket labels as drawn in the Figma (Project 4423:5596); CSS sets them uppercase.
+    clientsLabel: "( Clients )",
+    serviceLabel: "( Service )",
+    brandLabel: "( The Brand )",
+    challengeLabel: "( The Challenge )",
+    resultLabel: "( The Result )",
+    creditsLabel: "( Credits )",
+    otherWorksLabel: "( Other Works )",
+    // Shown when the project has no credits in Sanity: the Atla team line.
+    fallbackCredit: { role: "Creative Direction", names: ["José Pablo Domínguez"] },
     lightboxClose: "Close",
     lightboxPrev: "Previous image",
     lightboxNext: "Next image",
-    // Pre-fills the brief's first answer: /brief?seed=Like <title>
-    seed: (title: string) => `Like ${title}`,
   },
   brief: {
     metaTitle: "Start a project",

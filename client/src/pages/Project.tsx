@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
-import { ProjectCard } from "@/components/site/ProjectCard";
-import { nextProjectInSiteOrder, toSiteProject, useSiteProjects } from "@/components/site/siteProjects";
+import { siteOrder, toSiteProject, useSiteProjects, type SiteProject } from "@/components/site/siteProjects";
 import { assetKey } from "@/components/site/wallLayout";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { siteCopy } from "@/content/siteCopy";
@@ -14,6 +13,8 @@ import {
   buildProjectSeoHead,
   fetchProject,
   PROJECT_PLACEHOLDER_IMAGE,
+  projectCredits,
+  projectDateLabel,
   projectMediaSequence,
   toVimeoBackgroundUrl,
   type ProjectApi,
@@ -24,25 +25,30 @@ import { PRIORITY_ATTRS, useInViewPlayback } from "@/components/site/media";
 import { trapTab } from "@/components/site/focusTrap";
 import NotFound from "@/pages/not-found";
 import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery";
+import "@/styles/project.css";
 
 /**
- * The project page as a story column (JP, 2026-11-05, after littleplains.com/projects/revitin):
- * title, one line of facts, the description, then the work in a centered column.
- * Landscapes run the column's width; portraits go two-up. Paragraphs from Sanity
- * `body`, when they exist, sit between media groups. A tile on the home links here
- * with ?at=<asset>, and the page opens on that exact image. Click an image for the
- * lightbox (arrows, Escape).
+ * The project page, as drawn in JP's Figma (file U5QZmCKgSrT1W21pYYwTRe, Project 4423:5596, 2026-11-05):
+ * a 1200×750 hero (the cover, or the first direct video) with the info panel over its right side;
+ * the about section (The Brand / The Challenge / The Result and Credits on paper over a project image);
+ * the media in the Figma rhythm (portraits in 600-wide pairs, landscapes 1200 wide, no gaps);
+ * other works (the next project's cover as a strip, then the list). A tile on the home links here with
+ * ?at=<asset>, and the page opens on that exact image. Click an image for the lightbox (arrows, Escape).
  */
 
 const { project: copy } = siteCopy;
-const COLUMN_WIDTHS = [640, 960, 1280, 1600, 2000];
-const HALF_WIDTHS = [320, 480, 640, 800, 1000];
-const COLUMN_SIZES = "(min-width: 1200px) 880px, (min-width: 768px) 80vw, 100vw";
-const HALF_SIZES = "(min-width: 1200px) 434px, (min-width: 768px) 40vw, 50vw";
+const FULL_WIDTHS = [640, 960, 1280, 1600, 2000, 2400];
+const HALF_WIDTHS = [320, 480, 640, 800, 1000, 1200];
+const FULL_SIZES = "(min-width: 1200px) 1200px, 100vw";
+const HALF_SIZES = "(min-width: 1200px) 600px, (min-width: 768px) 50vw, 100vw";
 /** Below this width / height, a piece is a portrait and pairs with its neighbour. */
 const PORTRAIT_BELOW = 1.15;
-/** Sticky header height, so a landing scroll leaves the image clear of it. */
-const HEADER = 64;
+/** Figma caps: a pair cell is 600 wide and at most 800 tall; a single is 1200 wide and at most 750 tall. */
+const PAIR_W = 600;
+const PAIR_MAX_H = 800;
+const FULL_W = 1200;
+const FULL_MAX_H = 750;
+const OTHER_WORKS = 11;
 
 type MediaItem = ProjectMediaMosaicItem | { type: "image"; src: string; sourceIndex?: number };
 type Group = { kind: "full"; items: MediaItem[] } | { kind: "pair"; items: MediaItem[] };
@@ -72,6 +78,16 @@ export function groupMedia(items: MediaItem[]): Group[] {
   return groups;
 }
 
+/** The block's aspect ratio: height by the image's ratio, capped as in the Figma. Both cells of a pair share it. */
+export function groupAspect(group: Group) {
+  if (group.kind === "pair") {
+    const height = Math.min(PAIR_MAX_H, ...group.items.map((item) => PAIR_W / ratioOf(item)));
+    return `${PAIR_W} / ${Math.round(Math.max(height, PAIR_W / 2))}`;
+  }
+  const height = Math.min(FULL_MAX_H, FULL_W / ratioOf(group.items[0]));
+  return `${FULL_W} / ${Math.round(height)}`;
+}
+
 function ProjectImage({
   src,
   alt,
@@ -87,12 +103,12 @@ function ProjectImage({
 }) {
   const dims = getImageDimensions(src);
   return (
-    <button type="button" className="story-media__button" onClick={onOpen} aria-label={`${alt}. Open larger`}>
+    <button type="button" className="pj-media__button" onClick={onOpen} aria-label={`${alt}. Open larger`}>
       <img
-        className="story-media__item"
-        src={getOptimizedImageUrl(src, { width: half ? 800 : 1280, quality: 88 }) || src}
-        srcSet={buildImageSrcSet(src, half ? HALF_WIDTHS : COLUMN_WIDTHS, { quality: 88 })}
-        sizes={half ? HALF_SIZES : COLUMN_SIZES}
+        className="pj-media__item"
+        src={getOptimizedImageUrl(src, { width: half ? 1200 : 2000, quality: 88 }) || src}
+        srcSet={buildImageSrcSet(src, half ? HALF_WIDTHS : FULL_WIDTHS, { quality: 88 })}
+        sizes={half ? HALF_SIZES : FULL_SIZES}
         alt={alt}
         width={dims?.width}
         height={dims?.height}
@@ -111,7 +127,7 @@ function ProjectVideo({ src, poster, title, reduced }: { src: string; poster?: s
   return (
     <video
       ref={ref}
-      className="story-media__item"
+      className="pj-media__item"
       src={src}
       poster={poster}
       muted
@@ -206,6 +222,14 @@ function Lightbox({
   );
 }
 
+/** The projects after `slug` in the home's order, wrapping, without `slug` itself. */
+export function otherWorks(projects: SiteProject[], slug: string, limit = OTHER_WORKS) {
+  const ordered = siteOrder(projects);
+  const at = ordered.findIndex((project) => project.slug === slug);
+  const rotated = at < 0 ? ordered : [...ordered.slice(at + 1), ...ordered.slice(0, at)];
+  return rotated.filter((project) => project.slug !== slug).slice(0, limit);
+}
+
 export default function Project() {
   const [, params] = useRoute("/projects/:slug");
   const slug = params?.slug ?? "";
@@ -225,23 +249,24 @@ export default function Project() {
     () => (projectData ? buildProjectPageView(projectData, allProjects ?? []) : null),
     [allProjects, projectData],
   );
-  const next = useMemo(() => nextProjectInSiteOrder(projects, slug), [projects, slug]);
+  const others = useMemo(() => otherWorks(projects, slug), [projects, slug]);
+  const next = others[0] ?? null;
 
-  const media: MediaItem[] = useMemo(
-    () =>
-      project
-        ? [
-            ...(project.heroImage === PROJECT_PLACEHOLDER_IMAGE ? [] : [{ type: "image" as const, src: project.heroImage }]),
-            ...projectMediaSequence(project),
-          ]
-        : [],
-    [project],
-  );
+  // The hero is the cover; with no cover, the first direct video (it then leaves the media below).
+  const { hero, media } = useMemo(() => {
+    if (!project) return { hero: null, media: [] as MediaItem[] };
+    const sequence: MediaItem[] = projectMediaSequence(project);
+    if (project.heroImage !== PROJECT_PLACEHOLDER_IMAGE) {
+      return { hero: { type: "image" as const, src: project.heroImage } as MediaItem, media: sequence };
+    }
+    const video = sequence.find((item) => item.type === "video");
+    return video ? { hero: video, media: sequence.filter((item) => item !== video) } : { hero: null, media: sequence };
+  }, [project]);
   const groups = useMemo(() => groupMedia(media), [media]);
-  const images = useMemo(() => media.filter((item) => item.type === "image").map((item) => item.src), [media]);
-  const paragraphs = project?.bodySections ?? [];
-  // One paragraph after every third group, while paragraphs last.
-  const paragraphEvery = paragraphs.length > 0 ? Math.max(1, Math.ceil(groups.length / (paragraphs.length + 1))) : 0;
+  const images = useMemo(
+    () => [hero, ...media].filter((item): item is MediaItem => item?.type === "image").map((item) => item.src),
+    [hero, media],
+  );
 
   // wouter does not reset scroll. A project reached by a push starts at its top (or at the
   // image the visitor clicked on the wall); Back/Forward keeps the browser's position.
@@ -258,7 +283,8 @@ export default function Project() {
     if (!target) return;
     landedRef.current = `${slug}:${at}`;
     const land = () => {
-      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - HEADER - 16);
+      const header = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 50;
+      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - header);
       if (Math.abs(window.scrollY - top) > 8) window.scrollTo({ top, behavior: "auto" });
     };
     land();
@@ -281,11 +307,50 @@ export default function Project() {
   if (!project) return <NotFound />;
 
   const seoHead = buildProjectSeoHead(project);
-  const year = Number.parseInt(project.dateLabel, 10) > 0 ? project.dateLabel : "";
   const services = (projectData && toSiteProject(projectData)?.services) || [];
-  const facts = [project.client !== project.title ? project.client : "", year, services.join(", ")].filter(Boolean);
-  let imageIndex = -1;
-  let paragraphIndex = 0;
+  const place = project.locationName || project.country;
+  const date = projectDateLabel(project.dateLabel);
+  const [brand, challenge, ...rest] = project.bodySections;
+  const story = [
+    { label: copy.brandLabel, text: brand },
+    { label: copy.challengeLabel, text: challenge },
+    { label: copy.resultLabel, text: rest.join("\n") },
+  ].filter((block) => Boolean(block.text?.trim()));
+  const apiCredits = projectCredits(projectData);
+  const credits = apiCredits.length > 0 ? apiCredits : [copy.fallbackCredit];
+  const aboutImage = [project.storyImage, project.heroImage].find((src) => src && src !== PROJECT_PLACEHOLDER_IMAGE);
+  let imageIndex = hero?.type === "image" ? 0 : -1;
+
+  const renderItem = (item: MediaItem, key: string, half: boolean) => {
+    if (item.type === "image") {
+      imageIndex += 1;
+      const index = imageIndex;
+      return (
+        <figure key={key} className="pj-media__cell" data-asset={assetKey(item.src)}>
+          <ProjectImage src={item.src} alt={`${project.title}, image ${index + 1}`} half={half} priority={false} onOpen={() => setOpen(index)} />
+        </figure>
+      );
+    }
+    if (item.type === "video") {
+      return (
+        <figure key={key} className="pj-media__cell" data-asset={assetKey(item.src)}>
+          <ProjectVideo src={item.src} poster={item.poster} title={item.title || `${project.title}, video`} reduced={reduced} />
+        </figure>
+      );
+    }
+    return (
+      <figure key={key} className="pj-media__cell pj-media__embed">
+        <iframe
+          src={reduced ? item.src : toVimeoBackgroundUrl(item.src)}
+          title={item.title || `${project.title}, video`}
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+        />
+      </figure>
+    );
+  };
 
   return (
     <PageShell>
@@ -298,89 +363,140 @@ export default function Project() {
         structuredData={seoHead.structuredData}
       />
 
-      <article className="story">
-        <header className="story-head">
-          <h1 className="story-head__title">{project.title}</h1>
-          {facts.length > 0 ? <p className="story-head__facts">{facts.join("  ·  ")}</p> : null}
-          {project.intro ? <p className="story-head__lead">{project.intro}</p> : null}
+      <article className="pj">
+        <header className="pj-hero">
+          <div className="pj-hero__media">
+            {hero?.type === "image" ? (
+              <figure className="pj-media__cell" data-asset={assetKey(hero.src)}>
+                <ProjectImage src={hero.src} alt={`${project.title}, image 1`} half={false} priority onOpen={() => setOpen(0)} />
+              </figure>
+            ) : hero?.type === "video" ? (
+              <figure className="pj-media__cell" data-asset={assetKey(hero.src)}>
+                <ProjectVideo src={hero.src} poster={hero.poster} title={hero.title || `${project.title}, video`} reduced={reduced} />
+              </figure>
+            ) : null}
+          </div>
+          <div className="pj-hero__info">
+            <div className="pj-hero__inner">
+              <h1 className="pj-hero__title">{project.title}</h1>
+              <div className="pj-hero__meta">
+                <div className="pj-hero__row">
+                  <div className="pj-hero__col">
+                    {project.client ? (
+                      <>
+                        <p className="pj-label">{copy.clientsLabel}</p>
+                        <p className="pj-hero__value">{project.client}</p>
+                      </>
+                    ) : null}
+                  </div>
+                  <div className="pj-hero__col">
+                    {services.length > 0 ? (
+                      <>
+                        <p className="pj-label">{copy.serviceLabel}</p>
+                        <ul className="pj-hero__services">
+                          {services.map((service) => (
+                            <li key={service}>{service}</li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="pj-hero__row pj-hero__row--end">
+                  <p className="pj-hero__intro">{project.intro}</p>
+                  <p className="pj-hero__col pj-hero__when">
+                    {place ? <span className="pj-hero__place">{place}</span> : null}
+                    {date ? <span className="pj-hero__date">{date}</span> : null}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </header>
 
-        <div className="story-body">
-          {groups.map((group, groupIndex) => {
-            const block = (
-              <div key={`g${groupIndex}`} className="story-media" data-kind={group.kind}>
-                {group.items.map((item, i) => {
-                  const key = `${item.type}-${groupIndex}-${i}`;
-                  if (item.type === "image") {
-                    imageIndex += 1;
-                    const index = imageIndex;
-                    return (
-                      <figure key={key} className="story-media__figure" data-asset={assetKey(item.src)}>
-                        <ProjectImage
-                          src={item.src}
-                          alt={`${project.title}, image ${index + 1}`}
-                          half={group.kind === "pair"}
-                          priority={index === 0}
-                          onOpen={() => setOpen(index)}
-                        />
-                      </figure>
-                    );
-                  }
-                  if (item.type === "video") {
-                    return (
-                      <figure key={key} className="story-media__figure" data-asset={assetKey(item.src)}>
-                        <ProjectVideo src={item.src} poster={item.poster} title={item.title || `${project.title}, video`} reduced={reduced} />
-                      </figure>
-                    );
-                  }
-                  return (
-                    <figure key={key} className="story-media__figure story-media__embed">
-                      <iframe
-                        src={reduced ? item.src : toVimeoBackgroundUrl(item.src)}
-                        title={item.title || `${project.title}, video`}
-                        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                      />
-                    </figure>
-                  );
-                })}
-              </div>
-            );
-            const wantsParagraph =
-              paragraphEvery > 0 && (groupIndex + 1) % paragraphEvery === 0 && paragraphIndex < paragraphs.length;
-            if (!wantsParagraph) return block;
-            const text = paragraphs[paragraphIndex];
-            paragraphIndex += 1;
-            return (
-              <div key={`g${groupIndex}`}>
-                {block}
-                <p className="story-text">{text}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <section className="story-cta" aria-labelledby="project-cta-title">
-          <h2 id="project-cta-title" className="story-cta__title">
-            {copy.ctaTitle}
-          </h2>
-          <Link href={`/brief?seed=${encodeURIComponent(copy.seed(project.title))}`} className="story-cta__link">
-            {copy.ctaLabel}
-          </Link>
+        <section className="pj-about" aria-label={`${project.title}, about`} data-photo={aboutImage ? "" : undefined}>
+          {aboutImage ? (
+            <img
+              className="pj-about__photo"
+              src={getOptimizedImageUrl(aboutImage, { width: 2000, quality: 85 }) || aboutImage}
+              srcSet={buildImageSrcSet(aboutImage, FULL_WIDTHS, { quality: 85 })}
+              sizes={FULL_SIZES}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          ) : null}
+          <div className="pj-about__panel">
+            <div className="pj-about__story">
+              {story.map((block) => (
+                <div key={block.label} className="pj-about__block">
+                  <h2 className="pj-label pj-label--ink">{block.label}</h2>
+                  <p className="pj-about__text">{block.text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="pj-about__credits">
+              <h2 className="pj-label pj-label--ink">{copy.creditsLabel}</h2>
+              <dl className="pj-credits">
+                {credits.map((credit) => (
+                  <div key={credit.role} className="pj-credits__row">
+                    <dt className="pj-credits__role">{credit.role}</dt>
+                    <dd className="pj-credits__names">
+                      {credit.names.map((name) => (
+                        <span key={name}>{name}</span>
+                      ))}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
         </section>
 
-        {next ? (
-          <section className="story-next" aria-labelledby="project-next-label">
-            <h2 id="project-next-label" className="story-next__label">
-              {copy.nextLabel}
-              {" "}
-              <Link href={`/projects/${next.slug}`} className="story-next__title">
-                {next.title}
+        {groups.length > 0 ? (
+          <div className="pj-media">
+            {groups.map((group, groupIndex) => (
+              <div
+                key={`g${groupIndex}`}
+                className="pj-media__group"
+                data-kind={group.kind}
+                style={{ "--pj-ar": groupAspect(group) } as CSSProperties}
+              >
+                {group.items.map((item, i) => renderItem(item, `${item.type}-${groupIndex}-${i}`, group.kind === "pair"))}
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {others.length > 0 ? (
+          <section className="pj-others" aria-labelledby="project-others-label">
+            {next ? (
+              <Link href={`/projects/${next.slug}`} className="pj-others__strip" tabIndex={-1} aria-hidden="true">
+                <img
+                  src={getOptimizedImageUrl(next.coverImage, { width: 1200, quality: 85 }) || next.coverImage}
+                  srcSet={buildImageSrcSet(next.coverImage, [600, 900, 1200], { quality: 85 })}
+                  sizes="(min-width: 1200px) 590px, 50vw"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
               </Link>
-            </h2>
-            <ProjectCard project={next} size="next" />
+            ) : null}
+            <div className="pj-others__list">
+              <h2 id="project-others-label" className="pj-label pj-label--ink">
+                {copy.otherWorksLabel}
+              </h2>
+              <ul className="pj-others__rows">
+                {others.map((other) => (
+                  <li key={other.slug}>
+                    <Link href={`/projects/${other.slug}`} className="pj-others__row">
+                      <span>{other.title}</span>
+                      <span>{projectDateLabel(other.year)}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </section>
         ) : null}
       </article>
