@@ -140,8 +140,8 @@ export function ContactForm() {
           ) : null}
 
           <p className="contact-form__note">
-            What you send here goes to our CRM so we can answer your inquiry, and we keep it until you ask us to delete
-            it. See the <a href="/privacy">privacy policy</a>.
+            What you send here goes to our CRM so we can answer your inquiry, and we keep it for two years after our last
+            exchange. See the <a href="/privacy">privacy policy</a>.
           </p>
           <div className="brief-actions">
             <button type="submit" disabled={isSubmitting} className="brief-primary">
