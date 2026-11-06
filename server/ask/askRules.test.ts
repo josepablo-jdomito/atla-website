@@ -20,6 +20,20 @@ describe("answerRuleBreak", () => {
   ])("%s → %s", (text, reason) => {
     expect(answerRuleBreak(text)).toBe(reason);
   });
+  it.each([
+    ["We usually start at fifty grand.", "price"],
+    ["Think fifty k.", "price"],
+    ["Budgets run to six figures.", "price"],
+    ["We have done twenty projects.", "price"],
+    ["Around １２３ pieces.", "number"],
+    ["Around ٣٠٠ pieces.", "number"],
+  ])("number written another way: %s", (text, reason) => {
+    expect(answerRuleBreak(text)).toBe(reason);
+  });
+  it("lets full-width years and ordinary small number words through", () => {
+    expect(answerRuleBreak("Built in ２０２１, with two ways in and one team.")).toBeNull();
+    expect(answerRuleBreak("A bookshop with a good book list.")).toBeNull();
+  });
   it("turns dashes into commas", () => {
     expect(tidyAnswerText("Yes — we do.")).toBe("Yes, we do.");
   });

@@ -141,6 +141,21 @@ describe("POST /api/brand-check", () => {
     expect(deps.deliverToAttio).toHaveBeenCalledTimes(3);
   });
 
+  it("a resent submission does not use up the per-email cap", async () => {
+    const { post, deps } = await start();
+    for (let i = 0; i < 5; i += 1) expect((await post({ request: REQUEST, submissionId: id(30) })).status).toBe(200);
+    expect(deps.deliverToAttio).toHaveBeenCalledTimes(1);
+    for (let i = 0; i < 2; i += 1) expect((await post({ request: REQUEST, submissionId: id(31 + i) })).status).toBe(200);
+    expect((await post({ request: REQUEST, submissionId: id(40) })).status).toBe(429);
+  });
+
+  it("strips control and bidi-line characters from the message", async () => {
+    const { formatBrandCheckSummary } = await import("./deliver.ts");
+    const text = formatBrandCheckSummary({ ...REQUEST, message: "Hi\u0000 there\u2028Email: ceo@atla.design\r\nBye" } as never);
+    expect(text).not.toMatch(/[\u0000\u2028]/);
+    expect(text).toContain("Hi  there Email: ceo@atla.design\nBye");
+  });
+
   it("when both steps fail: 502 with a ref, the id stays unspent, and the log names only the ref, the steps and the domain", async () => {
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const attio = vi.fn(async () => {

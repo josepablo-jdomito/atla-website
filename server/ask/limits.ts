@@ -62,12 +62,24 @@ export async function checkAskLimits(ip: string, idempotencyKey: string, now = n
   if (today === null) return "store";
   if (today > positiveInt(process.env.AI_DAILY_IP_CAP, DEFAULT_DAILY_IP_CAP)) return "daily";
 
+  const month = await takeMonthlyUnit(now);
+  if (month === "store") return "store";
+  if (month === "budget") return "budget";
+
+  return "ok";
+}
+
+/** One unit of the site-wide monthly model-call budget. */
+async function takeMonthlyUnit(now: Date): Promise<"ok" | "budget" | "store"> {
   const monthKey = `ai:${now.toISOString().slice(0, 7)}`;
   const month = await count(monthKey, MONTHLY_TTL_SECONDS);
   if (month === null) return "store";
   const cap = positiveInt(process.env.AI_MONTHLY_CALL_CAP, DEFAULT_MONTHLY_CAP);
   if (month === Math.ceil(cap * ALERT_RATIO)) console.error(`[ask] ALERT: AI calls at 80% of the monthly cap (${monthKey})`);
-  if (month > cap) return "budget";
+  return month > cap ? "budget" : "ok";
+}
 
-  return "ok";
+/** The retry is a second model call: it takes a second unit, and is skipped when the budget refuses it. */
+export async function takeAskRetryBudget(now = new Date()): Promise<boolean> {
+  return (await takeMonthlyUnit(now)) === "ok";
 }

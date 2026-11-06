@@ -43,7 +43,7 @@ const RESULT_PATH = "/api/contact/result";
 /** Collapse line breaks and control characters so a value stays on one line. */
 export const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029]+/g, " ").trim();
 /** Keep line breaks in free text but drop other control characters. */
-const multiLine = (value: string) =>
+export const multiLine = (value: string) =>
   value
     .replace(/\r\n?/g, "\n")
     .replace(/[\u0000-\u0009\u000b-\u001f\u007f\u0085\u2028\u2029]+/g, " ")

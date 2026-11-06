@@ -98,6 +98,12 @@ export const BANNED_WORDS = [
 ];
 
 const YEAR = /^(19|20)\d\d$/;
+/**
+ * Number words that carry a price or a count as surely as digits do. "one" to "ten" stay allowed
+ * (they are ordinary prose: "two ways in"); teens, tens, "grand", "figures" and "<word> k" are not.
+ */
+const NUMBER_WORDS =
+  /\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|grand|figures?)\b|\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\s?k\b/i;
 
 /**
  * Why an answer cannot be shown as written, or null when it can. The site's rule: no numbers, counts,
@@ -106,8 +112,12 @@ const YEAR = /^(19|20)\d\d$/;
  */
 export function answerRuleBreak(text: string): string | null {
   const lower = text.toLowerCase();
-  const numbers = text.match(/\d[\d.,]*/g) ?? [];
-  if (numbers.some((n) => !YEAR.test(n.replace(/[.,]+$/, "")))) return "number";
+  // ASCII, full-width, Arabic-Indic, Persian and Devanagari digits.
+  const numbers = text.match(/[0-9\u0660-\u0669\u06f0-\u06f9\u0966-\u096f\uff10-\uff19][0-9\u0660-\u0669\u06f0-\u06f9\u0966-\u096f\uff10-\uff19.,]*/g) ?? [];
+  // Full-width digits fold to ASCII (NFKC); other scripts stay non-ASCII and so never pass as a year.
+  const ascii = (n: string) => n.normalize("NFKC").replace(/[.,]+$/, "");
+  if (numbers.some((n) => !YEAR.test(ascii(n)))) return "number";
+  if (NUMBER_WORDS.test(text)) return "price";
   if (/[$€£¥%]/.test(text)) return "price";
   if (/\b(dollars?|euros?|pesos?|usd|eur|mxn|percent)\b/.test(lower)) return "price";
   if (/\b(hundreds?|thousands?|millions?|billions?|dozens?)\b/.test(lower)) return "count";

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { siteCopy } from "@/content/siteCopy";
-import { ASK_MAX_CHARS, ASK_MAX_TURNS, type AskAnswer, type AskEvent, type AskLink } from "@shared/ask";
+import { ASK_LINKS, ASK_MAX_CHARS, ASK_MAX_TURNS, type AskAnswer, type AskEvent, type AskHref, type AskLink } from "@shared/ask";
 import { trackAskTurn } from "@/lib/askEvents";
 
 /**
@@ -37,11 +37,28 @@ function storage(): Storage | null {
   }
 }
 
+/** A turn read back from sessionStorage is data, not code: check its shape and the link allowlist before it renders. */
+function isStoredTurn(t: unknown): t is AskTurn {
+  if (!t || typeof t !== "object") return false;
+  const turn = t as Record<string, unknown>;
+  if (typeof turn.text !== "string") return false;
+  if (turn.role === "visitor" || turn.role === "note") return true;
+  if (turn.role !== "atla") return false;
+  if (!Array.isArray(turn.slugs) || !turn.slugs.every((s) => typeof s === "string")) return false;
+  return (
+    Array.isArray(turn.links) &&
+    turn.links.every((l) => {
+      const link = l as Record<string, unknown> | null;
+      return !!link && typeof link.href === "string" && Object.hasOwn(ASK_LINKS, link.href) && link.label === ASK_LINKS[link.href as AskHref];
+    })
+  );
+}
+
 export function readTurns(): AskTurn[] {
   try {
     const raw = storage()?.getItem(ASK_STORAGE_KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed.filter((t) => t && typeof t.text === "string" && typeof t.role === "string") as AskTurn[]) : [];
+    return Array.isArray(parsed) ? parsed.filter(isStoredTurn) : [];
   } catch {
     return [];
   }

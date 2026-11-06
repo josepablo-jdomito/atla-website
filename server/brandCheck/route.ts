@@ -80,20 +80,22 @@ export function registerBrandCheckRoutes(app: Express, deps: BrandCheckDeps = de
       return res.status(429).json({ error: "Too many requests from this address. Try again in a few minutes." });
     }
 
-    try {
-      const key = `brandcheckmail:${createHash("sha256").update(request.email.toLowerCase()).digest("hex").slice(0, 32)}`;
-      if ((await deps.incrWithExpiry(key, SUBMISSION_TTL_SECONDS)) > MAX_PER_EMAIL_PER_DAY) {
-        return res.status(429).json({ error: "Too many requests from this address. Try again tomorrow." });
-      }
-    } catch {
-      // A counter outage never blocks a real lead.
-    }
-
     const submissionKey = `brandcheck:${parsed.data.submissionId}`;
     try {
       if ((await deps.incrWithExpiry(submissionKey, SUBMISSION_TTL_SECONDS)) > 1) return res.json({ ok: true, calendlyUrl });
     } catch (err) {
       console.error(`[brand-check] idempotency store failed, delivering anyway: ${err instanceof Error ? err.message : "unknown error"}`);
+    }
+
+    // Counted after the idempotency check, so a resent submission never uses the cap up twice.
+    const emailKey = `brandcheckmail:${createHash("sha256").update(request.email.toLowerCase()).digest("hex").slice(0, 32)}`;
+    try {
+      if ((await deps.incrWithExpiry(emailKey, SUBMISSION_TTL_SECONDS)) > MAX_PER_EMAIL_PER_DAY) {
+        await deps.deleteKey(submissionKey).catch(() => {});
+        return res.status(429).json({ error: "Too many requests from this address. Try again tomorrow." });
+      }
+    } catch {
+      // A counter outage never blocks a real lead.
     }
 
     const steps = [
@@ -118,6 +120,8 @@ export function registerBrandCheckRoutes(app: Express, deps: BrandCheckDeps = de
 
     try {
       await deps.deleteKey(submissionKey);
+      // Nothing was delivered, so this attempt does not count against the visitor's daily cap.
+      await deps.deleteKey(emailKey);
     } catch (err) {
       console.error(`[brand-check] could not release ref=${ref} for a resend: ${err instanceof Error ? err.message : "unknown error"}`);
     }

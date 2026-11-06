@@ -13,6 +13,7 @@ describe("apiLogLine", () => {
     expect(apiLogLine("POST", "/api/brief/next", 200, 7, body)).toBe("POST /api/brief/next 200 in 7ms");
     expect(apiLogLine("POST", "/api/brief", 200, 7, body)).toBe("POST /api/brief 200 in 7ms");
     expect(apiLogLine("POST", "/api/contact", 400, 7, { error: "x" })).toBe("POST /api/contact 400 in 7ms");
+    expect(apiLogLine("POST", "/api/ask", 200, 7, { text: "answer words" })).toBe("POST /api/ask 200 in 7ms");
     expect(apiLogLine("POST", "/api/brand-check", 502, 7, { error: "x", ref: "r" })).toBe("POST /api/brand-check 502 in 7ms");
     expect(isPrivateApiPath("/API/Brand-Check")).toBe(true);
     expect(isPrivateApiPath("/api/brand-checks")).toBe(false);

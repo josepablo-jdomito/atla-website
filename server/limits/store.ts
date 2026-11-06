@@ -15,7 +15,8 @@ type MemoryEntry = { count: number; expiresAt: number };
 const memory = new Map<string, MemoryEntry>();
 let warnedNoUpstash = false;
 
-export const isProduction = () => process.env.NODE_ENV === "production";
+export const isProduction = () =>
+  process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
 
 function upstashConfig() {
   const url = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/+$/, "");

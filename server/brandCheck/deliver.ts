@@ -6,7 +6,7 @@ import {
   brandFromSite,
   type BrandCheckRequest,
 } from "../../shared/brandCheck.ts";
-import { singleLine } from "../contact.ts";
+import { multiLine, singleLine } from "../contact.ts";
 import { deliverNoteToAttio, sendStudioEmail } from "../brief/deliver.ts";
 
 /**
@@ -29,7 +29,7 @@ export function formatBrandCheckSummary(request: BrandCheckRequest): string {
     `Company size: ${choice(BRAND_CHECK_SIZES, request.size)}`,
     `Investing in brand this year: ${choice(BRAND_CHECK_INVESTING, request.investing)}`,
   ];
-  const message = request.message.replace(/\r\n?/g, "\n").trim();
+  const message = multiLine(request.message);
   if (message) lines.push("", "Message", message);
   return lines.join("\n");
 }

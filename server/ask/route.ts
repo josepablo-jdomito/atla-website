@@ -1,6 +1,7 @@
 import type { Express, NextFunction, Request, Response } from "express";
 import { siteCopy } from "../../client/src/content/siteCopy.ts";
 import {
+  ASK_HREFS,
   ASK_LINKS,
   ASK_MAX_LINKS,
   ASK_MAX_PIECES,
@@ -17,7 +18,7 @@ import { clientIp, foreignPostSource } from "../contact.ts";
 import { hashIp } from "../limits/guards.ts";
 import { fetchProjectsFromSanity } from "../sanity/projectService.ts";
 import { buildSystemPrompt, type AskProject } from "./context.ts";
-import { askStoreReady, checkAskLimits, type AskLimit } from "./limits.ts";
+import { askStoreReady, checkAskLimits, takeAskRetryBudget, type AskLimit } from "./limits.ts";
 import { askApiKey, generateAnswer, type AskUsage, type Generate } from "./model.ts";
 
 /**
@@ -38,6 +39,9 @@ import { askApiKey, generateAnswer, type AskUsage, type Generate } from "./model
  * The log line holds a timestamp, the hashed address, token counts, latency and a status, never text.
  */
 
+/** Own keys only: `in` on ASK_LINKS would accept "__proto__", "constructor", "toString". */
+const ASK_HREF_SET: ReadonlySet<string> = new Set(ASK_HREFS);
+
 const PROJECT_CACHE_MS = 10 * 60 * 1000;
 const { ask: copy } = siteCopy;
 
@@ -47,6 +51,8 @@ export type AskDeps = {
   checkLimits: (ip: string, idempotencyKey: string) => Promise<AskLimit>;
   loadProjects: () => Promise<AskProject[]>;
   generate: Generate;
+  /** A second unit of the monthly budget, taken before the retry (a retry is a second model call). Omitted = allowed. */
+  takeRetryBudget?: () => Promise<boolean>;
 };
 
 /**
@@ -55,9 +61,16 @@ export type AskDeps = {
  */
 export const escapeAngles = (json: string) => json.replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
 
-/** The turns as one escaped JSON data block: the earlier turns as history, the last as the question. */
+/**
+ * The turns as one escaped JSON data block: the earlier visitor turns as history, the last as the
+ * question. Turns the client labels "atla" are dropped: the client can write anything there, so the
+ * server never lets it put words in Atla's mouth (and never sends them as assistant messages).
+ */
 export function visitorBlock(messages: AskRequest["messages"]): string {
-  const history = messages.slice(0, -1).map((turn) => ({ who: turn.role, text: turn.text }));
+  const history = messages
+    .slice(0, -1)
+    .filter((turn) => turn.role === "visitor")
+    .map((turn) => ({ who: turn.role, text: turn.text }));
   const question = messages[messages.length - 1].text;
   return `<visitor>\n${escapeAngles(JSON.stringify({ history, question }))}\n</visitor>`;
 }
@@ -115,7 +128,7 @@ export function settleAnswer(raw: string, knownSlugs: Set<string>): { answer: As
   const broken = answerRuleBreak(text);
   if (broken) return { problem: broken };
   const slugs = Array.from(new Set(parsed.data.slugs.map((s) => s.trim().toLowerCase()))).filter((s) => knownSlugs.has(s)).slice(0, ASK_MAX_PIECES);
-  const hrefs = Array.from(new Set(parsed.data.links)).filter((href): href is AskHref => href in ASK_LINKS).slice(0, ASK_MAX_LINKS);
+  const hrefs = Array.from(new Set(parsed.data.links)).filter((href): href is AskHref => ASK_HREF_SET.has(href)).slice(0, ASK_MAX_LINKS);
   return { answer: { text, slugs, links: hrefs.map((href) => ({ href, label: ASK_LINKS[href] })) } };
 }
 
@@ -165,6 +178,7 @@ const defaultDeps: AskDeps = {
   checkLimits: checkAskLimits,
   loadProjects: loadVisibleProjects,
   generate: generateAnswer,
+  takeRetryBudget: takeAskRetryBudget,
 };
 
 type LogFields = { ip: string; status: string; code: number; started: number; attempts?: number; usage?: AskUsage };
@@ -237,6 +251,7 @@ export function registerAskRoutes(app: Express, deps: AskDeps = defaultDeps) {
     let answer: AskAnswer | null = null;
     try {
       for (attempts = 1; attempts <= 2 && !answer; attempts += 1) {
+        if (attempts === 2 && deps.takeRetryBudget && !(await deps.takeRetryBudget())) break;
         const stream = createTextStreamer();
         let streamed = false;
         const result = await deps.generate({

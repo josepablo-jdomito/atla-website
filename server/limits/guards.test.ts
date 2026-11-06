@@ -24,6 +24,25 @@ describe("limits", () => {
     vi.unstubAllGlobals();
   });
 
+  it("production is NODE_ENV, or a Vercel production or preview deploy", async () => {
+    vi.resetModules();
+    const { isProduction } = await import("./store.ts");
+    const vercelEnv = process.env.VERCEL_ENV;
+    try {
+      delete process.env.VERCEL_ENV;
+      expect(isProduction()).toBe(false);
+      process.env.VERCEL_ENV = "preview";
+      expect(isProduction()).toBe(true);
+      process.env.VERCEL_ENV = "production";
+      expect(isProduction()).toBe(true);
+      process.env.VERCEL_ENV = "development";
+      expect(isProduction()).toBe(false);
+    } finally {
+      if (vercelEnv === undefined) delete process.env.VERCEL_ENV;
+      else process.env.VERCEL_ENV = vercelEnv;
+    }
+  });
+
   it("rate limit allows 20 brief calls per window", async () => {
     const { rateLimit } = await fresh();
     for (let i = 0; i < 20; i++) expect(await rateLimit("3.3.3.3", "brief")).toBe(true);
