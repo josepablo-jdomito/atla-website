@@ -516,7 +516,7 @@ function normalizeProject(project: SanityProject): Project {
   });
   const region = firstNonEmptyString(project.region, project.location, project.market) || "America";
   const country = firstNonEmptyString(project.country);
-  const videos = extractVimeoEmbedSources(project.vimeoVideos, project.videos);
+  const videos = extractVideoSources(project.vimeoVideos, project.videos);
   const videoFiles = extractVideoFileAssets(project.videoFiles);
   const mediaItems = extractProjectMediaAssets(project.mediaItems);
   const description = firstNonEmptyString(project.description, project.excerpt, project.summary);
@@ -765,13 +765,34 @@ function extractProjectMediaAssets(value: unknown): ProjectMediaAsset[] {
   });
 }
 
-function extractVimeoEmbedSources(...values: unknown[]) {
+function extractVideoSources(...values: unknown[]) {
   const sources = values.flatMap((value) => normalizeStringListValue(value));
   const embeds = sources
-    .map((source) => toVimeoEmbedUrl(source))
+    .map((source) => toVideoSource(source))
     .filter(isNonEmptyString);
 
   return Array.from(new Set(embeds));
+}
+
+/** A video file in this studio's Sanity asset store: https://cdn.sanity.io/files/<projectId>/<dataset>/<name>.mp4|webm|mov */
+const SANITY_VIDEO_FILE = /^https:\/\/cdn\.sanity\.io\/files\/[a-z0-9]+\/[a-z0-9_-]+\/[A-Za-z0-9_-]+\.(mp4|webm|mov)$/i;
+
+/**
+ * A `videos[]` entry the site may play: a Vimeo player URL (iframe), or a direct
+ * mp4/webm/mov file on the Sanity CDN (looped muted on the wall and the project page).
+ * Anything else is dropped. Direct files keep no query or hash.
+ */
+export function toVideoSource(value: string): string {
+  const raw = value.trim();
+  try {
+    const parsed = new URL(raw);
+    const bare = `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+    // Compared as written too, so URL normalisation ("..", encoded slashes) cannot reshape the path.
+    if (SANITY_VIDEO_FILE.test(bare) && raw.split(/[?#]/)[0] === bare) return bare;
+  } catch {
+    // Not an absolute URL: only the Vimeo parser below can still make sense of it.
+  }
+  return toVimeoEmbedUrl(raw);
 }
 
 function toVimeoEmbedUrl(value: string) {
