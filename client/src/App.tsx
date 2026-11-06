@@ -15,7 +15,6 @@ const pages: AppPages = {
   ProjectsAdmin: lazy(() => import("@/pages/ProjectsAdmin")),
   About: lazy(() => import("@/pages/About")),
   Ventures: lazy(() => import("@/pages/Ventures")),
-  Contact: lazy(() => import("@/pages/Contact")),
   Services: lazy(() => import("@/pages/Services")),
   Home: lazy(() => import("@/pages/Home")),
   Project: lazy(() => import("@/pages/Project")),

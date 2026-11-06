@@ -94,6 +94,16 @@
       "permanent": true
     },
     {
+      "source": "/contact",
+      "destination": "/brief",
+      "permanent": true
+    },
+    {
+      "source": "/contact/",
+      "destination": "/brief",
+      "permanent": true
+    },
+    {
       "source": "/work",
       "destination": "/",
       "permanent": true

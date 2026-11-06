@@ -10,7 +10,6 @@ describe("meta lengths (go-live audit)", () => {
   it("every page title is at most 60 characters as rendered", () => {
     const titles = [
       formatMetaTitle(siteCopy.about.metaTitle, siteCopy.about.metaSuffix),
-      formatMetaTitle(siteCopy.contact.metaTitle, siteCopy.contact.metaSuffix),
       formatMetaTitle(siteCopy.services.metaTitle, "Atla"),
       formatMetaTitle(siteCopy.brief.metaTitle, "Atla"),
       formatMetaTitle(siteCopy.brandCheck.metaTitle, "Atla"),
@@ -24,7 +23,7 @@ describe("meta lengths (go-live audit)", () => {
   });
 
   it("every description is at most 160 characters and the journal one is not padded", () => {
-    for (const d of [siteCopy.about.metaDescription, siteCopy.services.metaDescription, siteCopy.contact.metaDescription, siteCopy.brandCheck.metaDescription, siteCopy.brief.metaDescription, JOURNAL_META_DESCRIPTION]) {
+    for (const d of [siteCopy.about.metaDescription, siteCopy.services.metaDescription, siteCopy.brandCheck.metaDescription, siteCopy.brief.metaDescription, JOURNAL_META_DESCRIPTION]) {
       expect(d.length, d).toBeLessThanOrEqual(160);
     }
     expect(JOURNAL_META_DESCRIPTION.match(/Notes from the Atla studio/g)).toHaveLength(1);

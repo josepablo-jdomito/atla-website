@@ -22,7 +22,6 @@ export const siteCopy = {
       { label: "Services", href: "/services" },
       { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
-      { label: "Contact", href: "/contact" },
       { label: "Start a project", href: "/brief" },
     ],
     menuOpen: "Menu",
@@ -64,7 +63,6 @@ export const siteCopy = {
       { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
       { label: "Journal", href: "/journal" },
-      { label: "Contact", href: "/contact" },
     ],
     legal: [
       { label: "Privacy", href: "/privacy" },
@@ -142,7 +140,7 @@ export const siteCopy = {
         website: "Website",
         phone: "Phone",
       },
-      // The one promise, said the same way on /contact and in the policy: we reply by email and manage the inquiry.
+      // The one promise, said the same way on the brand check and in the policy: we reply by email and manage the inquiry.
       privacyNotice: "We use this to reply and to manage your inquiry.",
       privacyLink: "Privacy",
       submit: "Send the brief",
@@ -472,15 +470,6 @@ export const siteCopy = {
       { name: "José Aceves Covarrubias", role: "Brand Designer" },
       { name: "Aldo Jaramillo", role: "Motion Designer" },
     ] as ReadonlyArray<{ name: string; role: string }>,
-  },
-  contact: {
-    metaTitle: "Contact Atla",
-    metaSuffix: "Start a Branding or Digital Project",
-    metaDescription: "Write to Atla when you launch, raise capital, grow or reposition. José Pablo replies by email.",
-    title: "Tell us what you are building.",
-    // The same sentence the brief's contact step carries; the policy says it too.
-    formNotice: "We use this to reply and to manage your inquiry.",
-    sent: "Received. José Pablo reads every note himself and replies by email.",
   },
   // Client marks above the footer: monochrome SVGs JP sends (client/public/logos-v2/). Empty list = no
   // band. Never invent a logo.

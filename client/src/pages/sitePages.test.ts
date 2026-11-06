@@ -7,10 +7,7 @@ import { memoryLocation } from "wouter/memory-location";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Services from "./Services";
 import About from "./About";
-import Contact from "./Contact";
-import { ContactForm } from "@/components/site/ContactForm";
 import { siteCopy } from "@/content/siteCopy";
-import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const analytics = vi.hoisted(() => ({ trackEvent: vi.fn(), ga4Event: vi.fn() }));
 vi.mock("@/hooks/use-analytics", () => ({ trackEvent: analytics.trackEvent }));
@@ -332,101 +329,5 @@ describe("About page", () => {
     // The cities are said once, in the page lead (and the footer), not again under the team.
     expect(team.textContent).not.toContain("Mexico City");
     expect(main().querySelector(".page-intro__lead")?.textContent).toContain("Mexico City");
-  });
-});
-
-describe("Contact page", () => {
-  it("has one way in: the email and the socials under the title, then the form; no labels, no lead, no brief CTA, no pills", () => {
-    render(Contact, "/contact");
-    expect(main().querySelectorAll("h1")).toHaveLength(1);
-    const email = main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)!;
-    expect(email).not.toBeNull();
-    const form = main().querySelector("form")!;
-    expect(form.getAttribute("action")).toBe("/api/contact");
-    expect(form.getAttribute("method")).toBe("post");
-    // The email line sits above the form.
-    expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(main().querySelector('a[href="/brief"]')).toBeNull();
-    for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).not.toBeNull();
-    // The cities live in the footer; the page carries no lead and no field labels beyond one per field.
-    expect(main().querySelector(".page-intro__lead")).toBeNull();
-    expect(main().textContent).not.toMatch(/optional|Elsewhere|Where we are/i);
-    expect(email.compareDocumentPosition(main().querySelector(`a[href="${SOCIAL_PROFILES[0].href}"]`)!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(main().querySelector(".site-pill")).toBeNull();
-    expect(form.querySelectorAll('button[type="submit"]')).toHaveLength(1);
-  });
-});
-
-function fill(form: HTMLFormElement, values: Record<string, string>) {
-  for (const [name, value] of Object.entries(values)) {
-    (form.elements.namedItem(name) as HTMLInputElement).value = value;
-  }
-}
-
-async function submit(form: HTMLFormElement) {
-  await act(async () => {
-    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-  });
-}
-
-describe("ContactForm", () => {
-  it("asks no budget question, shows no price and posts no budget", async () => {
-    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
-    act(() => root.render(createElement(ContactForm)));
-    const form = container.querySelector("form")!;
-    expect(form.querySelector('[name="budget"]')).toBeNull();
-    expect(container.textContent).not.toMatch(/\$|budget/i);
-    fill(form, { name: "Ana", email: "ana@example.com", message: "We are opening a hotel." });
-    await submit(form);
-    const body = JSON.parse(String((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body));
-    expect(body.budget ?? "").toBe("");
-  });
-
-  it("posts the same JSON payload as before and shows the confirmation", async () => {
-    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
-    act(() => root.render(createElement(ContactForm)));
-    const form = container.querySelector("form")!;
-    fill(form, { name: "Ana", email: "ana@example.com", company: "Acme", timeline: "exploring", message: "We are opening a hotel." });
-    await submit(form);
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
-    expect(url).toBe("/api/contact");
-    expect(init.method).toBe("POST");
-    expect(init.headers).toEqual({ "content-type": "application/json" });
-    expect(JSON.parse(String(init.body))).toEqual({
-      name: "Ana",
-      email: "ana@example.com",
-      company: "Acme",
-      timeline: "exploring",
-      message: "We are opening a hotel.",
-      _gotcha: "",
-    });
-    expect(container.querySelector("form")).toBeNull();
-    expect(container.querySelector('[role="status"]')!.textContent).toContain("Received.");
-    expect(analytics.trackEvent).toHaveBeenCalledWith("contact_form_submit", { page: "contact" });
-    expect(analytics.ga4Event).toHaveBeenCalledWith("generate_lead", { form: "contact" });
-  });
-
-  it("falls back to email when the form is offline (503)", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 503 })));
-    act(() => root.render(createElement(ContactForm)));
-    const form = container.querySelector("form")!;
-    fill(form, { name: "Ana", email: "ana@example.com", message: "We are opening a hotel." });
-    await submit(form);
-    const alert = container.querySelector('[role="alert"]')!;
-    expect(alert.textContent).toContain("offline");
-    expect(alert.querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)).not.toBeNull();
-    expect(analytics.trackEvent).not.toHaveBeenCalled();
-  });
-
-  it("shows the server's validation message on a 400", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ error: "Add a longer message." }), { status: 400 })));
-    act(() => root.render(createElement(ContactForm)));
-    await submit(container.querySelector("form")!);
-    expect(container.querySelector('[role="alert"]')!.textContent).toBe("Add a longer message.");
   });
 });

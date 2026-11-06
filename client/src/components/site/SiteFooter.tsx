@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, SOCIAL_PROFILES } from "@shared/siteSeo";
 
 const { footer } = siteCopy;
 
-/** Studio cities, in footer order. Also listed on /about and /contact. No clocks: no numbers on the site. */
+/** Studio cities, in footer order. Also listed on /about. No clocks: no numbers on the site. */
 export const SITE_CITIES = [
   { label: "Austin", timeZone: "America/Chicago" },
   { label: "Mexico City", timeZone: "America/Mexico_City" },

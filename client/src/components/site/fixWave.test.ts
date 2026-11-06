@@ -177,7 +177,7 @@ describe("Menu sheet", () => {
     expect(document.activeElement).toBe(sheet.querySelector(".site-sheet__close"));
   });
 
-  it("offers Work, Services, Why Atla, Ventures, Contact and Start a project, and hides the Explore pill while open", () => {
+  it("offers Work, Services, Why Atla, Ventures and Start a project, and hides the Explore pill while open", () => {
     vi.useFakeTimers();
     const { button, sheet } = renderHeader();
     act(() => button.click());
@@ -186,7 +186,6 @@ describe("Menu sheet", () => {
       ["Services", "/services"],
       ["Why Atla", "/about"],
       ["Ventures", "/ventures"],
-      ["Contact", "/contact"],
       ["Start a project", "/brief"],
     ]);
     expect(document.documentElement.getAttribute("data-menu")).toBe("open");

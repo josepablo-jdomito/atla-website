@@ -51,7 +51,7 @@ export function usePageAnalytics() {
 
 /**
  * One delegated listener for the clicks that matter to the funnel: any link
- * to /contact (cta_click), to start.atla.design or /waitlist (start_click),
+ * to /brief (cta_click), to start.atla.design or /waitlist (start_click),
  * and email links (email_click). Covers nav, footer and in-page CTAs without
  * touching each component.
  */
@@ -80,8 +80,8 @@ export function useFunnelClickTracking() {
 
       if (url.hostname === "start.atla.design" || url.pathname.startsWith("/waitlist")) {
         ga4Event("start_click", { page, link_text: label, link_url: `${url.origin}${url.pathname}` });
-      } else if (url.origin === window.location.origin && url.pathname === "/contact" && page !== "/contact") {
-        ga4Event("cta_click", { page, link_text: label, cta_type: "contact" });
+      } else if (url.origin === window.location.origin && url.pathname === "/brief" && page !== "/brief") {
+        ga4Event("cta_click", { page, link_text: label, cta_type: "brief" });
       }
     };
 

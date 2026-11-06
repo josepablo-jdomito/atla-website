@@ -345,7 +345,6 @@ export async function registerRoutes(
         [
           "/",
           "/about",
-          "/contact",
           "/services",
           "/brand-check",
           "/hospitality",

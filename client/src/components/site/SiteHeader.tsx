@@ -148,7 +148,7 @@ export function SiteHeader() {
         {header.skipLink}
       </a>
       {/* Home only: the second stop goes straight to the Explore field (keyboard walk F6: it was 72 Tabs away). */}
-      {location === "/" || location === "/work" ? (
+      {location === "/" ? (
         <a
           href={`#${EXPLORE_FIELD_ID}`}
           className="site-skip-link"

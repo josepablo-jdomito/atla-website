@@ -17,7 +17,6 @@ export default function Home() {
   const { projects } = useSiteProjects();
   const featured = useMemo(() => featuredProjects(projects, HOME_FEATURED_LIMIT), [projects]);
 
-  // `/work` renders the same page; `/` is the canonical one.
   const isRoot = location === "/";
   const structuredData = useMemo(
     () => [

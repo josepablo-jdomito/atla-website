@@ -78,13 +78,13 @@ const escape = () =>
   });
 
 describe("phone menu card", () => {
-  it("is a modal dialog with six rows, Start a project last, each with a picture and an empty alt", () => {
+  it("is a modal dialog with five rows, Start a project last, each with a picture and an empty alt", () => {
     const { button, sheet } = renderHeader();
     act(() => button.click());
     expect(sheet.getAttribute("role")).toBe("dialog");
     expect(sheet.getAttribute("aria-modal")).toBe("true");
     const rows = Array.from(sheet.querySelectorAll(".site-sheet__link"));
-    expect(rows.map((row) => row.textContent)).toEqual(["Work", "Services", "Why Atla", "Ventures", "Contact", "Start a project"]);
+    expect(rows.map((row) => row.textContent)).toEqual(["Work", "Services", "Why Atla", "Ventures", "Start a project"]);
     const pictures = rows.map((row) => row.querySelector("img"));
     expect(pictures.every((picture) => picture?.getAttribute("alt") === "")).toBe(true);
     const sources = pictures.map((picture) => picture!.getAttribute("src"));

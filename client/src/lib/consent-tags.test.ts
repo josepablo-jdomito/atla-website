@@ -201,12 +201,12 @@ describe("withdrawal deletes cookies already set", () => {
 
 describe("GA4 page_location", () => {
   it("is path-only on events, never the query string", async () => {
-    window.history.replaceState({}, "", "/contact?email=a%40b.com&utm_source=x#frag");
+    window.history.replaceState({}, "", "/brief?email=a%40b.com&utm_source=x#frag");
     const { ga } = await load();
     ga.ga4Event("cta_click", { page: "/" });
     const event = gaCommands().find((c) => c[0] === "event" && c[1] === "cta_click");
     const location = (event![2] as Record<string, string>).page_location;
-    expect(location).toBe(`${window.location.origin}/contact`);
+    expect(location).toBe(`${window.location.origin}/brief`);
     expect(location).not.toMatch(/[?#]/);
     window.history.replaceState({}, "", "/");
   });

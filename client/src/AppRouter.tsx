@@ -1,6 +1,6 @@
 import React from "react";
 import type { ComponentType } from "react";
-import { Route, Switch } from "wouter";
+import { Redirect, Route, Switch } from "wouter";
 
 type RouteComponent = ComponentType<any>;
 
@@ -9,7 +9,6 @@ type AppRouterProps = {
   ProjectsAdmin: RouteComponent;
   About: RouteComponent;
   Ventures: RouteComponent;
-  Contact: RouteComponent;
   Services: RouteComponent;
   Home: RouteComponent;
   Project: RouteComponent;
@@ -34,7 +33,6 @@ export function AppRouter({
   ProjectsAdmin,
   About,
   Ventures,
-  Contact,
   Services,
   Home,
   Project,
@@ -56,10 +54,9 @@ export function AppRouter({
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/work" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/ventures" component={Ventures} />
-      <Route path="/contact" component={Contact} />
+      <Route path="/contact">{() => <Redirect to="/brief" replace />}</Route>
       <Route path="/services" component={Services} />
       <Route path="/hospitality" component={AtlaHospitality} />
       <Route path="/hospitality-branding" component={AtlaHospitalityBranding} />

@@ -15,7 +15,7 @@ export type MenuThumbPicks = {
 /**
  * One thumbnail per menu row (JP's reference, 2026-11-06), keyed by the row's href. Never the same image
  * twice. Fixed picks first (Services, Ventures, Why Atla), then Work takes a piece from a shuffled featured
- * project, and Contact and Start a project take featured covers nobody used. `seed` 0 keeps the site order.
+ * project, and Start a project takes featured covers nobody used. `seed` 0 keeps the site order.
  */
 export function menuThumbs(projects: SiteProject[], seed: number, picks: MenuThumbPicks): Record<string, string | undefined> {
   const random = seed ? seededRandom(seed) : null;
@@ -56,7 +56,6 @@ export function menuThumbs(projects: SiteProject[], seed: number, picks: MenuThu
     "/services": services ?? nextCover(),
     "/about": about,
     "/ventures": ventures ?? nextCover(),
-    "/contact": nextCover(),
     "/brief": nextCover(),
   };
 }

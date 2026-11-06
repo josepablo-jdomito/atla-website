@@ -57,7 +57,7 @@ describe("launch details (fix pass C)", () => {
   });
 
   it("asks crawlers not to index the thank-you states", () => {
-    for (const file of ["src/components/brief/BriefFlow.tsx", "src/pages/BrandCheck.tsx", "src/components/site/ContactForm.tsx"]) {
+    for (const file of ["src/components/brief/BriefFlow.tsx", "src/pages/BrandCheck.tsx"]) {
       expect(read(file)).toContain("useNoindex(");
     }
   });

@@ -52,5 +52,4 @@ The ways in, the same on every page: Audit, Brand system, Full build, Fractional
 
 ## Contact
 
-- [Contact](https://www.atla.design/contact)
 - [Guided start](https://start.atla.design): helps a team choose its first step with Atla

@@ -8,7 +8,6 @@ import { AppShell } from "./App";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
 import About from "./pages/About";
 import Ventures from "./pages/Ventures";
-import Contact from "./pages/Contact";
 import Services from "./pages/Services";
 import Home from "./pages/Home";
 import ProjectPage from "./pages/Project";
@@ -101,7 +100,6 @@ export function renderPrerenderedRoute(
         ProjectsAdmin,
         About,
         Ventures,
-        Contact,
         Services,
         Home,
         Project: ProjectPage,

@@ -19,7 +19,7 @@ import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/li
 import { buildProjectPageView, buildProjectSeoHead, frameImage, projectFirstFrame } from "../client/src/lib/projectPage.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
-import { buildServicesStructuredData, CONTACT_PAGE_SCHEMA } from "../client/src/lib/sitePageSchema.ts";
+import { buildServicesStructuredData } from "../client/src/lib/sitePageSchema.ts";
 import { siteCopy } from "../client/src/content/siteCopy.ts";
 import { withSelectedWork } from "../client/src/lib/llmsTxt.ts";
 
@@ -460,10 +460,8 @@ async function loadPrerenderRenderer(): Promise<PrerenderRenderer> {
 function routePageModule(pathname: string) {
   const exact: Record<string, string> = {
     "/": "Home",
-    "/work": "Home",
     "/about": "About",
     "/ventures": "Ventures",
-    "/contact": "Contact",
     "/services": "Services",
     "/hospitality": "AtlaHospitality",
     "/hospitality-branding": "AtlaHospitalityBranding",
@@ -528,7 +526,7 @@ async function routeModulePreloadTags(pathname: string) {
 }
 
 /** Routes whose prerendered markup differs from the desktop layout until hydration (index.html gate). */
-const PRERENDER_GATED_ROUTES = new Set(["/", "/work", "/hospitality"]);
+const PRERENDER_GATED_ROUTES = new Set(["/", "/hospitality"]);
 
 async function injectPrerenderedApp(
   template: string,
@@ -585,7 +583,7 @@ function getStaticRoutePrerenderData(
 ): PrerenderRouteData {
   // /ventures shows each venture's project cover, and /services and /about show project covers too, so
   // their prerender carries the lite list: the photos are in the HTML instead of arriving after a fetch.
-  if (["/", "/work", "/ventures", "/services", "/about"].includes(pathname)) {
+  if (["/", "/ventures", "/services", "/about"].includes(pathname)) {
     return { projects: content.projects };
   }
 
@@ -630,15 +628,6 @@ async function prerenderRoutes() {
       image: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
       structuredData: ORGANIZATION_SCHEMA,
-    },
-    {
-      pathname: "/contact",
-      // Same title and description as the Contact page's SeoHead.
-      title: formatMetaTitle(siteCopy.contact.metaTitle, siteCopy.contact.metaSuffix),
-      description: siteCopy.contact.metaDescription,
-      image: "/figmaAssets/about-hero.jpg",
-      includeInSitemap: true,
-      structuredData: CONTACT_PAGE_SCHEMA,
     },
     {
       pathname: "/brief",

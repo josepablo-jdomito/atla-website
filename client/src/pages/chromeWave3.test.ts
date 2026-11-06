@@ -118,21 +118,15 @@ describe("Chrome copy (fix wave 3, group C)", () => {
 
   it("says one thing about what happens to a message: we reply by email and manage the inquiry, no durations", () => {
     const { contact } = siteCopy.brief;
-    expect(contact.privacyNotice).toBe(siteCopy.contact.formNotice);
-    for (const text of [contact.privacyNotice, siteCopy.contact.formNotice, siteCopy.contact.sent, siteCopy.brief.done]) {
+    expect(contact.privacyNotice).toBe("We use this to reply and to manage your inquiry.");
+    for (const text of [contact.privacyNotice, siteCopy.brief.done]) {
       expect(text).not.toMatch(/\d|\bhours?\b|\bdays?\b|\bweeks?\b|\byears?\b/i);
     }
-    expect(siteCopy.contact.sent).toContain("replies by email");
+    expect(siteCopy.brief.done).toContain("replies by email");
     // The policy says the same sentence, and no longer says "for nothing else" next to a longer list of uses.
     const privacy = read("src/pages/AtlaPrivacy.tsx");
     expect(privacy).toContain("We use it to reply to you and to manage your inquiry.");
     expect(privacy).not.toContain("for nothing else");
-  });
-
-  it("the contact form's timeline options read like the brief's", () => {
-    const form = read("src/components/site/ContactForm.tsx");
-    for (const label of ["As soon as we can", "Soon, with room to do it well", "Later this year", "No fixed timeline"]) expect(form).toContain(label);
-    expect(form).not.toMatch(/\d+\s*(–|-)\s*\d+ months|30 days/);
   });
 
   it("brief options are rows with a hairline, a 44px hit area, a mark on hover and focus, and a clear selected state", () => {

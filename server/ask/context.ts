@@ -22,7 +22,7 @@ export type AskProject = {
 /** Case study text per project. The whole archive is small (tens of projects); this only stops a runaway document. */
 const MAX_BODY_CHARS = 2400;
 
-const COPY_SECTIONS = ["home", "services", "about", "ventures", "brief", "contact"] as const;
+const COPY_SECTIONS = ["home", "services", "about", "ventures", "brief"] as const;
 
 /** Every string leaf of `value` as "path: text", functions and empty strings skipped. */
 function flatten(value: unknown, path: string, out: string[]) {
