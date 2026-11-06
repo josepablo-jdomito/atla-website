@@ -32,13 +32,15 @@ export const siteCopy = {
   },
   footer: {
     navLabel: "Footer",
-    // One line (UX interview 15): the pages a buyer goes to. Journal, Programs and Hospitality stay
-    // reachable by their addresses and in the sitemap; they are not footer links (red team 17, 24).
+    // One line (UX interview 15): the pages a buyer goes to, plus Journal (it is indexed and linked from
+    // the site; dropping it would orphan the articles). Programs and Hospitality stay reachable by their
+    // addresses and in the sitemap; they are not footer links (red team 17, 24).
     links: [
       { label: "Work", href: "/" },
       { label: "Services", href: "/services" },
       { label: "Why Atla", href: "/about" },
       { label: "Ventures", href: "/ventures" },
+      { label: "Journal", href: "/journal" },
       { label: "Contact", href: "/contact" },
     ],
     legal: [

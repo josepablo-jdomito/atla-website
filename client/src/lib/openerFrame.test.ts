@@ -15,7 +15,8 @@ describe("openerFrame", () => {
   it("without a hotspot, crops centered only when the image is close to 4:3", () => {
     expect(openerFrame(at(1200, 800))).toEqual({ mode: "crop", ratio: 4 / 3, focal: null }); // 1.5
     expect(openerFrame(at(1200, 1000))).toEqual({ mode: "crop", ratio: 4 / 3, focal: null }); // 1.2, the lower edge
-    expect(openerFrame(at(1850, 1000))).toEqual({ mode: "crop", ratio: 4 / 3, focal: null }); // 1.85, the upper edge
+    expect(openerFrame(at(1570, 1000))).toEqual({ mode: "crop", ratio: 4 / 3, focal: null }); // 1.57, the upper edge
+    expect(openerFrame(at(1778, 1000)).mode).toBe("native"); // 16:9 shows whole: a crop would cut a quarter
   });
 
   it("without a hotspot, shows a portrait or a panorama whole at its own ratio", () => {

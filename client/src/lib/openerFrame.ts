@@ -11,7 +11,8 @@ import { getImageDimensions, getOptimizedImageUrl } from "@shared/imageDelivery"
 export const OPENER_RATIO = 4 / 3;
 /** Own ratios (width / height) that still crop to 4:3 when nobody set a hotspot. */
 export const OPENER_CROP_MIN = 1.2;
-export const OPENER_CROP_MAX = 1.85;
+/* 1.57 keeps the loss under about 15% of the width; a 16:9 cover shows whole instead. */
+export const OPENER_CROP_MAX = 1.57;
 
 export type Focal = { x: number; y: number };
 export type OpenerFrame =
