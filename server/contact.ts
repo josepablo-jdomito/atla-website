@@ -124,15 +124,19 @@ function isRateLimited(ip: string): boolean {
 /** atla.design and www.atla.design are the same site. */
 const siteKey = (host: string) => host.toLowerCase().replace(/^www\./, "");
 
+/** What a post that names no site at all is called in the log. */
+export const NO_POST_SOURCE = "no Origin or Referer";
+
 /**
- * Native form posts carry Origin, or at least Referer, naming the page that held
- * the form. Returns the foreign host when it names another site; null when it is
- * ours or unknown ("null" from privacy tooling or sandboxed frames, or absent).
+ * A browser always sends Origin (or at least Referer) on a form or fetch POST, naming the page that held
+ * the form. Returns the foreign host when it names another site; null when it is ours. A post that names
+ * no site at all ("null" from sandboxed frames, nothing from a script) is foreign too (red team P2-2):
+ * these endpoints take no cookie, so the check is not CSRF protection, it is what keeps a bare `curl` out.
  */
 export function foreignPostSource(req: Request): string | null {
   const origin = headerValue(req, "origin");
   const source = origin && origin !== "null" ? origin : headerValue(req, "referer");
-  if (!source) return null;
+  if (!source) return NO_POST_SOURCE;
   try {
     const sourceHost = new URL(source).host;
     return siteKey(sourceHost) === siteKey(headerValue(req, "host")) ? null : sourceHost;
@@ -290,12 +294,11 @@ export function registerContactRoute(app: Express) {
       return res.status(OUTCOME_STATUS[outcome]).json({ error: error || `${OUTCOME_COPY[outcome].heading} ${OUTCOME_COPY[outcome].body}` });
     };
 
-    if (isNativeForm) {
-      const foreignHost = foreignPostSource(req);
-      if (foreignHost) {
-        console.warn(`Contact form: refused cross-site post from ${foreignHost}`);
-        return answer("forbidden");
-      }
+    // Native posts and the page's own fetch alike: both carry Origin from a browser.
+    const foreignHost = foreignPostSource(req);
+    if (foreignHost) {
+      console.warn(`Contact form: refused cross-site post from ${foreignHost}`);
+      return answer("forbidden");
     }
 
     const apiKey = process.env.ATTIO_API_KEY || "";

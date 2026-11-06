@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
+import { SITE_ORIGIN } from "../shared/siteSeo.ts";
 import { registerBriefRoutes } from "./brief/route.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
@@ -63,19 +64,6 @@ function isAuthorizedAdmin(req: Request) {
   const secret = getAdminSecret();
   if (!secret) return false;
   return getCookieValue(req.headers.cookie, ADMIN_COOKIE_NAME) === secret;
-}
-
-function getRequestOrigin(req: Request) {
-  const forwardedProto = req.headers["x-forwarded-proto"];
-  const forwardedHost = req.headers["x-forwarded-host"];
-  const protocol = typeof forwardedProto === "string" ? forwardedProto.split(",")[0].trim() : req.protocol;
-  const host = typeof forwardedHost === "string" ? forwardedHost.split(",")[0].trim() : req.get("host");
-
-  if (!host) {
-    return "https://www.atla.design";
-  }
-
-  return `${protocol || "https"}://${host}`;
 }
 
 function escapeXml(value: string) {
@@ -331,7 +319,7 @@ export async function registerRoutes(
 
   app.get("/api/sitemap.xml", async (req, res) => {
     try {
-      const origin = getRequestOrigin(req);
+      const origin = SITE_ORIGIN;
       const projects = isProjectSanityConfigured()
         ? await fetchProjectsFromSanity()
         : await storage.getAllProjects();
@@ -372,7 +360,7 @@ export async function registerRoutes(
 
   app.get("/api/feed.xml", async (req, res) => {
     try {
-      const origin = getRequestOrigin(req);
+      const origin = SITE_ORIGIN;
       const articles = await fetchJournalArticlesFromSanity();
       const xml = createRssFeedXml(origin, articles);
 

@@ -2,9 +2,21 @@ import express from "express";
 import { createServer } from "http";
 import { registerRoutes } from "./routes.ts";
 import { apiErrorHandler, apiLogLine, isPrivateApiPath } from "./apiLog.ts";
+import { CSP_HEADER, SECURITY_HEADERS } from "../shared/securityHeaders.ts";
 
 const app = express();
 const httpServer = createServer(app);
+
+// The same headers vercel.json sets at the Vercel edge (red team P2-3). The dev server skips the CSP only.
+app.disable("x-powered-by");
+app.use((_req, res, next) => {
+  const dev = process.env.NODE_ENV === "development";
+  for (const { key, value } of SECURITY_HEADERS) {
+    if (dev && key === CSP_HEADER) continue;
+    res.setHeader(key, value);
+  }
+  next();
+});
 
 app.use(
   express.json({

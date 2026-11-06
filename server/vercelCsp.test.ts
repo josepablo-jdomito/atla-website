@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { SECURITY_HEADERS } from "../shared/securityHeaders.ts";
 
 const config = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8")) as {
   headers: Array<{ headers: Array<{ key: string; value: string }> }>;
@@ -35,5 +36,15 @@ describe("vercel.json CSP", () => {
 
   it("lets the Sanity CDN video loops play", () => {
     expect(directive("media-src")).toEqual(["'self'", "https://cdn.sanity.io"]);
+  });
+});
+
+describe("security headers", () => {
+  it("Express sets exactly the headers vercel.json sets, from one list", () => {
+    const vercel = config.headers.flatMap((rule) => rule.headers);
+    expect(SECURITY_HEADERS).toEqual(vercel);
+    expect(SECURITY_HEADERS.map((h) => h.key).sort()).toEqual(
+      ["Content-Security-Policy", "Permissions-Policy", "Referrer-Policy", "X-Content-Type-Options", "X-Frame-Options"],
+    );
   });
 });

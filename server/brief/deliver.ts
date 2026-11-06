@@ -41,7 +41,8 @@ export function formatBriefSummary(state: BriefState): string {
     lines.push("");
   }
 
-  const seed = state.seed ? normalizeText(state.seed) : "";
+  // One line: a seed with line breaks could add lines that look like fields to the note JP reads (red team).
+  const seed = state.seed ? singleLine(state.seed) : "";
   if (seed) lines.push("Came from", seed, "");
 
   const bankIds = BRIEF_QUESTIONS.map((q) => q.id);

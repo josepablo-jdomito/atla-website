@@ -43,7 +43,8 @@ async function start(overrides: Partial<BriefDeps> = {}) {
   const post = async (path: string, body: unknown, headers: Record<string, string> = {}) => {
     const res = await fetch(`http://127.0.0.1:${port}${path}`, {
       method: "POST",
-      headers: { "content-type": "application/json", ...headers },
+      // A browser always names the page it posts from; tests that mean to omit it pass `origin: ""`.
+      headers: { "content-type": "application/json", origin: `http://127.0.0.1:${port}`, ...headers },
       body: JSON.stringify(body),
     });
     return { status: res.status, json: (await res.json()) as Record<string, any> };
@@ -68,14 +69,20 @@ describe("POST /api/brief/submit cross-site", () => {
     server = undefined;
   });
 
-  it("refuses a cross-site post with 403 and lets same-site and header-less posts through", async () => {
+  it("refuses a cross-site post and one that names no site at all with 403, and lets a same-site post through", async () => {
     const { submit, deps, port } = await start();
     const body = { state: answeredState(), submissionId: "cccccccc-bbbb-4ccc-8ddd-000000000001" };
     expect((await submit(body, { origin: "https://evil.example" })).status).toBe(403);
-    expect((await submit(body, { referer: "https://evil.example/page" })).status).toBe(403);
+    expect((await submit(body, { origin: "", referer: "https://evil.example/page" })).status).toBe(403);
     expect(deps.deliverToAttio).not.toHaveBeenCalled();
     expect((await submit(body, { origin: `http://127.0.0.1:${port}` })).status).toBe(200);
-    expect((await submit({ ...body, submissionId: "cccccccc-bbbb-4ccc-8ddd-000000000002" })).status).toBe(200);
+    // Neither Origin nor Referer (a script, curl): foreign. A null Origin from a sandboxed frame too.
+    const bare = { ...body, submissionId: "cccccccc-bbbb-4ccc-8ddd-000000000002" };
+    expect((await submit(bare, { origin: "" })).status).toBe(403);
+    expect((await submit(bare, { origin: "null" })).status).toBe(403);
+    expect(deps.deliverToAttio).toHaveBeenCalledTimes(1);
+    // Referer alone is enough when Origin is absent.
+    expect((await submit(bare, { origin: "", referer: `http://127.0.0.1:${port}/brief` })).status).toBe(200);
   });
 });
 
