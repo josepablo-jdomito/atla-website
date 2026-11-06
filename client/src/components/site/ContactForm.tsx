@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Link } from "wouter";
 import { trackEvent } from "@/hooks/use-analytics";
 import { ga4Event } from "@/lib/ga";
 import { CONTACT_EMAIL } from "@shared/siteSeo";
@@ -17,12 +18,55 @@ type FormStatus =
   | { state: "invalid"; message: string }
   | { state: "error"; message: string };
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+/** A bracket label, `( NAME )`: the parentheses are drawn, not read. */
+export function BracketLabel({ children, muted = false }: { children: ReactNode; muted?: boolean }) {
   return (
-    <label className="brief-field contact-form__field">
-      <span className="brief-field__label">{label}</span>
+    <span className={muted ? "fp-label fp-label--muted" : "fp-label"}>
+      <span aria-hidden="true">( </span>
+      {children}
+      <span aria-hidden="true"> )</span>
+    </span>
+  );
+}
+
+function Field({ label, wide = false, children }: { label: string; wide?: boolean; children: ReactNode }) {
+  return (
+    <label className={wide ? "fp-field fp-field--wide" : "fp-field"}>
+      <BracketLabel>{label}</BracketLabel>
       {children}
     </label>
+  );
+}
+
+/**
+ * The dark card from the Figma (Contact 4553:3187): #222, a real project image at 60%, one 48px line,
+ * one sentence, and the one yellow button. The astronomical image in the Figma is a placeholder.
+ */
+export function ContactCard({
+  title,
+  lead,
+  cta,
+  image,
+  headingLevel = 3,
+}: {
+  title: string;
+  lead: string;
+  cta: string;
+  image?: string;
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
+  return (
+    <div className="fp-card" data-block="contact-card">
+      {image ? <img className="fp-card__image" src={image} alt="" loading="lazy" decoding="async" /> : null}
+      <div className="fp-card__inner">
+        <Heading className="fp-card__title">{title}</Heading>
+        <p className="fp-card__lead">{lead}</p>
+        <Link href="/brief" className="fp-button">
+          {cta}
+        </Link>
+      </div>
+    </div>
   );
 }
 
@@ -84,11 +128,11 @@ export function ContactForm() {
   return (
     <div className="contact-form">
       {/* Always mounted so assistive tech announces the change; receives focus once the message is saved. */}
-      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} className="contact-form__status">
+      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} className="fp-form__status">
         {isSent ? (
-          <div className="contact-form__sent">
-            <p className="contact-form__sent-title">{SUCCESS_TEXT}</p>
-            <p className="contact-form__note">
+          <div className="fp-form__sent">
+            <p>{SUCCESS_TEXT}</p>
+            <p className="fp-form__note">
               If it is urgent, write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </div>
@@ -96,30 +140,40 @@ export function ContactForm() {
       </div>
 
       {isSent ? null : (
-        <form method="post" action="/api/contact" onSubmit={handleSubmit} className="contact-form__form">
-          <Field label="Name">
-            <input name="name" type="text" required maxLength={120} autoComplete="name" className="brief-input" />
-          </Field>
-          <Field label="Email">
-            <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" className="brief-input" />
-          </Field>
-          <Field label="Company or website (optional)">
-            <input name="company" type="text" maxLength={160} autoComplete="organization" className="brief-input" />
-          </Field>
-          <Field label="Timeline (optional)">
-            <select name="timeline" defaultValue="" className="brief-input contact-form__select">
-              <option value="">Select a timeline</option>
-              <option value="this-month">This month</option>
-              <option value="1-3-months">1–3 months</option>
-              <option value="3-6-months">3–6 months</option>
-              <option value="exploring">Exploring</option>
-            </select>
-          </Field>
-          <Field label="What is the business, what feels misaligned, and what has to happen next?">
-            <textarea name="message" required minLength={10} maxLength={4000} rows={6} className="brief-input contact-form__message" />
-          </Field>
+        <form method="post" action="/api/contact" onSubmit={handleSubmit} className="fp-form">
+          <div className="fp-form__fields">
+            <Field label="Name">
+              <input name="name" type="text" required maxLength={120} autoComplete="name" className="fp-input" />
+            </Field>
+            <Field label="Email">
+              <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" className="fp-input" />
+            </Field>
+            <Field label="Company or website, optional">
+              <input name="company" type="text" maxLength={160} autoComplete="organization" className="fp-input" />
+            </Field>
+            <Field label="Timeline, optional">
+              <select name="timeline" defaultValue="" className="fp-input">
+                <option value="">Select a timeline</option>
+                <option value="this-month">This month</option>
+                <option value="1-3-months">One to three months</option>
+                <option value="3-6-months">Three to six months</option>
+                <option value="exploring">Exploring</option>
+              </select>
+            </Field>
+            <Field label="The project" wide>
+              <textarea
+                name="message"
+                required
+                minLength={10}
+                maxLength={4000}
+                rows={5}
+                placeholder="What is the business, what feels misaligned, and what has to happen next?"
+                className="fp-input"
+              />
+            </Field>
+          </div>
           {/* Honeypot. Named and labelled so browser autofill and password managers have nothing to match. */}
-          <div aria-hidden="true" className="brief-hp">
+          <div aria-hidden="true" className="fp-hp">
             <label>
               Leave this field empty
               <input name="_gotcha" type="text" tabIndex={-1} autoComplete="off" />
@@ -127,7 +181,7 @@ export function ContactForm() {
           </div>
 
           {notice ? (
-            <p role="alert" className="contact-form__notice" data-tone={notice.tone}>
+            <p role="alert" className="fp-form__notice" data-tone={notice.tone}>
               {notice.text}
               {notice.email ? (
                 <>
@@ -139,13 +193,13 @@ export function ContactForm() {
             </p>
           ) : null}
 
-          <p className="contact-form__note">
+          <p className="fp-form__note">
             What you send here goes to our CRM so we can answer your inquiry, and we keep it until you ask us to delete
             it. See the <a href="/privacy">privacy policy</a>.
           </p>
-          <div className="brief-actions">
-            <button type="submit" disabled={isSubmitting} className="brief-primary">
-              {isSubmitting ? "Sending…" : "Send message"}
+          <div>
+            <button type="submit" disabled={isSubmitting} className="fp-button">
+              {isSubmitting ? "Sending" : "Send message"}
             </button>
           </div>
         </form>

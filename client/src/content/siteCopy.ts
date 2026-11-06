@@ -116,6 +116,17 @@ export const siteCopy = {
     callLead: "If you would rather talk it through, pick a time.",
     bookCall: "Book a call",
     restart: "Start another",
+    // Bracket label over each question (Figma, 2026-11-05). Unknown ids fall back to `label`.
+    stepLabels: {
+      building: "The project",
+      industry: "The world",
+      stage: "The stage",
+      moment: "The moment",
+      deliverables: "The work",
+      timing: "The timing",
+      contact: "Contact",
+      done: "Sent",
+    } as Record<string, string>,
   },
   // Services after tbp.studio/services (JP, 2026-11-05): rows by discipline, an Includes list that
   // opens, a real project photo beside each row. The four moments sit on top and narrow the rows.
@@ -127,6 +138,7 @@ export const siteCopy = {
     title: "What we do.",
     lead: "Every discipline, one team. Pick the moment you are in and the list narrows to what matters now.",
     momentsLabel: "The moment",
+    includesTitle: "Includes",
     allMoments: "Any moment",
     includesLabel: "What is included",
     includesOpen: "See what is included",
@@ -157,6 +169,8 @@ export const siteCopy = {
     ],
     // How a company works with us. Names are the ones JP uses in proposals; no prices on the site.
     engagementsTitle: "Working with a company your size",
+    // Script row title for the engagements (Figma language, 2026-11-05).
+    engagementsLabel: "Ways in",
     engagementsLead: "Every way in is senior-led. Nobody sits between you and the work.",
     engagements: [
       { title: "Audit", line: "A look inside your brand. Findings ranked by what to fix first, and a roadmap." },
@@ -296,6 +310,21 @@ export const siteCopy = {
       "Some of the brands we design are ventures we are involved in.",
     ],
     clientsLabel: "Selected clients",
+    // Script row titles, one word each, as drawn in the Figma About frame (2026-11-05).
+    rows: {
+      about: "About",
+      team: "Team",
+      services: "Services",
+      clients: "Clients",
+      honors: "Honors",
+      ways: "Ways in",
+      contact: "Contact",
+    },
+    // Honors (JP's list in the Figma brief, 2026-11-05). No counts.
+    honors: [
+      { award: "MICHELIN Key", for: "Casa Las Tortugas" },
+      { award: "MICHELIN Green Star", for: "Acre" },
+    ],
     clients: ["Aimee Kestenberg", "PrettyBoy", "Temakase", "Acre", "Pax & Beneficia", "Persona", "Brick", "Anything"],
     engagementsLabel: "Ways to work with us",
     teamLabel: "Team",
@@ -323,6 +352,8 @@ export const siteCopy = {
     citiesLabel: "Cities",
     formTitle: "Or just write.",
     formLead: "What the business is, what feels off, and what has to happen next.",
+    formLabel: "Write to us",
+    cardTitle: "Start a project",
   },
   // JP, 2026-11-05: client marks above the footer, like Cosmos. The files are the ones JP sends
   // (monochrome SVG in client/public/logos-v2/). Empty list = no band. Never invent a logo.

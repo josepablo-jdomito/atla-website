@@ -178,6 +178,18 @@ describe("BriefFlow screens (fix wave 2026-11-05)", () => {
     expect(meta()).not.toMatch(/\d|←/);
   });
 
+  it("names each step with a bracket label over the question, no pills, no counters, Continue as the one button", async () => {
+    await renderFlow({});
+    const label = () => container.querySelector(".brief-form > .fp-label")?.textContent;
+    expect(label()).toBe(`( ${siteCopy.brief.stepLabels.building} )`);
+    expect(container.querySelector(".brief-prompt")?.previousElementSibling?.classList.contains("fp-label")).toBe(true);
+    expect(container.querySelectorAll("button.brief-primary")).toHaveLength(1);
+    expect(container.querySelector(".site-pill, [data-count]")).toBeNull();
+    await answerText("A hotel");
+    expect(label()).toBe(`( ${siteCopy.brief.stepLabels[loadBrief()!.path[1].id] ?? siteCopy.brief.label} )`);
+    expect(container.querySelector("section.brief")?.textContent).not.toMatch(/\d/);
+  });
+
   it("the server HTML has the page heading before any script runs", () => {
     const html = renderToString(createElement(BriefFlow, {}));
     expect(html).toMatch(/<h1[^>]*>What are you building\?<\/h1>/);

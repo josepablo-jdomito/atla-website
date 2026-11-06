@@ -19,11 +19,17 @@ import {
   type BriefQuestion,
 } from "@shared/brief";
 import { siteCopy } from "@/content/siteCopy";
+import { BracketLabel } from "@/components/site/ContactForm";
 import { trackBriefComplete, trackBriefStart, trackCalendlyClick } from "@/lib/ga";
 import { fetchNextStep, submitBrief } from "./briefApi";
 import { clearBrief, loadBrief, momentFromParam, saveBrief, type BriefStep, type SavedBrief } from "./briefStorage";
 
 const copy = siteCopy.brief;
+
+/** The bracket label over a screen: `( THE MOMENT )`. Questions the API adds fall back to "Brief". */
+function stepLabel(id: string): string {
+  return copy.stepLabels[id] ?? copy.label;
+}
 
 const MAX_SEED_CHARS = 300;
 const MAX_TEXT_CHARS = 1000;
@@ -152,6 +158,7 @@ export function BriefFlow({ seed, moment }: { seed?: string | null; moment?: str
     return (
       <BriefFrame progress={0} pending={false}>
         <div className="brief-form">
+          <BracketLabel>{stepLabel(BRIEF_QUESTIONS[0].id)}</BracketLabel>
           <h1 className="brief-prompt">{BRIEF_QUESTIONS[0].prompt}</h1>
         </div>
       </BriefFrame>
@@ -268,7 +275,7 @@ function BriefFrame({
   children?: ReactNode;
 }) {
   return (
-    <section className="brief" aria-busy={pending || undefined}>
+    <section className="fp brief fp-brief" aria-busy={pending || undefined}>
       <div
         className="brief-progress"
         role="progressbar"
@@ -350,9 +357,12 @@ function QuestionScreen({
   ) : null;
 
   const heading = (
-    <h1 id={headingId} ref={headingRef} tabIndex={-1} className="brief-prompt">
-      {question.prompt}
-    </h1>
+    <>
+      <BracketLabel>{stepLabel(question.id)}</BracketLabel>
+      <h1 id={headingId} ref={headingRef} tabIndex={-1} className="brief-prompt">
+        {question.prompt}
+      </h1>
+    </>
   );
 
   if (question.kind === "text") {
@@ -512,6 +522,7 @@ function ContactScreen({
 
   return (
     <form className="brief-form" onSubmit={submit} noValidate>
+      <BracketLabel>{stepLabel("contact")}</BracketLabel>
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">
         {copy.contact.prompt}
       </h1>
@@ -578,6 +589,7 @@ function DoneScreen({
   const bookable = isBookable(calendlyUrl);
   return (
     <div className="brief-form">
+      <BracketLabel>{stepLabel("done")}</BracketLabel>
       <h1 ref={headingRef} tabIndex={-1} className="brief-prompt">
         {copy.doneTitle}
       </h1>

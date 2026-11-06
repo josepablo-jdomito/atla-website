@@ -57,9 +57,12 @@ function render(Page: ComponentType, path: string) {
 const main = () => container.querySelector("main")!;
 
 describe("Services page", () => {
-  it("has one h1, the four moments on top, and the disciplines as h2 rows", () => {
+  it("has one h1, the four moments as bracket-labelled text options, and the disciplines as script h2 rows", () => {
     render(Services, "/services");
     expect(main().querySelectorAll("h1")).toHaveLength(1);
+    const nav = main().querySelector(`nav[aria-label="${siteCopy.services.momentsLabel}"]`)!;
+    expect(nav.querySelector(".fp-label")!.textContent).toBe(`( ${siteCopy.services.momentsLabel} )`);
+    expect(main().querySelectorAll("section.discipline > h2.fp-script")).toHaveLength(siteCopy.services.disciplines.length);
     const moments = Array.from(main().querySelectorAll(".moments-strip__item")).map((b) => b.textContent);
     expect(moments).toEqual([siteCopy.services.allMoments, ...siteCopy.services.moments.map((m) => m.title)]);
     const titles = Array.from(main().querySelectorAll("section.discipline > h2")).map((h) => h.textContent);
@@ -93,48 +96,76 @@ describe("Services page", () => {
 });
 
 describe("About page", () => {
-  it("has one h1, h2 section headings, and four or five how-we-work steps without numbers", () => {
+  it("has one h1 (the thesis line) and the Figma rows as h2 script titles, in order, with no Press", () => {
     render(About, "/about");
-    expect(main().querySelectorAll("h1")).toHaveLength(1);
-    const h2s = Array.from(main().querySelectorAll("h2")).map((h) => h.textContent);
-    expect(h2s).toEqual([
-      siteCopy.about.thesisLabel,
-      siteCopy.about.howLabel,
-      siteCopy.about.proofLabel,
-      siteCopy.about.engagementsLabel,
-      siteCopy.about.teamLabel,
-    ]);
-    const steps = main().querySelectorAll("[aria-labelledby='about-how'] .how-step");
-    expect(steps.length).toBeGreaterThanOrEqual(4);
-    expect(steps.length).toBeLessThanOrEqual(5);
-    for (const step of Array.from(steps)) expect(step.textContent).not.toMatch(/\d/);
+    const h1s = main().querySelectorAll("h1");
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0].textContent).toBe(siteCopy.about.title);
+    const h2s = Array.from(main().querySelectorAll("h2.fp-script")).map((h) => h.textContent);
+    const rows = siteCopy.about.rows;
+    expect(h2s).toEqual([rows.about, rows.team, rows.services, rows.clients, rows.honors, rows.ways, rows.contact]);
+    expect(main().textContent).not.toMatch(/\bPress\b/);
+    expect(main().textContent).not.toMatch(/\d/);
   });
 
   it("renders the team as names and roles with no images", () => {
     render(About, "/about");
     const team = main().querySelector('[data-block="team"]')!;
     expect(team.querySelectorAll("img, picture, svg image")).toHaveLength(0);
-    const names = Array.from(team.querySelectorAll(".team-list__name")).map((el) => el.textContent);
+    const names = Array.from(team.querySelectorAll(".fp-team__name")).map((el) => el.textContent);
     expect(names).toEqual(siteCopy.about.team.map((m) => m.name));
-    expect(team.textContent).toContain("Mexico City");
+    for (const member of siteCopy.about.team) expect(team.textContent).toContain(member.role);
+  });
+
+  it("lists the six disciplines linking to their rows on /services, the clients and the honors", () => {
+    render(About, "/about");
+    const links = Array.from(main().querySelectorAll<HTMLAnchorElement>('[data-block="services"] a')).map((a) =>
+      a.getAttribute("href"),
+    );
+    expect(links).toEqual(siteCopy.services.disciplines.map((d) => `/services#${d.id}`));
+    const clients = main().querySelector('[data-block="clients"]')!.textContent ?? "";
+    for (const name of siteCopy.about.clients) expect(clients).toContain(name);
+    const honors = main().querySelector('[data-block="honors"]')!.textContent ?? "";
+    expect(honors).toContain("MICHELIN Key");
+    expect(honors).toContain("Casa Las Tortugas");
+    expect(honors).toContain("MICHELIN Green Star");
+    expect(honors).toContain("Acre");
+  });
+
+  it("closes on the dark card: Start a project as the line and one yellow button to the brief", () => {
+    render(About, "/about");
+    const card = main().querySelector('[data-block="contact-card"]')!;
+    expect(card.querySelector(".fp-card__title")!.textContent).toBe("Start a project");
+    const button = card.querySelector<HTMLAnchorElement>("a.fp-button")!;
+    expect(button.getAttribute("href")).toBe("/brief");
+    expect(button.textContent).toBe("Start a project");
+    expect(main().querySelectorAll(".fp-button")).toHaveLength(1);
   });
 });
 
 describe("Contact page", () => {
-  it("has one way in: the email line, then the form; no brief CTA, no pills, socials and cities left to the footer", () => {
+  it("one row: the script title, the dark card to the brief, then the email line and the form; no socials, no pills", () => {
     render(Contact, "/contact");
-    expect(main().querySelectorAll("h1")).toHaveLength(1);
+    const h1s = main().querySelectorAll("h1");
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0].classList.contains("fp-script")).toBe(true);
+    const card = main().querySelector('[data-block="contact-card"]')!;
+    expect(card.querySelector('a[href="/brief"]')!.textContent).toBe("Start a project");
     const email = main().querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)!;
     expect(email).not.toBeNull();
     const form = main().querySelector("form")!;
     expect(form.getAttribute("action")).toBe("/api/contact");
     expect(form.getAttribute("method")).toBe("post");
-    // The email line sits above the form.
+    // Card, then the email line, then the form.
+    expect(card.compareDocumentPosition(email) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(email.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(main().querySelector('a[href="/brief"]')).toBeNull();
     for (const social of SOCIAL_PROFILES) expect(main().querySelector(`a[href="${social.href}"]`)).toBeNull();
     expect(main().querySelector(".site-pill")).toBeNull();
     expect(form.querySelectorAll('button[type="submit"]')).toHaveLength(1);
+    expect(form.querySelector('button[type="submit"]')!.classList.contains("fp-button")).toBe(true);
+    // Bracket labels on every visible field.
+    expect(form.querySelectorAll(".fp-field .fp-label").length).toBe(5);
+    expect(main().textContent).not.toMatch(/[\u2013\u2014]/);
   });
 });
 
