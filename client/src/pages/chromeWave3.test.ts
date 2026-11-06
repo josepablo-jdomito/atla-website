@@ -55,7 +55,7 @@ describe("The footer: JP's Figma on paper (2026-11-06)", () => {
   it("has three columns (Atla, Socials, Studios), a line, the symbol, then the base line", () => {
     render(SiteFooter);
     const footer = container.querySelector(".site-footer")!;
-    expect(Array.from(footer.querySelectorAll(".site-footer__head")).map((h) => h.textContent)).toEqual(["Atla", "Socials", "Studios"]);
+    expect(Array.from(footer.querySelectorAll(".site-footer__head")).map((h) => h.textContent)).toEqual(["Atla", "Socials", "A global team, based in"]);
     expect(Array.from(footer.querySelectorAll("nav a")).map((a) => a.textContent)).toEqual(siteCopy.footer.links.map((l) => l.label));
     expect(siteCopy.footer.links.map((l) => l.label)).toContain("Journal"); // kept: indexed, linked, would be orphaned
     expect(Array.from(footer.querySelectorAll(".site-footer__cities li")).map((li) => li.textContent)).toEqual(SITE_CITIES.map((c) => c.label));

@@ -58,7 +58,7 @@ export const siteCopy = {
     // JP's Figma footer on paper (2026-11-06): three columns, one line, the Atlas symbol, the base line.
     pagesLabel: "Atla",
     socialsLabel: "Socials",
-    citiesLabel: "Studios",
+    citiesLabel: "A global team, based in",
     emailLabel: "Email",
     // The same sentence the site already uses to describe itself (index.html og:description).
     line: "Strategy, identity and creative direction for companies that take their brand seriously.",
