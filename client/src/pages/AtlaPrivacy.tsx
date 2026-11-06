@@ -53,7 +53,7 @@ export default function AtlaPrivacy() {
               After you send the brief, the confirmation offers a link to book a call on Calendly. That link carries your name and email address, so Calendly can fill them in when you open it. Nothing goes to Calendly unless you click the link.
             </p>
             <p className="longform-text">
-              The search on the work page runs in your browser and uses no AI service. The words you type stay in the page address so you can share the results, and the site removes them from the address it reports to Google Analytics and to Vercel.
+              The search on the work page runs in your browser and uses no AI service. The words you type stay in the page address so you can share the results, and the site removes them from the address it reports to Google Analytics and to Vercel. When you use Ask in the Explore bar, the question you type and the last few turns of that conversation are sent to Anthropic, which writes the answer; Atla does not store the conversation beyond your browser tab (it is cleared when the tab closes) and never sends it to analytics, and Anthropic's commercial terms and privacy policy apply to what it receives.
             </p>
             <p className="longform-text">
               The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites.
