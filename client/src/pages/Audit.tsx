@@ -228,9 +228,9 @@ export default function Audit() {
           <ul className="audit-proof__marks">
             {copy.proofAwards.map((item) => (
               <li key={item.name} className="audit-proof__award">
-                <img src={item.src} alt={item.award} width={40} height={40} loading="lazy" decoding="async" />
+                <img className="audit-proof__award-mark" src={item.mark} alt={`${item.name} logo`} width={item.markWidth} height={item.markHeight} loading="lazy" decoding="async" />
                 <span className="audit-proof__award-text">
-                  <span className="audit-proof__award-name">{item.name}</span>
+                  <img src={item.src} alt="" width={40} height={40} loading="lazy" decoding="async" />
                   <span className="audit-proof__award-what">{item.award}</span>
                 </span>
               </li>

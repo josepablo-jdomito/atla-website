@@ -454,11 +454,12 @@ export const siteCopy = {
     // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
     // (Acre's restaurant), Anything's series A (Bessemer, Footwork), Ulysses's series A (Andreessen Horowitz).
     proofLine: "From a MICHELIN Key hotel and a MICHELIN Green Star restaurant to startups backed by Andreessen Horowitz and Bessemer.",
+    // Each award with the brand's own mark (Acre's from the studio's files, Casa Las Tortugas's wordmark from its site).
     proofAwards: [
-      { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp" },
-      { name: "Acre", award: "MICHELIN Green Star", src: "/hospitality/michelin-green-star.svg" },
+      { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", markWidth: 908, markHeight: 202 },
+      { name: "Acre", award: "MICHELIN Green Star", src: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", markWidth: 1762, markHeight: 600 },
     ],
-    // Marks without a logo file yet are set in type (Ulysses's wordmark is pending).
+    // Marks without a logo file yet are set in type (Ulysses has no public site; its wordmark is pending).
     proofNames: ["Ulysses"],
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
