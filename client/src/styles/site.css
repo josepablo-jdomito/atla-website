@@ -1157,9 +1157,9 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-row { display: grid; gap: var(--space-2); padding: var(--space-4) 0; border-top: 1px solid var(--site-line); }
 .audit-row:last-child { border-bottom: 1px solid var(--site-line); }
 .audit-steps { display: grid; gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
-.audit-step { display: grid; gap: var(--space-3); }
+.audit-step { display: grid; grid-template-rows: auto 1fr; align-items: start; gap: var(--space-3); }
 /* Ink on transparent: the drawing sits on the paper, and in dark mode the ink turns to paper. */
-.audit-step__art { display: block; width: 100%; max-width: 280px; height: auto; }
+.audit-step__art { display: block; width: 100%; max-width: 280px; height: auto; aspect-ratio: 1; object-fit: contain; object-position: bottom; }
 @media (prefers-color-scheme: dark) { .audit-step__art { filter: invert(1) hue-rotate(180deg); } }
 .audit-step__line { margin: 0; max-width: 32ch; font-size: var(--t-body); line-height: var(--lh-body); text-wrap: pretty; }
 @media (min-width: 640px) { .audit-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } .audit-step__art { max-width: none; } }
