@@ -409,7 +409,7 @@ export const siteCopy = {
   audit: {
     metaTitle: "Free brand audit from José Pablo",
     metaDescription:
-      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get an honest audit: what works, and what he'd change first. Five a week.",
+      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get an honest audit of what works and what to change first.",
     // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP above the
     // title, state the offer in the title, JP's own line opens the lead. Policies confirmed by JP the same day:
     // the video is private; it is sent as soon as it is ready (no fixed window); the audit says what works and

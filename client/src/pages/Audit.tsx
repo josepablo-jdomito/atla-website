@@ -213,7 +213,7 @@ export default function Audit() {
                 <span className="site-label audit-step__number" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <Drawing className="audit-step__art" src={step.src} clip={step.clip} alt={step.alt} width={560} height={560} eager={index === 0} />
+                <Drawing className="audit-step__art" src={step.src} clip={step.clip} alt={step.alt} width={560} height={560} eager={index < 3} />
                 <p className="audit-step__line">{step.line}</p>
               </li>
             ))}
@@ -230,7 +230,7 @@ export default function Audit() {
               <li key={item.name} className="audit-proof__award">
                 <img className="audit-proof__award-mark" src={item.mark} alt={`${item.name} logo`} width={item.markWidth} height={item.markHeight} loading="lazy" decoding="async" />
                 <span className="audit-proof__award-text">
-                  <img src={item.src} alt="" width={40} height={40} loading="lazy" decoding="async" />
+                  <img src={item.src} alt={`${item.award} badge`} width={40} height={40} loading="lazy" decoding="async" />
                   <span className="audit-proof__award-what">{item.award}</span>
                 </span>
               </li>

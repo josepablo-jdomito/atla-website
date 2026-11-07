@@ -648,10 +648,11 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/audit",
-      // Same title and description as the Audit page's SeoHead.
+      // Same title and description as the Audit page's SeoHead. The hero drawing is the page's LCP, so it is preloaded.
       title: formatMetaTitle(siteCopy.audit.metaTitle, "Atla"),
       description: siteCopy.audit.metaDescription,
       image: DEFAULT_OG_IMAGE_URL,
+      preloadImage: siteCopy.audit.heroArt.src,
       includeInSitemap: true,
     },
     {
