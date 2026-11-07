@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { Link, useSearch } from "wouter";
-import { AUDIT_ANSWER_KEYS, EMPTY_AUDIT, MAX_AUDIT_FEEDBACK, auditSchema, type AuditAnswerKey, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
+import { EMPTY_AUDIT, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
-import { fetchAuditStatus, readAuditAttribution, submitAudit, submitAuditFeedback } from "@/components/audit/auditApi";
+import { fetchAuditStatus, readAuditAttribution, submitAudit } from "@/components/audit/auditApi";
+import { AuditAnswers } from "@/components/audit/AuditAnswers";
 import { AuditSlots } from "@/components/audit/AuditSlots";
 import { useAuditMotion } from "@/components/audit/useMotion";
 import { Drawing } from "@/components/audit/Drawing";
@@ -16,7 +17,7 @@ import { trackAuditComplete, trackAuditFormStart, trackAuditSubmitError, trackAu
  * the lead and his name signing it (no kicker above the title: the heading carries its weight), the week's five as a live widget (AuditSlots), three drawn
  * steps, a strip of client marks, then the three-field form with the assurances under the button.
  * The header on this route is the landing one (SiteHeader): the wordmark and one action to the form.
- * After the send: one micro step (Instagram) and the one research question. Delivered like the brand
+ * After the send: one micro step (Instagram) and the four questions, one at a time (AuditAnswers). Delivered like the brand
  * check (server/audit/route.ts). CRO review: docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md.
  */
 
@@ -80,8 +81,6 @@ export default function Audit() {
   useEffect(() => {
     if (arrived === "error") setStatus("failed");
   }, [arrived]);
-  const [answers, setAnswers] = useState<Record<AuditAnswerKey, string>>({ frustration: "", outcome: "", tried: "", anything: "" });
-  const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
   const submissionId = useRef(newSubmissionId());
   const sent = useRef<AuditDraft | null>(null);
@@ -178,15 +177,6 @@ export default function Audit() {
     sendButton.current?.focus();
   };
 
-  const anyAnswer = AUDIT_ANSWER_KEYS.some((key) => answers[key].trim());
-  const sendAnswers = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!anyAnswer || !sent.current || feedbackState === "sending") return;
-    setFeedbackState("sending");
-    const ok = await submitAuditFeedback({ submissionId: submissionId.current, ...sent.current, ...answers });
-    setFeedbackState(ok ? "done" : "failed");
-  };
-
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
   const finished = done ? copy.done[done] : null;
   const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
@@ -274,40 +264,7 @@ export default function Audit() {
                     {copy.doneFollowLink}
                   </a>
                 </p>
-                {!sent.current ? null : feedbackState === "done" ? (
-                  <p className="audit-done__line" role="status">
-                    {copy.feedbackDone}
-                  </p>
-                ) : (
-                  <form className="audit-answers" onSubmit={sendAnswers}>
-                    <h3 className="site-item-title audit-answers__title">{copy.answersTitle}</h3>
-                    <p className="audit-answers__line">{copy.answersLine}</p>
-                    {copy.answers.map((question) => (
-                      <div key={question.key} className="brief-field">
-                        <label htmlFor={`${baseId}-${question.key}`} className="brief-field__label">
-                          {question.label}
-                        </label>
-                        <textarea
-                          id={`${baseId}-${question.key}`}
-                          className="brief-input bcheck-message"
-                          rows={2}
-                          maxLength={MAX_AUDIT_FEEDBACK}
-                          value={answers[question.key]}
-                          onChange={(event) => setAnswers((current) => ({ ...current, [question.key]: event.target.value }))}
-                          disabled={feedbackState === "sending"}
-                        />
-                      </div>
-                    ))}
-                    <div className="brief-actions">
-                      <button type="submit" className="site-action" disabled={feedbackState === "sending" || !anyAnswer}>
-                        {copy.feedbackSend}
-                      </button>
-                      <p className="brief-status bcheck-status" role="status" data-tone={feedbackState === "failed" ? "error" : undefined}>
-                        {feedbackState === "failed" ? copy.feedbackFailed : ""}
-                      </p>
-                    </div>
-                  </form>
-                )}
+                {sent.current ? <AuditAnswers submissionId={submissionId.current} sent={sent.current} /> : null}
                 <p>
                   <Link href="/" className="site-text-button">
                     {copy.doneHome}

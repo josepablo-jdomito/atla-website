@@ -231,6 +231,19 @@ describe("POST /api/audit/feedback", () => {
     expect(deps.deliverFeedback).toHaveBeenCalledTimes(1);
     expect(deps.deliverFeedback).toHaveBeenCalledWith(expect.objectContaining({ frustration: "I wasn't sure it was private.", email: REQUEST.email }));
   });
+
+  it("keeps the steps without a note and writes the one note on the closing post, merged", async () => {
+    const { feedback, deps, post } = await start();
+    await post({ request: REQUEST, submissionId: id(2) });
+    const base = { ...REQUEST, submissionId: id(2) };
+    expect((await feedback({ ...base, frustration: "The logo", final: false })).json).toEqual({ ok: true });
+    expect((await feedback({ ...base, frustration: "The logo", outcome: "Charge more", final: false })).json).toEqual({ ok: true });
+    expect(deps.deliverFeedback).not.toHaveBeenCalled();
+    // The tab closed on the third question: the beacon carries only what it had, the store fills the rest.
+    expect((await feedback({ ...base, tried: "A new site", final: true })).json).toEqual({ ok: true });
+    expect(deps.deliverFeedback).toHaveBeenCalledTimes(1);
+    expect(deps.deliverFeedback).toHaveBeenCalledWith(expect.objectContaining({ frustration: "The logo", outcome: "Charge more", tried: "A new site", anything: "" }));
+  });
 });
 
 describe("GET /api/audit/status", () => {

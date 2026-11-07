@@ -58,6 +58,8 @@ export const auditFeedbackSchema = z
     outcome: answer,
     tried: answer,
     anything: answer,
+    /** False while the visitor is still answering (a step save); true closes the answers and writes the note. */
+    final: z.boolean().optional().default(true),
   })
   .refine((value) => AUDIT_ANSWER_KEYS.some((key) => value[key].length > 0), { message: "empty" });
 export type AuditFeedback = z.infer<typeof auditFeedbackSchema>;

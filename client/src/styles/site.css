@@ -1253,9 +1253,33 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-done__follow { margin: 0; font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-muted); }
 .audit-done__link { color: var(--site-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .audit-done__link:hover { text-decoration-color: var(--site-accent); }
-.audit-answers { display: grid; gap: var(--space-5); max-width: 36rem; padding-top: var(--space-5); border-top: 1px solid var(--site-line); }
-.audit-answers__title { margin: 0; }
-.audit-answers__line { margin: calc(-1 * var(--space-3)) 0 0; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); }
+/* The four questions, one at a time (components/audit/AuditAnswers.tsx): the nod and the count in one
+   quiet line, the question in the display face, quick choices as words, one field, the filled button. */
+.audit-answers { display: grid; gap: var(--space-4); max-width: 36rem; margin-top: var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--site-line); }
+.audit-answers__progress { margin: 0; font-size: var(--t-ui); line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-answers__nod { color: var(--site-ink); }
+.audit-answers__question { display: block; margin: 0; font-family: var(--site-display); font-size: var(--t-h2); font-weight: 400; line-height: var(--lh-head); letter-spacing: -0.01em; text-wrap: pretty; }
+.audit-answers__hint { margin: calc(-1 * var(--space-2)) 0 0; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); }
+.audit-answers__choices { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); }
+.audit-answers__choice { min-height: 44px; padding: 0; border: 0; background: none; color: var(--site-muted); font: inherit; font-size: var(--t-ui); font-weight: 500; text-align: left; cursor: pointer; transition: color var(--d-hover) var(--site-ease); }
+.audit-answers__choice:hover { color: var(--site-ink); }
+.audit-answers__choice[aria-pressed="true"] { color: var(--site-ink); text-decoration: underline; text-decoration-color: var(--site-accent); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.audit-answers__field { resize: vertical; min-height: 3lh; font-size: var(--t-lead); }
+.audit-answers__keys { margin: calc(-1 * var(--space-2)) 0 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-answers__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-top: var(--space-2); }
+.audit-answers__actions .brief-status { flex-basis: 100%; }
+.audit-answers__next { width: auto; min-width: 10rem; }
+.audit-answers--done { grid-template-columns: var(--space-10) minmax(0, 1fr); align-items: center; column-gap: var(--space-5); }
+.audit-answers__art { display: block; width: 100%; aspect-ratio: 1; }
+.audit-answers__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+@media (prefers-color-scheme: dark) { .audit-answers__art img { filter: invert(1); } }
+.audit-answers__thanks { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
+@media (min-width: 768px) {
+  .audit-answers--done { grid-template-columns: calc(var(--space-10) + var(--space-7)) minmax(0, 1fr); }
+}
+/* Each question comes in from the right, the way the next card in a deck would. */
+@keyframes audit-step-in { from { opacity: 0; transform: translateX(var(--space-3)); } to { opacity: 1; transform: none; } }
+.audit[data-motion] .audit-answers__question, .audit[data-motion] .audit-answers__field { animation: audit-step-in var(--d-move) var(--site-ease) both; }
 
 /* Motion (components/audit/useMotion.ts turns it on after hydration; nothing moves under reduced motion
    or in the prerender). One easing, the site's durations, and two ambient loops: the Inspector

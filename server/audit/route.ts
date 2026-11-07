@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import {
+  AUDIT_ANSWER_KEYS,
   AUDITS_PER_WEEK,
   auditFeedbackSchema,
   auditSchema,
@@ -9,6 +10,7 @@ import {
   isoWeek,
   nextIsoWeek,
   previousIsoWeek,
+  type AuditAnswerKey,
   type AuditFeedback,
   type AuditRequest,
   type AuditStatus,
@@ -45,7 +47,10 @@ import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type 
  *   The same form submitted before hydration or without JavaScript: the fields never travel in a
  *   URL. Answers a 303 to /audit?sent=<week> or /audit?sent=error, which the page reads (P1-5).
  *
- * POST /api/audit/feedback  { submissionId, name, email, site, text } → { ok: true }
+ * POST /api/audit/feedback  { submissionId, name, email, site, frustration, outcome, tried, anything, final } → { ok: true }
+ *   One question at a time on the page: every step posts the answers so far with final:false (kept in the
+ *   store, no note yet); the last step, a skip at the end or the page closing posts final:true, and the one
+ *   note goes to Attio with the answers merged. Only for a delivered request, from the same email.
  *   The one post-submit question. Accepted only for a submissionId this server delivered in the last
  *   24 h, from the same email (P1-6); one answer per submission; an Attio note on the Person. Never
  *   logged; a failure answers 502.
@@ -289,14 +294,30 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
     }
     if (!owner || owner !== sha(parsed.data.email.toLowerCase())) return res.status(404).json({ error: "Unknown request" });
     if (!(await deps.rateLimit(clientIp(req), "audit"))) return res.status(429).json({ error: "Too many requests." });
+    const answersKey = `auditfbans:${parsed.data.submissionId}`;
+    const pick = (value: AuditFeedback) => Object.fromEntries(AUDIT_ANSWER_KEYS.map((k) => [k, value[k]]));
+    if (!parsed.data.final) {
+      // A step: keep the answers so far, so a closed tab loses nothing the visitor already gave.
+      await deps.setValue(answersKey, JSON.stringify(pick(parsed.data)), SUBMISSION_TTL_SECONDS).catch(() => {});
+      return res.json({ ok: true });
+    }
     const key = `auditfbdone:${parsed.data.submissionId}`;
     try {
       if ((await deps.incrWithExpiry(key, SUBMISSION_TTL_SECONDS)) > 1) return res.json({ ok: true });
     } catch {
       // A counter outage never blocks the answer.
     }
+    // The closing post carries everything; a step saved earlier only fills what it left blank.
+    let merged: AuditFeedback = parsed.data;
     try {
-      await deps.deliverFeedback(parsed.data);
+      const saved = JSON.parse((await deps.getValue(answersKey)) ?? "null") as Partial<Record<AuditAnswerKey, string>> | null;
+      if (saved) merged = { ...parsed.data, ...Object.fromEntries(AUDIT_ANSWER_KEYS.map((k) => [k, parsed.data[k] || saved[k] || ""])) };
+    } catch {
+      // Nothing saved, or unreadable: the closing post stands on its own.
+    }
+    try {
+      await deps.deliverFeedback(merged);
+      await deps.deleteKey(answersKey).catch(() => {});
       return res.json({ ok: true });
     } catch (err) {
       console.error(`[audit] feedback delivery failed: ${err instanceof Error ? err.message : "unknown error"}`);
