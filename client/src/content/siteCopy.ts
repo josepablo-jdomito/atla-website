@@ -450,12 +450,13 @@ export const siteCopy = {
     cta: "Start free audit request",
     // The hero button (JP, 2026-11-07: "un botón que diga start free audit request"); the header keeps the short door.
     heroCta: "Start free audit request",
-    proofTitle: "Brands I've worked with",
+    // JP, 2026-11-07: casual, and it should make a founder want in.
+    proofTitle: "Some of the brands I'm working with right now",
     // The ledger (JP's pick, 2026-11-07): one row per brand, what it is, the proof, the mark. Every "what"
     // is what the site or the studio's records already say: the two awards on /hospitality, the two rounds
     // checked the same day (Anything's series A, Bessemer and Footwork; Ulysses's series A, Andreessen
     // Horowitz), the sectors from the project records.
-    proofLine: "A MICHELIN Key hotel, a MICHELIN Green Star restaurant, and startups backed by Andreessen Horowitz and Bessemer.",
+    proofLine: "From VC-backed startups to a few of the best hotels and restaurants in the world.",
     proofRows: [
       { name: "Casa Las Tortugas", what: "Hotel", proof: "MICHELIN Key", badge: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", width: 908, height: 202, scale: 1.15 },
       { name: "Acre", what: "Restaurant", proof: "MICHELIN Green Star", badge: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", width: 1762, height: 600, scale: 1.1 },
