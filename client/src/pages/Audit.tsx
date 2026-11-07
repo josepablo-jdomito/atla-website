@@ -6,6 +6,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
 import { fetchAuditStatus, readAuditAttribution, submitAudit, submitAuditFeedback } from "@/components/audit/auditApi";
 import { AuditSlots } from "@/components/audit/AuditSlots";
+import { useAuditMotion } from "@/components/audit/useMotion";
 import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete, trackAuditFormStart, trackAuditSubmitError, trackAuditView } from "@/lib/ga";
 
@@ -76,6 +77,8 @@ export default function Audit() {
   const started = useRef(false);
   const honeypot = useRef<HTMLInputElement>(null);
   const doneHeading = useRef<HTMLHeadingElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  useAuditMotion(root);
   const sending = status === "sending";
   const fieldId = (key: Field) => `${baseId}-${key}`;
   useNoindex(done !== null);
@@ -172,7 +175,7 @@ export default function Audit() {
   return (
     <PageShell landing>
       <SeoHead title={formatMetaTitle(copy.metaTitle, "Atla")} description={copy.metaDescription} pathname="/audit" />
-      <div className="site-page-body audit">
+      <div ref={root} className="site-page-body audit">
         <section className="audit-hero" aria-labelledby={`${baseId}-title`}>
           <div className="audit-hero__text">
             <p className="site-label audit-hero__eyebrow">{copy.eyebrow}</p>
@@ -203,12 +206,12 @@ export default function Audit() {
         <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
-          <h2 id={`${baseId}-how`} className="site-section-title audit-how__title">
+          <h2 id={`${baseId}-how`} className="site-section-title audit-how__title" data-reveal>
             {copy.howTitle}
           </h2>
           <ol className="audit-steps">
             {copy.steps.map((step, index) => (
-              <li key={step.src} className="audit-step">
+              <li key={step.src} className="audit-step" data-reveal style={{ ["--i" as string]: index }}>
                 {/* Step numbers, the one place on the site with digits (JP, 2026-11-07: "agrega números al how it works"). */}
                 <span className="site-label audit-step__number" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
@@ -229,7 +232,7 @@ export default function Audit() {
         </section>
 
         {PROOF_MARKS.length ? (
-          <section className="audit-proof" aria-label={copy.proofLabel}>
+          <section className="audit-proof" aria-label={copy.proofLabel} data-reveal>
             <p className="site-label audit-proof__label">{copy.proofLabel}</p>
             <ul className="audit-proof__marks">
               {PROOF_MARKS.map((item) => (
@@ -241,7 +244,7 @@ export default function Audit() {
           </section>
         ) : null}
 
-        <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`}>
+        <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`} data-reveal>
             {finished ? (
               <div className="audit-done">
                 <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="site-section-title audit-ask__title">
