@@ -32,6 +32,7 @@ const pages: AppPages = {
   AtlaPrograms: lazy(() => import("@/pages/AtlaPrograms")),
   Brief: lazy(() => import("@/pages/Brief")),
   BrandCheck: lazy(() => import("@/pages/BrandCheck")),
+  Audit: lazy(() => import("@/pages/Audit")),
 };
 const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
 const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));

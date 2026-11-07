@@ -187,7 +187,7 @@ export type SiteEvent =
   | { name: "bar_search"; params: { kind: "results" | "brief"; closest: boolean } }
   | { name: "brief_start"; params: { seeded: boolean } }
   | { name: "brief_complete"; params: Record<string, never> }
-  | { name: "generate_lead"; params: { form: "brief" | "brand_check"; event_id: string } }
+  | { name: "generate_lead"; params: { form: "brief" | "brand_check" | "audit"; event_id: string } }
   | { name: "calendly_click"; params: Record<string, never> };
 
 function siteEvent(event: SiteEvent) {
@@ -219,5 +219,11 @@ export const trackCalendlyClick = () => siteEvent({ name: "calendly_click", para
 export const trackBrandCheckComplete = (submissionId: string) => {
   if (!submissionId) return;
   siteEvent({ name: "generate_lead", params: { form: "brand_check", event_id: submissionId } });
+  trackMetaLead(submissionId);
+};
+/** The free audit request was delivered. Same rule as the brand check: only the idempotency key rides along. */
+export const trackAuditComplete = (submissionId: string) => {
+  if (!submissionId) return;
+  siteEvent({ name: "generate_lead", params: { form: "audit", event_id: submissionId } });
   trackMetaLead(submissionId);
 };

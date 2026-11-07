@@ -1138,6 +1138,41 @@ html[data-consent="open"] .site-explore { display: none; }
 .bcheck-status[data-tone="error"] { color: var(--site-error); }
 .bcheck-done { display: grid; gap: var(--space-4); max-width: 40rem; }
 .bcheck-done__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
+/* The free audit (/audit): the pitch beside the title, the form at the end. Same fields as the brand check. */
+.audit .audit-intro { gap: var(--space-5); }
+.audit .audit-intro__title { max-width: 18ch; }
+.audit .audit-intro__lead { max-width: 36rem; }
+.audit-week {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--site-line);
+  max-width: 36rem;
+}
+.audit-week__line { font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
+.audit-body { display: grid; gap: var(--space-9); max-width: 40rem; }
+.audit-section { display: grid; gap: var(--space-5); }
+.audit-rows { margin: 0; padding: 0; list-style: none; }
+.audit-row { display: grid; gap: var(--space-2); padding: var(--space-4) 0; border-top: 1px solid var(--site-line); }
+.audit-row:last-child { border-bottom: 1px solid var(--site-line); }
+.audit-row__title { margin: 0; }
+.audit-row__line { margin: 0; max-width: 44ch; font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
+.audit-prose { display: grid; gap: var(--space-4); }
+.audit-prose p { margin: 0; max-width: 44ch; font-size: var(--t-lead); line-height: var(--lh-body); text-wrap: pretty; }
+.audit-prose__door { font-size: var(--t-ui); }
+.audit-ask { padding-top: var(--space-6); border-top: 1px solid var(--site-ink); }
+.audit-ask__title:focus { outline: none; }
+.audit-form { display: flex; flex-direction: column; gap: var(--space-6); max-width: 640px; }
+.audit-done { display: grid; gap: var(--space-4); max-width: 40rem; }
+.audit-done__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
+@media (min-width: 1024px) {
+  /* The title, the lead and the week stay on the left while the argument and the form scroll. */
+  .audit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-8); align-items: start; }
+  .audit .audit-intro { position: sticky; top: 64px; }
+  .audit-body { padding-top: var(--space-9); }
+}
+
 @media (min-width: 1024px) {
   /* The title on the left, the form beside it. */
   .bcheck { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-8); align-items: start; }

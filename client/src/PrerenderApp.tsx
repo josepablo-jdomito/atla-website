@@ -25,6 +25,7 @@ import AtlaHowWeWork from "./pages/AtlaHowWeWork";
 import AtlaPrograms from "./pages/AtlaPrograms";
 import Brief from "./pages/Brief";
 import BrandCheck from "./pages/BrandCheck";
+import Audit from "./pages/Audit";
 import NotFound from "./pages/not-found";
 
 export type PrerenderRouteData = {
@@ -117,6 +118,7 @@ export function renderPrerenderedRoute(
         AtlaPrograms,
         Brief,
         BrandCheck,
+        Audit,
       }}
     />,
   );

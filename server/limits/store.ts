@@ -102,3 +102,27 @@ export async function deleteKey(key: string): Promise<void> {
   }
   memory.delete(key);
 }
+
+/** The current value of a counter, 0 when it does not exist or has expired. */
+export async function getCount(key: string): Promise<number> {
+  const config = upstashConfig();
+  if (config) {
+    const json = (await upstash(config, "", ["GET", key])) as { result?: unknown; error?: unknown } | null;
+    if (!json || json.error) throw new Error(`Upstash GET failed: ${String(json?.error ?? "no result")}`);
+    return json.result === null || json.result === undefined ? 0 : toCount(json.result);
+  }
+  return liveMemoryEntry(key, Date.now())?.count ?? 0;
+}
+
+/** Take one back from a counter (a weekly slot whose delivery failed), never below zero. */
+export async function decrement(key: string): Promise<void> {
+  const config = upstashConfig();
+  if (config) {
+    const json = (await upstash(config, "", ["DECR", key])) as { result?: unknown; error?: unknown } | null;
+    if (!json || json.error) throw new Error(`Upstash DECR failed: ${String(json?.error ?? "no result")}`);
+    if (toCount(json.result) < 0) await upstash(config, "", ["SET", key, "0", "KEEPTTL"]);
+    return;
+  }
+  const entry = liveMemoryEntry(key, Date.now());
+  if (entry) entry.count = Math.max(0, entry.count - 1);
+}

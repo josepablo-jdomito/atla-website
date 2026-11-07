@@ -473,6 +473,7 @@ function routePageModule(pathname: string) {
     "/programs": "AtlaPrograms",
     "/brief": "Brief",
     "/brand-check": "BrandCheck",
+    "/audit": "Audit",
     "/journal": "AtlaJournal",
     "/privacy": "AtlaPrivacy",
     "/terms": "AtlaTerms",
@@ -642,6 +643,14 @@ async function prerenderRoutes() {
       // Same title and description as the Brand check page's SeoHead.
       title: formatMetaTitle(siteCopy.brandCheck.metaTitle, "Atla"),
       description: siteCopy.brandCheck.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/audit",
+      // Same title and description as the Audit page's SeoHead.
+      title: formatMetaTitle(siteCopy.audit.metaTitle, "Atla"),
+      description: siteCopy.audit.metaDescription,
       image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
