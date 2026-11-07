@@ -31,6 +31,8 @@ export function Drawing({
   const [motion, setMotion] = useState(() => initialClientState(false, () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches));
   const [failed, setFailed] = useState(false);
   const [near, setNear] = useState(false);
+  // The still hides only once the clip is actually painting frames, so there is never a blank beat.
+  const [playing, setPlaying] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLSpanElement>(null);
 
@@ -84,7 +86,7 @@ export function Drawing({
 
   const showClip = Boolean(clip) && motion && near && !failed;
   return (
-    <span ref={frame} className={className} data-drawing="" data-live={showClip ? "" : undefined}>
+    <span ref={frame} className={className} data-drawing="" data-live={showClip && playing ? "" : undefined}>
       <img src={src} alt={alt} width={width} height={height} loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : undefined} />
       {showClip ? (
         <video
@@ -102,6 +104,8 @@ export function Drawing({
           tabIndex={-1}
           // A <source> the browser skips also fires error here (React listens in capture); only the
           // video's own error, once every source failed, means the still stays.
+          onPlaying={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
           onError={(event) => {
             if (event.target === event.currentTarget && event.currentTarget.error) setFailed(true);
           }}
