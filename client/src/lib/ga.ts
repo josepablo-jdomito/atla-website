@@ -188,7 +188,10 @@ export type SiteEvent =
   | { name: "brief_start"; params: { seeded: boolean } }
   | { name: "brief_complete"; params: Record<string, never> }
   | { name: "generate_lead"; params: { form: "brief" | "brand_check" | "audit"; event_id: string } }
-  | { name: "calendly_click"; params: Record<string, never> };
+  | { name: "calendly_click"; params: Record<string, never> }
+  | { name: "audit_view"; params: Record<string, never> }
+  | { name: "audit_form_start"; params: Record<string, never> }
+  | { name: "audit_submit_error"; params: { reason: "rate_limited" | "failed" } };
 
 function siteEvent(event: SiteEvent) {
   if (!analyticsAllowed()) return;
@@ -227,3 +230,7 @@ export const trackAuditComplete = (submissionId: string) => {
   siteEvent({ name: "generate_lead", params: { form: "audit", event_id: submissionId } });
   trackMetaLead(submissionId);
 };
+/** The audit funnel: the page showed, the visitor touched the first field, a submit failed. Nothing the visitor typed. */
+export const trackAuditView = () => siteEvent({ name: "audit_view", params: {} });
+export const trackAuditFormStart = () => siteEvent({ name: "audit_form_start", params: {} });
+export const trackAuditSubmitError = (reason: "rate_limited" | "failed") => siteEvent({ name: "audit_submit_error", params: { reason } });

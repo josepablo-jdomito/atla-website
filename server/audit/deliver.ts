@@ -1,5 +1,5 @@
-import { AUDITS_PER_WEEK, brandFromSite, type AuditRequest } from "../../shared/audit.ts";
-import { singleLine } from "../contact.ts";
+import { AUDITS_PER_WEEK, brandFromSite, type AuditFeedback, type AuditRequest } from "../../shared/audit.ts";
+import { multiLine, singleLine } from "../contact.ts";
 import { deliverNoteToAttio, sendStudioEmail } from "../brief/deliver.ts";
 
 /**
@@ -25,8 +25,16 @@ export function formatAuditSummary(request: AuditRequest, slot: AuditSlot): stri
     `Name: ${singleLine(request.name)}`,
     `Email: ${singleLine(request.email)}`,
     `Website or Instagram: ${singleLine(request.site)}`,
+    `Source: ${singleLine(request.source ?? "") || "direct"}`,
     slotLine(slot),
   ].join("\n");
+}
+
+/** The post-submit answer, as a second note on the same Person: "Audit feedback: <brand>". */
+export async function deliverAuditFeedbackToAttio(feedback: AuditFeedback): Promise<void> {
+  const title = `Audit feedback: ${singleLine(brandFromSite(feedback.site, feedback.name)).slice(0, 120)}`;
+  const body = ["What almost stopped you from sending it?", "", multiLine(feedback.text), "", `Request: ${feedback.submissionId}`].join("\n");
+  await deliverNoteToAttio(feedback, title, body, "the free audit feedback");
 }
 
 /** The Attio note title and the email subject name the brand, never more than one line. */

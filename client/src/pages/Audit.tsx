@@ -1,22 +1,27 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { Link } from "wouter";
-import { EMPTY_AUDIT, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
+import { EMPTY_AUDIT, MAX_AUDIT_FEEDBACK, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
-import { fetchAuditStatus, submitAudit } from "@/components/audit/auditApi";
+import { fetchAuditStatus, readAuditAttribution, submitAudit, submitAuditFeedback } from "@/components/audit/auditApi";
 import { AuditSlots } from "@/components/audit/AuditSlots";
 import { siteCopy } from "@/content/siteCopy";
-import { trackAuditComplete } from "@/lib/ga";
+import { trackAuditComplete, trackAuditFormStart, trackAuditSubmitError, trackAuditView } from "@/lib/ga";
 
 /**
- * The free audit (/audit, JP 2026-11-07): the visitor's pains, the wins, three fields, read in two
- * minutes (oddit.co/pages/free-trial; never "the audit our clients pay for", JP). The title, the lead
- * and the week's line stay beside the lists and the form on wide screens. The week's line is live from /api/audit/status; the prerender shows the
- * neutral one. Delivered like the brand check (server/audit/route.ts).
+ * The free audit (/audit, JP 2026-11-07): a landing page. JP named above the title, the offer in the
+ * title, his own line opening the lead, the week's five as a live widget (AuditSlots), three drawn
+ * steps, a strip of client marks, then the three-field form with the assurances under the button.
+ * The header on this route is the landing one (SiteHeader): the wordmark and one action to the form.
+ * After the send: one micro step (Instagram) and the one research question. Delivered like the brand
+ * check (server/audit/route.ts). CRO review: docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md.
  */
 
 const copy = siteCopy.audit;
+const INSTAGRAM_JP = "https://www.instagram.com/jdomito_/";
+/** The form's anchor: the hero action and the landing header both point here. */
+export const AUDIT_FORM_ID = "send";
 
 type Field = keyof AuditDraft;
 type Status = "idle" | "sending" | "rate-limited" | "failed";
@@ -29,6 +34,7 @@ const FIELDS = [
 
 const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
 const FIELD_ORDER: Field[] = ["site", "name", "email"];
+const PROOF_MARKS = siteCopy.logos.items.slice(0, 8);
 
 function newSubmissionId(): string {
   try {
@@ -39,6 +45,16 @@ function newSubmissionId(): string {
   }
 }
 
+/** Jumps to the form and puts the caret in its first field; the address bar keeps the hash. */
+export function goToForm(event?: MouseEvent) {
+  const form = document.getElementById(AUDIT_FORM_ID);
+  if (!form) return;
+  event?.preventDefault();
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  form.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  form.querySelector<HTMLInputElement>("input:not([type=hidden])")?.focus({ preventScroll: true });
+}
+
 export default function Audit() {
   const baseId = useId();
   const [draft, setDraft] = useState<AuditDraft>(EMPTY_AUDIT);
@@ -47,13 +63,21 @@ export default function Audit() {
   const [slots, setSlots] = useState<AuditStatus | null>(null);
   const [slotsAt, setSlotsAt] = useState<number | null>(null);
   const [done, setDone] = useState<AuditWeek | null>(null);
+  const [feedback, setFeedback] = useState("");
+  const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
   const submissionId = useRef(newSubmissionId());
+  const sent = useRef<AuditDraft | null>(null);
+  const started = useRef(false);
   const honeypot = useRef<HTMLInputElement>(null);
   const doneHeading = useRef<HTMLHeadingElement>(null);
   const sending = status === "sending";
   const fieldId = (key: Field) => `${baseId}-${key}`;
   useNoindex(done !== null);
+
+  useEffect(() => {
+    trackAuditView();
+  }, []);
 
   // The widget reads the week on mount, every half minute while the tab is visible, and when the
   // visitor comes back to the tab.
@@ -86,10 +110,16 @@ export default function Audit() {
     if (errors[key]) setErrors((current) => ({ ...current, [key]: undefined }));
   };
 
+  const onFieldFocus = () => {
+    if (started.current) return;
+    started.current = true;
+    trackAuditFormStart();
+  };
+
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (sending) return;
-    const parsed = auditSchema.safeParse(draft);
+    const parsed = auditSchema.safeParse({ ...draft, source: readAuditAttribution() });
     if (!parsed.success) {
       const issues = new Set(parsed.error.issues.map((issue) => issue.path[0] as Field));
       const next: Partial<Record<Field, string>> = {};
@@ -103,6 +133,7 @@ export default function Audit() {
     const result = await submitAudit(parsed.data, submissionId.current, honeypot.current?.value ?? "");
     if (result.status === "ok") {
       trackAuditComplete(submissionId.current);
+      sent.current = { name: parsed.data.name, email: parsed.data.email, site: parsed.data.site };
       setStatus("idle");
       // The visitor's own request takes a ring at once; the next poll confirms it.
       setSlots((current) => {
@@ -114,7 +145,17 @@ export default function Audit() {
       setDone(result.week);
       return;
     }
+    trackAuditSubmitError(result.status === "rate-limited" ? "rate_limited" : "failed");
     setStatus(result.status);
+  };
+
+  const sendFeedback = async (event: FormEvent) => {
+    event.preventDefault();
+    const text = feedback.trim();
+    if (!text || !sent.current || feedbackState === "sending") return;
+    setFeedbackState("sending");
+    const ok = await submitAuditFeedback({ submissionId: submissionId.current, ...sent.current, text });
+    setFeedbackState(ok ? "done" : "failed");
   };
 
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
@@ -131,6 +172,13 @@ export default function Audit() {
           </h1>
           <p className="page-intro__lead audit-intro__lead">{copy.lead}</p>
           <AuditSlots status={slots} updatedAt={slotsAt} />
+          {done ? null : (
+            <p className="audit-intro__action">
+              <a href={`#${AUDIT_FORM_ID}`} className="site-action" onClick={goToForm}>
+                {copy.cta}
+              </a>
+            </p>
+          )}
         </header>
 
         <div className="audit-body">
@@ -156,13 +204,60 @@ export default function Audit() {
             </ol>
           </section>
 
-          <section className="audit-section audit-ask" aria-labelledby={`${baseId}-ask`}>
+          {PROOF_MARKS.length ? (
+            <section className="audit-proof" aria-label={copy.proofLabel}>
+              <p className="site-label audit-proof__label">{copy.proofLabel}</p>
+              <ul className="audit-proof__marks">
+                {PROOF_MARKS.map((item) => (
+                  <li key={item.name} className="audit-proof__mark">
+                    <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <section id={AUDIT_FORM_ID} className="audit-section audit-ask" aria-labelledby={`${baseId}-ask`}>
             {finished ? (
               <div className="audit-done">
                 <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="site-section-title audit-ask__title">
                   {finished.title}
                 </h2>
                 <p className="audit-done__line">{finished.line}</p>
+                <p className="audit-done__follow">
+                  {copy.doneFollow}{" "}
+                  <a href={INSTAGRAM_JP} target="_blank" rel="noopener noreferrer" className="audit-done__link">
+                    {copy.doneFollowLink}
+                  </a>
+                </p>
+                {feedbackState === "done" ? (
+                  <p className="audit-done__line" role="status">
+                    {copy.feedbackDone}
+                  </p>
+                ) : (
+                  <form className="audit-feedback" onSubmit={sendFeedback}>
+                    <label htmlFor={`${baseId}-feedback`} className="brief-field__label">
+                      {copy.feedbackQuestion}
+                    </label>
+                    <textarea
+                      id={`${baseId}-feedback`}
+                      className="brief-input bcheck-message"
+                      rows={2}
+                      maxLength={MAX_AUDIT_FEEDBACK}
+                      value={feedback}
+                      onChange={(event) => setFeedback(event.target.value)}
+                      disabled={feedbackState === "sending"}
+                    />
+                    <div className="brief-actions">
+                      <button type="submit" className="site-text-button" disabled={feedbackState === "sending" || !feedback.trim()}>
+                        {copy.feedbackSend}
+                      </button>
+                      <p className="brief-status bcheck-status" role="status" data-tone={feedbackState === "failed" ? "error" : undefined}>
+                        {feedbackState === "failed" ? copy.feedbackFailed : ""}
+                      </p>
+                    </div>
+                  </form>
+                )}
                 <p>
                   <Link href="/" className="site-text-button">
                     {copy.doneHome}
@@ -197,6 +292,7 @@ export default function Audit() {
                             aria-invalid={error ? true : undefined}
                             aria-describedby={error ? `${id}-error` : undefined}
                             value={draft[field.key]}
+                            onFocus={onFieldFocus}
                             onChange={(event) => set(field.key, event.target.value)}
                             disabled={sending}
                           />

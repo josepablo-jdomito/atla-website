@@ -438,6 +438,9 @@ export const siteCopy = {
       { src: "/audit/landing/step-2.webp", alt: "A shopper whose head is one big eye, inspecting a little shop in his cart", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
       { src: "/audit/landing/step-3.webp", alt: "A phone with legs and a bowler hat ringing a doorbell, holding a play button as a gift", line: "You get the video: what works, what doesn't, and what I'd fix first. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
+    // The hero action and the landing header on /audit both jump to the form (the page has no other door).
+    cta: "Send me your brand",
+    proofLabel: "Brands I've worked with",
     formTitle: "Send me your brand",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off but I don't know what, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
@@ -461,6 +464,13 @@ export const siteCopy = {
       open: { title: "Got it.", line: "You're in this week's five. The video comes by email, from me, as soon as it's ready." },
       full: { title: "You're in next week's five.", line: "This week's are taken. The video comes by email as soon as it's ready." },
     },
+    // After the send: one micro step and the one research question (CRO review, section six).
+    doneFollow: "While it's on its way, I'm on Instagram every week.",
+    doneFollowLink: "Follow @jdomito_",
+    feedbackQuestion: "What almost stopped you from sending it?",
+    feedbackSend: "Send",
+    feedbackDone: "Thanks. That helps more than you'd think.",
+    feedbackFailed: "That didn't save. Try again in a moment.",
     doneHome: "See the work",
   },
   // Why Atla, at /about: the argument a buyer reads before hiring. Proof lines come from the hospitality

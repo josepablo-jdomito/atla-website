@@ -47,6 +47,7 @@ async function start(overrides: Partial<AuditDeps> = {}) {
     decrement: store.decr,
     deliverToAttio: vi.fn(async () => {}),
     sendEmail: vi.fn(async () => {}),
+    deliverFeedback: vi.fn(async () => {}),
     now: () => NOW,
     ...overrides,
   };
@@ -64,11 +65,19 @@ async function start(overrides: Partial<AuditDeps> = {}) {
     });
     return { status: res.status, json: (await res.json()) as Record<string, any> };
   };
+  const feedback = async (body: unknown, headers: Record<string, string> = {}) => {
+    const res = await fetch(`http://127.0.0.1:${port}/api/audit/feedback`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: `http://127.0.0.1:${port}`, ...headers },
+      body: JSON.stringify(body),
+    });
+    return { status: res.status, json: (await res.json()) as Record<string, any> };
+  };
   const status = async () => {
     const res = await fetch(`http://127.0.0.1:${port}/api/audit/status`);
     return { status: res.status, cache: res.headers.get("cache-control"), json: (await res.json()) as Record<string, any> };
   };
-  return { deps, store, port, post, status };
+  return { deps, store, port, post, status, feedback };
 }
 
 describe("isoWeek", () => {
@@ -177,6 +186,19 @@ describe("POST /api/audit", () => {
   });
 });
 
+describe("POST /api/audit/feedback", () => {
+  it("writes the answer once per submission, refuses cross-site posts and empty answers", async () => {
+    const { feedback, deps } = await start();
+    const body = { ...REQUEST, submissionId: id(1), text: "I wasn't sure it was private." };
+    expect((await feedback(body, { origin: "https://evil.example" })).status).toBe(403);
+    expect((await feedback({ ...body, text: "" })).status).toBe(400);
+    expect((await feedback(body)).json).toEqual({ ok: true });
+    expect((await feedback(body)).json).toEqual({ ok: true });
+    expect(deps.deliverFeedback).toHaveBeenCalledTimes(1);
+    expect(deps.deliverFeedback).toHaveBeenCalledWith(expect.objectContaining({ text: "I wasn't sure it was private.", email: REQUEST.email }));
+  });
+});
+
 describe("GET /api/audit/status", () => {
   it("is never cached and reads as open when the counter store fails", async () => {
     const { status } = await start({
@@ -197,6 +219,8 @@ describe("the note and the email", () => {
     expect(auditTitle({ ...REQUEST, site: "@casamar" } as any)).toBe("Free audit: @casamar");
     const open = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 2, full: false });
     expect(open).toContain("Website or Instagram: casamar.example");
+    expect(open).toContain("Source: direct");
+    expect(formatAuditSummary({ ...REQUEST, source: "utm_source=ig, utm_content=reel-coffee" } as any, { week: "2026-W45", count: 1, full: false })).toContain("Source: utm_source=ig, utm_content=reel-coffee");
     expect(open).toContain("Week 2026-W45: request 2 of 5, in this week's five");
     const full = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 6, full: true });
     expect(full).toContain("this week is full, queued for next week");

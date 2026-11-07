@@ -10,6 +10,14 @@ import { getOptimizedImageUrl } from "@shared/imageDelivery";
 
 const { header, menu } = siteCopy;
 
+/**
+ * Routes that are landing pages: no site links, no phone menu, the wordmark and one action that jumps
+ * to the page's form (a landing has one door; the site nav would be a leak, CRO review 2026-11-07).
+ */
+const LANDING_HEADERS: Record<string, { label: string; target: string }> = {
+  "/audit": { label: siteCopy.audit.cta, target: "send" },
+};
+
 /** The id of PageShell's <main>, the skip link's target. */
 export const MAIN_CONTENT_ID = "main";
 
@@ -140,6 +148,39 @@ export function SiteHeader() {
     // closeMenu reads `reduced`; re-binding on it keeps Escape's timing right.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown, reduced]);
+
+  const landing = LANDING_HEADERS[location];
+  if (landing) {
+    return (
+      <header className="site-header site-header--landing">
+        <a href={`#${MAIN_CONTENT_ID}`} className="site-skip-link">
+          {header.skipLink}
+        </a>
+        <nav className="site-header__bar" aria-label={header.navLabel}>
+          <div className="site-header__left" />
+          <Link href="/" className="site-header__brand" aria-label={header.homeLabel}>
+            <AtlaWordmark title="Atla" style={{ width: "100%", height: "auto" }} />
+          </Link>
+          <div className="site-header__right">
+            <a
+              href={`#${landing.target}`}
+              className="site-action site-header__cta"
+              onClick={(event) => {
+                const form = document.getElementById(landing.target);
+                if (!form) return;
+                event.preventDefault();
+                const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                form.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+                form.querySelector<HTMLInputElement>("input:not([type=hidden])")?.focus({ preventScroll: true });
+              }}
+            >
+              {landing.label}
+            </a>
+          </div>
+        </nav>
+      </header>
+    );
+  }
 
   return (
     <header className="site-header">

@@ -26,11 +26,25 @@ export const auditSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(200),
   site: siteOrHandle,
+  /** Where the visit came from (utm_* and the referrer host), read by the page; never typed by the visitor. */
+  source: z.string().trim().max(240).optional().default(""),
 });
+
+export const MAX_AUDIT_FEEDBACK = 600;
+
+/** The one post-submit question ("What almost stopped you from sending it?"), tied to the request by its id. */
+export const auditFeedbackSchema = z.object({
+  submissionId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
+  name: z.string().trim().min(1).max(120),
+  email: z.string().trim().email().max(200),
+  site: siteOrHandle,
+  text: z.string().trim().min(1).max(MAX_AUDIT_FEEDBACK),
+});
+export type AuditFeedback = z.infer<typeof auditFeedbackSchema>;
 
 export type AuditRequest = z.infer<typeof auditSchema>;
 /** What the form holds while the visitor fills it: every field a string, "" when untouched. */
-export type AuditDraft = Record<keyof AuditRequest, string>;
+export type AuditDraft = Record<"name" | "email" | "site", string>;
 export const EMPTY_AUDIT: AuditDraft = { name: "", email: "", site: "" };
 
 /** Whether this week's five are still open. */

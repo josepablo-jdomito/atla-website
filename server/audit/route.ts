@@ -1,11 +1,11 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { AUDITS_PER_WEEK, auditSchema, isoWeek, type AuditRequest, type AuditStatus, type AuditWeek } from "../../shared/audit.ts";
+import { AUDITS_PER_WEEK, auditFeedbackSchema, auditSchema, isoWeek, type AuditFeedback, type AuditRequest, type AuditStatus, type AuditWeek } from "../../shared/audit.ts";
 import { clientIp, foreignPostSource } from "../contact.ts";
 import { rateLimit } from "../limits/guards.ts";
 import { decrement, deleteKey, getCount, incrWithExpiry } from "../limits/store.ts";
-import { deliverAuditToAttio, sendAuditEmail, type AuditSlot } from "./deliver.ts";
+import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type AuditSlot } from "./deliver.ts";
 
 /**
  * The free brand audit (/audit, JP 2026-11-07). Same rules as the brand check (server/brandCheck/route.ts)
@@ -14,6 +14,10 @@ import { deliverAuditToAttio, sendAuditEmail, type AuditSlot } from "./deliver.t
  * GET  /api/audit/status → { week: "open" | "full", taken, cap }
  *   This ISO week's slots (cap = AUDITS_PER_WEEK, taken clamped to it). Never cached: the page's
  *   widget shows it live and polls it.
+ *
+ * POST /api/audit/feedback  { submissionId, name, email, site, text } → { ok: true }
+ *   The one post-submit question. Same-site only, same address limit, one per submissionId; an Attio
+ *   note on the Person. Never logged; a failure answers 502 without a reference to the text.
  *
  * POST /api/audit  { request, submissionId, _gotcha } → { ok: true, week: "open" | "full" }
  *   Same-site posts only (403 otherwise). A filled honeypot gets ok and delivers nothing. More than
@@ -48,6 +52,7 @@ export type AuditDeps = {
   decrement: (key: string) => Promise<void>;
   deliverToAttio: (request: AuditRequest, slot: AuditSlot) => Promise<void>;
   sendEmail: (request: AuditRequest, slot: AuditSlot) => Promise<void>;
+  deliverFeedback: (feedback: AuditFeedback) => Promise<void>;
   now: () => Date;
 };
 
@@ -59,6 +64,7 @@ const defaultDeps: AuditDeps = {
   decrement,
   deliverToAttio: deliverAuditToAttio,
   sendEmail: sendAuditEmail,
+  deliverFeedback: deliverAuditFeedbackToAttio,
   now: () => new Date(),
 };
 
@@ -86,6 +92,26 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
       // A counter outage reads as open: the form still takes the request and the note says the week.
       console.error(`[audit] status read failed: ${err instanceof Error ? err.message : "unknown error"}`);
       return res.json(statusOf(0));
+    }
+  });
+
+  app.post("/api/audit/feedback", sameSiteOnly, async (req, res) => {
+    const parsed = auditFeedbackSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid request" });
+    if (!(await deps.rateLimit(clientIp(req), "audit"))) return res.status(429).json({ error: "Too many requests." });
+    const key = `auditfb:${parsed.data.submissionId}`;
+    try {
+      if ((await deps.incrWithExpiry(key, SUBMISSION_TTL_SECONDS)) > 1) return res.json({ ok: true });
+    } catch {
+      // A counter outage never blocks the answer.
+    }
+    try {
+      await deps.deliverFeedback(parsed.data);
+      return res.json({ ok: true });
+    } catch (err) {
+      console.error(`[audit] feedback delivery failed: ${err instanceof Error ? err.message : "unknown error"}`);
+      await deps.deleteKey(key).catch(() => {});
+      return res.status(502).json({ error: "We could not save that. Try again in a moment." });
     }
   });
 

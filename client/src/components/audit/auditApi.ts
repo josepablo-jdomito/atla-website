@@ -1,4 +1,4 @@
-import type { AuditRequest, AuditStatus, AuditWeek } from "@shared/audit";
+import type { AuditFeedback, AuditRequest, AuditStatus, AuditWeek } from "@shared/audit";
 
 export type AuditResult = { status: "ok"; week: AuditWeek } | { status: "rate-limited" } | { status: "failed" };
 
@@ -42,4 +42,47 @@ export async function fetchAuditStatus(signal?: AbortSignal): Promise<AuditStatu
   } catch {
     return null;
   }
+}
+
+/** POST /api/audit/feedback: the one post-submit answer. True when saved. */
+export async function submitAuditFeedback(feedback: AuditFeedback): Promise<boolean> {
+  try {
+    const res = await fetch("/api/audit/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(feedback),
+      signal: AbortSignal.timeout(SUBMIT_TIMEOUT_MS),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content"];
+const ATTRIBUTION_KEY = "atla-audit-attribution";
+
+/** Where the visit came from, kept for the tab so it survives a look around the site: utm_* and the referrer host. "direct" otherwise. */
+export function readAuditAttribution(): string {
+  try {
+    const saved = sessionStorage.getItem(ATTRIBUTION_KEY);
+    if (saved) return saved;
+  } catch {
+    // Storage blocked: read this visit only.
+  }
+  const params = new URLSearchParams(window.location.search);
+  const parts = UTM_KEYS.filter((key) => params.get(key)).map((key) => `${key}=${params.get(key)!.slice(0, 60)}`);
+  try {
+    const referrer = document.referrer ? new URL(document.referrer) : null;
+    if (referrer && referrer.origin !== window.location.origin) parts.push(`referrer=${referrer.hostname.slice(0, 80)}`);
+  } catch {
+    // Not a URL.
+  }
+  const attribution = (parts.join(", ") || "direct").slice(0, 240);
+  try {
+    sessionStorage.setItem(ATTRIBUTION_KEY, attribution);
+  } catch {
+    // Not critical.
+  }
+  return attribution;
 }
