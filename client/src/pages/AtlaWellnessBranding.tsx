@@ -58,32 +58,32 @@ export default function AtlaWellnessBranding() {
       <LongformSection title="Selected wellness and health work">
         <LongformParagraph>
           <strong>Angeles Wellness</strong>. An herbal wellness system, rebranded so anyone can follow what the products do.{" "}
-          <a href="/projects/angeles-wellness" className="longform-link" aria-label={"View project: Angeles Wellness"}>
-            View project →
+          <a href="/projects/angeles-wellness" className="longform-link">
+            View project: Angeles Wellness →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pathize Health</strong>{" "}
-          <a href="/projects/pathize-health" className="longform-link" aria-label={"View project: Pathize Health"}>
-            View project →
+          <a href="/projects/pathize-health" className="longform-link">
+            View project: Pathize Health →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Peachy Patients</strong>{" "}
-          <a href="/projects/peachy-patients" className="longform-link" aria-label={"View project: Peachy Patients"}>
-            View project →
+          <a href="/projects/peachy-patients" className="longform-link">
+            View project: Peachy Patients →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Ando</strong>{" "}
-          <a href="/projects/ando" className="longform-link" aria-label={"View project: Ando"}>
-            View project →
+          <a href="/projects/ando" className="longform-link">
+            View project: Ando →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Bovi Health</strong>{" "}
-          <a href="/projects/bovi-health" className="longform-link" aria-label={"View project: Bovi Health"}>
-            View project →
+          <a href="/projects/bovi-health" className="longform-link">
+            View project: Bovi Health →
           </a>
         </LongformParagraph>
       </LongformSection>

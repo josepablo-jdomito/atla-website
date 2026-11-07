@@ -58,32 +58,32 @@ export default function AtlaCpgBranding() {
       <LongformSection title="Selected CPG work">
         <LongformParagraph>
           <strong>Ando</strong>. Identity and packaging for a gummy supplement line, built to be seen at retail.{" "}
-          <a href="/projects/ando" className="longform-link" aria-label={"View project: Ando"}>
-            View project →
+          <a href="/projects/ando" className="longform-link">
+            View project: Ando →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>TigreTigre</strong>{" "}
-          <a href="/projects/tigretigre" className="longform-link" aria-label={"View project: TigreTigre"}>
-            View project →
+          <a href="/projects/tigretigre" className="longform-link">
+            View project: TigreTigre →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Reggie</strong>{" "}
-          <a href="/projects/reggie" className="longform-link" aria-label={"View project: Reggie"}>
-            View project →
+          <a href="/projects/reggie" className="longform-link">
+            View project: Reggie →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Oxylife</strong>{" "}
-          <a href="/projects/oxylife" className="longform-link" aria-label={"View project: Oxylife"}>
-            View project →
+          <a href="/projects/oxylife" className="longform-link">
+            View project: Oxylife →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Bovi Health</strong>{" "}
-          <a href="/projects/bovi-health" className="longform-link" aria-label={"View project: Bovi Health"}>
-            View project →
+          <a href="/projects/bovi-health" className="longform-link">
+            View project: Bovi Health →
           </a>
         </LongformParagraph>
       </LongformSection>
