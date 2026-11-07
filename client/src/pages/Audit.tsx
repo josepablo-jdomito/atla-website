@@ -115,7 +115,6 @@ export default function Audit() {
               {copy.title}
             </h1>
             <p className="audit-hero__lead">{copy.lead}</p>
-            <p className="audit-hero__byline">{copy.byline}</p>
             {done ? null : (
               <p className="audit-hero__action">
                 <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-hero__button" onClick={openAuditFlow}>

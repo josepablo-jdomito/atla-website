@@ -415,9 +415,8 @@ export const siteCopy = {
     // the title (design pass 2026-11-07). Policies confirmed by JP the same day:
     // the audit is private; it is sent by email as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
-    byline: "José Pablo, founder of Atla",
     title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
-    lead: "We all need an extra pair of eyes. I think you're too close to your brand and you're attached to it, so on Instagram I break down brands I don't work for, and here I do the same with yours.",
+    lead: "We all need an extra pair of eyes. I think you're too close to your brand and you're attached to it.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
       label: "This week",

@@ -1159,9 +1159,7 @@ html[data-consent="open"] .site-explore { display: none; }
 [data-drawing][data-live] > img { visibility: hidden; }
 .audit-hero__text { display: grid; gap: 0; justify-items: start; }
 .audit-hero__lead { margin: var(--space-5) 0 0; }
-.audit-hero__byline { margin: var(--space-4) 0 0; }
 .audit-hero__action { margin: var(--space-7) 0 0; }
-.audit-hero__byline { font-size: var(--t-ui); line-height: var(--lh-ui); color: var(--site-muted); }
 .audit-hero__title { max-width: 16ch; margin: 0; }
 .audit-hero__lead { max-width: 36rem; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
 .audit-hero__action { width: 100%; }
