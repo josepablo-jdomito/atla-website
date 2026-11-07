@@ -431,12 +431,12 @@ export const siteCopy = {
       updatedMinutes: "Updated a few minutes ago",
       resets: "Five new spots every Monday",
     },
-    // Three drawn steps (Higgsfield, after JP's references: thick even line, halftone fills, geometric characters), one line each.
+    // Three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd, hand-inked, halftone), one line each.
     howTitle: "How it works",
     steps: [
-      { src: "/audit/landing/step-1.webp", alt: "A brand going into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", alt: "A character looking at a brand through a magnifying glass", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", alt: "A video arriving on a screen", line: "You get the video: what works, what doesn't, and what I'd fix first. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
+      { src: "/audit/landing/step-1.webp", alt: "A little shop with human legs climbing into a mailbox", line: "You send me your website or your Instagram." },
+      { src: "/audit/landing/step-2.webp", alt: "A shopper whose head is one big eye, inspecting a little shop in his cart", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
+      { src: "/audit/landing/step-3.webp", alt: "A phone with legs and a bowler hat ringing a doorbell, holding a play button as a gift", line: "You get the video: what works, what doesn't, and what I'd fix first. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
     formTitle: "Send me your brand",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off but I don't know what, send it.",
