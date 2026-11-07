@@ -235,6 +235,11 @@ export default function Audit() {
                 </span>
               </li>
             ))}
+            {copy.proofMarks.map((item) => (
+              <li key={item.name} className="audit-proof__mark audit-proof__mark--wide">
+                <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
+              </li>
+            ))}
             {copy.proofNames.map((name) => (
               <li key={name} className="audit-proof__name">
                 {name}

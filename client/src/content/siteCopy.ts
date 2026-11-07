@@ -459,8 +459,9 @@ export const siteCopy = {
       { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", markWidth: 908, markHeight: 202 },
       { name: "Acre", award: "MICHELIN Green Star", src: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", markWidth: 1762, markHeight: 600 },
     ],
-    // Marks without a logo file yet are set in type (Ulysses has no public site; its wordmark is pending).
-    proofNames: ["Ulysses"],
+    // Ulysses's wordmark, cut from its brand guidelines (Downloads, 2025-10-02), with Anything beside it as the two venture-backed ones.
+    proofMarks: [{ name: "Ulysses", src: "/logos-v2/ulysses.png", width: 1400, height: 161 }],
+    proofNames: [] as string[],
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },

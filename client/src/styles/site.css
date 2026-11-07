@@ -1205,6 +1205,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-proof__name { font-family: var(--site-display); font-size: var(--t-h3); line-height: 1; letter-spacing: -0.01em; }
 .audit-proof__mark { flex: 0 0 auto; width: calc(var(--space-9) + var(--space-5)); }
 .audit-proof__mark img { display: block; width: 100%; height: auto; max-height: var(--space-6); object-fit: contain; }
+.audit-proof__mark--wide { width: calc(var(--space-10) + var(--space-6)); }
 @media (prefers-color-scheme: dark) { .audit-proof__mark img { filter: invert(1); } }
 
 /* The form and its argument. */
