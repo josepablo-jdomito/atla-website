@@ -1214,13 +1214,14 @@ html[data-consent="open"] .site-explore { display: none; }
 @keyframes audit-rise { from { opacity: 0; transform: translateY(var(--space-3)); } to { opacity: 1; transform: none; } }
 @keyframes audit-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(calc(-1 * var(--space-2))); } }
 @keyframes audit-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
-.audit[data-motion] .audit-hero__text > * { animation: audit-rise 400ms var(--site-ease) both; }
-.audit[data-motion] .audit-hero__text > :nth-child(2) { animation-delay: 60ms; }
-.audit[data-motion] .audit-hero__text > :nth-child(3) { animation-delay: 120ms; }
-.audit[data-motion] .audit-hero__text > :nth-child(4) { animation-delay: 180ms; }
-.audit[data-motion] .audit-hero__art { animation: audit-rise 500ms var(--site-ease) 120ms both; }
+/* The hero rises only on a navigation (the page faded in); over the first paint it is already there. */
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > * { animation: audit-rise 400ms var(--site-ease) both; }
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > :nth-child(2) { animation-delay: 60ms; }
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > :nth-child(3) { animation-delay: 120ms; }
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > :nth-child(4) { animation-delay: 180ms; }
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__art { animation: audit-rise 500ms var(--site-ease) 120ms both; }
+.site-page:not([data-first-paint]) .audit[data-motion] .audit-slots { animation: audit-rise 400ms var(--site-ease) 240ms both; }
 .audit[data-motion] .audit-hero__art img { animation: audit-float 7s ease-in-out 700ms infinite; }
-.audit[data-motion] .audit-slots { animation: audit-rise 400ms var(--site-ease) 240ms both; }
 .audit[data-motion] .audit-slots__ring[data-taken] { animation: audit-pop var(--d-move) var(--site-ease); }
 .audit[data-motion] [data-reveal] { opacity: 0; transform: translateY(var(--space-4)); transition: opacity 500ms var(--site-ease), transform 500ms var(--site-ease); transition-delay: calc(var(--i, 0) * 90ms); }
 .audit[data-motion] [data-reveal][data-in] { opacity: 1; transform: none; }

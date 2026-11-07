@@ -14,9 +14,12 @@ export function useAuditMotion(root: RefObject<HTMLElement | null>) {
     const node = root.current;
     if (!node) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    node.setAttribute("data-motion", "");
 
+    // What is already on screen (the prerender painted it) stays put: only what is below comes in later.
     const targets = Array.from(node.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const height = window.innerHeight || document.documentElement.clientHeight;
+    for (const el of targets) if (el.getBoundingClientRect().top < height) el.setAttribute("data-in", "");
+    node.setAttribute("data-motion", "");
     if (!targets.length || typeof IntersectionObserver === "undefined") {
       targets.forEach((el) => el.setAttribute("data-in", ""));
       return () => node.removeAttribute("data-motion");
