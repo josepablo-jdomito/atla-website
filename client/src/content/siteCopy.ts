@@ -401,7 +401,7 @@ export const siteCopy = {
     done: "Check your inbox for a note from José Pablo.",
     bookCall: "Book a call",
   },
-  // The free audit, at /audit (JP, 2026-11-07, interview): the reader comes from JP's reels, the magic is JP
+  // The free audit, at /audit (JP, 2026-11-07, interview; the deliverable is a brand audit, not a video, JP same day): the reader comes from JP's reels, the magic is JP
   // himself looking at their brand, so the page is JP in first person. Lines follow VOICE-JP.md (vault,
   // Resources/jdomito-content/craft): his camera lines, "I think", "say, hey", no triads, no cute one-liners.
   // What he usually finds, what they get, three fields; read in two minutes. The number is said in words only
@@ -409,13 +409,13 @@ export const siteCopy = {
   audit: {
     metaTitle: "Free brand audit from José Pablo",
     metaDescription:
-      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get a short video with what works and what he'd change first. Five a week.",
+      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get an honest audit: what works, and what he'd change first. Five a week.",
     // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP above the
     // title, state the offer in the title, JP's own line opens the lead. Policies confirmed by JP the same day:
     // the video is private; it is sent as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
     eyebrow: "José Pablo, founder of Atla",
-    title: "Send me your brand. I'll record a free video on what works and what doesn't.",
+    title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
     lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
@@ -438,8 +438,8 @@ export const siteCopy = {
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and record a short video. I start with what I like, then what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", alt: "The bottle walking off with a phone under its arm while the man waves goodbye", line: "You get the video by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
+      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
+      { src: "/audit/landing/step-3.webp", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
@@ -449,7 +449,7 @@ export const siteCopy = {
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
     // Under the button: the private promise (JP, 2026-11-07), the no-catch line, the no-effort line.
     assurances: [
-      "The video is only for you. I don't post it, and your brand doesn't end up in a reel.",
+      "The audit is only for you. I don't post it, and your brand doesn't end up in a reel.",
       "I think a few of you will want to work with Atla later. Most won't, and that's all right.",
       "No call, nothing to prepare. It's free, and I send it as soon as it's ready.",
     ],
@@ -465,8 +465,8 @@ export const siteCopy = {
     rateLimited: "Too many tries from here. Try again later.",
     network: "That didn't go through. What you wrote is still here.",
     done: {
-      open: { title: "Got it.", line: "You're in this week's five. The video comes by email, from me, as soon as it's ready." },
-      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them, in the order it came in. The video comes by email as soon as it's ready." },
+      open: { title: "Got it.", line: "You're in this week's five. The audit comes by email, from me, as soon as it's ready." },
+      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them, in the order it came in. The audit comes by email as soon as it's ready." },
       error: { title: "That didn't go through.", line: "Nothing was lost. Scroll up and send it again in a moment." },
     },
     // After the send: one micro step and the one research question (CRO review, section six).
