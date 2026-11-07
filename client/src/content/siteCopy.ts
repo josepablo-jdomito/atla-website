@@ -447,6 +447,8 @@ export const siteCopy = {
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
+    // The hero button (JP, 2026-11-07: "un botón que diga start free audit request"); the header keeps the short door.
+    heroCta: "Start free audit request",
     proofLabel: "Brands I've worked with",
     // The social proof under the steps (JP, 2026-11-07: "que se vea de que este cabrón es la verga"). Every claim
     // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
@@ -470,7 +472,7 @@ export const siteCopy = {
     // JP, 2026-11-07: the email may join the lists, so the line says it (red team P0-3).
     privacyNotice: "We use this to reply, to run your audit and, now and then, to send you news from Atla and WeLoveDaily. You can unsubscribe any time.",
     privacyLink: "Privacy",
-    submit: "Send it",
+    submit: "Start free audit request",
     sending: "Sending",
     retry: "Try again",
     nameError: "I need a name.",

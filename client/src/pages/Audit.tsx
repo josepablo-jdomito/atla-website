@@ -189,8 +189,8 @@ export default function Audit() {
             <p className="audit-hero__lead">{copy.lead}</p>
             {done && done !== "error" ? null : (
               <p className="audit-hero__action">
-                <a href={`#${AUDIT_FORM_ID}`} className="site-action" onClick={goToForm}>
-                  {copy.cta}
+                <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-hero__button" onClick={goToForm}>
+                  {copy.heroCta}
                 </a>
               </p>
             )}
@@ -306,7 +306,7 @@ export default function Audit() {
             ) : (
               <>
                 <div className="audit-ask__intro">
-                  <h2 id={`${baseId}-ask`} className="site-section-title">
+                  <h2 id={`${baseId}-ask`} className="audit-ask__title">
                     {copy.formTitle}
                   </h2>
                   <p className="audit-fit">{copy.fit}</p>
@@ -369,7 +369,7 @@ export default function Audit() {
                   </div>
 
                   <div className="brief-actions">
-                    <button type="submit" className="site-action" disabled={sending}>
+                    <button type="submit" className="audit-submit" disabled={sending}>
                       {sending ? copy.sending : status === "failed" ? copy.retry : copy.submit}
                     </button>
                     <p
