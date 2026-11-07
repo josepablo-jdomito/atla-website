@@ -29,6 +29,19 @@ export function truncateOnWord(value: string, max = META_DESCRIPTION_MAX) {
   return `${cut.replace(/[\s,;:.\-–—]+$/, "")}…`;
 }
 
+/**
+ * A description longer than the meta limit ends at its last whole sentence inside the limit, when
+ * that leaves enough of it (the descriptions are written so the first sentence or two carry the
+ * page); otherwise it is cut on a word with an ellipsis.
+ */
+export function cutAtSentence(value: string, max = META_DESCRIPTION_MAX, min = 60) {
+  if (value.length <= max) return value;
+  const window = value.slice(0, max + 1);
+  const match = window.match(/^[\s\S]*[.!?]["')\]]*(?=\s)/);
+  if (match && match[0].length >= min) return match[0].trim();
+  return truncateOnWord(value, max);
+}
+
 /** Drops Sanity placeholder text: a leading "testing" token and the generic "X is an Atla case study…" line. */
 export function cleanProjectSummary(value: string | null | undefined) {
   const text = collapseWhitespace(value).replace(/^testing\b[\s:.,\-–—]*/i, "");
@@ -73,7 +86,7 @@ export function buildProjectMetaDescription(input: ProjectMetaInput) {
   const summary = cleanProjectSummary(input.description);
 
   if (summary.length >= META_DESCRIPTION_KEEP) {
-    return truncateOnWord(summary);
+    return cutAtSentence(summary);
   }
 
   // The dek stands alone with a short close; no generated tail that gets cut mid-phrase.
