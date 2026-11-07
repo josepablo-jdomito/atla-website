@@ -293,6 +293,8 @@ export function AuditFlow({
           </div>
         ) : stage === "brand" ? (
           <form key="brand" className="audit-quiz__step" onSubmit={brandNext} noValidate>
+            {/* The Bottle climbing into the envelope: the page's cast walks into the flow. */}
+            <Drawing className="audit-quiz__cast" src={copy.steps[0].src} clip={copy.steps[0].clip} alt="" width={560} height={560} eager />
             <h2 ref={heading} className="audit-quiz__question" id={`${baseId}-q`}>
               {flow.brandTitle}
             </h2>
@@ -392,9 +394,7 @@ export function AuditFlow({
                     <button type="button" className="audit-quiz__card" aria-pressed={current === card.title} onClick={() => pick(card.title)}>
                       <span className="audit-quiz__card-title">{card.title}</span>
                       <span className="audit-quiz__card-line">{card.line}</span>
-                      <svg className="audit-quiz__card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="m6 3 5 5-5 5" />
-                      </svg>
+                      <span className="audit-quiz__card-ring" aria-hidden="true" />
                     </button>
                   </li>
                 ))}
@@ -402,6 +402,7 @@ export function AuditFlow({
                   <button type="button" className="audit-quiz__card audit-quiz__card--other" onClick={() => setTyping(true)}>
                     <span className="audit-quiz__card-title">{copy.answersOther}</span>
                     <span className="audit-quiz__card-line">{copy.answersOtherLine}</span>
+                    <span className="audit-quiz__card-ring" aria-hidden="true" />
                   </button>
                 </li>
               </ul>

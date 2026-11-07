@@ -162,38 +162,40 @@ export default function Audit() {
         <section id={AUDIT_FORM_ID} className="audit-close" aria-labelledby={`${baseId}-close`}>
           {finished ? (
             <div className="audit-done">
-              <h2 id={`${baseId}-close`} ref={doneHeading} tabIndex={-1} className="audit-close__title">
-                {finished.title}
-              </h2>
-              <p className="audit-done__line">{finished.line}</p>
-              <p className="audit-done__follow">
-                {copy.doneFollow}{" "}
-                <a href={INSTAGRAM_JP} target="_blank" rel="noopener noreferrer" className="audit-done__link">
-                  {copy.doneFollowLink}
-                </a>
-              </p>
-              {sent ? (
-                <div className="audit-answers" role="status">
-                  {answered ? (
-                    <>
-                      <Drawing className="audit-answers__art" src={walk.src} alt={walk.alt} width={560} height={560} />
-                      <p className="audit-answers__thanks">{copy.feedbackDone}</p>
-                    </>
-                  ) : (
-                    <p className="audit-answers__thanks">
-                      {copy.answersClosed}{" "}
-                      <button type="button" className="audit-done__link audit-answers__reopen" onClick={() => setFlowOpen(true)}>
-                        {copy.answersReopen}
-                      </button>
-                    </p>
-                  )}
-                </div>
-              ) : null}
-              <p>
-                <Link href="/" className="site-text-button">
-                  {copy.doneHome}
-                </Link>
-              </p>
+              <div className="audit-done__text">
+                <h2 id={`${baseId}-close`} ref={doneHeading} tabIndex={-1} className="audit-close__title">
+                  {finished.title}
+                </h2>
+                <p className="audit-done__line">{finished.line}</p>
+                <p className="audit-done__follow">
+                  {copy.doneFollow}{" "}
+                  <a href={INSTAGRAM_JP} target="_blank" rel="noopener noreferrer" className="audit-done__link">
+                    {copy.doneFollowLink}
+                  </a>
+                </p>
+                {sent && !answered ? (
+                  <div className="audit-done__ask">
+                    <p className="audit-done__line">{copy.answersClosed}</p>
+                    <button type="button" className="audit-submit audit-done__button" onClick={() => setFlowOpen(true)}>
+                      {copy.answersReopen}
+                    </button>
+                  </div>
+                ) : null}
+                {sent && answered ? (
+                  <p className="audit-done__line" role="status">
+                    {copy.feedbackDone} {copy.answersDoneLine}
+                  </p>
+                ) : null}
+                <p className="audit-done__home">
+                  <Link href="/" className="site-text-button">
+                    {copy.doneHome}
+                  </Link>
+                </p>
+              </div>
+              {/* The Bottle walks off with its sheet, running off the edge like the Inspector did. */}
+              <figure className="audit-done__art" aria-hidden="true">
+                <Drawing src={walk.src} alt="" width={560} height={560} />
+              </figure>
             </div>
           ) : (
             <>

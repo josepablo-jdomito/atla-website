@@ -1260,7 +1260,14 @@ html[data-consent="open"] .site-explore { display: none; }
 .site-header--landing .site-header__cta { text-decoration: none; }
 .audit-submit:active:not(:disabled) { transform: scale(0.985); }
 .audit-submit:disabled { opacity: 0.4; cursor: default; }
-.audit-done { display: grid; gap: var(--space-4); max-width: 40rem; }
+.audit-done { position: relative; display: grid; gap: var(--space-4); width: 100%; overflow: hidden; margin-inline: calc(-1 * var(--site-gutter)); padding-inline: var(--site-gutter); }
+.audit-done__text { display: grid; gap: var(--space-4); justify-items: start; max-width: 36rem; }
+.audit-done__ask { display: grid; gap: var(--space-3); justify-items: start; margin-top: var(--space-2); }
+.audit-done__button { width: auto; min-width: 12rem; }
+.audit-done__home { margin: var(--space-2) 0 0; }
+.audit-done__art { width: 64%; max-width: 20rem; margin: calc(-1 * var(--space-4)) calc(-1 * var(--site-gutter) - 8%) 0 auto; pointer-events: none; }
+.audit-done__art img { display: block; width: 100%; height: auto; }
+@media (prefers-color-scheme: dark) { .audit-done__art img { filter: invert(1); } }
 .audit-done__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
 .audit-done__follow { margin: 0; font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-muted); }
 .audit-done__link { color: var(--site-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -1277,22 +1284,24 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__count { text-align: center; font-size: var(--t-ui); font-weight: 500; line-height: var(--lh-ui); color: var(--site-muted); }
 .audit-quiz__progress { height: 1px; margin: 0 var(--site-gutter); background: var(--site-line); }
 .audit-quiz__progress-fill { display: block; height: 100%; background: var(--site-ink); transform-origin: left; transition: transform var(--d-move) var(--site-ease); }
-.audit-quiz__body { display: grid; align-content: start; justify-items: center; padding: var(--space-7) var(--site-gutter) var(--space-9); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.audit-quiz__step, .audit-quiz__done { display: grid; gap: var(--space-6); width: 100%; max-width: 32rem; }
-.audit-quiz__done { justify-items: start; }
+.audit-quiz__body { display: grid; align-content: start; justify-items: center; padding: var(--space-6) var(--site-gutter) var(--space-9); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.audit-quiz__step, .audit-quiz__done { display: grid; gap: var(--space-6); width: 100%; max-width: 32rem; justify-items: start; }
+/* The cast on the first screen: small, at the right, the question under it. */
+.audit-quiz__cast { display: block; width: 40%; max-width: 11rem; justify-self: end; margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-3)) calc(-1 * var(--space-5)) 0; aspect-ratio: 1; }
+.audit-quiz__cast img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+@media (prefers-color-scheme: dark) { .audit-quiz__cast img { filter: invert(1); } }
 .audit-quiz__question { margin: 0; font-family: var(--site-display); font-size: var(--t-h1); font-weight: 400; line-height: var(--lh-tight); letter-spacing: -0.01em; text-wrap: balance; }
 .audit-quiz__question:focus { outline: none; }
-.audit-quiz__cards { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
-.audit-quiz__card { display: grid; grid-template-columns: minmax(0, 1fr) var(--space-5); grid-template-rows: auto auto; column-gap: var(--space-3); row-gap: var(--space-1); align-items: center; width: 100%; min-height: 64px; padding: var(--space-4) var(--space-5); border: 1px solid var(--site-line); border-radius: var(--r-card); background: var(--site-surface); color: var(--site-ink); font: inherit; text-align: left; cursor: pointer; transition: border-color var(--d-hover) var(--site-ease), background-color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
-.audit-quiz__card:hover { border-color: var(--site-ink); }
-.audit-quiz__card:active { transform: scale(0.99); }
-.audit-quiz__card:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; }
-.audit-quiz__card[aria-pressed="true"] { border-color: var(--site-ink); background: var(--site-ink); color: var(--site-bg); }
-.audit-quiz__card[aria-pressed="true"] .audit-quiz__card-line { color: inherit; opacity: 0.7; }
+.audit-quiz__cards { display: grid; width: 100%; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
+/* A choice row (DESIGN.md): the words, a quiet ring at the end, filled when chosen. Never a box. */
+.audit-quiz__card { display: grid; grid-template-columns: minmax(0, 1fr) var(--space-5); grid-template-rows: auto auto; column-gap: var(--space-4); row-gap: var(--space-1); align-items: center; width: 100%; min-height: 64px; padding: var(--space-4) 0; border: 0; border-bottom: 1px solid var(--site-line); border-radius: 0; background: none; color: var(--site-ink); font: inherit; text-align: left; cursor: pointer; transition: opacity var(--d-hover) var(--site-ease); }
+.audit-quiz__card:active { opacity: 0.7; }
+.audit-quiz__card:focus-visible { outline: 2px solid var(--site-ink); outline-offset: -2px; border-radius: var(--r-row); }
+.audit-quiz__card-ring { grid-column: 2; grid-row: 1 / span 2; justify-self: end; width: var(--space-5); height: var(--space-5); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-hover) var(--site-ease), transform var(--d-hover) var(--site-ease); }
+.audit-quiz__card[aria-pressed="true"] .audit-quiz__card-ring { background: var(--site-ink); transform: scale(1.1); }
+@media (hover: hover) and (pointer: fine) { .audit-quiz__card:hover .audit-quiz__card-ring { background: var(--site-line); } }
 .audit-quiz__card-title { grid-column: 1; font-size: var(--t-h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
 .audit-quiz__card-line { grid-column: 1; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-.audit-quiz__card-arrow { grid-column: 2; grid-row: 1 / span 2; justify-self: end; color: var(--site-muted); }
-.audit-quiz__card--other { background: transparent; }
 .audit-quiz__form { display: grid; gap: var(--space-4); }
 .audit-quiz__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
 .audit-quiz__question + .audit-quiz__line { margin-top: calc(var(--space-3) - var(--space-6)); }
@@ -1306,7 +1315,7 @@ html[data-consent="open"] .site-explore { display: none; }
 @media (hover: none) { .audit-quiz__keys { display: none; } }
 .audit-quiz__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-top: var(--space-2); }
 .audit-quiz__button { width: auto; min-width: 12rem; }
-.audit-quiz__art { display: block; width: calc(var(--space-10) + var(--space-9)); aspect-ratio: 1; }
+.audit-quiz__art { display: block; width: 60%; max-width: 18rem; justify-self: end; margin: 0 calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) 0; aspect-ratio: 1; }
 .audit-quiz__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
 @media (prefers-color-scheme: dark) { .audit-quiz__art img { filter: invert(1); } }
 /* Each step comes in from the right, the way the next card in a deck would. */
@@ -1317,8 +1326,6 @@ html[data-consent="open"] .site-explore { display: none; }
 @media (prefers-reduced-motion: reduce) { .audit-quiz__step, .audit-quiz__done > * { animation: none; } }
 @media (min-width: 768px) {
   .audit-quiz__body { padding-top: var(--space-9); }
-  .audit-quiz__question { text-align: center; }
-  .audit-quiz__step { justify-items: center; }
   .audit-quiz__cards, .audit-quiz__form { width: 100%; }
 }
 /* On the page: the line while the quiz is closed, the Bottle once it is done. */
@@ -1376,6 +1383,8 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-scene { gap: var(--space-7); }
   .audit-proof { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
   .audit-close { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
+  .audit-close > .audit-done { grid-column: 1 / -1; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: end; margin: 0; padding: 0; }
+  .audit-done__art { width: 100%; max-width: 24rem; margin: 0 0 0 auto; }
 }
 @media (min-width: 1280px) {
 }
