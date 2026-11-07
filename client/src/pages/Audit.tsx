@@ -181,7 +181,7 @@ export default function Audit() {
                 <div className="audit-answers" role="status">
                   {answered ? (
                     <>
-                      <Drawing className="audit-answers__art" src={walk.src} clip={walk.clip} alt={walk.alt} width={560} height={560} />
+                      <Drawing className="audit-answers__art" src={walk.src} alt={walk.alt} width={560} height={560} />
                       <p className="audit-answers__thanks">{copy.feedbackDone}</p>
                     </>
                   ) : (

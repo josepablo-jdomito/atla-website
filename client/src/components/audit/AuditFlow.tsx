@@ -281,7 +281,8 @@ export function AuditFlow({
       <div className="audit-quiz__body">
         {done ? (
           <div className="audit-quiz__done" role="status">
-            <Drawing className="audit-quiz__art" src={walk.src} clip={walk.clip} alt={walk.alt} width={560} height={560} />
+            {/* The still only: a video blend inside a fixed layer shows its white box on iOS Safari. */}
+            <Drawing className="audit-quiz__art" src={walk.src} alt={walk.alt} width={560} height={560} />
             <h2 className="audit-quiz__question" id={`${baseId}-q`}>
               {hasAny(answers) ? copy.feedbackDone : copy.feedbackSkipped}
             </h2>
