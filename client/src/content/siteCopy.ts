@@ -438,7 +438,7 @@ export const siteCopy = {
     },
     // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
     // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
-    heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 740, height: 1000 },
+    heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 810, height: 1080 },
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
