@@ -401,15 +401,15 @@ export const siteCopy = {
     done: "Check your inbox for a note from José Pablo.",
     bookCall: "Book a call",
   },
-  // The free audit, at /audit (JP, 2026-11-07): the page sells the audit itself, then takes the request.
-  // The number is said in words only ("five a week"); the cap lives in shared/audit.ts. Nothing here
-  // names a client or a past audit.
+  // The free audit, at /audit (JP, 2026-11-07): one pitch, three steps, three fields, read in two minutes
+  // (oddit.co/pages/free-trial). The number is said in words only ("five a week"); the cap lives in
+  // shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
     metaTitle: "Free brand audit, five a week",
     metaDescription:
       "The audit Atla's clients pay for, free for five brands a week. Send us where your brand lives today and get a short video on what is holding it back, in the order to fix it, plus a few of the fixes made.",
     title: "The audit our clients pay for. Free, for five brands a week.",
-    lead: "Send us where your brand lives today: the site, the Instagram, the product, the packaging. José Pablo reads it the way a buyer does and records a short video on what is holding it back, in the order to fix it. Then we make a few of the fixes.",
+    lead: "Send us where your brand lives. José Pablo records a short video on what is holding it back, in the order to fix it, and we make a few of the fixes.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
     week: {
       label: "This week",
@@ -417,44 +417,15 @@ export const siteCopy = {
       open: "This week's five are still open.",
       full: "This week's five are taken. Apply now and you are first in line for next week.",
     },
-    getTitle: "What you get",
-    get: [
-      {
-        title: "A short video",
-        line: "José Pablo walks through your brand as a buyer sees it: what works, what is in the way, and the order to fix it. Yours to keep and to share with your team.",
-      },
-      {
-        title: "A few fixes, made",
-        line: "The quickest wins, done rather than described: a headline, a lockup, a page, a label. In Figma or live in code.",
-      },
-      {
-        title: "The honest read",
-        line: "No deck and no pitch. If we think you should not hire a studio yet, we say so and tell you what to do instead.",
-      },
-    ],
-    whyTitle: "Why it is free",
-    why: [
-      "Because we only do five a week. Each one is done by the people who run the studio, not a junior with a template, and that is time we would otherwise bill.",
-      "We do it because the brands we most want to work with rarely know they need us until someone shows them. Some audits turn into projects. Most turn into a better brand and a founder who remembers who told them first.",
-    ],
-    forTitle: "Who it is for",
-    for: "Founders and brand leads with something live: a product people buy, a site people visit, a feed people follow. Launching, raising, growing or repositioning. If the brand is still an idea, start with the brief instead.",
-    forLink: "Start with the brief",
     howTitle: "How it works",
     how: [
-      { title: "Apply", line: "The form below, a few minutes. Tell us where the brand lives and what you want us to look at first." },
-      { title: "We pick it up", line: "Five a week, in order of arrival. If this week's five are taken, yours is first in the next." },
-      { title: "Your video lands", line: "In your inbox, from José Pablo, with the fixes alongside or shortly after." },
+      "Send your website or Instagram below.",
+      "José Pablo reads it the way a buyer does and records the video.",
+      "It lands in your inbox with the fixes. Five a week, in order of arrival.",
     ],
     formTitle: "Apply for this week",
-    fields: {
-      name: "Name",
-      email: "Email",
-      site: "Website or Instagram",
-      moment: "Your moment",
-      investing: "Investing in brand this year?",
-      message: "What should we look at first?",
-    },
+    fields: { site: "Website or Instagram", name: "Name", email: "Email" },
+    terms: "Free, because we only do five a week. No call, no deck, no card.",
     privacyNotice: "We use this to reply and to run your audit.",
     privacyLink: "Privacy",
     submit: "Apply for a free audit",
@@ -463,7 +434,6 @@ export const siteCopy = {
     nameError: "We need a name.",
     emailError: "We need an email we can reply to.",
     siteError: "We need a website or an Instagram to look at.",
-    choiceError: "Pick one.",
     rateLimited: "Too many tries. Try again soon.",
     network: "That did not go through. What you wrote is still here.",
     done: {

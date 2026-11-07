@@ -1,15 +1,6 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Link } from "wouter";
-import {
-  AUDIT_INVESTING,
-  AUDIT_MOMENTS,
-  EMPTY_AUDIT,
-  MAX_AUDIT_MESSAGE,
-  auditSchema,
-  type AuditDraft,
-  type AuditOption,
-  type AuditWeek,
-} from "@shared/audit";
+import { EMPTY_AUDIT, auditSchema, type AuditDraft, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
@@ -18,10 +9,10 @@ import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete } from "@/lib/ga";
 
 /**
- * The free audit (/audit, JP 2026-11-07): one page that sells the audit, then takes the request.
- * The title, the lead and the week's line stay beside the argument on wide screens; the form closes
- * the page. The week's line is live from /api/audit/status; the prerender shows the neutral one.
- * Delivered like the brand check (server/audit/route.ts).
+ * The free audit (/audit, JP 2026-11-07): one pitch, three steps, three fields, read in two minutes
+ * (oddit.co/pages/free-trial). The title, the lead and the week's line stay beside the steps and the
+ * form on wide screens. The week's line is live from /api/audit/status; the prerender shows the
+ * neutral one. Delivered like the brand check (server/audit/route.ts).
  */
 
 const copy = siteCopy.audit;
@@ -29,25 +20,14 @@ const copy = siteCopy.audit;
 type Field = keyof AuditDraft;
 type Status = "idle" | "sending" | "rate-limited" | "failed";
 
-const TEXT_FIELDS = [
+const FIELDS = [
+  { key: "site", type: "text", autoComplete: "url" },
   { key: "name", type: "text", autoComplete: "name" },
   { key: "email", type: "email", autoComplete: "email" },
-  { key: "site", type: "text", autoComplete: "url" },
 ] as const;
 
-const CHOICES: { key: "moment" | "investing"; options: readonly AuditOption[] }[] = [
-  { key: "moment", options: AUDIT_MOMENTS },
-  { key: "investing", options: AUDIT_INVESTING },
-];
-
-const ERROR_FOR: Partial<Record<Field, string>> = {
-  name: copy.nameError,
-  email: copy.emailError,
-  site: copy.siteError,
-  moment: copy.choiceError,
-  investing: copy.choiceError,
-};
-const FIELD_ORDER: Field[] = ["name", "email", "site", "moment", "investing"];
+const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
+const FIELD_ORDER: Field[] = ["site", "name", "email"];
 
 function newSubmissionId(): string {
   try {
@@ -100,11 +80,7 @@ export default function Audit() {
       for (const key of FIELD_ORDER) if (issues.has(key)) next[key] = ERROR_FOR[key];
       setErrors(next);
       const first = FIELD_ORDER.find((key) => next[key]);
-      if (first) {
-        const target =
-          document.getElementById(fieldId(first)) ?? document.querySelector<HTMLInputElement>(`input[name="${first}"]`);
-        target?.focus();
-      }
+      if (first) document.getElementById(fieldId(first))?.focus();
       return;
     }
     setStatus("sending");
@@ -139,54 +115,14 @@ export default function Audit() {
         </header>
 
         <div className="audit-body">
-          <section className="audit-section" aria-labelledby={`${baseId}-get`}>
-            <h2 id={`${baseId}-get`} className="site-section-title">
-              {copy.getTitle}
-            </h2>
-            <ul className="audit-rows">
-              {copy.get.map((item) => (
-                <li key={item.title} className="audit-row">
-                  <h3 className="site-item-title audit-row__title">{item.title}</h3>
-                  <p className="audit-row__line">{item.line}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="audit-section" aria-labelledby={`${baseId}-why`}>
-            <h2 id={`${baseId}-why`} className="site-section-title">
-              {copy.whyTitle}
-            </h2>
-            <div className="audit-prose">
-              {copy.why.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-          </section>
-
-          <section className="audit-section" aria-labelledby={`${baseId}-for`}>
-            <h2 id={`${baseId}-for`} className="site-section-title">
-              {copy.forTitle}
-            </h2>
-            <div className="audit-prose">
-              <p>{copy.for}</p>
-              <p>
-                <Link href="/brief" className="site-text-button audit-prose__door">
-                  {copy.forLink}
-                </Link>
-              </p>
-            </div>
-          </section>
-
           <section className="audit-section" aria-labelledby={`${baseId}-how`}>
             <h2 id={`${baseId}-how`} className="site-section-title">
               {copy.howTitle}
             </h2>
             <ol className="audit-rows audit-steps">
               {copy.how.map((step) => (
-                <li key={step.title} className="audit-row">
-                  <h3 className="site-item-title audit-row__title">{step.title}</h3>
-                  <p className="audit-row__line">{step.line}</p>
+                <li key={step} className="audit-row">
+                  <p className="audit-step__line">{step}</p>
                 </li>
               ))}
             </ol>
@@ -212,7 +148,7 @@ export default function Audit() {
                 </h2>
                 <form className="audit-form" onSubmit={submit} noValidate>
                   <div className="brief-fields audit-fields">
-                    {TEXT_FIELDS.map((field) => {
+                    {FIELDS.map((field) => {
                       const id = fieldId(field.key);
                       const error = errors[field.key];
                       return (
@@ -245,63 +181,6 @@ export default function Audit() {
                     })}
                   </div>
 
-                  {CHOICES.map(({ key, options }) => {
-                    const error = errors[key];
-                    return (
-                      <fieldset
-                        key={key}
-                        className="bcheck-choice"
-                        data-field={key}
-                        aria-describedby={error ? `${fieldId(key)}-error` : undefined}
-                        aria-invalid={error ? true : undefined}
-                        disabled={sending}
-                      >
-                        <legend className="brief-field__label bcheck-choice__legend">{copy.fields[key]}</legend>
-                        <div className="bcheck-choice__options">
-                          {options.map((option, i) => {
-                            const id = i === 0 ? fieldId(key) : `${fieldId(key)}-${option.value}`;
-                            return (
-                              <label key={option.value} className="bcheck-option">
-                                <input
-                                  id={id}
-                                  type="radio"
-                                  name={key}
-                                  value={option.value}
-                                  className="bcheck-option__input"
-                                  checked={draft[key] === option.value}
-                                  onChange={() => set(key, option.value)}
-                                  required
-                                />
-                                <span className="bcheck-option__label">{option.label}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
-                        {error ? (
-                          <p id={`${fieldId(key)}-error`} className="brief-field__error">
-                            {error}
-                          </p>
-                        ) : null}
-                      </fieldset>
-                    );
-                  })}
-
-                  <div className="brief-field" data-field="message">
-                    <label htmlFor={fieldId("message")} className="brief-field__label">
-                      {copy.fields.message}
-                    </label>
-                    <textarea
-                      id={fieldId("message")}
-                      className="brief-input bcheck-message"
-                      name="message"
-                      rows={3}
-                      maxLength={MAX_AUDIT_MESSAGE}
-                      value={draft.message}
-                      onChange={(event) => set("message", event.target.value)}
-                      disabled={sending}
-                    />
-                  </div>
-
                   {/* Honeypot: people never see or reach it; bots that fill every field give themselves away. */}
                   <div className="brief-hp" hidden>
                     <label htmlFor={`${baseId}-gotcha`}>Leave this empty</label>
@@ -316,6 +195,7 @@ export default function Audit() {
                     />
                   </div>
 
+                  <p className="audit-terms">{copy.terms}</p>
                   <p className="brief-privacy bcheck-privacy">
                     {copy.privacyNotice} <Link href="/privacy">{copy.privacyLink}</Link>
                   </p>

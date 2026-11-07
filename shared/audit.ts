@@ -1,24 +1,16 @@
 import { z } from "zod";
-import { BRAND_CHECK_INVESTING, BRAND_CHECK_MOMENTS, brandCheckLabel, brandFromSite, type BrandCheckOption } from "./brandCheck.ts";
+import { brandFromSite } from "./brandCheck.ts";
 
 /**
  * The free brand audit (/audit, JP 2026-11-07): the audit clients pay for, free for five brands a
  * week, in order of arrival. One screen, a few fields, delivered like the brand check (an Attio
  * note and an email to the studio) plus a shared weekly counter that tells the page whether this
- * week's five are taken. The option labels live in shared/brandCheck.ts so both doors read the same.
+ * week's five are taken. Three fields (JP, 2026-11-07, after oddit.co/pages/free-trial): the page
+ * reads in two minutes.
  */
 
 /** Audits per ISO week. The only place the number lives; the page says it in words. */
 export const AUDITS_PER_WEEK = 5;
-
-export const AUDIT_MOMENTS = BRAND_CHECK_MOMENTS;
-export const AUDIT_INVESTING = BRAND_CHECK_INVESTING;
-export type AuditOption = BrandCheckOption;
-
-const values = <T extends readonly AuditOption[]>(options: T) =>
-  options.map((o) => o.value) as unknown as [T[number]["value"], ...T[number]["value"][]];
-
-export const MAX_AUDIT_MESSAGE = 2000;
 
 /** A website ("brand.com", "https://brand.com/x") or an Instagram ("@brand", "instagram.com/brand"): one word, no spaces. */
 const siteOrHandle = z
@@ -34,15 +26,12 @@ export const auditSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(200),
   site: siteOrHandle,
-  moment: z.enum(values(AUDIT_MOMENTS)),
-  investing: z.enum(values(AUDIT_INVESTING)),
-  message: z.string().trim().max(MAX_AUDIT_MESSAGE).optional().default(""),
 });
 
 export type AuditRequest = z.infer<typeof auditSchema>;
 /** What the form holds while the visitor fills it: every field a string, "" when untouched. */
 export type AuditDraft = Record<keyof AuditRequest, string>;
-export const EMPTY_AUDIT: AuditDraft = { name: "", email: "", site: "", moment: "", investing: "", message: "" };
+export const EMPTY_AUDIT: AuditDraft = { name: "", email: "", site: "" };
 
 /** Whether this week's five are still open. The page shows one line for each. */
 export type AuditWeek = "open" | "full";
@@ -60,4 +49,4 @@ export function isoWeek(date: Date = new Date()): string {
   return `${d.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
 }
 
-export { brandCheckLabel as auditLabel, brandFromSite };
+export { brandFromSite };

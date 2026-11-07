@@ -1,5 +1,5 @@
-import { AUDIT_INVESTING, AUDIT_MOMENTS, AUDITS_PER_WEEK, auditLabel, brandFromSite, type AuditRequest } from "../../shared/audit.ts";
-import { multiLine, singleLine } from "../contact.ts";
+import { AUDITS_PER_WEEK, brandFromSite, type AuditRequest } from "../../shared/audit.ts";
+import { singleLine } from "../contact.ts";
 import { deliverNoteToAttio, sendStudioEmail } from "../brief/deliver.ts";
 
 /**
@@ -17,23 +17,16 @@ const slotLine = (slot: AuditSlot) =>
     ? `Week ${slot.week}: request ${slot.count} of ${AUDITS_PER_WEEK}, this week is full, queued for next week`
     : `Week ${slot.week}: request ${slot.count} of ${AUDITS_PER_WEEK}, in this week's five`;
 
-/** English, deterministic, no AI: the fields as the visitor saw them, values in brackets for Attio. */
+/** English, deterministic, no AI: the fields as the visitor saw them. */
 export function formatAuditSummary(request: AuditRequest, slot: AuditSlot): string {
-  const choice = (options: Parameters<typeof auditLabel>[0], value: string) =>
-    `${singleLine(auditLabel(options, value))} [${singleLine(value)}]`;
-  const lines = [
+  return [
     "New free audit request from atla.design/audit",
     "",
     `Name: ${singleLine(request.name)}`,
     `Email: ${singleLine(request.email)}`,
     `Website or Instagram: ${singleLine(request.site)}`,
-    `Moment: ${choice(AUDIT_MOMENTS, request.moment)}`,
-    `Investing in brand this year: ${choice(AUDIT_INVESTING, request.investing)}`,
     slotLine(slot),
-  ];
-  const message = multiLine(request.message);
-  if (message) lines.push("", "Message", message);
-  return lines.join("\n");
+  ].join("\n");
 }
 
 /** The Attio note title and the email subject name the brand, never more than one line. */

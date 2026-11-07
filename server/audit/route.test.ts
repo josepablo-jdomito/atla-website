@@ -10,9 +10,6 @@ const REQUEST = {
   name: "Ana Ruiz",
   email: "ana@casamar.example",
   site: "casamar.example",
-  moment: "raise",
-  investing: "maybe",
-  message: "Our deck reads like three companies.",
 };
 const NOW = new Date("2026-11-07T18:00:00Z");
 const id = (n: number) => `bbbbbbbb-cccc-4ddd-8eee-${String(n).padStart(12, "0")}`;
@@ -197,9 +194,8 @@ describe("the note and the email", () => {
     expect(auditTitle(REQUEST as any)).toBe("Free audit: casamar.example");
     expect(auditTitle({ ...REQUEST, site: "@casamar" } as any)).toBe("Free audit: @casamar");
     const open = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 2, full: false });
-    expect(open).toContain("Moment: Raise capital [raise]");
+    expect(open).toContain("Website or Instagram: casamar.example");
     expect(open).toContain("Week 2026-W45: request 2 of 5, in this week's five");
-    expect(open).toContain("Message\nOur deck reads like three companies.");
     const full = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 6, full: true });
     expect(full).toContain("this week is full, queued for next week");
   });
