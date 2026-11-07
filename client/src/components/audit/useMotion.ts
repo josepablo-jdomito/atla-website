@@ -24,19 +24,33 @@ export function useAuditMotion(root: RefObject<HTMLElement | null>) {
       targets.forEach((el) => el.setAttribute("data-in", ""));
       return () => node.removeAttribute("data-motion");
     }
+    // Belt and braces: the observer marks what comes into view; a scroll or resize check does the same
+    // from the boxes, so nothing can stay hidden if the observer is slow or throttled in a background tab.
+    const pending = new Set(targets.filter((el) => !el.hasAttribute("data-in")));
+    const reveal = (el: Element) => {
+      el.setAttribute("data-in", "");
+      pending.delete(el as HTMLElement);
+      observer.unobserve(el);
+    };
+    const check = () => {
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      for (const el of Array.from(pending)) if (el.getBoundingClientRect().top < h * 0.92) reveal(el);
+    };
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          entry.target.setAttribute("data-in", "");
-          observer.unobserve(entry.target);
-        }
+        for (const entry of entries) if (entry.isIntersecting) reveal(entry.target);
       },
       { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
     );
-    targets.forEach((el) => observer.observe(el));
+    pending.forEach((el) => observer.observe(el));
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    const settle = window.setTimeout(check, 400);
     return () => {
       observer.disconnect();
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      window.clearTimeout(settle);
       node.removeAttribute("data-motion");
     };
   }, [root]);
