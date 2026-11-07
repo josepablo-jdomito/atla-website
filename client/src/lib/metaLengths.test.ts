@@ -14,7 +14,7 @@ describe("meta lengths (go-live audit)", () => {
       formatMetaTitle(siteCopy.brief.metaTitle, "Atla"),
       formatMetaTitle(siteCopy.brandCheck.metaTitle, "Atla"),
       formatMetaTitle("Hospitality Branding Agency", "Atla"),
-      formatMetaTitle("SaaS Branding Agency", "Atla"),
+      formatMetaTitle("SaaS Branding Agency for Software Companies", "Atla"),
       formatMetaTitle("Brand Strategy for Growing Companies", "Atla"),
       formatMetaTitle("CPG Branding and Packaging Agency", "Consumer Goods"),
       formatMetaTitle("How We Work", "Branding Process and Engagement Model"),

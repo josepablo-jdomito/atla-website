@@ -21,7 +21,7 @@ export function ClientLogos() {
               <div key={copy} className="client-logos__track">
                 {row.map((item) => (
                   <span key={`${copy}-${item.name}`} className="client-logos__mark">
-                    <img src={item.src} alt="" width={item.width} height={item.height} decoding="async" draggable={false} />
+                    <img src={item.src} alt={item.name} width={item.width} height={item.height} loading="lazy" decoding="async" draggable={false} />
                   </span>
                 ))}
               </div>

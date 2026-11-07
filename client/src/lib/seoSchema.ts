@@ -38,7 +38,8 @@ export function buildBreadcrumbList(items: BreadcrumbItem[]) {
 const JOURNAL_SUFFIX = "Atla Journal";
 
 /** Journal titles: appends "| Atla Journal" only when the base title does not already name it. */
-export function formatJournalMetaTitle(base: string) {
+export function formatJournalMetaTitle(rawBase: string) {
+  const base = rawBase.replace(/\s*[\u2013\u2014]\s*/g, " | ");
   return base.toLowerCase().includes(JOURNAL_SUFFIX.toLowerCase())
     ? formatMetaTitle(base)
     : formatMetaTitle(base, JOURNAL_SUFFIX);

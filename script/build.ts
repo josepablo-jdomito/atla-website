@@ -689,7 +689,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/saas-branding",
-      title: formatMetaTitle("SaaS Branding Agency", "Atla"),
+      title: formatMetaTitle("SaaS Branding Agency for Software Companies", "Atla"),
       description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,

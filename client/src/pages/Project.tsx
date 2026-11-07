@@ -562,6 +562,8 @@ export default function Project() {
                     <iframe
                       src={reduced || motionPaused ? item.src : toVimeoBackgroundUrl(item.src)}
                       title={item.title || `${project.title}, video`}
+                      width={1280}
+                      height={Math.round(1280 / ratioOf(item))}
                       allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                       allowFullScreen
                       loading="lazy"

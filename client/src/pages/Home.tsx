@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { HOME_META_DESCRIPTION, ORGANIZATION_SCHEMA, SITE_ORIGIN, formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { WorkWall } from "@/components/site/WorkWall";
@@ -14,10 +14,12 @@ import { SeoHead } from "@/components/seo/SeoHead";
  */
 export default function Home() {
   const [location] = useLocation();
+  const search = useSearch();
   const { projects } = useSiteProjects();
   const featured = useMemo(() => featuredProjects(projects, HOME_FEATURED_LIMIT), [projects]);
 
-  const isRoot = location === "/";
+  // A filtered wall (/?sector=…) canonicalises to / and stays out of the index.
+  const isRoot = location === "/" && !search;
   const structuredData = useMemo(
     () => [
       ORGANIZATION_SCHEMA,

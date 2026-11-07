@@ -17,7 +17,7 @@ export default function AtlaSaasBranding() {
   return (
     <AtlaLongformLayout
       pathname="/saas-branding"
-      title="SaaS Branding Agency"
+      title="SaaS Branding Agency for Software Companies"
       titleSuffix="Atla"
       description="Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation."
       structuredData={buildServiceSchema(SERVICE_PAGE)}
@@ -58,19 +58,19 @@ export default function AtlaSaasBranding() {
       <LongformSection title="Selected SaaS and digital work">
         <LongformParagraph>
           <strong>Anything AI</strong>. Brand identity and digital design for an AI creative platform.{" "}
-          <a href="/projects/anything-ai" className="longform-link">
+          <a href="/projects/anything-ai" className="longform-link" aria-label={"View the Anything AI project"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>PuppyPy</strong>{" "}
-          <a href="/projects/puppypy" className="longform-link">
+          <a href="/projects/puppypy" className="longform-link" aria-label={"View the PuppyPy project"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pathize Health</strong>{" "}
-          <a href="/projects/pathize-health" className="longform-link">
+          <a href="/projects/pathize-health" className="longform-link" aria-label={"View the Pathize Health project"}>
             View project →
           </a>
         </LongformParagraph>

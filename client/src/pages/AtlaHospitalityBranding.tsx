@@ -61,25 +61,25 @@ export default function AtlaHospitalityBranding() {
       <LongformSection title="Selected hospitality work">
         <LongformParagraph>
           <strong>Rústico</strong>. An open-fire dinner at Acre, a resort and farm in San José del Cabo, given a brand for its first season.{" "}
-          <a href="/projects/rustico" className="longform-link">
+          <a href="/projects/rustico" className="longform-link" aria-label={"View the Rústico project"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pax &amp; Beneficia</strong>{" "}
-          <a href="/projects/pax-and-beneficia" className="longform-link">
+          <a href="/projects/pax-and-beneficia" className="longform-link" aria-label={"View the Pax &amp; Beneficia project"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Alma Brava</strong>{" "}
-          <a href="/projects/alma-brava" className="longform-link">
+          <a href="/projects/alma-brava" className="longform-link" aria-label={"View the Alma Brava project"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Tequila Unido</strong>{" "}
-          <a href="/projects/tequila-unido" className="longform-link">
+          <a href="/projects/tequila-unido" className="longform-link" aria-label={"View the Tequila Unido project"}>
             View project →
           </a>
         </LongformParagraph>
