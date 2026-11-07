@@ -218,9 +218,9 @@ describe("POST /api/audit", () => {
 describe("POST /api/audit/feedback", () => {
   it("writes the answer once per delivered submission from the same email, and refuses the rest", async () => {
     const { feedback, deps, post } = await start();
-    const body = { ...REQUEST, submissionId: id(1), text: "I wasn't sure it was private." };
+    const body = { ...REQUEST, submissionId: id(1), frustration: "I wasn't sure it was private." };
     expect((await feedback(body, { origin: "https://evil.example" })).status).toBe(403);
-    expect((await feedback({ ...body, text: "" })).status).toBe(400);
+    expect((await feedback({ ...body, frustration: "" })).status).toBe(400);
     // Not delivered yet: unknown.
     expect((await feedback(body)).status).toBe(404);
     await post({ request: REQUEST, submissionId: id(1) });
@@ -229,7 +229,7 @@ describe("POST /api/audit/feedback", () => {
     expect((await feedback(body)).json).toEqual({ ok: true });
     expect((await feedback(body)).json).toEqual({ ok: true });
     expect(deps.deliverFeedback).toHaveBeenCalledTimes(1);
-    expect(deps.deliverFeedback).toHaveBeenCalledWith(expect.objectContaining({ text: "I wasn't sure it was private.", email: REQUEST.email }));
+    expect(deps.deliverFeedback).toHaveBeenCalledWith(expect.objectContaining({ frustration: "I wasn't sure it was private.", email: REQUEST.email }));
   });
 });
 

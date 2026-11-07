@@ -38,14 +38,28 @@ export const auditSchema = z.object({
 
 export const MAX_AUDIT_FEEDBACK = 600;
 
-/** The one post-submit question ("What almost stopped you from sending it?"), tied to the request by its id. */
-export const auditFeedbackSchema = z.object({
-  submissionId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
-  name: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(200),
-  site: siteOrHandle,
-  text: z.string().trim().min(1).max(MAX_AUDIT_FEEDBACK),
-});
+/**
+ * The questions after the send (Daniel Priestley's scorecard questions, JP 2026-11-07): the current
+ * frustration, the outcome they want, what they tried that did not work, and always "anything else
+ * you want me to know?" last. Each optional; at least one answered. Tied to the request by its id.
+ */
+export const AUDIT_ANSWER_KEYS = ["frustration", "outcome", "tried", "anything"] as const;
+export type AuditAnswerKey = (typeof AUDIT_ANSWER_KEYS)[number];
+
+const answer = z.string().trim().max(MAX_AUDIT_FEEDBACK).optional().default("");
+
+export const auditFeedbackSchema = z
+  .object({
+    submissionId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
+    name: z.string().trim().min(1).max(120),
+    email: z.string().trim().email().max(200),
+    site: siteOrHandle,
+    frustration: answer,
+    outcome: answer,
+    tried: answer,
+    anything: answer,
+  })
+  .refine((value) => AUDIT_ANSWER_KEYS.some((key) => value[key].length > 0), { message: "empty" });
 export type AuditFeedback = z.infer<typeof auditFeedbackSchema>;
 
 export type AuditRequest = z.infer<typeof auditSchema>;

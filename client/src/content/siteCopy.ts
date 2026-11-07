@@ -473,12 +473,20 @@ export const siteCopy = {
       full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them, in the order it came in. The audit comes by email as soon as it's ready." },
       error: { title: "That didn't go through.", line: "Nothing was lost. Scroll up and send it again in a moment." },
     },
-    // After the send: one micro step and the one research question (CRO review, section six).
+    // After the send: one micro step, then the questions that make the audit sharper (Daniel Priestley's
+    // scorecard questions, JP 2026-11-07): frustration, outcome, what they tried, and always "anything else" last.
     doneFollow: "While it's on its way, I'm on Instagram every week.",
     doneFollowLink: "Follow @jdomito_",
-    feedbackQuestion: "What almost stopped you from sending it?",
-    feedbackSend: "Send",
-    feedbackDone: "Thanks, that helps.",
+    answersTitle: "Four questions, so the audit is about you",
+    answersLine: "Skip any of them. What you write goes to me, not to a form.",
+    answers: [
+      { key: "frustration", label: "What's bugging you about your brand right now?" },
+      { key: "outcome", label: "Where do you want it to be a year from now?" },
+      { key: "tried", label: "What have you already tried that didn't work?" },
+      { key: "anything", label: "Anything else you want me to know?" },
+    ],
+    feedbackSend: "Send the answers",
+    feedbackDone: "Got them. That makes the audit better.",
     feedbackFailed: "That didn't save. Try again in a moment.",
     doneHome: "See the work",
   },

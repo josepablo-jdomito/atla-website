@@ -1,4 +1,4 @@
-import { AUDITS_PER_WEEK, brandFromSite, type AuditFeedback, type AuditRequest } from "../../shared/audit.ts";
+import { AUDIT_ANSWER_KEYS, AUDITS_PER_WEEK, brandFromSite, type AuditFeedback, type AuditRequest } from "../../shared/audit.ts";
 import { multiLine, singleLine } from "../contact.ts";
 import { deliverNoteToAttio, sendStudioEmail } from "../brief/deliver.ts";
 
@@ -36,11 +36,25 @@ export function formatAuditSummary(request: AuditRequest, slot: AuditSlot): stri
   ].join("\n");
 }
 
-/** The post-submit answer, as a second note on the same Person: "Audit feedback: <brand>". */
+/** The questions as the visitor saw them (client/src/content/siteCopy.ts audit.answers): one line each in the note. */
+const ANSWER_LABELS: Record<(typeof AUDIT_ANSWER_KEYS)[number], string> = {
+  frustration: "What's bugging you about your brand right now?",
+  outcome: "Where do you want it to be a year from now?",
+  tried: "What have you already tried that didn't work?",
+  anything: "Anything else you want me to know?",
+};
+
+/** The answers after the send, as a second note on the same Person: "Audit answers: <brand>". */
 export async function deliverAuditFeedbackToAttio(feedback: AuditFeedback): Promise<void> {
-  const title = `Audit feedback: ${singleLine(brandFromSite(feedback.site, feedback.name)).slice(0, 120)}`;
-  const body = ["What almost stopped you from sending it?", "", multiLine(feedback.text), "", `Request: ${feedback.submissionId}`].join("\n");
-  await deliverNoteToAttio(feedback, title, body, "the free audit feedback");
+  const title = `Audit answers: ${singleLine(brandFromSite(feedback.site, feedback.name)).slice(0, 120)}`;
+  const lines: string[] = [];
+  for (const key of AUDIT_ANSWER_KEYS) {
+    const text = multiLine(feedback[key]);
+    if (!text) continue;
+    lines.push(ANSWER_LABELS[key], text.split("\n").map((line) => `> ${line}`).join("\n"), "");
+  }
+  lines.push(`Request: ${feedback.submissionId}`);
+  await deliverNoteToAttio(feedback, title, lines.join("\n"), "the free audit answers");
 }
 
 /** The Attio note title and the email subject name the brand, never more than one line. */

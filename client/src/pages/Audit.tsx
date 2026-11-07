@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { Link, useSearch } from "wouter";
-import { EMPTY_AUDIT, MAX_AUDIT_FEEDBACK, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
+import { AUDIT_ANSWER_KEYS, EMPTY_AUDIT, MAX_AUDIT_FEEDBACK, auditSchema, type AuditAnswerKey, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
@@ -68,7 +68,7 @@ export default function Audit() {
     const sent = new URLSearchParams(search).get("sent");
     return sent === "open" || sent === "full" || sent === "error" ? sent : null;
   });
-  const [feedback, setFeedback] = useState("");
+  const [answers, setAnswers] = useState<Record<AuditAnswerKey, string>>({ frustration: "", outcome: "", tried: "", anything: "" });
   const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
   const submissionId = useRef(newSubmissionId());
@@ -156,12 +156,12 @@ export default function Audit() {
     setStatus(result.status);
   };
 
-  const sendFeedback = async (event: FormEvent) => {
+  const anyAnswer = AUDIT_ANSWER_KEYS.some((key) => answers[key].trim());
+  const sendAnswers = async (event: FormEvent) => {
     event.preventDefault();
-    const text = feedback.trim();
-    if (!text || !sent.current || feedbackState === "sending") return;
+    if (!anyAnswer || !sent.current || feedbackState === "sending") return;
     setFeedbackState("sending");
-    const ok = await submitAuditFeedback({ submissionId: submissionId.current, ...sent.current, text });
+    const ok = await submitAuditFeedback({ submissionId: submissionId.current, ...sent.current, ...answers });
     setFeedbackState(ok ? "done" : "failed");
   };
 
@@ -261,21 +261,27 @@ export default function Audit() {
                     {copy.feedbackDone}
                   </p>
                 ) : (
-                  <form className="audit-feedback" onSubmit={sendFeedback}>
-                    <label htmlFor={`${baseId}-feedback`} className="brief-field__label">
-                      {copy.feedbackQuestion}
-                    </label>
-                    <textarea
-                      id={`${baseId}-feedback`}
-                      className="brief-input bcheck-message"
-                      rows={2}
-                      maxLength={MAX_AUDIT_FEEDBACK}
-                      value={feedback}
-                      onChange={(event) => setFeedback(event.target.value)}
-                      disabled={feedbackState === "sending"}
-                    />
+                  <form className="audit-answers" onSubmit={sendAnswers}>
+                    <h3 className="site-item-title audit-answers__title">{copy.answersTitle}</h3>
+                    <p className="audit-answers__line">{copy.answersLine}</p>
+                    {copy.answers.map((question) => (
+                      <div key={question.key} className="brief-field">
+                        <label htmlFor={`${baseId}-${question.key}`} className="brief-field__label">
+                          {question.label}
+                        </label>
+                        <textarea
+                          id={`${baseId}-${question.key}`}
+                          className="brief-input bcheck-message"
+                          rows={2}
+                          maxLength={MAX_AUDIT_FEEDBACK}
+                          value={answers[question.key]}
+                          onChange={(event) => setAnswers((current) => ({ ...current, [question.key]: event.target.value }))}
+                          disabled={feedbackState === "sending"}
+                        />
+                      </div>
+                    ))}
                     <div className="brief-actions">
-                      <button type="submit" className="site-text-button" disabled={feedbackState === "sending" || !feedback.trim()}>
+                      <button type="submit" className="site-action" disabled={feedbackState === "sending" || !anyAnswer}>
                         {copy.feedbackSend}
                       </button>
                       <p className="brief-status bcheck-status" role="status" data-tone={feedbackState === "failed" ? "error" : undefined}>
