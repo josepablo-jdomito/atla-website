@@ -434,7 +434,7 @@ export const siteCopy = {
       updatedMinutes: "Updated a few minutes ago",
       // Shown once a full week has gone by with its five taken and this week has started: the one proof the counter can carry.
       lastWeek: "Last week's five were taken.",
-      resets: "Five a week, because I do every one myself. Five open again every Monday.",
+      resets: "Five a week, because I do every one myself.",
     },
     // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
     // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
@@ -442,8 +442,8 @@ export const siteCopy = {
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes I fix one or two small things along the way, and if you don't need a studio yet, I'll tell you." },
+      { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change first." },
+      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes I mock up one or two small fixes so you can see them, and if you don't need a studio yet, I'll tell you." },
     ],
     // The one call to action, the same words and the same black pill everywhere (JP, 2026-11-07): the
     // landing header, the hero, the form, the floating week, the quiz.
@@ -469,7 +469,7 @@ export const siteCopy = {
       open: "Five spots open this week.",
       left: "{left} of five spots left.",
       lastOne: "One spot left this week.",
-      full: "This week's five are taken.",
+      full: "This week's five are taken. Yours goes in line for next week.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
@@ -481,7 +481,7 @@ export const siteCopy = {
       brandTitle: "Where does your brand live?",
       brandLine: "A website or an Instagram, whichever people see first.",
       youTitle: "Where do I send the audit?",
-      youLine: "Your name and the email you actually read.",
+      youLine: "Your name and the email you check.",
       send: "Send",
     },
     formTitle: "Where does your brand live?",
@@ -491,7 +491,7 @@ export const siteCopy = {
     assurances: [
       "The audit is only for you. I don't post it, and your brand doesn't end up in a reel.",
       "I think a few of you will want to work with Atla later. Most won't, and that's all right.",
-      "You don't need a call or to prepare anything. It's free, and it comes by email as soon as it's ready.",
+      "You don't need a call or to prepare anything. It's free, and it comes by email.",
     ],
     // JP, 2026-11-07: the email may join the lists, so the line says it (red team P0-3).
     privacyNotice: "We use this to reply, to run your audit and, now and then, to send you news from Atla and WeLoveDaily. You can unsubscribe any time.",
@@ -505,10 +505,10 @@ export const siteCopy = {
     rateLimited: "Too many tries from here. Try again later.",
     network: "That didn't go through. What you wrote is still here.",
     done: {
-      open: { title: "Got it.", line: "You're in this week's five. The audit comes by email, from me, as soon as it's ready." },
-      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them. The audit comes by email as soon as it's ready." },
+      open: { title: "Got it.", line: "You're in this week's five. The audit comes by email, from me." },
+      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them. The audit comes by email." },
       // The brand (or the address) already asked this week: it keeps its place, no second slot.
-      repeat: { title: "Got it.", line: "I already have this one, so it keeps its place. The audit comes by email, from me, as soon as it's ready." },
+      repeat: { title: "Got it.", line: "I already have this one, so it keeps its place. The audit comes by email, from me." },
     },
     // After the send: one micro step, then the questions that make the audit sharper (Daniel Priestley's
     // scorecard questions, JP 2026-11-07): frustration, outcome, what they tried, and always "anything else" last.
@@ -539,14 +539,14 @@ export const siteCopy = {
           { title: "It looks like everyone else", line: "Same fonts, same photos, same words as the next one." },
           { title: "It doesn't match what we sell", line: "The product got better and the brand stayed behind." },
           { title: "People don't get it fast enough", line: "In person it works. On the site it takes a paragraph." },
-          { title: "Something is off and I can't name it", line: "That is what the extra pair of eyes is for." },
+          { title: "Something is off and I can't name it", line: "Send it anyway. I'll find it." },
         ],
       },
       {
         key: "outcome",
         label: "Where do you want it to be a year from now?",
         cards: [
-          { title: "More sales", line: "More people buying, from the same brand." },
+          { title: "More sales", line: "More people buying." },
           { title: "Charging more", line: "A brand that lets the price go up." },
           { title: "Looking like the brand we are", line: "What we do and how it looks finally match." },
           { title: "Launching something new", line: "A product, a place or a market that needs the brand ready." },
@@ -556,8 +556,8 @@ export const siteCopy = {
         key: "tried",
         label: "What have you already tried that didn't work?",
         cards: [
-          { title: "A new logo", line: "It changed the mark, not the problem." },
-          { title: "A new website", line: "It looked better for a month." },
+          { title: "A new logo", line: "The logo changed. Nothing else did." },
+          { title: "A new website", line: "It looked better and sold the same." },
           { title: "An agency or a freelancer", line: "Good work in the wrong direction, or it never finished." },
           { title: "Nothing yet", line: "This is the first look." },
         ],

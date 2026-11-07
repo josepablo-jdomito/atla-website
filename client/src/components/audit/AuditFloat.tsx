@@ -56,7 +56,7 @@ export function AuditFloat({ status, root }: { status: AuditStatus | null; root:
     : status.week === "full" || left === 0
       ? copy.full
       : taken === 0
-        ? copy.open
+        ? week.resets
         : left === 1
           ? copy.lastOne
           : cap(copy.left.replace("{left}", WORDS[left] ?? String(left)));
