@@ -401,15 +401,15 @@ export const siteCopy = {
     done: "Check your inbox for a note from José Pablo.",
     bookCall: "Book a call",
   },
-  // The free audit, at /audit (JP, 2026-11-07): one pitch, three steps, three fields, read in two minutes
+  // The free audit, at /audit (JP, 2026-11-07): the visitor's pains, the wins, three fields, read in two minutes
   // (oddit.co/pages/free-trial). The number is said in words only ("five a week"); the cap lives in
   // shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
-    metaTitle: "Free brand audit, five a week",
+    metaTitle: "Free brand audit: what is holding your brand back",
     metaDescription:
-      "The audit Atla's clients pay for, free for five brands a week. Send us where your brand lives today and get a short video on what is holding it back, in the order to fix it, plus a few of the fixes made.",
-    title: "The audit our clients pay for. Free, for five brands a week.",
-    lead: "Send us where your brand lives. José Pablo records a short video on what is holding it back, in the order to fix it, and we make a few of the fixes.",
+      "A free brand audit from Atla. What is holding your brand back, in the order to fix it, on video from José Pablo, with a few of the fixes made. Five brands a week.",
+    title: "People like what you make. They cannot say what your brand stands for.",
+    lead: "A free audit from Atla finds what is holding your brand back and what to fix first. José Pablo records it on video and we make a few of the fixes. Five brands a week.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
     week: {
       label: "This week",
@@ -417,15 +417,23 @@ export const siteCopy = {
       open: "This week's five are still open.",
       full: "This week's five are taken. Apply now and you are first in line for next week.",
     },
-    howTitle: "How it works",
-    how: [
-      "Send your website or Instagram below.",
-      "José Pablo reads it the way a buyer does and records the video.",
-      "It lands in your inbox with the fixes. Five a week, in order of arrival.",
+    // The visitor's pains, in their words. From the threats Atla writes in every analysis.
+    painsTitle: "Sound familiar?",
+    pains: [
+      "Customers love the product, but your best ones cannot explain you, so word of mouth stays small.",
+      "You look like your competitors, so every conversation ends up about price.",
+      "You are about to launch, raise or grow, and the brand was built for a smaller company.",
+    ],
+    // The wins: what changes after the audit.
+    winsTitle: "What you walk away with",
+    wins: [
+      "The order to fix things, so your team stops arguing about what matters.",
+      "A few fixes already made: a headline, a lockup, a page. Yours to ship.",
+      "An honest read on whether you need a studio at all. If not, we say so.",
     ],
     formTitle: "Apply for this week",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
-    terms: "Free, because we only do five a week. No call, no deck, no card.",
+    terms: "Free, because we only do five a week. No call, no pitch, no card.",
     privacyNotice: "We use this to reply and to run your audit.",
     privacyLink: "Privacy",
     submit: "Apply for a free audit",

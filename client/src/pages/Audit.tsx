@@ -9,9 +9,9 @@ import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete } from "@/lib/ga";
 
 /**
- * The free audit (/audit, JP 2026-11-07): one pitch, three steps, three fields, read in two minutes
- * (oddit.co/pages/free-trial). The title, the lead and the week's line stay beside the steps and the
- * form on wide screens. The week's line is live from /api/audit/status; the prerender shows the
+ * The free audit (/audit, JP 2026-11-07): the visitor's pains, the wins, three fields, read in two
+ * minutes (oddit.co/pages/free-trial; never "the audit our clients pay for", JP). The title, the lead
+ * and the week's line stay beside the lists and the form on wide screens. The week's line is live from /api/audit/status; the prerender shows the
  * neutral one. Delivered like the brand check (server/audit/route.ts).
  */
 
@@ -115,18 +115,25 @@ export default function Audit() {
         </header>
 
         <div className="audit-body">
-          <section className="audit-section" aria-labelledby={`${baseId}-how`}>
-            <h2 id={`${baseId}-how`} className="site-section-title">
-              {copy.howTitle}
-            </h2>
-            <ol className="audit-rows audit-steps">
-              {copy.how.map((step) => (
-                <li key={step} className="audit-row">
-                  <p className="audit-step__line">{step}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
+          {(
+            [
+              { id: "pains", title: copy.painsTitle, lines: copy.pains },
+              { id: "wins", title: copy.winsTitle, lines: copy.wins },
+            ] as const
+          ).map((group) => (
+            <section key={group.id} className="audit-section" aria-labelledby={`${baseId}-${group.id}`}>
+              <h2 id={`${baseId}-${group.id}`} className="site-section-title">
+                {group.title}
+              </h2>
+              <ul className="audit-rows">
+                {group.lines.map((line) => (
+                  <li key={line} className="audit-row">
+                    <p className="audit-step__line">{line}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
 
           <section className="audit-section audit-ask" aria-labelledby={`${baseId}-ask`}>
             {finished ? (
