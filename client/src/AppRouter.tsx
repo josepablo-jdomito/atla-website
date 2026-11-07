@@ -1,17 +1,17 @@
 import React from "react";
 import type { ComponentType } from "react";
-import { Route, Switch } from "wouter";
+import { Redirect, Route, Switch } from "wouter";
 
 type RouteComponent = ComponentType<any>;
 
 type AppRouterProps = {
   NotFound: RouteComponent;
   ProjectsAdmin: RouteComponent;
-  AtlaAbout: RouteComponent;
-  AtlaContact: RouteComponent;
-  AtlaServices: RouteComponent;
-  AtlaWork: RouteComponent;
-  AtlaProject: RouteComponent;
+  About: RouteComponent;
+  Ventures: RouteComponent;
+  Services: RouteComponent;
+  Home: RouteComponent;
+  Project: RouteComponent;
   AtlaJournal: RouteComponent;
   AtlaArticle: RouteComponent;
   AtlaPrivacy: RouteComponent;
@@ -24,16 +24,19 @@ type AppRouterProps = {
   AtlaBrandStrategy: RouteComponent;
   AtlaHowWeWork: RouteComponent;
   AtlaPrograms: RouteComponent;
+  Brief: RouteComponent;
+  BrandCheck: RouteComponent;
+  Audit: RouteComponent;
 };
 
 export function AppRouter({
   NotFound,
   ProjectsAdmin,
-  AtlaAbout,
-  AtlaContact,
-  AtlaServices,
-  AtlaWork,
-  AtlaProject,
+  About,
+  Ventures,
+  Services,
+  Home,
+  Project,
   AtlaJournal,
   AtlaArticle,
   AtlaPrivacy,
@@ -46,14 +49,17 @@ export function AppRouter({
   AtlaBrandStrategy,
   AtlaHowWeWork,
   AtlaPrograms,
+  Brief,
+  BrandCheck,
+  Audit,
 }: AppRouterProps) {
   return (
     <Switch>
-      <Route path="/" component={AtlaWork} />
-      <Route path="/work" component={AtlaWork} />
-      <Route path="/about" component={AtlaAbout} />
-      <Route path="/contact" component={AtlaContact} />
-      <Route path="/services" component={AtlaServices} />
+      <Route path="/" component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/ventures" component={Ventures} />
+      <Route path="/contact">{() => <Redirect to="/brief" replace />}</Route>
+      <Route path="/services" component={Services} />
       <Route path="/hospitality" component={AtlaHospitality} />
       <Route path="/hospitality-branding" component={AtlaHospitalityBranding} />
       <Route path="/cpg-branding" component={AtlaCpgBranding} />
@@ -62,7 +68,10 @@ export function AppRouter({
       <Route path="/brand-strategy" component={AtlaBrandStrategy} />
       <Route path="/how-we-work" component={AtlaHowWeWork} />
       <Route path="/programs" component={AtlaPrograms} />
-      <Route path="/projects/:slug" component={AtlaProject} />
+      <Route path="/brief" component={Brief} />
+      <Route path="/brand-check" component={BrandCheck} />
+      <Route path="/audit" component={Audit} />
+      <Route path="/projects/:slug" component={Project} />
       <Route path="/journal" component={AtlaJournal} />
       <Route path="/journal/category/:slug" component={AtlaJournal} />
       <Route path="/journal/:slug" component={AtlaArticle} />

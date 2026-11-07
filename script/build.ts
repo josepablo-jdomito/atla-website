@@ -3,21 +3,25 @@ import { build as viteBuild } from "vite";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import { createRequire } from "module";
 import path from "path";
-import { buildImageSrcSet, getOptimizedImageUrl } from "../shared/imageDelivery.ts";
+import { getOptimizedImageUrl } from "../shared/imageDelivery.ts";
 import type { Project } from "../shared/schema.ts";
+import { toProjectListItem, type ProjectListItem } from "../shared/projectList.ts";
 import type { JournalArticle, JournalCategory } from "../shared/journal.ts";
-import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
+import { CONTACT_EMAIL, DEFAULT_OG_IMAGE_URL, HOME_META_DESCRIPTION, JOURNAL_DESCRIPTION_PAD, JOURNAL_META_DESCRIPTION, JOURNAL_TITLE_SUFFIX, ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, ORGANIZATION_SCHEMA, SITE_NAME, SITE_ORIGIN, formatMetaTitle } from "../shared/siteSeo.ts";
 import { isJournalSanityConfigured } from "../server/sanity/journalClient.ts";
 import {
   fetchJournalArticlesFromSanity,
-  fetchJournalArticleBySlugFromSanity,
+  fetchJournalArticleDetailsFromSanity,
   fetchJournalCategoriesFromSanity,
 } from "../server/sanity/journalService.ts";
 import { fetchProjectsFromSanity } from "../server/sanity/projectService.ts";
 import { buildArticleBreadcrumb, buildBlogPostingSchema } from "../client/src/lib/journalSeo.ts";
-import { buildProjectBreadcrumb, buildProjectMetaDescription } from "../client/src/lib/projectSeo.ts";
+import { buildProjectPageView, buildProjectSeoHead, frameImage, projectFirstFrame } from "../client/src/lib/projectPage.ts";
 import { formatJournalMetaTitle, toAbsoluteUrl } from "../client/src/lib/seoSchema.ts";
 import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts";
+import { buildServicesStructuredData } from "../client/src/lib/sitePageSchema.ts";
+import { siteCopy } from "../client/src/content/siteCopy.ts";
+import { withSelectedWork } from "../client/src/lib/llmsTxt.ts";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -50,12 +54,13 @@ const allowlist = [
 ];
 
 const DEFAULT_JOURNAL_CATEGORY_DESCRIPTION =
-  "Selected writing from Atla Journal on branding, strategy, digital craft, and creative direction.";
+  "Notes from the Atla studio on branding, strategy and creative direction.";
 const PRERENDER_REMOTE_TIMEOUT_MS = 12_000;
 
 function ensureDescriptionLength(description: string, fallback: string) {
   const cleanDescription = description.trim();
-  if (cleanDescription.length >= 130 && cleanDescription.length <= 160) return cleanDescription;
+  // A complete sentence is never padded with a second one that says the same thing.
+  if (cleanDescription.length >= 80 && cleanDescription.length <= 160) return cleanDescription;
   if (cleanDescription.length > 160) {
     return `${cleanDescription.slice(0, 157).trimEnd()}...`;
   }
@@ -66,7 +71,8 @@ function ensureDescriptionLength(description: string, fallback: string) {
 }
 
 type PrerenderRouteData = {
-  projects?: Project[];
+  /** The lite list GET /api/projects answers; a project page's own full record is `project`. */
+  projects?: ProjectListItem[];
   project?: Project | null;
   articles?: JournalArticle[];
   article?: JournalArticle | null;
@@ -92,8 +98,9 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
-  await writeFontLoaderScript();
   await prerenderRoutes();
+  // The manifest only feeds the prerender's modulepreload tags; it is not served.
+  await rm("dist/public/.vite", { recursive: true, force: true });
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
@@ -173,6 +180,9 @@ async function hydrateBuildEnvFromLocalFile() {
   }
 }
 
+const PUBLIC_SANITY_PROJECT_ID = "dvufm78f";
+const PUBLIC_SANITY_DATASET = "production";
+
 function resolvePrerenderApiOrigin() {
   const configuredOrigin = (process.env.PRERENDER_API_ORIGIN || process.env.SITE_ORIGIN || SITE_ORIGIN).trim();
   return configuredOrigin.replace(/\/+$/, "");
@@ -208,7 +218,7 @@ async function loadPrerenderContentFromPublicApi(): Promise<{
   categories: JournalCategory[];
 }> {
   const origin = resolvePrerenderApiOrigin();
-  console.warn(`[build] Falling back to remote prerender API: ${origin}`);
+  console.warn(`[build] Prerender data source: remote API ${origin} (Sanity was not used).`);
 
   const [projectsRaw, articlesRaw, categoriesRaw] = await Promise.all([
     fetchPrerenderJson<unknown>(`${origin}/api/projects`, []),
@@ -216,7 +226,14 @@ async function loadPrerenderContentFromPublicApi(): Promise<{
     fetchPrerenderJson<unknown>(`${origin}/api/journal/categories`, []),
   ]);
 
-  const projects = Array.isArray(projectsRaw) ? (projectsRaw as Project[]) : [];
+  // GET /api/projects is the lite list; a project page needs its full record (body, description).
+  const projectList = Array.isArray(projectsRaw) ? (projectsRaw as Project[]) : [];
+  const projects = await Promise.all(
+    projectList.map(async (project) => {
+      const detail = await fetchPrerenderJson<unknown>(`${origin}/api/projects/${project.slug}`, project);
+      return (detail as Project) ?? project;
+    }),
+  );
   const articles = Array.isArray(articlesRaw) ? (articlesRaw as JournalArticle[]) : [];
   const categories = Array.isArray(categoriesRaw) ? (categoriesRaw as JournalCategory[]) : [];
 
@@ -261,6 +278,7 @@ function createHeadMarkup({
     href: string;
     srcSet?: string;
     sizes?: string;
+    fetchPriority?: "high";
   }>;
   type?: string;
   robots?: string;
@@ -313,6 +331,10 @@ function createHeadMarkup({
         preloadAttrs.push(`imagesizes="${escapeHtml(preload.sizes)}"`);
       }
 
+      if ("fetchPriority" in preload && preload.fetchPriority === "high") {
+        preloadAttrs.push(`fetchpriority="high"`);
+      }
+
       return `<link ${preloadAttrs.join(" ")}>`;
     });
 
@@ -322,7 +344,7 @@ function createHeadMarkup({
   if (structuredData) {
     const blocks = Array.isArray(structuredData) ? structuredData : [structuredData];
     for (const block of blocks) {
-      tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
+      tags.push(`<script type="application/ld+json">${serializeJsonForScript(block)}</script>`);
     }
   }
 
@@ -339,78 +361,6 @@ function resolveArticleImage(article: JournalArticle) {
 
 function resolveProjectHeroImage(project: Project) {
   return project.coverImage || project.images[0] || DEFAULT_OG_IMAGE_URL;
-}
-
-function toVimeoEmbedUrl(rawValue: string) {
-  const value = rawValue.trim().replace(/&amp;/gi, "&");
-  const iframeSrc = value.match(/<iframe[^>]+src=["']([^"']+)["']/i)?.[1]?.trim();
-  const source = (iframeSrc || value).replace(/^\/\//, "https://");
-
-  try {
-    const parsed = new URL(
-      /^https?:\/\//i.test(source) ? source : `https://${source.replace(/^\/+/, "")}`,
-    );
-    const host = parsed.hostname.toLowerCase();
-
-    if (host.includes("player.vimeo.com")) {
-      const match = parsed.pathname.match(/\/video\/(\d+)/i);
-      if (!match) return null;
-      return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
-    }
-
-    if (host === "vimeo.com" || host.endsWith(".vimeo.com")) {
-      const match = parsed.pathname.match(/\/(\d+)(?:$|\/)/i) || parsed.pathname.match(/\/(\d+)\b/i);
-      if (match) return `https://player.vimeo.com/video/${match[1]}${parsed.search}${parsed.hash}`;
-    }
-  } catch {
-    // Fallback regex parsing below.
-  }
-
-  const playerMatch = source.match(/player\.vimeo\.com\/video\/(\d+)(\?[^"'\s>]*)?/i);
-  if (playerMatch) return `https://player.vimeo.com/video/${playerMatch[1]}${playerMatch[2] || ""}`;
-
-  const directMatch = source.match(/vimeo\.com\/(?:.*\/)?(\d+)/i);
-  if (directMatch) return `https://player.vimeo.com/video/${directMatch[1]}`;
-
-  return null;
-}
-
-function toVimeoWatchUrl(embedUrl: string) {
-  const match = embedUrl.match(/player\.vimeo\.com\/video\/(\d+)/i);
-  if (!match) return "https://vimeo.com";
-  return `https://vimeo.com/${match[1]}`;
-}
-
-function buildResponsiveImagePreload(
-  src: string | undefined,
-  widths: number[],
-  quality: number,
-  sizes: string,
-) {
-  if (!src || widths.length === 0) return {};
-
-  return {
-    preloadImage: getOptimizedImageUrl(src, { width: widths[widths.length - 1], quality }),
-    preloadImageSrcSet: buildImageSrcSet(src, widths, { quality }),
-    preloadImageSizes: sizes,
-  };
-}
-
-function buildImagePreloadEntries(
-  entries: Array<{
-    src?: string;
-    widths: number[];
-    quality: number;
-    sizes: string;
-  }>,
-) {
-  return entries
-    .filter((entry) => entry.src && entry.widths.length > 0)
-    .map((entry) => ({
-      href: getOptimizedImageUrl(entry.src, { width: entry.widths[entry.widths.length - 1], quality: entry.quality }) || entry.src!,
-      srcSet: buildImageSrcSet(entry.src!, entry.widths, { quality: entry.quality }),
-      sizes: entry.sizes,
-    }));
 }
 
 function hydrationScriptPaths(pathname: string) {
@@ -431,26 +381,26 @@ async function writeHydrationScript(pathname: string, dehydratedState: unknown) 
   );
 }
 
-async function writeFontLoaderScript() {
-  await writeFile(
-    path.resolve("dist/public/font-loader.js"),
-    `(()=>{const link=document.getElementById("atla-fonts-stylesheet");if(link){link.media="all";}})();`,
-    "utf8",
-  );
-}
+/** How many wall tiles the prerendered home preloads (red team 10: the first screen was grey slabs). */
+const HOME_PRELOADS = 1;
 
 const unescapeAttr = (value: string) => value.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 
-/** Preload entries for every <img loading="eager"> in rendered markup, in document order. */
+/**
+ * Preload hints for the home: only the images the markup marks fetchpriority="high" (the first few
+ * wall tiles), with the same priority. The other eager tiles are found by the parser on their own;
+ * twenty hints used to compete with the CSS and JS on a phone (web quality audit 4.2).
+ */
 function eagerImagePreloads(html: string) {
-  const entries: Array<{ href: string; srcSet?: string; sizes?: string }> = [];
-  for (const tag of html.match(/<img\b[^>]*\bloading="eager"[^>]*>/g) ?? []) {
+  const entries: Array<{ href: string; srcSet?: string; sizes?: string; fetchPriority: "high" }> = [];
+  // Every eager tile is fetchpriority="high" in the markup; only the first gets a preload hint (the LCP tile; more would compete for bandwidth).
+  for (const tag of (html.match(/<img\b[^>]*\bfetchpriority="high"[^>]*>/g) ?? []).slice(0, HOME_PRELOADS)) {
     const attr = (name: string) => {
       const match = tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"));
       return match ? unescapeAttr(match[1]) : undefined;
     };
     const href = attr("src");
-    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes") });
+    if (href) entries.push({ href, srcSet: attr("srcset"), sizes: attr("sizes"), fetchPriority: "high" });
   }
   return entries;
 }
@@ -506,6 +456,79 @@ async function loadPrerenderRenderer(): Promise<PrerenderRenderer> {
   return prerenderRendererPromise;
 }
 
+/** The page module each prerendered route renders (client/src/App.tsx lazy pages), for modulepreload. */
+function routePageModule(pathname: string) {
+  const exact: Record<string, string> = {
+    "/": "Home",
+    "/about": "About",
+    "/ventures": "Ventures",
+    "/services": "Services",
+    "/hospitality": "AtlaHospitality",
+    "/hospitality-branding": "AtlaHospitalityBranding",
+    "/cpg-branding": "AtlaCpgBranding",
+    "/wellness-branding": "AtlaWellnessBranding",
+    "/saas-branding": "AtlaSaasBranding",
+    "/brand-strategy": "AtlaBrandStrategy",
+    "/how-we-work": "AtlaHowWeWork",
+    "/programs": "AtlaPrograms",
+    "/brief": "Brief",
+    "/brand-check": "BrandCheck",
+    "/audit": "Audit",
+    "/journal": "AtlaJournal",
+    "/privacy": "AtlaPrivacy",
+    "/terms": "AtlaTerms",
+    "/admin/projects": "ProjectsAdmin",
+  };
+  const page =
+    exact[pathname] ??
+    (pathname.startsWith("/projects/")
+      ? "Project"
+      : pathname.startsWith("/journal/category/")
+        ? "AtlaJournal"
+        : pathname.startsWith("/journal/")
+          ? "AtlaArticle"
+          : "not-found");
+  return `src/pages/${page}.tsx`;
+}
+
+type ViteManifest = Record<string, { file: string; imports?: string[]; isEntry?: boolean }>;
+let viteManifest: ViteManifest | null = null;
+
+async function loadViteManifest(): Promise<ViteManifest> {
+  if (viteManifest) return viteManifest;
+  const manifestPath = path.resolve("dist/public/.vite/manifest.json");
+  viteManifest = JSON.parse(await readFile(manifestPath, "utf8")) as ViteManifest;
+  return viteManifest;
+}
+
+/**
+ * <link rel="modulepreload"> for the route's page chunk and every chunk it imports statically, minus
+ * the entry (already a module script). Without them the page chunks start only after the entry has run
+ * (one more round trip before hydration; the home used to wait for Home, SeoHead and workFilters).
+ * Only gated routes get them (see PRERENDER_GATED_ROUTES): there the content waits on hydration, so the
+ * chunks are on the critical path. Everywhere else the prerender paints alone and the preloads only take
+ * bandwidth from the CSS: Lighthouse mobile on /brief/ went from FCP 2.3 s to 3.0 s with them (fix pass A).
+ */
+async function routeModulePreloadTags(pathname: string) {
+  const manifest = await loadViteManifest();
+  const key = routePageModule(pathname);
+  if (!manifest[key]) {
+    throw new Error(`[build] ${key} is not in the Vite manifest; route ${pathname} would get no modulepreload`);
+  }
+  const files = new Set<string>();
+  const visit = (chunkKey: string) => {
+    const chunk = manifest[chunkKey];
+    if (!chunk || chunk.isEntry || files.has(chunk.file)) return;
+    files.add(chunk.file);
+    for (const child of chunk.imports ?? []) visit(child);
+  };
+  visit(key);
+  return Array.from(files).map((file) => `<link rel="modulepreload" crossorigin href="/${file}">`);
+}
+
+/** Routes whose prerendered markup differs from the desktop layout until hydration (index.html gate). */
+const PRERENDER_GATED_ROUTES = new Set(["/", "/hospitality"]);
+
 async function injectPrerenderedApp(
   template: string,
   pathname: string,
@@ -521,10 +544,13 @@ async function injectPrerenderedApp(
   // script must precede the app bundle, or main.tsx renders with an empty query
   // cache, wipes the prerendered markup and refetches (CLS ~0.8 on the home).
   const hydrationTag = `<script defer src="${publicPath}"></script>`;
-  // data-prerender-gate: see the #root rule in client/index.html.
+  // data-prerender-gate: see the #root rule in client/index.html. Only routes whose first render is the
+  // phone layout by script (the wall's columns, /hospitality's useIsMobile) wait on wide screens; every
+  // other route is pure CSS layout and paints its prerender at once.
+  const gate = PRERENDER_GATED_ROUTES.has(pathname) ? " data-prerender-gate" : "";
   const withRoot = template.replace(
     '<div id="root"></div>',
-    `<div id="root" data-prerender-gate>${appHtml}</div>`,
+    `<div id="root"${gate}>${appHtml}</div>`,
   );
   const moduleTag = withRoot.match(/<script type="module"[^>]*>/);
 
@@ -532,7 +558,13 @@ async function injectPrerenderedApp(
     throw new Error(`[build] App bundle <script type="module"> not found while prerendering ${pathname}`);
   }
 
-  return withRoot.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
+  const modulePreloads = PRERENDER_GATED_ROUTES.has(pathname)
+    ? (await routeModulePreloadTags(pathname)).join("\n    ")
+    : "";
+  const withPreloads = modulePreloads
+    ? withRoot.replace("</head>", `    ${modulePreloads}\n  </head>`)
+    : withRoot;
+  return withPreloads.replace(moduleTag[0], `${hydrationTag}\n    ${moduleTag[0]}`);
 }
 
 async function writeRoutePage(route: string, html: string) {
@@ -545,12 +577,14 @@ async function writeRoutePage(route: string, html: string) {
 function getStaticRoutePrerenderData(
   pathname: string,
   content: {
-    projects: Project[];
+    projects: ProjectListItem[];
     articles: JournalArticle[];
     categories: JournalCategory[];
   },
 ): PrerenderRouteData {
-  if (pathname === "/" || pathname === "/work") {
+  // /ventures shows each venture's project cover, and /services and /about show project covers too, so
+  // their prerender carries the lite list: the photos are in the HTML instead of arriving after a fetch.
+  if (["/", "/ventures", "/services", "/about"].includes(pathname)) {
     return { projects: content.projects };
   }
 
@@ -565,6 +599,8 @@ async function prerenderRoutes() {
   const templatePath = path.resolve("dist/public/index.html");
   const template = await readFile(templatePath, "utf8");
   const { projects, articles, articleDetails, categories } = await loadPrerenderContent();
+  // What the pages' ["/api/projects"] cache holds: the same lite list the API answers.
+  const projectList = projects.map((project) => toProjectListItem(project as unknown as ProjectListItem & Record<string, unknown>));
   const workFeaturedProject = projects[0];
   const workFeaturedImage = workFeaturedProject ? resolveProjectHeroImage(workFeaturedProject) : DEFAULT_OG_IMAGE_URL;
 
@@ -578,80 +614,67 @@ async function prerenderRoutes() {
       structuredData: ORGANIZATION_SCHEMA,
     },
     {
-      pathname: "/about",
-      title: formatMetaTitle("About Atla", "Senior-Led Branding Studio, US and LatAm"),
-      description: "Meet Atla, a senior-led branding studio helping founders and teams build strategy, identity, and digital systems across the US and Latin America.",
-      image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
-      preloadImages: [
-        { href: "/figmaAssets/photo-1.jpg" },
-        { href: "/figmaAssets/photo-2.jpg" },
-      ],
+      pathname: "/ventures",
+      title: formatMetaTitle(siteCopy.ventures.metaTitle, "Atla"),
+      description: siteCopy.ventures.metaDescription,
       includeInSitemap: true,
       structuredData: ORGANIZATION_SCHEMA,
     },
     {
-      pathname: "/contact",
-      title: formatMetaTitle("Contact Atla", "Start a Branding or Digital Project"),
-      description: "Contact Atla to discuss branding, identity, digital design, or creative direction for your next launch, reposition, or growth stage.",
+      pathname: "/about",
+      // Same title and description as the Why Atla page's SeoHead.
+      title: formatMetaTitle(siteCopy.about.metaTitle, siteCopy.about.metaSuffix),
+      description: siteCopy.about.metaDescription,
+      // og:image only: the v2 About page renders no images, so nothing is preloaded.
       image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
       includeInSitemap: true,
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "ContactPage",
-        name: "Contact Atla",
-        url: `${SITE_ORIGIN}/contact`,
-        mainEntity: {
-          "@type": "Organization",
-          name: ORGANIZATION_NAME,
-          email: CONTACT_EMAIL,
-          url: SITE_ORIGIN,
-        },
-      },
+      structuredData: ORGANIZATION_SCHEMA,
+    },
+    {
+      pathname: "/brief",
+      // Same title and description as the Brief page's SeoHead.
+      title: formatMetaTitle(siteCopy.brief.metaTitle, "Atla"),
+      description: siteCopy.brief.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/brand-check",
+      // Same title and description as the Brand check page's SeoHead.
+      title: formatMetaTitle(siteCopy.brandCheck.metaTitle, "Atla"),
+      description: siteCopy.brandCheck.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
+    },
+    {
+      pathname: "/audit",
+      // Same title and description as the Audit page's SeoHead.
+      title: formatMetaTitle(siteCopy.audit.metaTitle, "Atla"),
+      description: siteCopy.audit.metaDescription,
+      image: DEFAULT_OG_IMAGE_URL,
+      includeInSitemap: true,
     },
     {
       pathname: "/services",
-      title: formatMetaTitle("Brand Strategy, Identity, and Digital Design Services", "Atla"),
-      description: "Explore Atla services in brand strategy, identity design, digital design, motion, packaging, and creative direction for ambitious companies.",
-      image: "/figmaAssets/about-hero.jpg",
-      preloadImage: "/figmaAssets/about-hero.jpg",
+      // Same title and description as the Services page's SeoHead.
+      title: formatMetaTitle(siteCopy.services.metaTitle, "Atla"),
+      description: siteCopy.services.metaDescription,
+      // The page's SeoHead passes no image, so it shares the default, like here.
+      image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: "Atla Services",
-        itemListElement: [
-          "Creative Direction",
-          "Brand Strategy",
-          "Identity",
-          "Digital Design",
-          "Motion",
-          "Print & Packaging",
-          "Art Direction",
-          "Copywriting",
-          "Tone of Voice",
-        ].map((service, index) => ({
-          "@type": "Service",
-          position: index + 1,
-          name: service,
-          provider: {
-            "@type": "Organization",
-            name: ORGANIZATION_NAME,
-          },
-        })),
-      },
+      // Same JSON-LD as the live page's SeoHead: breadcrumb + one Service per moment.
+      structuredData: buildServicesStructuredData(),
     },
     {
       pathname: "/hospitality",
       title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
+      description: "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/hospitality-branding",
-      title: formatMetaTitle("Hospitality Branding Agency", "Hotels, Restaurants and Travel"),
+      title: formatMetaTitle("Hospitality Branding Agency", "Atla"),
       description: "Branding for hospitality companies that need identity systems strong enough to hold across physical spaces, digital booking flows, and guest-facing touchpoints.",
       image: workFeaturedImage,
       includeInSitemap: true,
@@ -668,14 +691,14 @@ async function prerenderRoutes() {
     {
       pathname: "/wellness-branding",
       title: formatMetaTitle("Wellness and Health Brand Design Agency", "Atla"),
-      description: "Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection.",
+      description: "Brand strategy and identity for wellness, health tech and care companies. Credible, warm, and written to stay inside the rules.",
       image: workFeaturedImage,
       includeInSitemap: true,
       structuredData: industryServiceSchemaForPath("/wellness-branding"),
     },
     {
       pathname: "/saas-branding",
-      title: formatMetaTitle("SaaS Branding Agency", "Brand Identity for Software Companies"),
+      title: formatMetaTitle("SaaS Branding Agency for Software Companies", "Atla"),
       description: "Brand strategy and identity for SaaS companies. Positioning and digital systems for software teams that need clearer differentiation.",
       image: workFeaturedImage,
       includeInSitemap: true,
@@ -683,29 +706,29 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/brand-strategy",
-      title: formatMetaTitle("Brand Strategy for Growing Companies", "Process and Framework"),
-      description: "How brand strategy actually works — positioning, messaging, audience definition, and competitive framing. The strategic foundation before design begins.",
+      title: formatMetaTitle("Brand Strategy for Growing Companies", "Atla"),
+      description: "How brand strategy works: positioning, messaging, audience and competitive framing, decided before design starts.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/how-we-work",
       title: formatMetaTitle("How We Work", "Branding Process and Engagement Model"),
-      description: "How Atla runs branding engagements — from discovery to launch. Strategy, identity, digital, and creative direction working as one system.",
+      description: "How Atla runs a project, step by step: read the market, talk to your people, pick the position, design the system, hand it over.",
       image: workFeaturedImage,
       includeInSitemap: true,
     },
     {
       pathname: "/programs",
       title: formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla"),
-      description: "When a brand has to change, start with the Loved or Lost Diagnostic. Then the Atla Brand Program, in three levels, and Brand Stewardship after launch.",
+      description: "When a brand has to change, start with an audit. Then a brand system or a full build, and a fractional brand director after launch.",
       image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
     {
       pathname: "/journal",
-      title: formatMetaTitle("Atla Journal", "Branding, Strategy, and Digital Craft"),
-      description: "Atla Journal publishes essays, studio notes, and practical articles on branding, strategy, digital craft, motion, and visual storytelling for modern brands.",
+      title: formatMetaTitle("Atla Journal", JOURNAL_TITLE_SUFFIX),
+      description: JOURNAL_META_DESCRIPTION,
       image: articles[0] ? resolveArticleImage(articles[0]) : DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
       structuredData: {
@@ -726,7 +749,7 @@ async function prerenderRoutes() {
     {
       pathname: "/privacy",
       title: formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data"),
-      description: "Read how Atla handles browser storage, hosting data, and information shared through direct studio inquiries across the website.",
+      description: "How Atla handles what you send through the brief and the contact form, the analytics on the site, browser storage and the providers that process data.",
       image: DEFAULT_OG_IMAGE_URL,
       includeInSitemap: true,
     },
@@ -739,7 +762,7 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/admin/projects",
-      title: "Projects Admin Retired — Atla",
+      title: "Projects admin retired | Atla",
       description: "The legacy projects admin route has been retired. Portfolio entries are managed in Sanity Studio.",
       robots: "noindex,nofollow",
       includeInSitemap: false,
@@ -750,9 +773,9 @@ async function prerenderRoutes() {
     const body = await injectPrerenderedApp(
       template,
       route.pathname,
-      getStaticRoutePrerenderData(route.pathname, { projects, articles, categories }),
+      getStaticRoutePrerenderData(route.pathname, { projects: projectList, articles, categories }),
     );
-    // The home preloads exactly the images its markup loads eagerly, so the hints always match a real request.
+    // The home preloads exactly the images its markup marks high priority, so the hints always match a real request.
     const preloadImages = route.pathname === "/" ? eagerImagePreloads(body) : route.preloadImages;
     await writeRoutePage(route.pathname, replaceHead(body, createHeadMarkup({ ...route, preloadImages })));
   }
@@ -762,7 +785,7 @@ async function prerenderRoutes() {
     const pathname = `/journal/category/${category.slug}`;
     const description = ensureDescriptionLength(
       category.seoDescription || category.description || DEFAULT_JOURNAL_CATEGORY_DESCRIPTION,
-      "Essays, frameworks, and studio notes from Atla Journal for teams investing in stronger brand systems."
+      JOURNAL_DESCRIPTION_PAD,
     );
     const title = formatJournalMetaTitle(category.seoTitle || `${category.title} Articles`);
 
@@ -794,94 +817,33 @@ async function prerenderRoutes() {
   }
 
   for (const project of projects) {
-    // Same builder as AtlaProject's SeoHead, so the prerendered and hydrated descriptions match.
-    const projectMetaDescription = buildProjectMetaDescription({
-      title: project.title,
-      client: project.client,
-      category: project.category === "Uncategorized" ? "" : project.category,
-      services: project.tags,
-      description: project.description,
-    });
-    const parsedProjectYear = Number.parseInt(String(project.year), 10);
-    const videoUploadDate = Number.isFinite(parsedProjectYear) ? `${parsedProjectYear}-01-01T00:00:00.000Z` : undefined;
-    const videoStructuredData = (project.videos ?? [])
-      .map((videoUrl, index) => {
-        const embedUrl = toVimeoEmbedUrl(videoUrl);
-        if (!embedUrl) return null;
-        const watchUrl = toVimeoWatchUrl(embedUrl);
-        return {
-          "@context": "https://schema.org",
-          "@type": "VideoObject",
-          name: `${project.title} video ${index + 1}`,
-          description: `${project.title} case study video ${index + 1} from Atla.`,
-          mainEntityOfPage: `${SITE_ORIGIN}/projects/${project.slug}`,
-          embedUrl,
-          contentUrl: watchUrl,
-          url: watchUrl,
-          thumbnailUrl: project.images[index] || resolveProjectHeroImage(project),
-          ...(videoUploadDate ? { uploadDate: videoUploadDate } : {}),
-          inLanguage: "en",
-          isFamilyFriendly: true,
-          publisher: {
-            "@type": "Organization",
-            name: ORGANIZATION_NAME,
-            url: SITE_ORIGIN,
-            logo: {
-              "@type": "ImageObject",
-              url: ORGANIZATION_LOGO_URL,
-            },
-          },
-        };
-      })
-      .filter((item): item is Record<string, unknown> => Boolean(item));
-
-    const structuredDataBlocks: Array<Record<string, unknown>> = [{
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      name: project.title,
-      description: projectMetaDescription,
-      image: resolveProjectHeroImage(project),
-      url: `${SITE_ORIGIN}/projects/${project.slug}`,
-      creator: {
-        "@type": "Organization",
-        name: ORGANIZATION_NAME,
-      },
-    }, buildProjectBreadcrumb(project)];
-
-    if (videoStructuredData.length > 0) {
-      structuredDataBlocks.push(...videoStructuredData);
-    }
+    // The Project page's own SeoHead builder (lib/projectPage.ts), so the prerendered head and the
+    // hydrated one carry the same title, description and JSON-LD (CreativeWork, breadcrumb, videos).
+    const view = buildProjectPageView(project, projects);
+    const seoHead = buildProjectSeoHead(view);
 
     const pathname = `/projects/${project.slug}`;
-    const projectGalleryPreloads = buildImagePreloadEntries(
-      (project.images.length > 0 ? project.images.slice(0, 2) : [resolveProjectHeroImage(project)]).map((src) => ({
-        src,
-        widths: [600, 900, 1200],
-        quality: 82,
-        sizes: "(max-width: 767px) 100vw, 50vw",
-      })),
-    );
+    // One preload, the strip's first frame, with the exact src/srcset/sizes its <img> carries
+    // (lib/projectPage.ts frameImage), so the hint and the image are one request.
+    const firstFrame = projectFirstFrame(view);
+    const firstFrameImage = firstFrame ? frameImage(firstFrame) : null;
     const html = await injectPrerenderedApp(
       replaceHead(
         template,
         createHeadMarkup({
-          title: formatMetaTitle(`${project.title} ${project.category} Case Study`, "Atla"),
-          description: projectMetaDescription,
+          title: seoHead.title,
+          description: seoHead.description,
           pathname,
           image: resolveProjectHeroImage(project),
-          ...buildResponsiveImagePreload(
-            resolveProjectHeroImage(project),
-            [600, 900, 1200, 1400],
-            84,
-            "(max-width: 767px) 100vw, 55vw",
-          ),
-          preloadImages: projectGalleryPreloads,
-          structuredData: structuredDataBlocks,
+          preloadImages: firstFrameImage
+            ? [{ href: firstFrameImage.src, srcSet: firstFrameImage.srcSet, sizes: firstFrameImage.sizes, fetchPriority: "high" }]
+            : [],
+          structuredData: seoHead.structuredData,
         }),
       ),
       pathname,
       {
-        projects,
+        projects: projectList,
         project,
       },
     );
@@ -932,11 +894,19 @@ async function prerenderRoutes() {
   });
   await writeFile(path.resolve("dist/public/sitemap.xml"), sitemapXml, "utf8");
 
+  // llms.txt ships from client/public; the featured work is added here from the same projects the prerender used.
+  const llmsPath = path.resolve("dist/public/llms.txt");
+  const llmsTxt = withSelectedWork(await readFile(llmsPath, "utf8"), projects);
+  await writeFile(llmsPath, llmsTxt, "utf8");
+  if (!llmsTxt.includes("## Selected work")) {
+    console.warn("[llms.txt] no featured projects in the prerender content; Selected work was not written");
+  }
+
   const notFoundHtml = await injectPrerenderedApp(
     replaceHead(
       template,
       createHeadMarkup({
-        title: "Page Not Found — Atla",
+        title: "Page not found | Atla",
         description: "The page you requested could not be found.",
         pathname: "/404",
         robots: "noindex,nofollow",
@@ -956,24 +926,25 @@ async function loadPrerenderContent(): Promise<{
   categories: JournalCategory[];
 }> {
   if (!isJournalSanityConfigured()) {
-    return loadPrerenderContentFromPublicApi();
+    // The studio's dataset is public for published documents (the same one the images are served from),
+    // so a build without env files (a fresh worktree, CI) still reads live Sanity instead of the remote API.
+    process.env.SANITY_PROJECT_ID = process.env.SANITY_PROJECT_ID || PUBLIC_SANITY_PROJECT_ID;
+    process.env.SANITY_DATASET = process.env.SANITY_DATASET || PUBLIC_SANITY_DATASET;
+    console.log(`[build] No Sanity env set; reading the public dataset ${PUBLIC_SANITY_PROJECT_ID}/${PUBLIC_SANITY_DATASET} directly.`);
   }
   try {
-    const [projects, articles, categories] = await Promise.all([
+    // Four queries in parallel; every article's detail comes in one query (was one per article).
+    const [projects, articles, categories, details] = await Promise.all([
       fetchProjectsFromSanity(),
       fetchJournalArticlesFromSanity(),
       fetchJournalCategoriesFromSanity(),
+      fetchJournalArticleDetailsFromSanity(),
     ]);
+    const articleDetails = Object.fromEntries(articles.map((article) => [article.slug, details[article.slug] ?? article] as const));
 
-    const articleDetails = Object.fromEntries(
-      await Promise.all(
-        articles.map(async (article) => {
-          const detail = await fetchJournalArticleBySlugFromSanity(article.slug);
-          return [article.slug, detail ?? article] as const;
-        }),
-      ),
+    console.log(
+      `[build] Prerender data source: Sanity (${projects.length} projects, ${articles.length} articles, ${categories.length} categories).`,
     );
-
     return {
       projects,
       articles,
@@ -981,7 +952,7 @@ async function loadPrerenderContent(): Promise<{
       categories,
     };
   } catch (error) {
-    console.warn("[build] Sanity prerender fetch failed; using public API fallback.", error);
+    console.warn("[build] Sanity unreachable; using the remote prerender API fallback.", error);
     return loadPrerenderContentFromPublicApi();
   }
 }

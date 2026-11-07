@@ -1,0 +1,223 @@
+[
+  {
+    "_id": "d608896b-7752-4648-92b6-3548117c4ca3",
+    "slug": "arc-studio",
+    "set": {
+      "caseStudy": [
+        {
+          "_type": "block",
+          "_key": "62ce57b6d7d8",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "0ca029b04820",
+              "marks": [],
+              "text": "The founders put the problem in their brief: most Pilates studios \"feel extremely similar and lack distinction. They tend to be black-and-white, convenient but not memorable.\" They wanted a destination, not a timetable. The strategy went further. Arc does not compete with gyms. It competes with everything that asks for your time. The position was recovery first, in a market that sells intensity, which is harder to hold than it sounds."
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "5dc6b2e47aa4",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "e5108351e5c2",
+              "marks": [],
+              "text": "The moodboards were Momentum Within and Collected Flow. The direction that carried: a place where intensity and calm coexist. The symbol is cut from the capital A of the wordmark, the curve that remains when the straight side and the bar are removed, a figure in motion. A gradient family per pillar: orange for movement, brown for recovery and the spaces, green for the studio and its community. Area, a quiet typeface, for strength without ornament."
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "876257c07695",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "4f85f469d29d",
+              "marks": [],
+              "text": "Strategy and moodboards. The graphic path: palette, logo, type, gradients, photography and applications, from posters to a playlist cover. The brand symbol. A brand guidelines book with the verbal identity, the pillars, wordmark and symbol, color, gradients, pillar icons, photography rules, Instagram system and favicon. Final logo files."
+            }
+          ]
+        }
+      ]
+    },
+    "hold": null,
+    "note": "Body replaced with the 11-05 draft minus the paragraph the new opener already tells; counts removed."
+  },
+  {
+    "_id": "c8d98559-d4ba-4db9-8275-d6ddacd1410f",
+    "slug": "persona",
+    "set": {
+      "caseStudy": [
+        {
+          "_key": "50f9580f51aa",
+          "_type": "block",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_key": "b303dcae58ec",
+              "_type": "span",
+              "marks": [],
+              "text": "Persona is a pioneer in personalized vitamins. People across the country have trusted it with their daily routine, and its packs live on nightstands and kitchen counters."
+            }
+          ]
+        },
+        {
+          "_key": "245d17d8dce8",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "0532f0d60f74",
+              "_type": "span",
+              "marks": [],
+              "text": "Persona's whole promise is that no two plans are alike. The challenge was making that promise visible at every touchpoint, from the box on the nightstand to the daily pack with your name on it, for a product people use every single day."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "33091f63f8d1",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "672d69670a0d",
+              "_type": "span",
+              "marks": [],
+              "text": "A rebrand built around one idea: only one you. A fingerprint mark, a dispenser box designed to sit beside the bed, and personalized daily packs that carry each customer's name. Five trillion combinations, one identity."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ]
+    },
+    "hold": null,
+    "note": "First block: the five-million count out."
+  },
+  {
+    "_id": "sEXYKEM0YtrucL1vKyRfJk",
+    "slug": "ando",
+    "set": {
+      "year": 2023
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "7Lth8w1jA20JqbnelFrdGp",
+    "slug": "bovi-health",
+    "set": {
+      "year": 2024
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "osnJeRBom7V2w5tRKXOROU",
+    "slug": "castro-capital",
+    "set": {
+      "year": 2021
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "7Lth8w1jA20JqbnelFrY29",
+    "slug": "huemac",
+    "set": {
+      "year": 2021
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "515e59ee-8595-46a7-be25-404e518a5195",
+    "slug": "munda",
+    "set": {
+      "year": 2022
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "osnJeRBom7V2w5tRKXOek2",
+    "slug": "oxylife",
+    "set": {
+      "year": 2021
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "osnJeRBom7V2w5tRKXOB4a",
+    "slug": "pathize-health",
+    "set": {
+      "year": 2023
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "osnJeRBom7V2w5tRKXOgWe",
+    "slug": "peachy-patients",
+    "set": {
+      "year": 2022
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "7Lth8w1jA20JqbnelFss4l",
+    "slug": "puppypy",
+    "set": {
+      "year": 2022
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "7Lth8w1jA20JqbnelFsdYW",
+    "slug": "shop-latinx",
+    "set": {
+      "year": 2022
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "7Lth8w1jA20JqbnelFsCBL",
+    "slug": "tigretigre",
+    "set": {
+      "year": 2023
+    },
+    "hold": null,
+    "note": "year facet = the year in the text"
+  },
+  {
+    "_id": "cf4501d8-7c20-438d-a616-445114719362",
+    "slug": "casa-colora",
+    "set": {
+      "description": "Casa Colora is a creative space for children and families in Monterrey. Its founders came to Atla in 2025 for the name and the brand."
+    },
+    "hold": null,
+    "note": "Open: Instagram @casa.colora active (DuckDuckGo 2026-11-07)."
+  },
+  {
+    "_id": "515e59ee-8595-46a7-be25-404e518a5195",
+    "slug": "munda",
+    "set": {
+      "description": "Mundã is a place of vacation and long-stay homes in La Saladita, on the coast of Guerrero. Atla made its brand in 2022, to sell a way of living close to the waves and the neighbors.\n\nIts full name is Mundã, Aldea del Mar, a village by the sea. The brand had to work on posters, on paper and on the wall at the entrance."
+    },
+    "hold": null,
+    "note": "Exists: Airbnb lofts Mundã in La Saladita (airbnb.mx/rooms/1662548065585692523, 2026-11-07)."
+  }
+]

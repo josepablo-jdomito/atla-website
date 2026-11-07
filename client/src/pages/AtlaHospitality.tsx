@@ -1,32 +1,38 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
-import { AtlaHeader, type AtlaCta } from "@/components/atla/AtlaHeader";
+import { PageShell } from "@/components/site/PageShell";
 import { buildServiceSchema, type FaqItem } from "@/components/atla/AtlaLongformLayout";
 import { trackEvent } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
-  "Hospitality audits, rebrands and new openings for hotels, restaurants, wellness and coffee. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
+  "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
 
-// ABC Synt is only installed locally, so visitors get Instrument Serif (Google Fonts, the deck's face) instead of Helvetica.
-const DISPLAY = "'ABC Synt Variable Unlicensed Trial', 'Instrument Serif', Georgia, serif";
-const DISPLAY_FONT_HREF = "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap";
+// The face every visitor gets (loaded site-wide in index.html). No local-only trial fonts: JP reviews what visitors see.
+const DISPLAY = "'Instrument Serif', Georgia, serif";
 const SANS = "'Libre Franklin', Helvetica, sans-serif";
-const INK = "#111111";
-const PAPER = "#f4f0e8";
-const PLACEHOLDER = "#e7e1d4";
-const MUTED = "#6b6a66";
-const RULE = "rgba(17,17,17,0.18)";
+// v2 tokens (client/src/styles/site.css), so the page follows the system light/dark setting.
+const INK = "var(--site-ink)";
+const PAPER = "var(--site-bg)";
+const PLACEHOLDER = "var(--site-line)";
+const MUTED = "var(--site-muted)";
+const RULE = "var(--site-line)";
+const SURFACE = "var(--site-surface)";
+const ERROR = "var(--site-error)";
+// Text on the inverted (ink) bands: the page background at reduced strength.
+const onInk = (percent: number) => `color-mix(in srgb, ${PAPER} ${percent}%, transparent)`;
+// The atlas plates are printed maps with their own paper and ink baked into the SVG files,
+// so their labels keep the plate palette in both light and dark mode.
+const PLATE_INK = "#111111";
+const PLATE_PAPER = "#f4f0e8";
+const PLATE_MUTED = "#6b6a66";
 
 // "Atla* Branding Agency" intro event on Calendly.
 const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
-// One path on this page: header, footer and every link go to the introduction.
-const INTRO_CTA: AtlaCta = { label: "Book a call", href: INTRO_URL, external: true };
 
-// Project photography is pending; each slot renders as a placeholder labelled with what goes there.
+// Project photography is pending; a slot without a photo renders as a quiet, unlabelled block.
 // TEMPORARY (design review only): `src` points at deck and Sanity images so JP can judge the layout.
 // JP's own photos replace every one of them before this page is merged.
 type CaseImage = { alt: string; ratio: string; src?: string; position?: string };
@@ -137,7 +143,7 @@ const HOTELS: HospitalityCase[] = [
     place: "Los Cabos, Mexico",
     tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
     summary:
-      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds. We still work with Acre every week.",
+      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds.",
     specs: [
       { label: "Scope", value: "Audit, brand architecture, brand book, website, Rústico" },
       { label: "Distinction", value: "MICHELIN Green Star, Acre's restaurant" },
@@ -148,9 +154,9 @@ const HOTELS: HospitalityCase[] = [
   {
     name: "Casa Las Tortugas",
     place: "Holbox, Mexico",
-    tagline: "Four restaurants and a spa on one beach.",
+    tagline: "Restaurants and a spa on one beach.",
     summary:
-      "A family-owned hotel on Holbox's main beach. We audited the property, then set the brand architecture across its four restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
+      "A family-owned hotel on Holbox's main beach. We audited the property, then set the brand architecture across its restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
     specs: [
       { label: "Scope", value: "Hospitality audit, brand architecture, operating standards" },
       { label: "Distinction", value: "MICHELIN Key" },
@@ -180,10 +186,9 @@ const RESTAURANTS: HospitalityCase[] = [
   },
 ];
 
-// The three engagements. No prices or durations on the page (JP's rule); proof comes from the cases below.
+// The engagements: the same ways in as Services (Audit, Brand system, Full build), named for hospitality. No prices or durations on the page (JP's rule); proof comes from the cases below.
 const SERVICES = [
   {
-    numeral: "I",
     name: "Audit",
     forWhom: "For a property that is open and feels off, or before you commit to a rebrand.",
     body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own.",
@@ -196,10 +201,9 @@ const SERVICES = [
     example: "Casa Las Tortugas, Holbox. The audit led to its brand architecture.",
   },
   {
-    numeral: "II",
     name: "Rebranding",
     forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
-    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the people who come back every year.",
+    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the guests who come back.",
     includes: [
       "Brand architecture across rooms, restaurants and spa",
       "Repositioning",
@@ -210,10 +214,9 @@ const SERVICES = [
     example: "Acre Resort, Los Cabos",
   },
   {
-    numeral: "III",
     name: "Branding",
     forWhom: "For a new opening: a hotel, restaurant, spa or coffee shop.",
-    body: "We build the brand before the doors open: the name, the identity and every object a guest touches on the first day, ready for the vendors who make them.",
+    body: "We build the brand before the doors open: the name, the identity and every object a guest touches from the first guest on, ready for the vendors who make them.",
     includes: [
       "Naming and positioning",
       "Identity, character and signature marks",
@@ -250,13 +253,12 @@ const FAQ_ITEMS: FaqItem[] = [
 ];
 
 
+// Section labels, as on the rest of the site: small sans, sentence case, muted, no tracking.
 const labelStyle: CSSProperties = {
   fontFamily: SANS,
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: 1.6,
+  fontSize: 14,
+  fontWeight: 500,
   lineHeight: "1.4",
-  textTransform: "uppercase",
   color: MUTED,
   margin: 0,
 };
@@ -273,11 +275,11 @@ const bodyStyle: CSSProperties = {
 
 const ctaStyle: CSSProperties = {
   fontFamily: SANS,
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: 1.4,
-  textTransform: "uppercase",
-  textDecoration: "none",
+  fontSize: 15,
+  fontWeight: 500,
+  textDecoration: "underline",
+  textDecorationThickness: 2,
+  textUnderlineOffset: 6,
   color: INK,
   minHeight: 44,
   display: "inline-flex",
@@ -328,23 +330,8 @@ function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean })
       />
     );
   }
-  return (
-    <div
-      role="img"
-      aria-label={image.alt}
-      style={{
-        width: "100%",
-        aspectRatio: image.ratio,
-        backgroundColor: PLACEHOLDER,
-        display: "flex",
-        alignItems: "flex-end",
-        padding: 14,
-        boxSizing: "border-box",
-      }}
-    >
-      <span style={{ ...labelStyle, color: "#9a9a96" }}>{image.alt}</span>
-    </div>
-  );
+  // Photo still to come (JP supplies it): a quiet paper-tone block, silent to screen readers.
+  return <div aria-hidden="true" style={{ width: "100%", aspectRatio: image.ratio, backgroundColor: PLACEHOLDER }} />;
 }
 
 function BookCall({ position, inverted = false }: { position: string; inverted?: boolean }) {
@@ -365,7 +352,7 @@ function BookCall({ position, inverted = false }: { position: string; inverted?:
       >
         Book a call
       </a>
-      <p style={{ ...bodyStyle, fontSize: 13, color: inverted ? "rgba(244,240,232,0.65)" : MUTED }}>
+      <p style={{ ...bodyStyle, fontSize: 13, color: inverted ? onInk(65) : MUTED }}>
         A short conversation about your property. We tell you what we would do first.
       </p>
     </div>
@@ -373,7 +360,7 @@ function BookCall({ position, inverted = false }: { position: string; inverted?:
 }
 
 function Label({ children, inverted = false }: { children: ReactNode; inverted?: boolean }) {
-  return <p style={{ ...labelStyle, color: inverted ? "rgba(244,240,232,0.6)" : MUTED }}>{children}</p>;
+  return <p style={{ ...labelStyle, color: inverted ? onInk(60) : MUTED }}>{children}</p>;
 }
 
 // Atlas plates (script/build_hospitality_atlas.py, Natural Earth 50m): plate carree, x scaled by
@@ -481,14 +468,14 @@ function AtlasPlateView({ plate, showLabels, unit = 1 }: { plate: AtlasPlate; sh
       <image href={`/hospitality/atlas-${plate.id}.svg`} x={0} y={0} width={width} height={height} />
       {showLabels
         ? latMarks.map((lat) => (
-            <text key={`lat${lat}`} x={8 * unit} y={project(0, lat).y - 5 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={MUTED}>
+            <text key={`lat${lat}`} x={8 * unit} y={project(0, lat).y - 5 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={PLATE_MUTED}>
               {degree(lat, "N", "S")}
             </text>
           ))
         : null}
       {showLabels
         ? lngMarks.map((lng) => (
-            <text key={`lng${lng}`} x={project(lng, 0).x + 5 * unit} y={height - 8 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={MUTED}>
+            <text key={`lng${lng}`} x={project(lng, 0).x + 5 * unit} y={height - 8 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={PLATE_MUTED}>
               {degree(lng, "E", "W")}
             </text>
           ))
@@ -499,20 +486,20 @@ function AtlasPlateView({ plate, showLabels, unit = 1 }: { plate: AtlasPlate; sh
         return (
           <g key={place.name}>
             {label && showLabels && Math.abs(label.dx) > 24 ? (
-              <line x1={x} y1={y} x2={x + label.dx - 4 * unit} y2={y + label.dy - 5 * unit} stroke={INK} strokeWidth={0.6 * unit} />
+              <line x1={x} y1={y} x2={x + label.dx - 4 * unit} y2={y + label.dy - 5 * unit} stroke={PLATE_INK} strokeWidth={0.6 * unit} />
             ) : null}
             {place.hospitality ? (
-              <circle cx={x} cy={y} r={(showLabels ? 4 : 13) * unit} fill={INK} />
+              <circle cx={x} cy={y} r={(showLabels ? 4 : 13) * unit} fill={PLATE_INK} />
             ) : (
-              <circle cx={x} cy={y} r={(showLabels ? 3.5 : 10) * unit} fill={PAPER} stroke={INK} strokeWidth={(showLabels ? 1 : 3) * unit} />
+              <circle cx={x} cy={y} r={(showLabels ? 3.5 : 10) * unit} fill={PLATE_PAPER} stroke={PLATE_INK} strokeWidth={(showLabels ? 1 : 3) * unit} />
             )}
             {label && showLabels ? (
-              <text x={x + label.dx} y={y + label.dy} textAnchor={label.anchor} fill={INK}>
+              <text x={x + label.dx} y={y + label.dy} textAnchor={label.anchor} fill={PLATE_INK}>
                 <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17 * unit}>
                   {place.name.split(",")[0]}
                 </tspan>
-                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={8.5 * unit} letterSpacing={1.2 * unit} fill={MUTED}>
-                  {place.projects.toUpperCase()}
+                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={9.5 * unit} fill={PLATE_MUTED}>
+                  {place.projects}
                 </tspan>
               </text>
             ) : null}
@@ -625,7 +612,7 @@ function TakeConstellation() {
               key={tile.name}
               d={`M${cx} ${cy} Q ${(cx + 500) / 2} ${cy > 375 ? cy - 60 : cy + 60} 500 375`}
               fill="none"
-              stroke="#d4d4cf"
+              style={{ stroke: RULE }}
               strokeWidth={1}
             />
           );
@@ -664,9 +651,9 @@ const fieldStyle: CSSProperties = {
   width: "100%",
   minHeight: 48,
   padding: "12px 14px",
-  border: "1px solid #d8d8d8",
+  border: `1px solid ${RULE}`,
   borderRadius: 4,
-  background: "#fff",
+  background: SURFACE,
   boxSizing: "border-box",
   outlineOffset: 2,
 };
@@ -727,7 +714,6 @@ function InquiryForm() {
       `Property type: ${value("propertyType")}`,
       `Project: ${value("stage")}`,
       `Opening or launch date: ${value("opening") || "not given"}`,
-      `Budget: ${value("budget") || "not given"}`,
       `Decides: ${value("decider")}`,
       `Came from: ${attributionRef.current}`,
       "",
@@ -761,7 +747,7 @@ function InquiryForm() {
       }
       form.reset();
       setStatus({ state: "sent" });
-      trackEvent("contact_form_submit", { page: "hospitality", property_type: value("propertyType"), budget: value("budget"), decider: value("decider") });
+      trackEvent("contact_form_submit", { page: "hospitality", property_type: value("propertyType"), decider: value("decider") });
     } catch {
       setStatus({ state: "error", message: "We could not reach the server. Email us instead." });
     }
@@ -796,9 +782,6 @@ function InquiryForm() {
               <input name="opening" type="text" maxLength={60} placeholder="Month and year" style={fieldStyle} />
             </Field>
             <Choice name="decider" label="Who decides on this project?" options={DECIDERS} />
-            <Field label="Budget (optional)">
-              <input name="budget" type="text" maxLength={80} style={fieldStyle} />
-            </Field>
           </div>
           <Field label="What should the guest feel when they walk in?">
             <textarea name="message" required minLength={10} maxLength={3000} rows={5} style={{ ...fieldStyle, resize: "vertical" }} />
@@ -810,7 +793,7 @@ function InquiryForm() {
             </label>
           </div>
           {status.state === "offline" || status.state === "error" ? (
-            <p role="alert" style={{ ...bodyStyle, color: status.state === "error" ? "#9a2d1f" : MUTED }}>
+            <p role="alert" style={{ ...bodyStyle, color: status.state === "error" ? ERROR : MUTED }}>
               {status.state === "error" ? status.message : "The form is offline right now. Write to us at"}{" "}
               <a href="mailto:josepablo@atla.design" style={{ color: INK }}>
                 josepablo@atla.design
@@ -834,7 +817,7 @@ function InquiryForm() {
                 border: `1px solid ${INK}`,
                 borderRadius: 0,
                 background: INK,
-                color: "#fafafa",
+                color: PAPER,
                 cursor: "pointer",
                 opacity: isSubmitting ? 0.7 : 1,
               }}
@@ -856,17 +839,10 @@ export default function AtlaHospitality() {
   const gutter = isMobile ? 16 : 48;
   const sectionGap = isMobile ? 72 : 120;
 
-  useEffect(() => {
-    if (document.querySelector(`link[href="${DISPLAY_FONT_HREF}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = DISPLAY_FONT_HREF;
-    document.head.appendChild(link);
-  }, []);
 
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: PAPER }}>
+    <PageShell>
       <SeoHead
         title={formatMetaTitle("Hospitality", "Atla")}
         description={DESCRIPTION}
@@ -878,10 +854,9 @@ export default function AtlaHospitality() {
           faqItems: FAQ_ITEMS,
         })}
       />
-      <AtlaHeader cta={INTRO_CTA} background={PAPER} />
-      <main
-        className="atla-enter"
-        style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", background: PAPER, paddingBottom: isMobile ? 0 : 0 }}
+      <div
+        className="hospitality-page"
+        style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", background: PAPER }}
       >
         <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap }}>
           {/* Hero: text and photo side by side so the place is in the first screen */}
@@ -895,12 +870,13 @@ export default function AtlaHospitality() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 26 }}>
-              <Label>Restaurants · Wellness · Coffee Shops · Hotels</Label>
+              <Label>Restaurants, wellness, coffee shops, hotels</Label>
               {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
               <img
                 src="/hospitality/hospitality-wordmark.svg"
                 alt="Hospitality"
                 decoding="async"
+                className="hospitality-wordmark"
                 style={{ display: "block", width: isMobile ? "88%" : 520, maxWidth: "100%", height: "auto", aspectRatio: "3560 / 1100", marginLeft: isMobile ? -6 : -12 }}
               />
               <h1
@@ -914,14 +890,14 @@ export default function AtlaHospitality() {
                   maxWidth: 620,
                 }}
               >
-                We design hospitality experiences people love, win awards, and make sure your guests keep coming back.
+                Brands for hotels and restaurants, from the booking page to the room.
               </h1>
               <BookCall position="hero" />
               <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `1px solid ${RULE}`, paddingTop: 18 }}>
-                <Label>Recent client awards</Label>
+                <Label>Awards our clients hold</Label>
                 {AWARDS.map((award) => (
                   <div key={award.src} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <img src={award.src} alt="" width={22} height={22} decoding="async" style={{ width: 22, height: 22, objectFit: "contain", mixBlendMode: "multiply" }} />
+                    <img src={award.src} alt="" width={22} height={22} decoding="async" className="hospitality-award" style={{ width: 22, height: 22, objectFit: "contain" }} />
                     <span style={{ ...bodyStyle, fontSize: 14 }}>
                       {award.label} <span style={{ color: MUTED }}>· {award.who}</span>
                     </span>
@@ -961,32 +937,31 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 760 }}>
               <Label inverted>Services</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
-                Three ways to work with us.
+                Ways to work with us.
               </h2>
-              <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>
-                We believe in a holistic approach to branding, guided by defined creative processes and the understanding
-                that great brands are built day by day.
+              <p style={{ ...bodyStyle, color: onInk(75) }}>
+                The same ways in we offer every client, named for hospitality: the audit, the rebrand and the new brand.
+                One team does the strategy, the identity and the rollout, so the brand stays one brand.
               </p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 56 : 48 }}>
               {SERVICES.map((service) => (
                 <article
                   key={service.name}
-                  style={{ display: "flex", flexDirection: "column", gap: 14, borderTop: "1px solid rgba(244,240,232,0.22)", paddingTop: 22 }}
+                  style={{ display: "flex", flexDirection: "column", gap: 14, borderTop: `1px solid ${onInk(22)}`, paddingTop: 22 }}
                 >
-                  <p style={{ fontFamily: DISPLAY, fontSize: 18, color: "rgba(244,240,232,0.55)", margin: 0 }}>{service.numeral}</p>
                   <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 34 : 40, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
                     {service.name}
                   </h3>
                   <p style={{ fontFamily: DISPLAY, fontStyle: "italic", fontSize: 19, lineHeight: "1.3", color: PAPER, margin: 0 }}>{service.forWhom}</p>
-                  <p style={{ ...bodyStyle, color: "rgba(244,240,232,0.75)" }}>{service.body}</p>
+                  <p style={{ ...bodyStyle, color: onInk(75) }}>{service.body}</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
                     <Label inverted>Includes</Label>
                     <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
                       {service.includes.map((item) => (
                         <li
                           key={item}
-                          style={{ ...bodyStyle, fontSize: 14, color: PAPER, padding: "9px 0", borderBottom: "1px solid rgba(244,240,232,0.14)" }}
+                          style={{ ...bodyStyle, fontSize: 14, color: PAPER, padding: "9px 0", borderBottom: `1px solid ${onInk(14)}` }}
                         >
                           {item}
                         </li>
@@ -1000,9 +975,8 @@ export default function AtlaHospitality() {
                 </article>
               ))}
             </div>
-            <p style={{ ...bodyStyle, fontSize: 14, color: "rgba(244,240,232,0.6)", maxWidth: 760 }}>
-              After launch, we can keep a weekly seat at the table so new outlets and rooms come out of the same system. We
-              work with Acre and Temakase this way today.
+            <p style={{ ...bodyStyle, fontSize: 14, color: onInk(60), maxWidth: 760 }}>
+              After launch we can stay on, so new outlets and rooms come out of the same system.
             </p>
           </div>
         </section>
@@ -1020,15 +994,13 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <Label>Our take on branding</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 28 : 36, fontWeight: 400, lineHeight: "1.12", color: INK, margin: 0 }}>
-                Branding goes far beyond visuals, it’s the foundation of building a complete and memorable identity.
+                Branding starts before the logo.
               </h2>
               <p style={bodyStyle}>
-                While the visual elements are the starting point, a true brand is shaped by a cohesive strategy that aligns
-                tone, voice, and objectives.
+                Strategy decides the tone, the voice and what the place is for. Design follows.
               </p>
               <p style={bodyStyle}>
-                The ultimate goal of branding is to foster meaningful, long-term relationships that inspire loyalty and
-                trust, turning every interaction into an opportunity to connect with your audience on a deeper level.
+                A brand is what a guest remembers on the way home.
               </p>
             </div>
             <TakeConstellation />
@@ -1039,7 +1011,7 @@ export default function AtlaHospitality() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <Label>Hotels</Label>
               <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 52, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0, maxWidth: 820 }}>
-                One brand, whether you have ten rooms or four restaurants.
+                One brand, whether you have a few rooms or several restaurants.
               </h2>
             </div>
             {HOTELS.map((item, index) => (
@@ -1125,8 +1097,7 @@ export default function AtlaHospitality() {
             </dl>
           </section>
         </div>
-      </main>
-      <AtlaFooter cta={INTRO_CTA} />
-    </div>
+      </div>
+    </PageShell>
   );
 }

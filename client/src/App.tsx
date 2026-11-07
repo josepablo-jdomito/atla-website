@@ -1,73 +1,78 @@
-import { Suspense, lazy, useLayoutEffect } from "react";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { Suspense, lazy, useEffect, useLayoutEffect, useState, type ComponentProps } from "react";
+import { queryClient as browserQueryClient } from "./lib/queryClient";
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { Router as LocationRouter } from "wouter";
 import { useFunnelClickTracking, usePageAnalytics } from "@/hooks/use-analytics";
+import { stripQuery } from "@/lib/stripQuery";
+import { endHydration } from "@/lib/hydration";
 import { AnalyticsConsent } from "@/components/atla/AnalyticsConsent";
 import { AppRouter } from "./AppRouter";
 
-const NotFound = lazy(() => import("@/pages/not-found"));
-const ProjectsAdmin = lazy(() => import("@/pages/ProjectsAdmin"));
-const AtlaAbout = lazy(() => import("@/pages/AtlaAbout"));
-const AtlaContact = lazy(() => import("@/pages/AtlaContact"));
-const AtlaServices = lazy(() => import("@/pages/AtlaServices"));
-const AtlaWork = lazy(() => import("@/pages/AtlaWork"));
-const AtlaProject = lazy(() => import("@/pages/AtlaProject"));
-const AtlaJournal = lazy(() => import("@/pages/AtlaJournal"));
-const AtlaArticle = lazy(() => import("@/pages/AtlaArticle"));
-const AtlaPrivacy = lazy(() => import("@/pages/AtlaPrivacy"));
-const AtlaTerms = lazy(() => import("@/pages/AtlaTerms"));
-const AtlaHospitality = lazy(() => import("@/pages/AtlaHospitality"));
-const AtlaHospitalityBranding = lazy(() => import("@/pages/AtlaHospitalityBranding"));
-const AtlaCpgBranding = lazy(() => import("@/pages/AtlaCpgBranding"));
-const AtlaWellnessBranding = lazy(() => import("@/pages/AtlaWellnessBranding"));
-const AtlaSaasBranding = lazy(() => import("@/pages/AtlaSaasBranding"));
-const AtlaBrandStrategy = lazy(() => import("@/pages/AtlaBrandStrategy"));
-const AtlaHowWeWork = lazy(() => import("@/pages/AtlaHowWeWork"));
-const AtlaPrograms = lazy(() => import("@/pages/AtlaPrograms"));
+export type AppPages = ComponentProps<typeof AppRouter>;
+
+const pages: AppPages = {
+  NotFound: lazy(() => import("@/pages/not-found")),
+  ProjectsAdmin: lazy(() => import("@/pages/ProjectsAdmin")),
+  About: lazy(() => import("@/pages/About")),
+  Ventures: lazy(() => import("@/pages/Ventures")),
+  Services: lazy(() => import("@/pages/Services")),
+  Home: lazy(() => import("@/pages/Home")),
+  Project: lazy(() => import("@/pages/Project")),
+  AtlaJournal: lazy(() => import("@/pages/AtlaJournal")),
+  AtlaArticle: lazy(() => import("@/pages/AtlaArticle")),
+  AtlaPrivacy: lazy(() => import("@/pages/AtlaPrivacy")),
+  AtlaTerms: lazy(() => import("@/pages/AtlaTerms")),
+  AtlaHospitality: lazy(() => import("@/pages/AtlaHospitality")),
+  AtlaHospitalityBranding: lazy(() => import("@/pages/AtlaHospitalityBranding")),
+  AtlaCpgBranding: lazy(() => import("@/pages/AtlaCpgBranding")),
+  AtlaWellnessBranding: lazy(() => import("@/pages/AtlaWellnessBranding")),
+  AtlaSaasBranding: lazy(() => import("@/pages/AtlaSaasBranding")),
+  AtlaBrandStrategy: lazy(() => import("@/pages/AtlaBrandStrategy")),
+  AtlaHowWeWork: lazy(() => import("@/pages/AtlaHowWeWork")),
+  AtlaPrograms: lazy(() => import("@/pages/AtlaPrograms")),
+  Brief: lazy(() => import("@/pages/Brief")),
+  BrandCheck: lazy(() => import("@/pages/BrandCheck")),
+  Audit: lazy(() => import("@/pages/Audit")),
+};
 const Analytics = lazy(() => import("@vercel/analytics/react").then((module) => ({ default: module.Analytics })));
 const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then((module) => ({ default: module.SpeedInsights })));
 
-// The prerendered markup is the mobile layout. On desktop, index.html hides
-// #root[data-prerender-gate] so that markup never paints; this lifts the gate
-// in the same frame the real page commits. It sits inside the route's Suspense
-// boundary, so it does not fire while the lazy page chunk is still loading.
-function PrerenderReveal() {
-  useLayoutEffect(() => {
-    document.getElementById("root")?.removeAttribute("data-prerender-gate");
+// useLayoutEffect warns under renderToString; the prerender never runs effects anyway.
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/**
+ * Runs once the route's Suspense boundary has committed, i.e. once the page itself has hydrated (its lazy
+ * chunk can arrive after the root commits). It ends the hydration phase (lib/hydration.ts) and lifts the
+ * desktop gate: on the routes whose prerender is the phone layout (the wall), index.html keeps
+ * #root[data-prerender-gate] unpainted on wide screens until the real layout is in. Two frames, so the
+ * effects that set that layout (columns, the shuffle) have committed before the reveal.
+ */
+function HydrationDone() {
+  useIsomorphicLayoutEffect(() => {
+    endHydration();
+    const root = document.getElementById("root");
+    if (!root?.hasAttribute("data-prerender-gate")) return;
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => root.removeAttribute("data-prerender-gate"));
+    });
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
   }, []);
 
   return null;
 }
 
-function Router() {
+function Routes({ pages }: { pages: AppPages }) {
   usePageAnalytics();
   useFunnelClickTracking();
 
   return (
     <Suspense fallback={null}>
-      <PrerenderReveal />
-      <AppRouter
-        NotFound={NotFound}
-        ProjectsAdmin={ProjectsAdmin}
-        AtlaAbout={AtlaAbout}
-        AtlaContact={AtlaContact}
-        AtlaServices={AtlaServices}
-        AtlaWork={AtlaWork}
-        AtlaProject={AtlaProject}
-        AtlaJournal={AtlaJournal}
-        AtlaArticle={AtlaArticle}
-        AtlaPrivacy={AtlaPrivacy}
-        AtlaTerms={AtlaTerms}
-        AtlaHospitality={AtlaHospitality}
-        AtlaHospitalityBranding={AtlaHospitalityBranding}
-        AtlaCpgBranding={AtlaCpgBranding}
-        AtlaWellnessBranding={AtlaWellnessBranding}
-        AtlaSaasBranding={AtlaSaasBranding}
-        AtlaBrandStrategy={AtlaBrandStrategy}
-        AtlaHowWeWork={AtlaHowWeWork}
-        AtlaPrograms={AtlaPrograms}
-      />
+      <HydrationDone />
+      <AppRouter {...pages} />
     </Suspense>
   );
 }
@@ -79,22 +84,47 @@ function DeferredEnhancements() {
 
   return (
     <Suspense fallback={null}>
-      <Analytics />
-      <SpeedInsights />
+      <Analytics beforeSend={stripQuery} />
+      <SpeedInsights beforeSend={stripQuery} />
     </Suspense>
   );
 }
 
-function App() {
+/**
+ * The whole tree, shared by the browser (App below) and the prerender (PrerenderApp.tsx passes eager
+ * pages, its own query client and the path), so the prerendered HTML and the client's first render are
+ * the same tree and hydrateRoot can adopt the markup instead of rebuilding it.
+ * The consent notice and Vercel's scripts are client-only: they mount after hydration.
+ */
+export function AppShell({
+  client,
+  pages: routePages,
+  ssrPath,
+}: {
+  client: QueryClient;
+  pages: AppPages;
+  ssrPath?: string;
+}) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <Router />
-        <AnalyticsConsent />
-        <DeferredEnhancements />
-      </ThemeProvider>
+    <QueryClientProvider client={client}>
+      <LocationRouter {...(ssrPath ? { ssrPath } : null)}>
+        <Routes pages={routePages} />
+      </LocationRouter>
+      {mounted ? (
+        <>
+          <AnalyticsConsent />
+          <DeferredEnhancements />
+        </>
+      ) : null}
     </QueryClientProvider>
   );
+}
+
+function App() {
+  return <AppShell client={browserQueryClient} pages={pages} />;
 }
 
 export default App;

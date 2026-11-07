@@ -1,12 +1,13 @@
 import * as React from "react"
+import { initialClientState } from "@/lib/hydration"
 
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
-  // Prerender has no window and renders mobile. In the browser, read the real
-  // width up front so the first client commit already has the right layout.
+  // Prerender has no window and renders mobile; hydration keeps that first render (it must match the
+  // prerendered HTML) and the effect below sets the real width. A client-only render reads it up front.
   const [isMobile, setIsMobile] = React.useState<boolean>(() =>
-    typeof window === "undefined" ? true : window.innerWidth < MOBILE_BREAKPOINT,
+    initialClientState(true, () => window.innerWidth < MOBILE_BREAKPOINT),
   )
 
   React.useEffect(() => {

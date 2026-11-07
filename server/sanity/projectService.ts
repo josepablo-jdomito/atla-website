@@ -1,8 +1,12 @@
 import type { Project, ProjectMediaAsset, ProjectVideoAsset } from "../../shared/schema.ts";
+import { resolveProjectFacets } from "../../shared/projectFacets.ts";
+import { toProjectListItem, type ProjectListItem } from "../../shared/projectList.ts";
 import { getJournalSanityClient, isJournalSanityConfigured } from "./journalClient.ts";
 
 type SanityProject = {
   _id: string;
+  /** Sanity's own creation time: stable, so the API body (and its ETag) is the same on every request. */
+  _createdAt?: string;
   slug: string;
   title: string;
   client?: unknown;
@@ -25,6 +29,10 @@ type SanityProject = {
   keywords?: unknown;
   service?: unknown;
   services?: unknown;
+  sector?: unknown;
+  disciplines?: unknown;
+  stage?: unknown;
+  searchTerms?: unknown;
   vimeoVideos?: unknown;
   videoFiles?: unknown;
   mediaItems?: unknown;
@@ -36,8 +44,13 @@ type SanityProject = {
   content?: unknown;
   caseStudy?: unknown;
   featured: boolean;
+  homeOrder?: number | null;
   status?: string;
   coverImage?: string;
+  /** The cover's Sanity hotspot (x, y in 0..1), when the editor set one. */
+  coverFocal?: { x?: unknown; y?: unknown } | null;
+  /** The cover's dominant background colour from the asset palette. */
+  coverColor?: unknown;
   gallery?: string[];
 };
 
@@ -120,8 +133,11 @@ export type PortfolioProjectAuditReport = {
   projects: PortfolioProjectAuditItem[];
 };
 
-const PROJECT_QUERY = `
-  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(year, _createdAt) desc, _createdAt desc) {
+const PROJECT_FILTER = `_type == "project" && defined(slug.current)`;
+const PROJECT_ORDER = `order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc)`;
+/** The fields every project row carries, list or detail. */
+const PROJECT_LIST_FIELDS = `
+    _createdAt,
     _id,
     "slug": slug.current,
     "title": coalesce(title, name, "Untitled project"),
@@ -145,7 +161,38 @@ const PROJECT_QUERY = `
     keywords,
     service,
     services,
+    sector,
+    disciplines,
+    stage,
+    searchTerms,
     vimeoVideos,
+    videos,
+    "featured": coalesce(featured, featuredOnHomepage, false),
+    homeOrder,
+    "status": status,
+    "coverImage": coalesce(coverImage.asset->url, mainImage.asset->url, heroImage.asset->url, thumbnail.asset->url),
+    "coverFocal": select(
+      defined(coverImage.asset) => coverImage.hotspot{x, y},
+      defined(mainImage.asset) => mainImage.hotspot{x, y},
+      defined(heroImage.asset) => heroImage.hotspot{x, y},
+      thumbnail.hotspot{x, y}
+    ),
+    "coverColor": coalesce(
+      coverImage.asset->metadata.palette.dominant.background,
+      mainImage.asset->metadata.palette.dominant.background,
+      heroImage.asset->metadata.palette.dominant.background,
+      thumbnail.asset->metadata.palette.dominant.background
+    ),
+    "gallery": array::unique(array::compact([
+      ...coalesce(gallery, [])[].asset->url,
+      ...coalesce(images, [])[].asset->url,
+      ...coalesce(galleryImages, [])[].asset->url,
+      ...coalesce(body, [])[ _type == "image" ].asset->url,
+      ...coalesce(content, [])[ _type == "image" ].asset->url,
+      ...coalesce(caseStudy, [])[ _type == "image" ].asset->url
+    ]))`;
+/** The long text and the media sequence: only the project page and Ask read them. */
+const PROJECT_DETAIL_FIELDS = `
     mediaItems[]{
       mediaType,
       title,
@@ -162,29 +209,26 @@ const PROJECT_QUERY = `
       "mimeType": file.asset->mimeType,
       "poster": poster.asset->url
     },
-    videos,
     description,
     excerpt,
     summary,
     body,
     content,
     caseStudy,
-    "featured": coalesce(featured, featuredOnHomepage, false),
-    "status": status,
-    "coverImage": coalesce(coverImage.asset->url, mainImage.asset->url, heroImage.asset->url, thumbnail.asset->url),
-    "gallery": array::unique(array::compact([
-      ...coalesce(gallery, [])[].asset->url,
-      ...coalesce(images, [])[].asset->url,
-      ...coalesce(galleryImages, [])[].asset->url,
-      ...coalesce(body, [])[ _type == "image" ].asset->url,
-      ...coalesce(content, [])[ _type == "image" ].asset->url,
-      ...coalesce(caseStudy, [])[ _type == "image" ].asset->url
-    ]))
-  }
 `;
 
+/** Every project, full (Ask's prompt, the build's project pages). */
+const PROJECT_QUERY = `*[${PROJECT_FILTER}] | ${PROJECT_ORDER} {${PROJECT_DETAIL_FIELDS}${PROJECT_LIST_FIELDS}
+  }`;
+/** Every project, lite (GET /api/projects, the wall, the sitemap): no body, description or case study. */
+const PROJECT_LIST_QUERY = `*[${PROJECT_FILTER}] | ${PROJECT_ORDER} {${PROJECT_LIST_FIELDS}
+  }`;
+/** One project, full, by slug or document id (GET /api/projects/:slug). */
+const PROJECT_BY_SLUG_QUERY = `*[${PROJECT_FILTER} && (slug.current == $slug || _id == $slug)][0...1] {${PROJECT_DETAIL_FIELDS}${PROJECT_LIST_FIELDS}
+  }`;
+
 const PROJECT_AUDIT_QUERY = `
-  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(year, _createdAt) desc, _createdAt desc) {
+  *[_type == "project" && defined(slug.current)] | order(coalesce(featured, featuredOnHomepage, false) desc, coalesce(homeOrder, 999) asc, coalesce(year, _createdAt) desc, _createdAt desc) {
     _id,
     "slug": slug.current,
     "title": coalesce(title, name, "Untitled project"),
@@ -376,20 +420,73 @@ const SERVICE_KEYWORDS: Record<(typeof SERVICE_ORDER)[number], string[]> = {
   ],
 };
 
+/**
+ * SANITY_INCLUDE_DRAFTS gates projects whose Sanity status is Draft. Unset keeps today's behaviour (drafts
+ * are included); "false", "0", "no" or "off" drops them from the API, the wall, the sitemap and the prerender.
+ */
+export const includeDraftProjects = () => !/^(false|0|no|off)$/i.test((process.env.SANITY_INCLUDE_DRAFTS || "").trim());
+export const dropDraftsUnlessIncluded = <T extends { status?: string }>(projects: T[], include = includeDraftProjects()) =>
+  include ? projects : projects.filter((project) => project.status !== "draft");
+
+/**
+ * Projects that exist in Sanity but never render on the site (JP's rule: WeLoveDaily lives only
+ * on /ventures). Applied to every project query, so the wall, the project API, next/related, the sitemap
+ * and the prerender all agree. The Sanity document stays; only the site stops listing it.
+ */
+/**
+ * Off the wall, the sitemap, next and related (JP, 2026-11-06, after the red team): welove (WeLoveDaily
+ * lives on /ventures), atla (in-house, images only), the-bridge ("the case is not that strong", lorem
+ * ipsum in the gallery), conscious-care-co (no client named). Nothing is deleted in Sanity.
+ */
+export const HIDDEN_PROJECT_SLUGS: readonly string[] = ["welove", "atla", "the-bridge", "conscious-care-co"];
+export const dropHiddenProjects = <T extends { slug?: string | null }>(projects: T[]) =>
+  projects.filter((project) => !HIDDEN_PROJECT_SLUGS.includes(String(project.slug ?? "").trim().toLowerCase()));
+
+/** Hidden and (unless included) draft projects out, featured filter and order applied. */
+function visibleProjects(rows: SanityProject[], options?: { featured?: boolean }) {
+  const normalized = dropDraftsUnlessIncluded(
+    dropHiddenProjects(rows)
+      .filter((project) => (options?.featured ? project.featured : true))
+      .map(normalizeProject),
+  );
+  return options?.featured ? sortFeatured(normalized) : normalized;
+}
+
+/** Every visible project, full: body, description, media sequence. Ask and the build read this. */
 export async function fetchProjectsFromSanity(options?: { featured?: boolean }) {
   if (!isJournalSanityConfigured()) return [];
 
   const client = getJournalSanityClient();
-  const projects = await client.fetch<SanityProject[]>(PROJECT_QUERY);
-
-  return projects
-    .filter((project) => (options?.featured ? project.featured : true))
-    .map(normalizeProject);
+  return visibleProjects(await client.fetch<SanityProject[]>(PROJECT_QUERY), options);
 }
 
+/** Every visible project, lite (shared/projectList.ts): GET /api/projects and the sitemap. */
+export async function fetchProjectListFromSanity(options?: { featured?: boolean }): Promise<ProjectListItem[]> {
+  if (!isJournalSanityConfigured()) return [];
+
+  const client = getJournalSanityClient();
+  return visibleProjects(await client.fetch<SanityProject[]>(PROJECT_LIST_QUERY), options).map((project) =>
+    toProjectListItem(project as unknown as ProjectListItem & Record<string, unknown>),
+  );
+}
+
+// Featured projects: explicit homeOrder first (1 = first), then newest year.
+// Array.prototype.sort is stable, so ties keep the GROQ order.
+export function sortFeatured<T extends { homeOrder?: number | null; year?: number | string | null }>(
+  projects: T[],
+): T[] {
+  const order = (project: T) => project.homeOrder ?? 999;
+  const year = (project: T) => Number(project.year) || 0;
+  return [...projects].sort((a, b) => order(a) - order(b) || year(b) - year(a));
+}
+
+/** One visible project, full, by slug or document id: one document from Sanity, not the whole list. */
 export async function fetchProjectBySlugOrIdFromSanity(slugOrId: string) {
-  const projects = await fetchProjectsFromSanity();
-  return projects.find((project) => project.slug === slugOrId || project.id === slugOrId);
+  if (!isJournalSanityConfigured()) return undefined;
+
+  const client = getJournalSanityClient();
+  const rows = await client.fetch<SanityProject[]>(PROJECT_BY_SLUG_QUERY, { slug: slugOrId });
+  return visibleProjects(rows).find((project) => project.slug === slugOrId || project.id === slugOrId);
 }
 
 export function normalizeProjectFacetsForApi<T extends FacetSourceProject & Record<string, unknown>>(project: T) {
@@ -410,7 +507,7 @@ export async function fetchPortfolioProjectAuditFromSanity(): Promise<PortfolioP
   }
 
   const client = getJournalSanityClient();
-  const projects = await client.fetch<SanityProjectAuditSource[]>(PROJECT_AUDIT_QUERY);
+  const projects = dropHiddenProjects(await client.fetch<SanityProjectAuditSource[]>(PROJECT_AUDIT_QUERY));
 
   return buildPortfolioProjectAudit(projects);
 }
@@ -502,7 +599,7 @@ function normalizeProject(project: SanityProject): Project {
   });
   const region = firstNonEmptyString(project.region, project.location, project.market) || "America";
   const country = firstNonEmptyString(project.country);
-  const videos = extractVimeoEmbedSources(project.vimeoVideos, project.videos);
+  const videos = extractVideoSources(project.vimeoVideos, project.videos);
   const videoFiles = extractVideoFileAssets(project.videoFiles);
   const mediaItems = extractProjectMediaAssets(project.mediaItems);
   const description = firstNonEmptyString(project.description, project.excerpt, project.summary);
@@ -514,6 +611,15 @@ function normalizeProject(project: SanityProject): Project {
   ) || "";
   const latitude = normalizeCoordinate(project.latitude) ?? null;
   const longitude = normalizeCoordinate(project.longitude) ?? null;
+  // The controlled facets; while a document has none, the fallback table by slug (shared/projectFacets.ts).
+  const facets = resolveProjectFacets({
+    slug: project.slug,
+    country,
+    sector: project.sector,
+    disciplines: project.disciplines,
+    stage: project.stage,
+    searchTerms: project.searchTerms,
+  });
 
   return {
     id: project._id,
@@ -528,20 +634,43 @@ function normalizeProject(project: SanityProject): Project {
     service: primaryService,
     services,
     tags,
+    sector: facets.sector,
+    disciplines: facets.disciplines,
+    stage: facets.stage,
+    place: facets.place,
+    searchTerms: facets.searchTerms,
     description: description || "",
     body,
     coverImage: project.coverImage || "",
+    coverFocal: normalizeFocal(project.coverFocal),
+    coverColor: normalizeColor(project.coverColor),
     images: Array.isArray(project.gallery) ? project.gallery.filter(isNonEmptyString) : [],
     videos,
     videoFiles,
     mediaItems,
     featured: Boolean(project.featured),
+    homeOrder: typeof project.homeOrder === "number" ? project.homeOrder : undefined,
     status: project.status === "draft" ? "draft" : "published",
-    createdAt: new Date(),
+    // Sanity's _createdAt, not the request time: the same document serializes the same way every time.
+    createdAt: (project._createdAt ?? null) as unknown as Date,
     locationName,
     latitude,
     longitude,
   } as Project;
+}
+
+/** A Sanity hotspot centre as {x, y} in 0..1, or null when the editor set none. */
+export function normalizeFocal(value: unknown): { x: number; y: number } | null {
+  if (!value || typeof value !== "object") return null;
+  const { x, y } = value as { x?: unknown; y?: unknown };
+  if (typeof x !== "number" || typeof y !== "number") return null;
+  if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) return null;
+  return { x: Math.round(x * 1000) / 1000, y: Math.round(y * 1000) / 1000 };
+}
+
+/** The asset palette's dominant background, as a hex colour; anything else is dropped. */
+export function normalizeColor(value: unknown): string | null {
+  return typeof value === "string" && /^#[0-9a-f]{3,8}$/i.test(value.trim()) ? value.trim().toLowerCase() : null;
 }
 
 function normalizeTagValues(values: string[]) {
@@ -750,13 +879,34 @@ function extractProjectMediaAssets(value: unknown): ProjectMediaAsset[] {
   });
 }
 
-function extractVimeoEmbedSources(...values: unknown[]) {
+function extractVideoSources(...values: unknown[]) {
   const sources = values.flatMap((value) => normalizeStringListValue(value));
   const embeds = sources
-    .map((source) => toVimeoEmbedUrl(source))
+    .map((source) => toVideoSource(source))
     .filter(isNonEmptyString);
 
   return Array.from(new Set(embeds));
+}
+
+/** A video file in this studio's Sanity asset store: https://cdn.sanity.io/files/<projectId>/<dataset>/<name>.mp4|webm|mov */
+const SANITY_VIDEO_FILE = /^https:\/\/cdn\.sanity\.io\/files\/[a-z0-9]+\/[a-z0-9_-]+\/[A-Za-z0-9_-]+\.(mp4|webm|mov)$/i;
+
+/**
+ * A `videos[]` entry the site may play: a Vimeo player URL (iframe), or a direct
+ * mp4/webm/mov file on the Sanity CDN (looped muted on the wall and the project page).
+ * Anything else is dropped. Direct files keep no query or hash.
+ */
+export function toVideoSource(value: string): string {
+  const raw = value.trim();
+  try {
+    const parsed = new URL(raw);
+    const bare = `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+    // Compared as written too, so URL normalisation ("..", encoded slashes) cannot reshape the path.
+    if (SANITY_VIDEO_FILE.test(bare) && raw.split(/[?#]/)[0] === bare) return bare;
+  } catch {
+    // Not an absolute URL: only the Vimeo parser below can still make sense of it.
+  }
+  return toVimeoEmbedUrl(raw);
 }
 
 function toVimeoEmbedUrl(value: string) {

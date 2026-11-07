@@ -1,7 +1,12 @@
-import type { Express, Request } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.ts";
 import { registerContactRoute } from "./contact.ts";
+import { SITE_ORIGIN } from "../shared/siteSeo.ts";
+import { registerBriefRoutes } from "./brief/route.ts";
+import { registerBrandCheckRoutes } from "./brandCheck/route.ts";
+import { registerAuditRoutes } from "./audit/route.ts";
+import { registerAskRoutes } from "./ask/route.ts";
 import { insertProjectSchema, updateProjectSchema } from "../shared/schema.ts";
 import {
   fetchJournalArticleBySlugFromSanity,
@@ -10,10 +15,11 @@ import {
 } from "./sanity/journalService.ts";
 import {
   fetchProjectBySlugOrIdFromSanity,
-  fetchProjectsFromSanity,
+  fetchProjectListFromSanity,
   isProjectSanityConfigured,
   normalizeProjectFacetsForApi,
 } from "./sanity/projectService.ts";
+import { toProjectListItem, type ProjectListItem } from "../shared/projectList.ts";
 
 const ADMIN_COOKIE_NAME = "atla_admin_session";
 const LEGACY_PROJECTS_ADMIN_MESSAGE =
@@ -51,6 +57,24 @@ function getCookieValue(cookieHeader: string | undefined, name: string) {
   return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
 }
 
+/**
+ * Edge cache for the read-only content endpoints, so a request loop does not become a Sanity API loop.
+ * Set on a 200 only: a 404 or a transient 500 is never stored at the edge (fix pass A, 2026-11-06).
+ */
+const PUBLIC_CACHE = "public, s-maxage=300, stale-while-revalidate=600";
+const NO_STORE = "no-store";
+
+/** Answers 200 with the edge cache header; every other status goes out as no-store. */
+function sendPublic(res: Response, body: unknown) {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  return res.json(body);
+}
+
+function sendUncached(res: Response, status: number, body: unknown) {
+  res.set("Cache-Control", NO_STORE);
+  return res.status(status).json(body);
+}
+
 function getAdminSecret() {
   return process.env.ADMIN_ACCESS_PASSWORD || process.env.ATLA_ADMIN_PASSWORD || null;
 }
@@ -59,19 +83,6 @@ function isAuthorizedAdmin(req: Request) {
   const secret = getAdminSecret();
   if (!secret) return false;
   return getCookieValue(req.headers.cookie, ADMIN_COOKIE_NAME) === secret;
-}
-
-function getRequestOrigin(req: Request) {
-  const forwardedProto = req.headers["x-forwarded-proto"];
-  const forwardedHost = req.headers["x-forwarded-host"];
-  const protocol = typeof forwardedProto === "string" ? forwardedProto.split(",")[0].trim() : req.protocol;
-  const host = typeof forwardedHost === "string" ? forwardedHost.split(",")[0].trim() : req.get("host");
-
-  if (!host) {
-    return "https://www.atla.design";
-  }
-
-  return `${protocol || "https"}://${host}`;
 }
 
 function escapeXml(value: string) {
@@ -136,6 +147,18 @@ export async function registerRoutes(
   });
 
   registerContactRoute(app);
+  registerBriefRoutes(app);
+  registerBrandCheckRoutes(app);
+  registerAuditRoutes(app);
+  registerAskRoutes(app);
+
+  // The legacy admin and the project writes are retired (Sanity is the source). They answer 410 whatever
+  // the environment holds, so removing a Sanity variable can never switch a password login back on.
+  const retired = (_req: Request, res: Response) => res.status(410).json({ error: LEGACY_PROJECTS_ADMIN_MESSAGE });
+  app.use("/api/admin", retired);
+  app.post("/api/projects", retired);
+  app.patch("/api/projects/:id", retired);
+  app.delete("/api/projects/:id", retired);
 
   app.get("/api/admin/session", async (req, res) => {
     if (isProjectSanityConfigured()) {
@@ -181,22 +204,23 @@ export async function registerRoutes(
     return res.json({ authenticated: false });
   });
 
+  // The lite list (shared/projectList.ts): no body, description or case study. The full project is
+  // /api/projects/:slug; Ask reads the full list on the server.
   app.get("/api/projects", async (req, res) => {
     try {
+      const featured = req.query.featured === "true";
       if (isProjectSanityConfigured()) {
-        const { featured } = req.query;
-        const data = await fetchProjectsFromSanity({ featured: featured === "true" });
-        return res.json(data.map((project) => normalizeProjectFacetsForApi(project)));
+        return sendPublic(res, await fetchProjectListFromSanity({ featured }));
       }
 
-      const { featured } = req.query;
-      const data = featured === "true"
-        ? await storage.getFeaturedProjects()
-        : await storage.getAllProjects();
-      res.json(data.map((project) => normalizeProjectFacetsForApi(project)));
+      const data = featured ? await storage.getFeaturedProjects() : await storage.getAllProjects();
+      return sendPublic(
+        res,
+        data.map((project) => toProjectListItem(project as unknown as ProjectListItem & Record<string, unknown>)),
+      );
     } catch (err) {
       console.error("Failed to fetch projects:", err);
-      res.status(500).json({ error: "Failed to fetch projects" });
+      return sendUncached(res, 500, { error: "Failed to fetch projects" });
     }
   });
 
@@ -205,17 +229,17 @@ export async function registerRoutes(
       const { slugOrId } = req.params;
       if (isProjectSanityConfigured()) {
         const project = await fetchProjectBySlugOrIdFromSanity(slugOrId);
-        if (!project) return res.status(404).json({ error: "Project not found" });
-        return res.json(normalizeProjectFacetsForApi(project));
+        if (!project) return sendUncached(res, 404, { error: "Project not found" });
+        return sendPublic(res, normalizeProjectFacetsForApi(project));
       }
 
       const project =
         await storage.getProjectBySlug(slugOrId) ??
         await storage.getProjectById(slugOrId);
-      if (!project) return res.status(404).json({ error: "Project not found" });
-      res.json(normalizeProjectFacetsForApi(project));
+      if (!project) return sendUncached(res, 404, { error: "Project not found" });
+      return sendPublic(res, normalizeProjectFacetsForApi(project));
     } catch (err) {
-      res.status(500).json({ error: "Failed to fetch project" });
+      return sendUncached(res, 500, { error: "Failed to fetch project" });
     }
   });
 
@@ -282,50 +306,50 @@ export async function registerRoutes(
 
   app.get("/api/journal", async (_req, res) => {
     try {
-      const articles = await fetchJournalArticlesFromSanity();
-      res.json(articles);
+      return sendPublic(res, await fetchJournalArticlesFromSanity());
     } catch (err) {
       console.error("Failed to fetch journal articles:", err);
-      res.status(500).json({ error: "Failed to fetch journal articles" });
+      return sendUncached(res, 500, { error: "Failed to fetch journal articles" });
     }
   });
 
   app.get("/api/journal/categories", async (_req, res) => {
     try {
-      const categories = await fetchJournalCategoriesFromSanity();
-      res.json(categories);
+      return sendPublic(res, await fetchJournalCategoriesFromSanity());
     } catch (err) {
       console.error("Failed to fetch journal categories:", err);
-      res.status(500).json({ error: "Failed to fetch journal categories" });
+      return sendUncached(res, 500, { error: "Failed to fetch journal categories" });
     }
   });
 
   app.get("/api/journal/:slug", async (req, res) => {
     try {
       const article = await fetchJournalArticleBySlugFromSanity(req.params.slug);
-      if (!article) return res.status(404).json({ error: "Journal article not found" });
-      res.json(article);
+      if (!article) return sendUncached(res, 404, { error: "Journal article not found" });
+      return sendPublic(res, article);
     } catch (err) {
       console.error(`Failed to fetch journal article ${req.params.slug}:`, err);
-      res.status(500).json({ error: "Failed to fetch journal article" });
+      return sendUncached(res, 500, { error: "Failed to fetch journal article" });
     }
   });
 
   app.get("/api/sitemap.xml", async (req, res) => {
     try {
-      const origin = getRequestOrigin(req);
-      const projects = isProjectSanityConfigured()
-        ? await fetchProjectsFromSanity()
-        : await storage.getAllProjects();
-      const articles = await fetchJournalArticlesFromSanity();
-      const categories = await fetchJournalCategoriesFromSanity();
+      const origin = SITE_ORIGIN;
+      // Three independent reads, in parallel; the projects come from the lite list (slugs only needed).
+      const [projects, articles, categories] = await Promise.all([
+        isProjectSanityConfigured() ? fetchProjectListFromSanity() : storage.getAllProjects(),
+        fetchJournalArticlesFromSanity(),
+        fetchJournalCategoriesFromSanity(),
+      ]);
       const xml = createSitemapXml(
         origin,
         [
           "/",
           "/about",
-          "/contact",
           "/services",
+          "/brand-check",
+          "/audit",
           "/hospitality",
           "/hospitality-branding",
           "/cpg-branding",
@@ -354,7 +378,7 @@ export async function registerRoutes(
 
   app.get("/api/feed.xml", async (req, res) => {
     try {
-      const origin = getRequestOrigin(req);
+      const origin = SITE_ORIGIN;
       const articles = await fetchJournalArticlesFromSanity();
       const xml = createRssFeedXml(origin, articles);
 

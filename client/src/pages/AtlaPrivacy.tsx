@@ -1,152 +1,129 @@
-import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { PageShell } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { CONTACT_EMAIL, formatMetaTitle } from "@shared/siteSeo";
 
-const headingStyle: React.CSSProperties = {
-  fontFamily: "Helvetica, sans-serif",
-  fontWeight: 400,
-  lineHeight: "1.1",
-  color: "#222",
-  margin: 0,
-};
-
-const bodyStyle: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  lineHeight: "1.5",
-  letterSpacing: 0.2,
-  color: "#222",
-  margin: 0,
-};
-
-const labelStyle: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
-  fontWeight: 600,
-  lineHeight: "1.2",
-  letterSpacing: 0.48,
-  textTransform: "uppercase",
-  color: "#8e8e8e",
-  margin: 0,
-};
-
+// Legal pages: one reading column, labelled sections, 17px body at 68ch (styles in site.css).
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <p style={labelStyle}>{title}</p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    <section className="legal-section">
+      <h2 className="site-item-title legal-section__title">{title}</h2>
+      <div className="legal-section__body">{children}</div>
     </section>
   );
 }
 
 export default function AtlaPrivacy() {
-  const isMobile = useIsMobile();
-
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+    <PageShell logos={false}>
       <SeoHead
         title={formatMetaTitle("Atla Privacy Policy", "Website and Inquiry Data")}
-        description="Read how Atla handles browser storage, hosting data, and information shared through direct studio inquiries across the website."
+        description="How Atla handles what you send through the brief and the brand check, the analytics on the site, browser storage and the providers that process data."
         pathname="/privacy"
       />
-      <div className="atla-dark-surface">
-      <AtlaNav />
-      <main style={{ padding: isMobile ? "80px 10px 100px" : "120px 20px 160px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 620px", gap: isMobile ? 32 : 20 }}>
-        <div>
-          <h1 style={{ ...headingStyle, fontSize: isMobile ? 40 : 64 }}>Privacy Policy</h1>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-          <p style={bodyStyle}>
+      <div className="site-page-body legal">
+        <header className="page-intro">
+          <h1 className="page-intro__title">Privacy Policy</h1>
+        </header>
+        {/* Rewritten 2026-11-05 against the code at 5e8cfcb (brief with no AI, work search in the browser, Meta Pixel
+            and Clarity behind consent). JP approved this text, the two-year retention, the 30-day reply and the
+            transfer basis on 2026-11-05 ("Si"). Nothing here is legal advice. */}
+        <div className="legal-body">
+          <p className="longform-text">Last updated: November 6, 2026.</p>
+          <p className="longform-text">
             This site is operated by Atla & WeLoveDaily, LLC. This policy explains what information we collect, how we use it, which providers process it, and what your browser stores.
           </p>
 
           <Section title="Who we are">
-            <p style={bodyStyle}>
-              Atla is the branding studio of Atla & WeLoveDaily, LLC, a company registered in Texas and based in Austin. We work across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#222" }}>{CONTACT_EMAIL}</a>.
+            <p className="longform-text">
+              Atla is the branding studio of Atla & WeLoveDaily, LLC, a company registered in Texas and based in Austin. We work across brand identity, visual systems, packaging, motion, and digital experiences. For privacy questions, contact <a href={`mailto:${CONTACT_EMAIL}`} className="longform-link">{CONTACT_EMAIL}</a>.
             </p>
           </Section>
 
           <Section title="What we collect">
-            <p style={bodyStyle}>
-              If you contact us by email, we receive whatever information you include in your message. If you use the contact form, we receive the name, email address, company or website, and message you enter, and we keep your IP address in memory for up to ten minutes to limit repeated submissions.
+            <p className="longform-text">
+              If you contact us by email, we receive whatever information you include in your message. If you use the brief or the brand check, we keep your IP address in memory for up to ten minutes to limit repeated submissions.
             </p>
-            <p style={bodyStyle}>
+            <p className="longform-text">
+              If you fill in the project brief, we receive your answers to its five questions and the contact details you enter: your name and email address, and your company, website and phone number if you add them. The questions are fixed. No AI service chooses or words them, and none reads your answers. The finished brief is saved in Attio and sent to the studio by email through Resend. We use it to reply to you and to manage your inquiry.
+            </p>
+            <p className="longform-text">
+              If you ask for a brand check, we receive the name, email address, website or Instagram, moment, company size, brand investment answer and message you enter. We use them to reply and to manage your inquiry. They are saved in Attio and sent to the studio by email through Resend, like the brief. No AI service reads them.
+            </p>
+            <p className="longform-text">
+              To limit repeated requests, the brief and the brand check count requests per visitor in Upstash, keyed by a hashed version of your IP address rather than the address itself. A hashed address is pseudonymised, not anonymous. Each count expires after ten minutes. The brief also counts submissions per email address, keyed by a hash of the address, for 24 hours, and keeps a random submission reference for 24 hours to stop duplicates.
+            </p>
+            <p className="longform-text">
+              After you send the brief, the confirmation offers a link to book a call on Calendly. That link carries your name and email address, so Calendly can fill them in when you open it. Nothing goes to Calendly unless you click the link.
+            </p>
+            <p className="longform-text">
+              The search on the work page runs in your browser and uses no AI service. The words you type stay in the page address so you can share the results, and the site removes them from the address it reports to Google Analytics and to Vercel. When you use Ask in the Explore bar, the question you type and the last few turns of that conversation are sent to Anthropic, which writes the answer; Atla does not store the conversation beyond your browser tab (it is cleared when the tab closes) and never sends it to analytics, and Anthropic's commercial terms and privacy policy apply to what it receives.
+            </p>
+            <p className="longform-text">
               The site measures traffic with Vercel Web Analytics and Vercel Speed Insights. They record the pages you visit, the referring site, your country, and your browser and device type, without cookies and without identifying you across sites.
             </p>
-            <p style={bodyStyle}>
-              The site also uses Google Analytics 4 to understand which pages and links lead to inquiries. It records the pages you view, the links and buttons you use, the referring site, your approximate location, and your browser and device type, and it sets first-party cookies (named _ga) that recognize a returning browser for up to two years. Google Analytics does not receive the content of the contact form. If you browse from the European Economic Area, the United Kingdom, or Switzerland, Google Analytics stays off until you accept it in the cookie notice. Anywhere else you can turn it off from the "Analytics cookies" link in the footer or with Google's opt-out browser add-on. The site does not run advertising pixels, except on the waitlist page described below.
+            <p className="longform-text">
+              The site also uses Google Analytics 4 to understand which pages and links lead to inquiries. It records the pages you view, the links and buttons you use, the referring site, your approximate location, and your browser and device type. With your consent, it sets first-party cookies (named _ga) that recognize a returning browser for up to two years. Google Analytics never receives what you type into the search, the brief or the brand check, and never your name or email address. If you browse from the European Economic Area, the United Kingdom, or Switzerland, the cookies stay off until you accept them in the cookie notice. Anywhere else they are on by default, and you can decline them from the "Analytics cookies" link in the footer or with Google's opt-out browser add-on. While the cookies are off, Google Analytics still receives cookie-free measurements of page views and clicks, without an identifier stored in your browser, and the site sends none of its search or brief events.
             </p>
-            <p style={bodyStyle}>
-              The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies.
+            <p className="longform-text">
+              If you accept analytics, the site also loads the Meta Pixel and Microsoft Clarity. The Meta Pixel records the pages you view and when you finish the brief, and Meta may use that to measure and optimize its ads and, if you are signed in to Meta, link the visit to your account. Clarity records how you move through pages (clicks, scrolling and page replays, with form fields masked). Neither receives what you type into the search, the brief or the brand check. They stay off for every visitor until you accept in the cookie notice, and they stop if you decline later from the footer.
+            </p>
+            <p className="longform-text">
+              The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies, and the choice you make on this site does not apply there.
             </p>
           </Section>
 
           <Section title="Cookies and storage">
-            <p style={bodyStyle}>
-              The site stores a few preferences in your browser's local storage: your light or dark theme, your analytics cookie choice, the projects and actions you used recently in the command center, and any brief you draft there before sending it. This data stays on your device, is never sent to us, and you can clear it from your browser at any time.
+            <p className="longform-text">
+              The site keeps your analytics cookie choice in your browser's local storage. While you fill in the project brief, your answers are kept in the tab's session storage so you can go back a step or try again, and they are cleared when you close the tab. If you use Pause motion, that choice is kept in session storage for the tab too. The hospitality page keeps how you arrived (campaign tags and the referring site) in session storage for the same tab and sends it with that page's form. Light or dark appearance follows your device setting and is not stored. You can clear this storage from your browser at any time.
             </p>
-            <p style={bodyStyle}>
-              Google Analytics sets the _ga cookies described above, unless you decline them or, in the European Economic Area, the United Kingdom, or Switzerland, until you accept them.
+            <p className="longform-text">
+              Google Analytics sets the _ga cookies described above, unless you decline them or, in the European Economic Area, the United Kingdom, or Switzerland, until you accept them. Without them it sends the cookie-free measurements described above. If you accept analytics, the Meta Pixel sets _fbp and Clarity sets _clck and _clsk (first-party cookies, up to about one year). If you decline or withdraw from the footer link, the site deletes the _ga, _fbp, _clck and _clsk cookies it can reach on this domain.
             </p>
-            <p style={bodyStyle}>
-              Video case studies embed the Vimeo player with Do Not Track enabled. Vimeo may still process technical request data and set the cookies it needs to play the video. The /waitlist page uses the analytics and advertising cookies described above.
+            <p className="longform-text">
+              Video case studies embed the Vimeo player with Do Not Track enabled. Vimeo may still process technical request data and set the cookies it needs to play the video. The site does not change how it works in response to Do Not Track signals; you can decline analytics cookies from the footer link.
             </p>
-            <p style={bodyStyle}>
+            <p className="longform-text">
               We will update this page before activating any additional analytics, marketing tags, or optional cookies.
             </p>
           </Section>
 
           <Section title="How we use information">
-            <p style={bodyStyle}>
-              We use submitted contact information to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep inquiry data until you ask us to delete it, unless a legal obligation requires us to keep it longer. Access is limited to the people who run the studio.
+            <p className="longform-text">
+              We use what you send through the brief, the brand check and the hospitality page's form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
             </p>
           </Section>
 
-          {/* Legal copy. Changes here are drafted for JP and reviewed before merge. */}
           <Section title="Third parties">
-            <p style={bodyStyle}>
-              The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Contact form submissions are stored in Attio, the customer relationship system we use to manage inquiries. If a submission cannot be saved there, the server log keeps the email address and a short excerpt of the message so we can follow up. On the /waitlist page, Google and Meta process visit data as described above. These providers operate in the United States and may process technical request data such as IP address, device metadata, and request logs to deliver their services.
+            <p className="longform-text">
+              The site is hosted on Vercel, which also provides the cookieless analytics described above. Google processes Google Analytics data as described above, and, if you accept analytics, Meta and Microsoft (Clarity) process visit data as described above. Portfolio and journal content, including images, is served from Sanity. Typefaces are loaded from Google Fonts, so Google receives your IP address when a page loads. Video case studies are played through Vimeo. Finished briefs and brand check requests are stored in Attio, the customer relationship system we use to manage inquiries. Briefs and brand check requests are also sent to the studio by email through Resend, and the studio's mailbox is hosted by Google Workspace. If a brief or brand check request cannot be delivered, the server log keeps only a reference number and the domain of your email address, never its content. When you use Ask, Anthropic receives your question and the last few turns of the conversation and writes the answer. Upstash stores the hashed request counts described above. Calendly receives your name and email address only if you open the booking link. On the /waitlist page, Google and Meta process visit data as described above. These providers may process technical request data such as IP address, device metadata, and request logs to deliver their services.
+            </p>
+            <p className="longform-text">
+              The project brief, the brand check and the search on the work page do not use any AI service. Apart from Ask, which Anthropic answers as described above, what you type stays with the providers named on this page.
             </p>
           </Section>
 
           <Section title="International transfers">
-            <p style={bodyStyle}>
-              Atla & WeLoveDaily, LLC is based in the United States, and the providers named above store and process data there. If you contact us or browse the site from outside the United States, including from Mexico, the rest of Latin America, or the European Union, your information is transferred to and handled in the United States under this policy. Where your local law requires a specific safeguard for that transfer, we rely on the contractual data protection terms of each provider and on your consent given by sending us your inquiry.
+            <p className="longform-text">
+              Atla & WeLoveDaily, LLC is based in the United States, and most of the providers named above store and process data there. If you contact us or browse the site from outside the United States, including from Mexico, the rest of Latin America, or the European Union, your information is transferred to and handled in the United States under this policy. Where your local law requires a specific safeguard for that transfer, we rely on the contractual data protection terms of each provider and on your consent given by sending us your inquiry.
             </p>
           </Section>
 
           <Section title="Your rights">
-            <p style={bodyStyle}>
-              Depending on your jurisdiction, you may have rights to request access, correction, deletion, or restriction of personal data. Contact us and we will respond according to the applicable legal framework.
+            <p className="longform-text">
+              You can ask us at <a href={`mailto:${CONTACT_EMAIL}`} className="longform-link">{CONTACT_EMAIL}</a> to show you, correct, delete or restrict the personal data we hold about you, to give you a copy of it, or to stop using it for a purpose. You can withdraw consent at any time, including for analytics cookies, from the "Analytics cookies" link in the footer. In Mexico these are your ARCO rights (access, rectification, cancellation and opposition). We reply within 30 days, and we may ask you to confirm who you are before we act, to protect your data from someone else. If you are in the European Economic Area you can also complain to your data protection authority; in Spain that is the Agencia Española de Protección de Datos (aepd.es).
             </p>
           </Section>
 
           <Section title="Updates">
-            <p style={bodyStyle}>
+            <p className="longform-text">
               We may update this policy as the site changes. The latest version published on this page will control.
             </p>
-            <p style={bodyStyle}>
-              We will revise this page before introducing new analytics tools, client portals, embedded scheduling tools, or other third-party services that change what data is processed.
+            <p className="longform-text">
+              We will revise this page before introducing new analytics tools, client portals, or other third-party services that change what data is processed.
             </p>
           </Section>
-          <section className="sr-only" aria-label="Privacy extended information">
-            <h2>Additional privacy clarifications</h2>
-            <p>
-              We keep inquiry communications until the sender asks us to delete them, unless a legal obligation requires keeping them longer. Access is limited to people involved in studio operations.
-            </p>
-            <p>
-              Requests related to data access, correction, or deletion can be sent to {CONTACT_EMAIL}. When required,
-              we may request identity verification before processing sensitive requests to protect account and contact
-              information from unauthorized access.
-            </p>
-          </section>
         </div>
-      </main>
       </div>
-      <AtlaFooter />
-    </div>
+    </PageShell>
   );
 }

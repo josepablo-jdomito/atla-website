@@ -1,0 +1,486 @@
+{
+  "source": "docs/superpowers/specs/2026-11-05-project-tags-proposal.md, section 4 with section 6 applied (JP, 2026-11-05)",
+  "generatedFrom": "shared/projectFacets.ts FACETS_BY_SLUG",
+  "projects": [
+    {
+      "slug": "alma-brava",
+      "sector": "Food & Drink",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity",
+        "Art Direction"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "mezcal",
+        "spirits",
+        "bottle",
+        "label"
+      ]
+    },
+    {
+      "slug": "ando",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "gummies",
+        "supplements",
+        "vitamins",
+        "beauty"
+      ]
+    },
+    {
+      "slug": "angeles-wellness",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Brand Identity",
+        "Motion"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "wellness"
+      ]
+    },
+    {
+      "slug": "anything-ai",
+      "sector": "Technology & Digital",
+      "disciplines": [
+        "Website",
+        "Brand Identity",
+        "Motion"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "ai",
+        "creative platform",
+        "app"
+      ]
+    },
+    {
+      "slug": "arc-studio",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Brand Identity"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "pilates",
+        "fitness studio",
+        "movement"
+      ]
+    },
+    {
+      "slug": "atla",
+      "sector": "Media & Education",
+      "disciplines": [
+        "Brand Identity"
+      ],
+      "stage": "In-house",
+      "searchTerms": [
+        "branding studio",
+        "agency"
+      ]
+    },
+    {
+      "slug": "baristio",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Packaging",
+        "Motion"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "cafe",
+        "coffee",
+        "specialty coffee"
+      ]
+    },
+    {
+      "slug": "bond-and-bloom",
+      "sector": "Family & Pets",
+      "disciplines": [
+        "Brand Identity",
+        "Brand Strategy"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "postpartum",
+        "parenting",
+        "babies",
+        "wellness"
+      ]
+    },
+    {
+      "slug": "bovi-health",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Brand Identity",
+        "Packaging"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "dairy",
+        "dairy wellness",
+        "wellness"
+      ]
+    },
+    {
+      "slug": "casa-colora",
+      "sector": "Family & Pets",
+      "disciplines": [
+        "Brand Strategy",
+        "Brand Identity"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "kids",
+        "family",
+        "lifestyle"
+      ]
+    },
+    {
+      "slug": "castro-capital",
+      "sector": "Real Estate & Finance",
+      "disciplines": [
+        "Brand Identity"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "investment",
+        "real estate",
+        "capital"
+      ]
+    },
+    {
+      "slug": "conscious-care-co",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Brand Identity",
+        "Brand Strategy"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "wellness",
+        "mindful care"
+      ]
+    },
+    {
+      "slug": "hanks-leather",
+      "sector": "Fashion & Lifestyle",
+      "disciplines": [
+        "Website",
+        "Brand Identity"
+      ],
+      "stage": "Rebrand",
+      "searchTerms": [
+        "leather goods",
+        "accessories",
+        "e-commerce",
+        "heritage"
+      ]
+    },
+    {
+      "slug": "huemac",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Illustration"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "tour operator",
+        "hiking",
+        "adventure",
+        "travel"
+      ]
+    },
+    {
+      "slug": "munda",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Art Direction"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "vacation homes",
+        "long stay",
+        "surf"
+      ]
+    },
+    {
+      "slug": "oxylife",
+      "sector": "Food & Drink",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "water",
+        "premium water",
+        "bottle"
+      ]
+    },
+    {
+      "slug": "pathize-health",
+      "sector": "Technology & Digital",
+      "disciplines": [
+        "Brand Identity",
+        "Website",
+        "Brand Strategy"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "health tech",
+        "saas",
+        "patient platform"
+      ]
+    },
+    {
+      "slug": "pax-and-beneficia",
+      "sector": "Food & Drink",
+      "disciplines": [
+        "Brand Identity",
+        "Illustration"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "coffee",
+        "specialty coffee"
+      ]
+    },
+    {
+      "slug": "peachy-patients",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Brand Identity",
+        "Website",
+        "Brand Strategy"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "healthcare",
+        "patient platform"
+      ]
+    },
+    {
+      "slug": "persona",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity"
+      ],
+      "stage": "Rebrand",
+      "searchTerms": [
+        "vitamins",
+        "personalized nutrition",
+        "subscription"
+      ]
+    },
+    {
+      "slug": "puppypy",
+      "sector": "Family & Pets",
+      "disciplines": [
+        "Brand Identity",
+        "Illustration",
+        "Website"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "pet care",
+        "dog"
+      ]
+    },
+    {
+      "slug": "reggie",
+      "sector": "Family & Pets",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity",
+        "Illustration"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "dog food",
+        "pet"
+      ]
+    },
+    {
+      "slug": "rustico",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Website"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "resort",
+        "boutique hotel",
+        "los cabos"
+      ]
+    },
+    {
+      "slug": "sexto-abismo",
+      "sector": "Food & Drink",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity",
+        "Art Direction"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "gin",
+        "craft gin",
+        "bottle"
+      ]
+    },
+    {
+      "slug": "shop-latinx",
+      "sector": "Technology & Digital",
+      "disciplines": [
+        "Brand Identity",
+        "Website",
+        "Brand Strategy"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "marketplace",
+        "e-commerce",
+        "latin"
+      ]
+    },
+    {
+      "slug": "tequila-unido",
+      "sector": "Food & Drink",
+      "disciplines": [
+        "Packaging",
+        "Brand Identity",
+        "Website"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "tequila",
+        "spirits",
+        "bottle"
+      ]
+    },
+    {
+      "slug": "the-brand-academy",
+      "sector": "Media & Education",
+      "disciplines": [
+        "Brand Identity"
+      ],
+      "stage": "In-house",
+      "searchTerms": [
+        "branding course",
+        "education"
+      ]
+    },
+    {
+      "slug": "the-bridge",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Art Direction"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "hotel",
+        "restaurant",
+        "bali"
+      ]
+    },
+    {
+      "slug": "the-curated-outfit",
+      "sector": "Fashion & Lifestyle",
+      "disciplines": [
+        "Brand Identity",
+        "Website",
+        "Art Direction"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "apparel",
+        "curation",
+        "e-commerce"
+      ]
+    },
+    {
+      "slug": "the-internet-empires",
+      "sector": "Media & Education",
+      "disciplines": [
+        "Brand Identity"
+      ],
+      "stage": "Rebrand",
+      "searchTerms": [
+        "marketing course",
+        "coaching",
+        "growth marketing"
+      ]
+    },
+    {
+      "slug": "tigretigre",
+      "sector": "Hospitality & Travel",
+      "disciplines": [
+        "Brand Identity",
+        "Signage & Spaces"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "restaurant",
+        "fine dining",
+        "menu"
+      ]
+    },
+    {
+      "slug": "torre-avancer",
+      "sector": "Real Estate & Finance",
+      "disciplines": [
+        "Brand Identity",
+        "Signage & Spaces"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "tower",
+        "mixed use",
+        "wayfinding"
+      ]
+    },
+    {
+      "slug": "vyv",
+      "sector": "Health & Wellness",
+      "disciplines": [
+        "Packaging",
+        "Brand Strategy",
+        "Brand Identity",
+        "Website"
+      ],
+      "stage": "New brand",
+      "searchTerms": [
+        "supplements",
+        "vitamins",
+        "subscription"
+      ]
+    },
+    {
+      "slug": "welove",
+      "sector": "Media & Education",
+      "disciplines": [
+        "Art Direction",
+        "Brand Identity"
+      ],
+      "stage": "In-house",
+      "searchTerms": [
+        "editorial",
+        "newsletter",
+        "magazine"
+      ]
+    }
+  ]
+}

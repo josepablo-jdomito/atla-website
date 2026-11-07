@@ -1,5 +1,7 @@
 import {
   AtlaLongformLayout,
+  LongformAction,
+  LongformFaqItem,
   LongformCta,
   LongformHero,
   LongformParagraph,
@@ -17,141 +19,120 @@ export default function AtlaWellnessBranding() {
       pathname="/wellness-branding"
       title="Wellness and Health Brand Design Agency"
       titleSuffix="Atla"
-      description="Brand strategy and identity for wellness, health tech, and care companies. Systems built for trust, regulatory clarity, and emotional connection."
+      description="Brand strategy and identity for wellness, health tech and care companies. Credible, warm, and written to stay inside the rules."
       structuredData={buildServiceSchema(SERVICE_PAGE)}
     >
       <LongformHero
-        eyebrow="Wellness Branding"
-        h1="Wellness branding built for trust, clarity, and real connection"
+        eyebrow="Wellness branding"
+        h1="Wellness branding people can trust"
         paragraphs={[
-          "Wellness and health brands carry a higher burden than most categories. People are making decisions about their bodies, routines, and mental health. The brand needs to feel credible and approachable at the same time.",
-          "Most wellness brands default to sterile and corporate or soft and vague. Neither converts. The brands that grow feel specific, grounded, and unmistakably their own.",
-          "We build strategy, identity, packaging, and digital systems that balance warmth with authority and hold across every touchpoint.",
+          "People buying wellness are making decisions about their bodies, their routines and their mental health. The brand has to feel credible and approachable at once.",
+          "Most wellness brands end up sterile and corporate, or soft and vague. Neither sells. The ones that grow feel specific and grounded, and look like nobody else.",
+          "We build strategy, identity, packaging and digital that stay warm and credible everywhere the brand appears.",
         ]}
         cta={
-          <a
-            href="/contact"
-            className="atla-link"
-            style={{
-              fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: 0.4,
-              lineHeight: "1.2",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              color: "#222",
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 4px",
-            }}
-          >
-            Start a project →
-          </a>
+          <LongformAction href="/brief">Start a project</LongformAction>
         }
       />
 
-      <LongformSection title="What wellness and health brands typically need from us">
-        <LongformSubTitle>Brand strategy for regulated and trust-dependent categories</LongformSubTitle>
+      <LongformSection title="What wellness and health brands usually ask us for">
+        <LongformSubTitle>Strategy for categories that run on trust</LongformSubTitle>
         <LongformParagraph>
-          Positioning that differentiates without overclaiming. Messaging architecture that resonates while respecting
-          compliance boundaries.
+          Positioning that sets the brand apart without overclaiming. Messaging that lands and stays inside compliance.
         </LongformParagraph>
-        <LongformSubTitle>Identity systems that balance warmth and authority</LongformSubTitle>
+        <LongformSubTitle>Identity that is warm and credible</LongformSubTitle>
         <LongformParagraph>
-          Logo, color, typography, and illustration systems that communicate care without becoming generic.
+          Logo, color, type and illustration that show care without looking like every other wellness brand.
         </LongformParagraph>
-        <LongformSubTitle>Patient and user-facing digital design</LongformSubTitle>
+        <LongformSubTitle>Digital design for patients and users</LongformSubTitle>
         <LongformParagraph>
-          Websites and product surfaces designed for research-heavy audiences who need clarity, trust signals, and
-          conversion paths without friction.
+          Websites and product screens for people who research before they buy. Clear answers, visible proof and no
+          friction on the way to sign up.
         </LongformParagraph>
         <LongformSubTitle>Packaging for supplements and DTC wellness</LongformSubTitle>
         <LongformParagraph>
-          Label systems and retail-ready packaging that communicate ingredient integrity and brand personality
-          simultaneously.
+          Labels and retail packaging that make the ingredients clear and still carry the brand's personality.
         </LongformParagraph>
       </LongformSection>
 
       <LongformSection title="Selected wellness and health work">
         <LongformParagraph>
-          <strong>Conscious Care Co</strong> — Wellness identity system built around intentional, mindful care.{" "}
-          <a href="/projects/conscious-care-co" className="atla-link" style={{ color: "#222" }}>
-            View project →
+          <strong>Angeles Wellness</strong>. An herbal wellness system, rebranded so anyone can follow what the products do.{" "}
+          <a href="/projects/angeles-wellness" className="longform-link">
+            View project: Angeles Wellness →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Pathize Health</strong> —{" "}
-          <a href="/projects/pathize-health" className="atla-link" style={{ color: "#222" }}>
-            View project →
+          <strong>Pathize Health</strong>{" "}
+          <a href="/projects/pathize-health" className="longform-link">
+            View project: Pathize Health →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Peachy Patients</strong> —{" "}
-          <a href="/projects/peachy-patients" className="atla-link" style={{ color: "#222" }}>
-            View project →
+          <strong>Peachy Patients</strong>{" "}
+          <a href="/projects/peachy-patients" className="longform-link">
+            View project: Peachy Patients →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Ando</strong> —{" "}
-          <a href="/projects/ando" className="atla-link" style={{ color: "#222" }}>
-            View project →
+          <strong>Ando</strong>{" "}
+          <a href="/projects/ando" className="longform-link">
+            View project: Ando →
           </a>
         </LongformParagraph>
         <LongformParagraph>
-          <strong>Bovi Health</strong> —{" "}
-          <a href="/projects/bovi-health" className="atla-link" style={{ color: "#222" }}>
-            View project →
+          <strong>Bovi Health</strong>{" "}
+          <a href="/projects/bovi-health" className="longform-link">
+            View project: Bovi Health →
           </a>
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Why wellness companies work with Atla">
-        <LongformSubTitle>Trust-first category experience</LongformSubTitle>
+      <LongformSection title="Why wellness teams hire Atla">
+        <LongformSubTitle>Trust first</LongformSubTitle>
         <LongformParagraph>
-          We design systems that earn credibility before asking for a transaction.
+          We design brands that earn credibility before they ask for a sale.
         </LongformParagraph>
-        <LongformSubTitle>Consumer insight drives the aesthetic</LongformSubTitle>
+        <LongformSubTitle>Insight before aesthetics</LongformSubTitle>
         <LongformParagraph>
-          We map decision signals, skepticism triggers, and whitespace in category conventions before visual development
-          starts.
+          Before visual work starts, we map what makes buyers decide, what makes them doubt, and where the category's
+          conventions leave room.
         </LongformParagraph>
-        <LongformSubTitle>Compliance-aware, not compliance-paralyzed</LongformSubTitle>
+        <LongformSubTitle>Inside the rules</LongformSubTitle>
         <LongformParagraph>
-          We push for differentiated execution while staying inside defensible messaging boundaries.
+          We push the design as far as it can go and keep the messaging inside what you can defend.
         </LongformParagraph>
-        <LongformSubTitle>Digital-first, physical-ready</LongformSubTitle>
+        <LongformSubTitle>Online first</LongformSubTitle>
         <LongformParagraph>
-          Discovery for wellness brands usually starts online. We prioritize digital trust-building and then extend into
-          packaging and print.
+          People usually find wellness brands online. We build trust there first, then carry the system into packaging
+          and print.
         </LongformParagraph>
       </LongformSection>
 
-      <LongformSection title="Common questions from wellness teams">
+      <LongformSection title="Questions wellness teams ask">
         {FAQ_ITEMS.map((item) => (
-          <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <LongformFaqItem key={item.question}>
             <LongformSubTitle>{item.question}</LongformSubTitle>
             <LongformParagraph>{item.answer}</LongformParagraph>
-          </div>
+          </LongformFaqItem>
         ))}
       </LongformSection>
 
-      <LongformSection title="Related reads and references">
+      <LongformSection title="Related reads">
         <LongformParagraph>
           Read{" "}
-          <a href="/journal/brand-strategy-vs-brand-identity" className="atla-link" style={{ color: "#222" }}>
+          <a href="/journal/brand-strategy-vs-brand-identity" className="longform-link">
             brand strategy vs brand identity
           </a>{" "}
-          for a full strategic narrative lens.
+          for the difference between the two.
         </LongformParagraph>
         <LongformParagraph>
-          Pair this with{" "}
-          <a href="/brand-strategy" className="atla-link" style={{ color: "#222" }}>
+          Then see{" "}
+          <a href="/brand-strategy" className="longform-link">
             brand strategy
           </a>{" "}
           and the full{" "}
-          <a href="/services" className="atla-link" style={{ color: "#222" }}>
+          <a href="/services" className="longform-link">
             service scope
           </a>
           .
@@ -160,9 +141,9 @@ export default function AtlaWellnessBranding() {
 
       <LongformCta
         title="Start with a conversation"
-        description="Tell us about the product, audience, and what is not landing. We will tell you what we see and whether we are the right fit."
+        description="Tell us about the product, the audience and what is not landing. We will tell you what we see and if we are the right fit."
         actions={[
-          { href: "/contact", label: "Start a project →" },
+          { href: "/brief", label: "Start a project" },
           { href: "/", label: "Browse selected work →" },
         ]}
       />
