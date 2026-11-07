@@ -4,9 +4,11 @@ import { initialClientState } from "@/lib/hydration";
 /**
  * One of the landing's ink drawings, animated (JP, 2026-11-07: "anima las ilustraciones"). The still
  * drawing (ink on transparent, `src`) is what the prerender, reduced motion and every failure show;
- * once the page is live and motion is allowed, a short looping clip of the same drawing plays over it:
- * VP9 with alpha for Chrome and Firefox, HEVC with alpha for Safari, both keyed from the white paper
- * the clip was drawn on. Muted, inline, looping, no controls; the still stays as the poster.
+ * once the page is live and motion is allowed, a short looping clip of the same drawing plays over it.
+ * The clip is plain video on white (H.264 for every browser, VP9 where it is lighter): the page
+ * multiplies it onto the paper, so the white disappears and only the ink shows; in dark mode it is
+ * inverted and screened (site.css). No alpha channel, so Safari shows no box. Muted, inline, looping,
+ * no controls; the still stays as the poster.
  */
 export function Drawing({
   src,
@@ -18,7 +20,7 @@ export function Drawing({
   eager = false,
 }: {
   src: string;
-  /** The clip's path without extension; `.webm` and `.mov` are served beside it. */
+  /** The clip's path without extension; `.webm` and `.mp4` are served beside it. */
   clip?: string;
   alt: string;
   width: number;
@@ -70,8 +72,8 @@ export function Drawing({
             if (event.target === event.currentTarget && event.currentTarget.error) setFailed(true);
           }}
         >
-          <source src={`${clip}.mov`} type='video/mp4; codecs="hvc1"' />
           <source src={`${clip}.webm`} type="video/webm" />
+          <source src={`${clip}.mp4`} type="video/mp4" />
         </video>
       ) : null}
     </span>

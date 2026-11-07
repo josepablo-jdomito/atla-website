@@ -1145,10 +1145,12 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-hero { display: grid; gap: var(--space-7); padding-top: var(--space-6); }
 .audit-hero__art { margin: 0; justify-self: center; width: min(60%, 280px); }
 .audit-hero__art img, .audit-hero__art video { display: block; width: 100%; height: auto; }
-@media (prefers-color-scheme: dark) { .audit-hero__art img, .audit-hero__art video { filter: invert(1); } }
-/* A drawing: the still underneath, the looping clip of the same drawing over it when it plays. */
+@media (prefers-color-scheme: dark) { .audit-hero__art img { filter: invert(1); } }
+/* A drawing: the still underneath, the looping clip of the same drawing over it when it plays. The clip
+   is ink on white: multiplied onto the paper the white vanishes; in dark mode it is inverted and screened. */
 [data-drawing] { position: relative; display: block; }
-[data-drawing] .drawing__clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; animation: audit-clip-in var(--d-move) var(--site-ease) both; }
+[data-drawing] .drawing__clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; animation: audit-clip-in var(--d-move) var(--site-ease) both; }
+@media (prefers-color-scheme: dark) { [data-drawing] .drawing__clip { filter: invert(1); mix-blend-mode: screen; } }
 @keyframes audit-clip-in { from { opacity: 0; } to { opacity: 1; } }
 [data-drawing][data-live] > img { visibility: hidden; }
 .audit-hero__text { display: grid; gap: var(--space-5); justify-items: start; }
@@ -1186,7 +1188,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-step__line { grid-row: 2; }
 .audit-step__art { display: block; width: 100%; aspect-ratio: 1; }
 .audit-step__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
-@media (prefers-color-scheme: dark) { .audit-step__art img, .audit-step__art video { filter: invert(1); } }
+@media (prefers-color-scheme: dark) { .audit-step__art img { filter: invert(1); } }
 .audit-step__line { margin: 0; max-width: 36ch; font-size: var(--t-body); line-height: var(--lh-body); text-wrap: pretty; }
 
 /* The proof: the line that says where the work comes from, then awards, names and marks in one row. */
