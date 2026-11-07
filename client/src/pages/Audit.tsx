@@ -31,7 +31,6 @@ type Done = AuditWeek | "repeat";
 export default function Audit() {
   const baseId = useId();
   const [slots, setSlots] = useState<AuditStatus | null>(null);
-  const [slotsAt, setSlotsAt] = useState<number | null>(null);
   const [flowOpen, setFlowOpen] = useState(false);
   const [sent, setSent] = useState<SentResult | null>(null);
   const [answered, setAnswered] = useState(false);
@@ -70,7 +69,6 @@ export default function Audit() {
       void fetchAuditStatus(controller.signal).then((value) => {
         if (controller.signal.aborted || !value) return;
         setSlots(value);
-        setSlotsAt(Date.now());
       });
     };
     read();
@@ -96,7 +94,6 @@ export default function Audit() {
       const taken = Math.min(total, (current?.taken ?? 0) + 1);
       return { week: result.week === "full" || taken >= total ? "full" : "open", taken, cap: total, last: current?.last ?? 0 };
     });
-    setSlotsAt(Date.now());
   };
 
   const finished = done ? copy.done[done] : null;
@@ -125,7 +122,7 @@ export default function Audit() {
           </figure>
         </section>
 
-        {done ? null : <AuditFloat status={slots} updatedAt={slotsAt} root={root} />}
+        {done ? null : <AuditFloat status={slots} root={root} />}
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
           <h2 id={`${baseId}-how`} className="site-section-title audit-how__title" data-reveal>

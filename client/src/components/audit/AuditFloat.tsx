@@ -16,7 +16,7 @@ const week = siteCopy.audit.week;
 const WORDS = ["zero", "one", "two", "three", "four", "five"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function AuditFloat({ status, root, updatedAt }: { status: AuditStatus | null; root: RefObject<HTMLElement | null>; updatedAt: number | null }) {
+export function AuditFloat({ status, root }: { status: AuditStatus | null; root: RefObject<HTMLElement | null> }) {
   const [pastHero, setPastHero] = useState(false);
   const [closeNear, setCloseNear] = useState(false);
 
@@ -67,8 +67,7 @@ export function AuditFloat({ status, root, updatedAt }: { status: AuditStatus | 
       <p className="audit-float__head">
         <span className="site-label">{week.label}</span>
         <span className="audit-float__live">
-          {/* A new key on every read restarts the pulse; it beats a few times and rests (site.css). */}
-          <span key={updatedAt ?? 0} className="audit-float__pulse" aria-hidden="true" />
+          <span className="audit-float__pulse" aria-hidden="true" />
           {week.live}
         </span>
       </p>

@@ -1204,9 +1204,12 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-float__head .site-label { font-size: var(--t-caption); }
 .audit-float__live { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
 .audit-float__pulse { position: relative; width: var(--space-2); height: var(--space-2); border-radius: 50%; background: var(--site-ink); }
-/* Three beats after each read, then rest: a studio page, not a dashboard. */
-.audit-float__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-ink); opacity: 0; animation: audit-pulse 1.6s var(--site-ease) 3; }
-@keyframes audit-pulse { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+/* The live mark beats the whole time (JP, 2026-11-07: "el live intermitente"): a slow ring that grows
+   and fades, and the dot itself breathes with it. */
+.audit-float__pulse { animation: audit-breathe 2.4s ease-in-out infinite; }
+.audit-float__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-ink); opacity: 0; animation: audit-pulse 2.4s ease-out infinite; }
+@keyframes audit-pulse { 0% { transform: scale(0.6); opacity: 0.8; } 70%, 100% { transform: scale(1.8); opacity: 0; } }
+@keyframes audit-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 .audit-float__row { display: flex; align-items: center; gap: var(--space-3); margin: 0; min-width: 0; }
 .audit-float__rings { display: inline-flex; flex: none; gap: var(--space-1); }
 .audit-float__ring { width: var(--space-4); height: var(--space-4); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-move) var(--site-ease); }
@@ -1225,7 +1228,7 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-float__line { font-size: var(--t-body); }
   .audit-float__action { min-width: 0; white-space: nowrap; }
 }
-@media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } .audit-float__pulse::after { animation: none; opacity: 0.4; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } .audit-float__pulse { animation: none; } .audit-float__pulse::after { animation: none; opacity: 0.4; transform: none; } }
 
 /* The closing section (JP, 2026-11-07): an ink rule, the statement in the display face, one line, the
    pill, and the three assurances in a row of hairline cells. The plain form under <noscript> keeps the
