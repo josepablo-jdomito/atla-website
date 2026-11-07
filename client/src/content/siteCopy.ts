@@ -401,54 +401,54 @@ export const siteCopy = {
     done: "Check your inbox for a note from José Pablo.",
     bookCall: "Book a call",
   },
-  // The free audit, at /audit (JP, 2026-11-07): the visitor's pains, the wins, three fields, read in two minutes
-  // (oddit.co/pages/free-trial). The number is said in words only ("five a week"); the cap lives in
-  // shared/audit.ts. Nothing here names a client or a past audit.
+  // The free audit, at /audit (JP, 2026-11-07, interview): the reader comes from JP's reels, the magic is JP
+  // himself looking at their brand, so the page is JP in first person, in his reel voice. What he usually
+  // finds, what they walk away with, three fields; read in two minutes. The number is said in words only
+  // ("five a week"); the cap lives in shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
-    metaTitle: "Free brand audit: what is holding your brand back",
+    metaTitle: "Send me your brand. I'll tell you what I'd change first.",
     metaDescription:
-      "A free brand audit from Atla. What is holding your brand back, in the order to fix it, on video from José Pablo, with a few of the fixes made. Five brands a week.",
-    title: "People like what you make. They cannot say what your brand stands for.",
-    lead: "A free audit from Atla finds what is holding your brand back and what to fix first. José Pablo records it on video and we make a few of the fixes. Five brands a week.",
+      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get his take on video: what is in the way, the order to fix it, and a few of the fixes made. Five a week.",
+    title: "Send me your brand. I'll tell you what I'd change first.",
+    lead: "You've watched me read brands I don't work for. Now I'll read yours: a short video with my take, what's in the way and the order to fix it. Then my team makes a few of the fixes. Free, five a week, because I record every one myself.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
     week: {
       label: "This week",
       neutral: "Five a week, in order of arrival.",
       open: "This week's five are still open.",
-      full: "This week's five are taken. Apply now and you are first in line for next week.",
+      full: "This week's five are taken. Send yours now and you're first in line for next week.",
     },
-    // The visitor's pains, in their words. From the threats Atla writes in every analysis.
-    painsTitle: "Sound familiar?",
+    // What JP usually finds, in the visitor's situation. From the threats Atla writes in every analysis.
+    painsTitle: "What I usually find",
     pains: [
-      "Customers love the product, but your best ones cannot explain you, so word of mouth stays small.",
-      "You look like your competitors, so every conversation ends up about price.",
-      "You are about to launch, raise or grow, and the brand was built for a smaller company.",
+      "People like what you make, but they can't say what you stand for. So they don't recommend you.",
+      "You look like everyone in your category. So every conversation ends up about price.",
+      "The brand was built for a smaller company than the one you run now.",
     ],
-    // The wins: what changes after the audit.
     winsTitle: "What you walk away with",
     wins: [
-      "The order to fix things, so your team stops arguing about what matters.",
-      "A few fixes already made: a headline, a lockup, a page. Yours to ship.",
-      "An honest read on whether you need a studio at all. If not, we say so.",
+      "My take on video: what's working, what's in the way, and the order to fix it.",
+      "A few fixes already made. A headline, a lockup, a page. Ship them Monday.",
+      "A straight answer on whether you need a studio at all. If you don't, I'll say so.",
     ],
-    formTitle: "Apply for this week",
+    formTitle: "Send me your brand",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
-    terms: "Free, because we only do five a week. No call, no pitch, no card.",
+    terms: "Free, because I only do five a week. No call, no pitch, no card.",
     privacyNotice: "We use this to reply and to run your audit.",
     privacyLink: "Privacy",
-    submit: "Apply for a free audit",
+    submit: "Send it",
     sending: "Sending",
     retry: "Try again",
-    nameError: "We need a name.",
-    emailError: "We need an email we can reply to.",
-    siteError: "We need a website or an Instagram to look at.",
+    nameError: "I need a name.",
+    emailError: "I need an email I can reply to.",
+    siteError: "I need a website or an Instagram to look at.",
     rateLimited: "Too many tries. Try again soon.",
     network: "That did not go through. What you wrote is still here.",
     done: {
-      open: { title: "You are in.", line: "Check your inbox for a note from José Pablo. Your video lands this week." },
+      open: { title: "Got it.", line: "You'll hear from me by email. Your video lands this week." },
       full: {
-        title: "You are first in line.",
-        line: "This week's five are taken, so yours is in next week's five. Check your inbox for a note from José Pablo.",
+        title: "You're first in line.",
+        line: "This week's five are taken, so yours is in next week's five. You'll hear from me by email.",
       },
     },
     doneHome: "See the work",
