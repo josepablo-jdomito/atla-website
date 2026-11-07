@@ -1142,15 +1142,56 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit .audit-intro { gap: var(--space-5); }
 .audit .audit-intro__title { max-width: 18ch; }
 .audit .audit-intro__lead { max-width: 36rem; }
-.audit-week {
+/* The live widget: five rings, the taken ones filled, a pulsing mark and the age of the read. */
+.audit-slots {
   display: grid;
-  gap: var(--space-1);
-  margin: 0;
+  gap: var(--space-3);
+  max-width: 36rem;
   padding-top: var(--space-4);
   border-top: 1px solid var(--site-line);
-  max-width: 36rem;
 }
-.audit-week__line { font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
+.audit-slots__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0; }
+.audit-slots__live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--t-caption);
+  color: var(--site-muted);
+  transition: opacity var(--d-hover) var(--site-ease);
+}
+.audit-slots[data-state="pending"] .audit-slots__live { opacity: 0; }
+.audit-slots__pulse {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--site-ink);
+}
+.audit-slots__pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--site-ink);
+  animation: audit-pulse 2s var(--site-ease) infinite;
+}
+@keyframes audit-pulse {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.audit-slots__rings { display: flex; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.audit-slots__ring {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--site-ink);
+  background: transparent;
+  transition: background-color var(--d-move) var(--site-ease);
+}
+.audit-slots__ring[data-taken] { background: var(--site-ink); }
+.audit-slots__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
+.audit-slots__meta { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
+@media (prefers-reduced-motion: reduce) { .audit-slots__pulse::after { animation: none; opacity: 0.4; transform: none; } }
 .audit-body { display: grid; gap: var(--space-8); max-width: 44rem; }
 .audit-section { display: grid; gap: var(--space-5); }
 .audit-rows { margin: 0; padding: 0; list-style: none; }

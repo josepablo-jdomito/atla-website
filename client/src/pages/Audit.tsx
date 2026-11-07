@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Link } from "wouter";
-import { EMPTY_AUDIT, auditSchema, type AuditDraft, type AuditWeek } from "@shared/audit";
+import { EMPTY_AUDIT, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
-import { fetchAuditWeek, submitAudit } from "@/components/audit/auditApi";
+import { fetchAuditStatus, submitAudit } from "@/components/audit/auditApi";
+import { AuditSlots } from "@/components/audit/AuditSlots";
 import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete } from "@/lib/ga";
 
@@ -43,7 +44,8 @@ export default function Audit() {
   const [draft, setDraft] = useState<AuditDraft>(EMPTY_AUDIT);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [status, setStatus] = useState<Status>("idle");
-  const [week, setWeek] = useState<AuditWeek | null>(null);
+  const [slots, setSlots] = useState<AuditStatus | null>(null);
+  const [slotsAt, setSlotsAt] = useState<number | null>(null);
   const [done, setDone] = useState<AuditWeek | null>(null);
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
   const submissionId = useRef(newSubmissionId());
@@ -53,12 +55,26 @@ export default function Audit() {
   const fieldId = (key: Field) => `${baseId}-${key}`;
   useNoindex(done !== null);
 
+  // The widget reads the week on mount, every half minute while the tab is visible, and when the
+  // visitor comes back to the tab.
   useEffect(() => {
     const controller = new AbortController();
-    void fetchAuditWeek(controller.signal).then((value) => {
-      if (!controller.signal.aborted && value) setWeek(value);
-    });
-    return () => controller.abort();
+    const read = () => {
+      if (document.visibilityState === "hidden") return;
+      void fetchAuditStatus(controller.signal).then((value) => {
+        if (controller.signal.aborted || !value) return;
+        setSlots(value);
+        setSlotsAt(Date.now());
+      });
+    };
+    read();
+    const timer = setInterval(read, 30_000);
+    document.addEventListener("visibilitychange", read);
+    return () => {
+      controller.abort();
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", read);
+    };
   }, []);
 
   useEffect(() => {
@@ -88,7 +104,13 @@ export default function Audit() {
     if (result.status === "ok") {
       trackAuditComplete(submissionId.current);
       setStatus("idle");
-      setWeek(result.week);
+      // The visitor's own request takes a ring at once; the next poll confirms it.
+      setSlots((current) => {
+        const total = current?.cap ?? 5;
+        const taken = Math.min(total, (current?.taken ?? 0) + 1);
+        return { week: result.week === "full" || taken >= total ? "full" : "open", taken, cap: total };
+      });
+      setSlotsAt(Date.now());
       setDone(result.week);
       return;
     }
@@ -96,7 +118,6 @@ export default function Audit() {
   };
 
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
-  const weekLine = week ? copy.week[week] : copy.week.neutral;
   const finished = done ? copy.done[done] : null;
 
   return (
@@ -108,10 +129,7 @@ export default function Audit() {
             {copy.title}
           </h1>
           <p className="page-intro__lead audit-intro__lead">{copy.lead}</p>
-          <p className="audit-week" data-week={week ?? undefined} aria-live="polite">
-            <span className="site-label audit-week__label">{copy.week.label}</span>
-            <span className="audit-week__line">{weekLine}</span>
-          </p>
+          <AuditSlots status={slots} updatedAt={slotsAt} />
         </header>
 
         <div className="audit-body">

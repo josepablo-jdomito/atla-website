@@ -117,10 +117,12 @@ describe("POST /api/audit", () => {
     for (let n = 1; n <= AUDITS_PER_WEEK; n += 1) {
       const res = await post({ request: { ...REQUEST, email: `ana${n}@casamar.example` }, submissionId: id(n) });
       expect(res.json).toEqual({ ok: true, week: "open" });
-      expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full" });
+      expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full", taken: n, cap: AUDITS_PER_WEEK });
     }
     const sixth = await post({ request: { ...REQUEST, email: "late@casamar.example" }, submissionId: id(99) });
     expect(sixth.json).toEqual({ ok: true, week: "full" });
+    // Past the cap the widget still shows five of five, never six.
+    expect((await status()).json).toEqual({ week: "full", taken: AUDITS_PER_WEEK, cap: AUDITS_PER_WEEK });
     expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), { week: "2026-W45", count: AUDITS_PER_WEEK + 1, full: true });
     expect(store.counts.get(weekKey(NOW))).toBe(AUDITS_PER_WEEK + 1);
   });
@@ -165,7 +167,7 @@ describe("POST /api/audit", () => {
     expect(res.json.error).toMatch(/send it again/);
     expect(second.store.counts.get(weekKey(NOW))).toBe(0);
     expect(second.store.counts.has(`audit:${id(2)}`)).toBe(false);
-    expect((await second.status()).json).toEqual({ week: "open" });
+    expect((await second.status()).json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK });
   });
 
   it("answers 429 when the address is over its limit", async () => {
@@ -185,7 +187,7 @@ describe("GET /api/audit/status", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await status();
     expect(res.cache).toBe("no-store");
-    expect(res.json).toEqual({ week: "open" });
+    expect(res.json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK });
   });
 });
 

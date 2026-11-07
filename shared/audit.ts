@@ -33,8 +33,10 @@ export type AuditRequest = z.infer<typeof auditSchema>;
 export type AuditDraft = Record<keyof AuditRequest, string>;
 export const EMPTY_AUDIT: AuditDraft = { name: "", email: "", site: "" };
 
-/** Whether this week's five are still open. The page shows one line for each. */
+/** Whether this week's five are still open. */
 export type AuditWeek = "open" | "full";
+/** What GET /api/audit/status answers: the week's slots as the page's live widget shows them. */
+export type AuditStatus = { week: AuditWeek; taken: number; cap: number };
 
 /**
  * The ISO week a moment falls in, as "2026-W45", in UTC: the counter key. Weeks start on Monday,

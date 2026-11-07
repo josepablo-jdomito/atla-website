@@ -414,11 +414,18 @@ export const siteCopy = {
     title: "We all need an extra pair of eyes.",
     lead: "You're too close to your brand, and attached to it. Let me take a look at it and give you my thoughts: a short video with what I'd change, in order, and a couple of the fixes done. It's free. I only do five a week because I record every one myself.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
+    // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
       label: "This week",
-      neutral: "Five a week, in the order they come in.",
-      open: "This week's five are still open.",
+      live: "Live",
+      neutral: "Five spots a week, in the order they come in.",
+      left: "{left} of {cap} spots left this week.",
+      lastOne: "One spot left this week.",
       full: "This week's five are taken. Send yours now and you're first for next week.",
+      updatedNow: "Updated just now",
+      updatedMoment: "Updated a moment ago",
+      updatedMinutes: "Updated a few minutes ago",
+      resets: "Five new spots every Monday",
     },
     // Three drawn steps (Higgsfield, Nano Banana 2, after JP's New Balance references, 2026-11-07), one line each.
     howTitle: "How it works",

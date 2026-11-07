@@ -1,4 +1,4 @@
-import type { AuditRequest, AuditWeek } from "@shared/audit";
+import type { AuditRequest, AuditStatus, AuditWeek } from "@shared/audit";
 
 export type AuditResult = { status: "ok"; week: AuditWeek } | { status: "rate-limited" } | { status: "failed" };
 
@@ -30,13 +30,15 @@ export async function submitAudit(request: AuditRequest, submissionId: string, h
   }
 }
 
-/** GET /api/audit/status: whether this week's five are taken. Null when the read fails: the page keeps its neutral line. */
-export async function fetchAuditWeek(signal?: AbortSignal): Promise<AuditWeek | null> {
+/** GET /api/audit/status: this week's slots. Null when the read fails: the widget keeps its last state. */
+export async function fetchAuditStatus(signal?: AbortSignal): Promise<AuditStatus | null> {
   try {
-    const res = await fetch("/api/audit/status", { signal: signal ?? AbortSignal.timeout(STATUS_TIMEOUT_MS) });
+    const res = await fetch("/api/audit/status", { signal: signal ?? AbortSignal.timeout(STATUS_TIMEOUT_MS), cache: "no-store" });
     if (!res.ok) return null;
-    const body = (await res.json()) as { week?: unknown };
-    return asWeek(body.week);
+    const body = (await res.json()) as { week?: unknown; taken?: unknown; cap?: unknown };
+    const cap = typeof body.cap === "number" && body.cap > 0 ? body.cap : 5;
+    const taken = typeof body.taken === "number" ? Math.min(Math.max(0, Math.round(body.taken)), cap) : 0;
+    return { week: asWeek(body.week), taken, cap };
   } catch {
     return null;
   }

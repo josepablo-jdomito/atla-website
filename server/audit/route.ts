@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { AUDITS_PER_WEEK, auditSchema, isoWeek, type AuditRequest, type AuditWeek } from "../../shared/audit.ts";
+import { AUDITS_PER_WEEK, auditSchema, isoWeek, type AuditRequest, type AuditStatus, type AuditWeek } from "../../shared/audit.ts";
 import { clientIp, foreignPostSource } from "../contact.ts";
 import { rateLimit } from "../limits/guards.ts";
 import { decrement, deleteKey, getCount, incrWithExpiry } from "../limits/store.ts";
@@ -11,8 +11,9 @@ import { deliverAuditToAttio, sendAuditEmail, type AuditSlot } from "./deliver.t
  * The free brand audit (/audit, JP 2026-11-07). Same rules as the brand check (server/brandCheck/route.ts)
  * plus one shared weekly counter:
  *
- * GET  /api/audit/status → { week: "open" | "full" }
- *   Whether this ISO week's five (AUDITS_PER_WEEK) are taken. Never cached: the page shows it live.
+ * GET  /api/audit/status → { week: "open" | "full", taken, cap }
+ *   This ISO week's slots (cap = AUDITS_PER_WEEK, taken clamped to it). Never cached: the page's
+ *   widget shows it live and polls it.
  *
  * POST /api/audit  { request, submissionId, _gotcha } → { ok: true, week: "open" | "full" }
  *   Same-site posts only (403 otherwise). A filled honeypot gets ok and delivers nothing. More than
@@ -63,6 +64,7 @@ const defaultDeps: AuditDeps = {
 
 export const weekKey = (date: Date) => `audit:week:${isoWeek(date)}`;
 const weekOf = (count: number): AuditWeek => (count >= AUDITS_PER_WEEK ? "full" : "open");
+const statusOf = (count: number): AuditStatus => ({ week: weekOf(count), taken: Math.min(Math.max(0, count), AUDITS_PER_WEEK), cap: AUDITS_PER_WEEK });
 
 /** The part of an address after "@", for a log line that must not name the person. */
 const emailDomain = (email: string) => email.split("@").pop()?.toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 80) || "unknown";
@@ -79,11 +81,11 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
     res.setHeader("Cache-Control", "no-store");
     try {
       const count = await deps.getCount(weekKey(deps.now()));
-      return res.json({ week: weekOf(count) });
+      return res.json(statusOf(count));
     } catch (err) {
       // A counter outage reads as open: the form still takes the request and the note says the week.
       console.error(`[audit] status read failed: ${err instanceof Error ? err.message : "unknown error"}`);
-      return res.json({ week: "open" satisfies AuditWeek });
+      return res.json(statusOf(0));
     }
   });
 
