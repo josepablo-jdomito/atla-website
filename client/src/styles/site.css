@@ -1253,33 +1253,63 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-done__follow { margin: 0; font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-muted); }
 .audit-done__link { color: var(--site-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .audit-done__link:hover { text-decoration-color: var(--site-accent); }
-/* The four questions, one at a time (components/audit/AuditAnswers.tsx): the nod and the count in one
-   quiet line, the question in the display face, quick choices as words, one field, the filled button. */
-.audit-answers { display: grid; gap: var(--space-4); max-width: 36rem; margin-top: var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--site-line); }
-.audit-answers__progress { margin: 0; font-size: var(--t-ui); line-height: var(--lh-ui); color: var(--site-muted); }
-.audit-answers__nod { color: var(--site-ink); }
-.audit-answers__question { display: block; margin: 0; font-family: var(--site-display); font-size: var(--t-h2); font-weight: 400; line-height: var(--lh-head); letter-spacing: -0.01em; text-wrap: pretty; }
-.audit-answers__hint { margin: calc(-1 * var(--space-2)) 0 0; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); }
-.audit-answers__choices { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); }
-.audit-answers__choice { min-height: 44px; padding: 0; border: 0; background: none; color: var(--site-muted); font: inherit; font-size: var(--t-ui); font-weight: 500; text-align: left; cursor: pointer; transition: color var(--d-hover) var(--site-ease); }
-.audit-answers__choice:hover { color: var(--site-ink); }
-.audit-answers__choice[aria-pressed="true"] { color: var(--site-ink); text-decoration: underline; text-decoration-color: var(--site-accent); text-decoration-thickness: 2px; text-underline-offset: 4px; }
-.audit-answers__field { resize: vertical; min-height: 3lh; font-size: var(--t-lead); }
-.audit-answers__keys { margin: calc(-1 * var(--space-2)) 0 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
-.audit-answers__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-top: var(--space-2); }
-.audit-answers__actions .brief-status { flex-basis: 100%; }
-.audit-answers__next { width: auto; min-width: 10rem; }
-.audit-answers--done { grid-template-columns: var(--space-10) minmax(0, 1fr); align-items: center; column-gap: var(--space-5); }
-.audit-answers__art { display: block; width: 100%; aspect-ratio: 1; }
+/* The quiz after the send (components/audit/AuditAnswers.tsx): the page's paper over everything, a bar
+   with back, the count and exit, a hairline of progress, the question centred, the answers as cards
+   (a title, one line, a chevron), the field when words are the way. */
+.audit-quiz { position: fixed; inset: 0; z-index: 80; display: grid; grid-template-rows: auto auto minmax(0, 1fr); background: var(--site-bg); color: var(--site-ink); overflow: hidden; }
+.audit-quiz__bar { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; min-height: 64px; padding: 0 var(--site-gutter); }
+.audit-quiz__nav { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: var(--r-row); background: none; color: var(--site-ink); cursor: pointer; transition: opacity var(--d-hover) var(--site-ease); }
+.audit-quiz__nav:hover { opacity: 0.55; }
+.audit-quiz__nav:disabled { opacity: 0.25; cursor: default; }
+.audit-quiz__nav:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; }
+.audit-quiz__count { text-align: center; font-size: var(--t-ui); font-weight: 500; line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-quiz__progress { height: 1px; margin: 0 var(--site-gutter); background: var(--site-line); }
+.audit-quiz__progress-fill { display: block; height: 100%; background: var(--site-ink); transform-origin: left; transition: transform var(--d-move) var(--site-ease); }
+.audit-quiz__body { display: grid; align-content: start; justify-items: center; padding: var(--space-7) var(--site-gutter) var(--space-9); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.audit-quiz__step, .audit-quiz__done { display: grid; gap: var(--space-6); width: 100%; max-width: 32rem; }
+.audit-quiz__done { justify-items: start; }
+.audit-quiz__question { margin: 0; font-family: var(--site-display); font-size: var(--t-h1); font-weight: 400; line-height: var(--lh-tight); letter-spacing: -0.01em; text-wrap: balance; }
+.audit-quiz__question:focus { outline: none; }
+.audit-quiz__cards { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+.audit-quiz__card { display: grid; grid-template-columns: minmax(0, 1fr) var(--space-5); grid-template-rows: auto auto; column-gap: var(--space-3); row-gap: var(--space-1); align-items: center; width: 100%; min-height: 64px; padding: var(--space-4) var(--space-5); border: 1px solid var(--site-line); border-radius: var(--r-card); background: var(--site-surface); color: var(--site-ink); font: inherit; text-align: left; cursor: pointer; transition: border-color var(--d-hover) var(--site-ease), background-color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
+.audit-quiz__card:hover { border-color: var(--site-ink); }
+.audit-quiz__card:active { transform: scale(0.99); }
+.audit-quiz__card:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; }
+.audit-quiz__card[aria-pressed="true"] { border-color: var(--site-ink); background: var(--site-ink); color: var(--site-bg); }
+.audit-quiz__card[aria-pressed="true"] .audit-quiz__card-line { color: inherit; opacity: 0.7; }
+.audit-quiz__card-title { grid-column: 1; font-size: var(--t-h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+.audit-quiz__card-line { grid-column: 1; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
+.audit-quiz__card-arrow { grid-column: 2; grid-row: 1 / span 2; justify-self: end; color: var(--site-muted); }
+.audit-quiz__card--other { background: transparent; }
+.audit-quiz__form { display: grid; gap: var(--space-4); }
+.audit-quiz__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
+.audit-quiz__field { resize: vertical; min-height: 3lh; font-size: var(--t-lead); }
+.audit-quiz__keys { margin: calc(-1 * var(--space-2)) 0 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-quiz__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-top: var(--space-2); }
+.audit-quiz__button { width: auto; min-width: 12rem; }
+.audit-quiz__art { display: block; width: calc(var(--space-10) + var(--space-9)); aspect-ratio: 1; }
+.audit-quiz__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+@media (prefers-color-scheme: dark) { .audit-quiz__art img { filter: invert(1); } }
+/* Each step comes in from the right, the way the next card in a deck would. */
+@keyframes audit-step-in { from { opacity: 0; transform: translateX(var(--space-4)); } to { opacity: 1; transform: none; } }
+/* The done screen animates its words, never the drawing's box: a kept animation would isolate the clip's
+   blend and show its white. */
+.audit[data-motion] .audit-quiz__step, .audit[data-motion] .audit-quiz__done > :not([data-drawing]) { animation: audit-step-in var(--d-move) var(--site-ease) both; }
+@media (prefers-reduced-motion: reduce) { .audit-quiz__step, .audit-quiz__done > * { animation: none; } }
+@media (min-width: 768px) {
+  .audit-quiz__body { padding-top: var(--space-9); }
+  .audit-quiz__question { text-align: center; }
+  .audit-quiz__step { justify-items: center; }
+  .audit-quiz__cards, .audit-quiz__form { width: 100%; }
+}
+/* On the page: the line while the quiz is closed, the Bottle once it is done. */
+.audit-answers { display: grid; gap: var(--space-4); max-width: 36rem; margin-top: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--site-line); }
+.audit-answers--closed { grid-template-columns: minmax(0, 1fr); }
+.audit-answers__art { display: block; width: calc(var(--space-10) + var(--space-6)); aspect-ratio: 1; }
 .audit-answers__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
 @media (prefers-color-scheme: dark) { .audit-answers__art img { filter: invert(1); } }
 .audit-answers__thanks { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
-@media (min-width: 768px) {
-  .audit-answers--done { grid-template-columns: calc(var(--space-10) + var(--space-7)) minmax(0, 1fr); }
-}
-/* Each question comes in from the right, the way the next card in a deck would. */
-@keyframes audit-step-in { from { opacity: 0; transform: translateX(var(--space-3)); } to { opacity: 1; transform: none; } }
-.audit[data-motion] .audit-answers__question, .audit[data-motion] .audit-answers__field { animation: audit-step-in var(--d-move) var(--site-ease) both; }
+.audit-answers__reopen { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
 
 /* Motion (components/audit/useMotion.ts turns it on after hydration; nothing moves under reduced motion
    or in the prerender). One easing, the site's durations, and two ambient loops: the Inspector

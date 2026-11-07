@@ -492,26 +492,56 @@ export const siteCopy = {
     // scorecard questions, JP 2026-11-07): frustration, outcome, what they tried, and always "anything else" last.
     doneFollow: "While you wait, I break down a brand on Instagram every week.",
     doneFollowLink: "Follow @jdomito_",
-    // One question at a time after the send (components/audit/AuditAnswers.tsx). Each has the line JP says
-    // when the last one was answered (`nod`); the second has quick choices a thumb can tap.
-    answersProgress: "{n} of four.",
-    answersLast: "Last one.",
-    answersChoicesLabel: "Quick answers",
+    // The quiz after the send (components/audit/AuditAnswers.tsx, after AG1's product quiz, JP 2026-11-07):
+    // one question on the screen, the answers as cards with a title and one line, a tap moves on;
+    // "Something else" opens a field, the last question is a field.
+    answersProgress: "{n} of four",
+    answersLast: "Last one",
+    answersBack: "Back",
+    answersExit: "Leave the questions",
+    answersOther: "Something else",
+    answersOtherLine: "Tell me in your words.",
     answersKeys: "Enter sends it. Shift and Enter for a new line.",
     answersNext: "Next",
     answersSkip: "Skip this one",
-    answersSkipLast: "Skip and finish",
+    answersSkipLast: "Nothing else, send it",
+    answersClose: "Back to the page",
+    answersDoneLine: "I read these before I open your site, so the audit starts where it hurts.",
+    answersClosed: "Four quick questions make the audit about you.",
+    answersReopen: "Answer them",
     answers: [
-      { key: "frustration", label: "What's bugging you about your brand right now?", hint: "The thing you notice every time you open your own site.", nod: "Got it." },
+      {
+        key: "frustration",
+        label: "What's bugging you about your brand right now?",
+        cards: [
+          { title: "It looks like everyone else", line: "Same fonts, same photos, same words as the next one." },
+          { title: "It doesn't match what we sell", line: "The product got better and the brand stayed behind." },
+          { title: "People don't get it fast enough", line: "In person it works. On the site it takes a paragraph." },
+          { title: "Something is off and I can't name it", line: "That is what the extra pair of eyes is for." },
+        ],
+      },
       {
         key: "outcome",
         label: "Where do you want it to be a year from now?",
-        choices: ["More sales", "Charging more", "Looking like the brand we are", "Launching something new"],
-        nod: "That changes what I look at first.",
+        cards: [
+          { title: "More sales", line: "More people buying, from the same brand." },
+          { title: "Charging more", line: "A brand that lets the price go up." },
+          { title: "Looking like the brand we are", line: "What we do and how it looks finally match." },
+          { title: "Launching something new", line: "A product, a place or a market that needs the brand ready." },
+        ],
       },
-      { key: "tried", label: "What have you already tried that didn't work?", hint: "A new logo, a new site, an agency, a freelancer, nothing yet.", nod: "Good to know." },
-      { key: "anything", label: "Is there anything else you want me to know?", nod: "All right." },
-    ] as { key: "frustration" | "outcome" | "tried" | "anything"; label: string; hint?: string; choices?: string[]; nod: string }[],
+      {
+        key: "tried",
+        label: "What have you already tried that didn't work?",
+        cards: [
+          { title: "A new logo", line: "It changed the mark, not the problem." },
+          { title: "A new website", line: "It looked better for a month." },
+          { title: "An agency or a freelancer", line: "Good work in the wrong direction, or it never finished." },
+          { title: "Nothing yet", line: "This is the first look." },
+        ],
+      },
+      { key: "anything", label: "Is there anything else you want me to know?", hint: "A deadline, a competitor you keep looking at, a thing you love and won't change." },
+    ] as { key: "frustration" | "outcome" | "tried" | "anything"; label: string; hint?: string; cards?: { title: string; line: string }[] }[],
     feedbackSend: "Send the answers",
     feedbackDone: "Got them. That makes the audit better.",
     feedbackSkipped: "No problem. The audit is on its way either way.",
