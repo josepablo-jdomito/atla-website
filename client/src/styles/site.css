@@ -1225,10 +1225,15 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-float__line { display: inline-flex; align-items: center; gap: var(--space-2); flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .audit-float__line .audit-slots__pulse { flex: none; }
 .audit-float__action { flex: none; white-space: nowrap; }
-/* On a narrow phone the count carries the rings, so the line keeps whole words. */
-@media (max-width: 479px) {
-  .audit-float__rings { display: none; }
-  .audit-float__line { white-space: normal; overflow: visible; }
+.audit-float__count { display: none; }
+/* Below 768 the widget is the black pill itself: the words on the left, the count on the right, one line,
+   nothing wraps (JP, 2026-11-07: a count broken over two lines is a defect). */
+@media (max-width: 767px) {
+  .audit-float { gap: 0; padding: 0; background: var(--site-ink); border-color: var(--site-ink); }
+  .audit-float__rings, .audit-float__line { display: none; }
+  .audit-float__action { display: flex; flex: 1 1 auto; justify-content: space-between; gap: var(--space-3); min-height: 56px; padding: 0 var(--space-5); border-radius: var(--r-pill); }
+  .audit-float__count { display: inline; flex: none; font-size: var(--t-caption); font-weight: 400; opacity: 0.7; white-space: nowrap; }
+  .audit-float__action > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 @media (min-width: 768px) {
   .audit-ledger__row { grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 7fr) minmax(0, 4fr); grid-template-rows: auto; column-gap: var(--space-5); min-height: var(--space-9); padding: var(--space-3) 0; }

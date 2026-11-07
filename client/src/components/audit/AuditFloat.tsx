@@ -72,7 +72,11 @@ export function AuditFloat({ status, root }: { status: AuditStatus | null; root:
         {line}
       </p>
       <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-submit--compact audit-float__action" onClick={openAuditFlow} tabIndex={shown ? undefined : -1}>
-        {copy.action}
+        <span>{copy.action}</span>
+        {/* On a phone the pill is the whole widget, so the count rides inside it, on one line. */}
+        <span className="audit-float__count" aria-hidden="true">
+          {line}
+        </span>
       </a>
     </div>
   );
