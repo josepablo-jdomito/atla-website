@@ -64,7 +64,11 @@ export function Drawing({
           disablePictureInPicture
           aria-hidden="true"
           tabIndex={-1}
-          onError={() => setFailed(true)}
+          // A <source> the browser skips also fires error here (React listens in capture); only the
+          // video's own error, once every source failed, means the still stays.
+          onError={(event) => {
+            if (event.target === event.currentTarget && event.currentTarget.error) setFailed(true);
+          }}
         >
           <source src={`${clip}.mov`} type='video/mp4; codecs="hvc1"' />
           <source src={`${clip}.webm`} type="video/webm" />
