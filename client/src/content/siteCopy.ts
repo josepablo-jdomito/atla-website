@@ -402,38 +402,39 @@ export const siteCopy = {
     bookCall: "Book a call",
   },
   // The free audit, at /audit (JP, 2026-11-07, interview): the reader comes from JP's reels, the magic is JP
-  // himself looking at their brand, so the page is JP in first person, in his reel voice. What he usually
-  // finds, what they walk away with, three fields; read in two minutes. The number is said in words only
+  // himself looking at their brand, so the page is JP in first person. Lines follow VOICE-JP.md (vault,
+  // Resources/jdomito-content/craft): his camera lines, "I think", "say, hey", no triads, no cute one-liners.
+  // What he usually finds, what they get, three fields; read in two minutes. The number is said in words only
   // ("five a week"); the cap lives in shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
-    metaTitle: "Send me your brand. I'll tell you what I'd change first.",
+    metaTitle: "Send me your brand and I'll tell you what I'd fix first",
     metaDescription:
-      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get his take on video: what is in the way, the order to fix it, and a few of the fixes made. Five a week.",
-    title: "Send me your brand. I'll tell you what I'd change first.",
-    lead: "You've watched me read brands I don't work for. Now I'll read yours: a short video with my take, what's in the way and the order to fix it. Then my team makes a few of the fixes. Free, five a week, because I record every one myself.",
+      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and he records a short video with what he'd change, in order, and his team makes a couple of the fixes. Five a week.",
+    title: "Send me your brand and I'll tell you what I'd fix first.",
+    lead: "I think most brands don't need a rebrand. They need someone to look at them the way a customer does and say, hey, this is the thing. I do that every week for brands I don't work for. Now I'll do it for yours: a short video with what I'd change, in order, and my team makes a couple of the fixes. It's free. I only do five a week because I record every one myself.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
     week: {
       label: "This week",
-      neutral: "Five a week, in order of arrival.",
+      neutral: "Five a week, in the order they come in.",
       open: "This week's five are still open.",
-      full: "This week's five are taken. Send yours now and you're first in line for next week.",
+      full: "This week's five are taken. Send yours now and you're first for next week.",
     },
-    // What JP usually finds, in the visitor's situation. From the threats Atla writes in every analysis.
+    // JP's own camera lines (VOICE-JP.md anchors 1 and 5, the coffee script, the Q&A buyer line).
     painsTitle: "What I usually find",
     pains: [
-      "People like what you make, but they can't say what you stand for. So they don't recommend you.",
-      "You look like everyone in your category. So every conversation ends up about price.",
-      "The brand was built for a smaller company than the one you run now.",
+      "You go to Whole Foods, you see a hundred different brands and they all look the same. Yours probably does too. That's why you're fighting on price.",
+      "No one knows your logo. No one cares about your logo. People don't love a whole brand, they love three or four moments with it.",
+      "The website says what you do, not why someone should pick you. If I land on it and don't know what you're selling to me, your customer doesn't either.",
     ],
-    winsTitle: "What you walk away with",
+    winsTitle: "What you get",
     wins: [
-      "My take on video: what's working, what's in the way, and the order to fix it.",
-      "A few fixes already made. A headline, a lockup, a page. Ship them Monday.",
-      "A straight answer on whether you need a studio at all. If you don't, I'll say so.",
+      "A short video with what I'd change and in what order.",
+      "A couple of the fixes done, in Figma or on the site. Things like the headline, the logo lockup, one page.",
+      "If I think you don't need a studio yet, I'll tell you. Fix first your positioning, then call me.",
     ],
     formTitle: "Send me your brand",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
-    terms: "Free, because I only do five a week. No call, no pitch, no card.",
+    terms: "It's free. I only do five a week.",
     privacyNotice: "We use this to reply and to run your audit.",
     privacyLink: "Privacy",
     submit: "Send it",
@@ -442,14 +443,11 @@ export const siteCopy = {
     nameError: "I need a name.",
     emailError: "I need an email I can reply to.",
     siteError: "I need a website or an Instagram to look at.",
-    rateLimited: "Too many tries. Try again soon.",
-    network: "That did not go through. What you wrote is still here.",
+    rateLimited: "Too many tries. Try again in a bit.",
+    network: "That didn't go through. What you wrote is still here.",
     done: {
-      open: { title: "Got it.", line: "You'll hear from me by email. Your video lands this week." },
-      full: {
-        title: "You're first in line.",
-        line: "This week's five are taken, so yours is in next week's five. You'll hear from me by email.",
-      },
+      open: { title: "Got it.", line: "You'll hear from me by email this week." },
+      full: { title: "You're in next week's five.", line: "This week's are taken. You'll hear from me by email." },
     },
     doneHome: "See the work",
   },
