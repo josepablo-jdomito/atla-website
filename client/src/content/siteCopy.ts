@@ -407,11 +407,12 @@ export const siteCopy = {
   // What he usually finds, what they get, three fields; read in two minutes. The number is said in words only
   // ("five a week"); the cap lives in shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
-    metaTitle: "Send me your brand and I'll tell you what I'd fix first",
+    metaTitle: "We all need an extra pair of eyes",
     metaDescription:
-      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and he records a short video with what he'd change, in order, and his team makes a couple of the fixes. Five a week.",
-    title: "Send me your brand and I'll tell you what I'd fix first.",
-    lead: "I think most brands don't need a rebrand. They need someone to look at them the way a customer does and say, hey, this is the thing. I do that every week for brands I don't work for. Now I'll do it for yours: a short video with what I'd change, in order, and my team makes a couple of the fixes. It's free. I only do five a week because I record every one myself.",
+      "You're too close to your brand. Let José Pablo, founder of Atla, take a look and give you his thoughts: a short video with what he'd change, in order, and a couple of the fixes done. Free, five a week.",
+    // JP's own words (2026-11-07): "We all need an extra pair of eyes, you are too close (and attached) to your brand. Let me take a look at it, and give you my thoughts."
+    title: "We all need an extra pair of eyes.",
+    lead: "You're too close to your brand, and attached to it. Let me take a look at it and give you my thoughts: a short video with what I'd change, in order, and a couple of the fixes done. It's free. I only do five a week because I record every one myself.",
     // One line under the lead, live from /api/audit/status. `neutral` is what the prerender and a failed read show.
     week: {
       label: "This week",
@@ -419,18 +420,12 @@ export const siteCopy = {
       open: "This week's five are still open.",
       full: "This week's five are taken. Send yours now and you're first for next week.",
     },
-    // JP's own camera lines (VOICE-JP.md anchors 1 and 5, the coffee script, the Q&A buyer line).
-    painsTitle: "What I usually find",
-    pains: [
-      "You go to Whole Foods, you see a hundred different brands and they all look the same. Yours probably does too. That's why you're fighting on price.",
-      "No one knows your logo. No one cares about your logo. People don't love a whole brand, they love three or four moments with it.",
-      "The website says what you do, not why someone should pick you. If I land on it and don't know what you're selling to me, your customer doesn't either.",
-    ],
-    winsTitle: "What you get",
-    wins: [
-      "A short video with what I'd change and in what order.",
-      "A couple of the fixes done, in Figma or on the site. Things like the headline, the logo lockup, one page.",
-      "If I think you don't need a studio yet, I'll tell you. Fix first your positioning, then call me.",
+    // Three drawn steps (Higgsfield, Nano Banana 2, after JP's New Balance references, 2026-11-07), one line each.
+    howTitle: "How it works",
+    steps: [
+      { src: "/audit/landing/step-1.webp", alt: "Someone holding up a phone that shows their shop", line: "You send me your website or your Instagram." },
+      { src: "/audit/landing/step-2.webp", alt: "José Pablo on a stool, looking at a jar in front of a camera", line: "I look at it the way a customer does and record a short video: what I'd change, in order." },
+      { src: "/audit/landing/step-3.webp", alt: "The founder on a sofa watching the video, a box with the shop beside them", line: "You get the video and a couple of the fixes done. If you don't need a studio yet, I'll say so." },
     ],
     formTitle: "Send me your brand",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },

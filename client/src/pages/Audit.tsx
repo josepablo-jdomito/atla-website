@@ -115,25 +115,27 @@ export default function Audit() {
         </header>
 
         <div className="audit-body">
-          {(
-            [
-              { id: "pains", title: copy.painsTitle, lines: copy.pains },
-              { id: "wins", title: copy.winsTitle, lines: copy.wins },
-            ] as const
-          ).map((group) => (
-            <section key={group.id} className="audit-section" aria-labelledby={`${baseId}-${group.id}`}>
-              <h2 id={`${baseId}-${group.id}`} className="site-section-title">
-                {group.title}
-              </h2>
-              <ul className="audit-rows">
-                {group.lines.map((line) => (
-                  <li key={line} className="audit-row">
-                    <p className="audit-step__line">{line}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          <section className="audit-section" aria-labelledby={`${baseId}-how`}>
+            <h2 id={`${baseId}-how`} className="site-section-title">
+              {copy.howTitle}
+            </h2>
+            <ol className="audit-steps">
+              {copy.steps.map((step, index) => (
+                <li key={step.src} className="audit-step">
+                  <img
+                    className="audit-step__art"
+                    src={step.src}
+                    alt={step.alt}
+                    width={800}
+                    height={800}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                  <p className="audit-step__line">{step.line}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
 
           <section className="audit-section audit-ask" aria-labelledby={`${baseId}-ask`}>
             {finished ? (
