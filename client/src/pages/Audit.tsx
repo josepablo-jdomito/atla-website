@@ -12,8 +12,8 @@ import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete, trackAuditFormStart, trackAuditSubmitError, trackAuditView } from "@/lib/ga";
 
 /**
- * The free audit (/audit, JP 2026-11-07): a landing page. JP named above the title, the offer in the
- * title, his own line opening the lead, the week's five as a live widget (AuditSlots), three drawn
+ * The free audit (/audit, JP 2026-11-07): a landing page. The offer in the title, JP's own line opening
+ * the lead and his name signing it (no kicker above the title: the heading carries its weight), the week's five as a live widget (AuditSlots), three drawn
  * steps, a strip of client marks, then the three-field form with the assurances under the button.
  * The header on this route is the landing one (SiteHeader): the wordmark and one action to the form.
  * After the send: one micro step (Instagram) and the one research question. Delivered like the brand
@@ -182,11 +182,11 @@ export default function Audit() {
       <div ref={root} className="site-page-body audit">
         <section className="audit-hero" aria-labelledby={`${baseId}-title`}>
           <div className="audit-hero__text">
-            <p className="site-label audit-hero__eyebrow">{copy.eyebrow}</p>
             <h1 id={`${baseId}-title`} className="page-intro__title audit-hero__title">
               {copy.title}
             </h1>
             <p className="audit-hero__lead">{copy.lead}</p>
+            <p className="audit-hero__byline">{copy.byline}</p>
             {done && done !== "error" ? null : (
               <p className="audit-hero__action">
                 <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-hero__button" onClick={goToForm}>
@@ -220,9 +220,11 @@ export default function Audit() {
           </ol>
         </section>
 
-        <section className="audit-proof" aria-label={copy.proofLabel} data-reveal>
+        <section className="audit-proof" aria-labelledby={`${baseId}-proof`}>
           <div className="audit-proof__head">
-            <p className="site-label audit-proof__label">{copy.proofLabel}</p>
+            <h2 id={`${baseId}-proof`} className="site-section-title audit-proof__title">
+              {copy.proofTitle}
+            </h2>
             <p className="audit-proof__line">{copy.proofLine}</p>
           </div>
           <ul className="audit-proof__marks">
@@ -236,13 +238,8 @@ export default function Audit() {
               </li>
             ))}
             {copy.proofMarks.map((item) => (
-              <li key={item.name} className="audit-proof__mark audit-proof__mark--wide">
+              <li key={item.name} className="audit-proof__mark">
                 <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
-              </li>
-            ))}
-            {copy.proofNames.map((name) => (
-              <li key={name} className="audit-proof__name">
-                {name}
               </li>
             ))}
             {PROOF_MARKS.map((item) => (
@@ -253,7 +250,7 @@ export default function Audit() {
           </ul>
         </section>
 
-        <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`} data-reveal>
+        <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`}>
             {finished ? (
               <div className="audit-done">
                 <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="site-section-title audit-ask__title">

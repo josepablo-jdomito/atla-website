@@ -410,11 +410,12 @@ export const siteCopy = {
     metaTitle: "Free brand audit from José Pablo",
     metaDescription:
       "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get an honest audit of what works and what to change first.",
-    // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP above the
-    // title, state the offer in the title, JP's own line opens the lead. Policies confirmed by JP the same day:
+    // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP, state the
+    // offer in the title, JP's own line opens the lead. His name signs the lead (a byline), not a kicker above
+    // the title (design pass 2026-11-07). Policies confirmed by JP the same day:
     // the video is private; it is sent as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
-    eyebrow: "José Pablo, founder of Atla",
+    byline: "José Pablo, founder of Atla",
     title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
     lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
@@ -449,7 +450,7 @@ export const siteCopy = {
     cta: "Send me your brand",
     // The hero button (JP, 2026-11-07: "un botón que diga start free audit request"); the header keeps the short door.
     heroCta: "Start free audit request",
-    proofLabel: "Brands I've worked with",
+    proofTitle: "Brands I've worked with",
     // The social proof under the steps (JP, 2026-11-07: "que se vea de que este cabrón es la verga"). Every claim
     // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
     // (Acre's restaurant), Anything's series A (Bessemer, Footwork), Ulysses's series A (Andreessen Horowitz).
@@ -461,7 +462,6 @@ export const siteCopy = {
     ],
     // Ulysses's wordmark, cut from its brand guidelines (Downloads, 2025-10-02), with Anything beside it as the two venture-backed ones.
     proofMarks: [{ name: "Ulysses", src: "/logos-v2/ulysses.png", width: 1400, height: 161 }],
-    proofNames: [] as string[],
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
