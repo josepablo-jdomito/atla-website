@@ -58,19 +58,19 @@ export default function AtlaSaasBranding() {
       <LongformSection title="Selected SaaS and digital work">
         <LongformParagraph>
           <strong>Anything AI</strong>. Brand identity and digital design for an AI creative platform.{" "}
-          <a href="/projects/anything-ai" className="longform-link" aria-label={"View the Anything AI project"}>
+          <a href="/projects/anything-ai" className="longform-link" aria-label={"View project: Anything AI"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>PuppyPy</strong>{" "}
-          <a href="/projects/puppypy" className="longform-link" aria-label={"View the PuppyPy project"}>
+          <a href="/projects/puppypy" className="longform-link" aria-label={"View project: PuppyPy"}>
             View project →
           </a>
         </LongformParagraph>
         <LongformParagraph>
           <strong>Pathize Health</strong>{" "}
-          <a href="/projects/pathize-health" className="longform-link" aria-label={"View the Pathize Health project"}>
+          <a href="/projects/pathize-health" className="longform-link" aria-label={"View project: Pathize Health"}>
             View project →
           </a>
         </LongformParagraph>

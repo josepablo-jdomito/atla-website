@@ -278,7 +278,7 @@ export default function Services() {
                       src={getOptimizedImageUrl(example.coverImage, { width: 960, quality: 84 }) || example.coverImage}
                       srcSet={buildImageSrcSet(example.coverImage, COVER_WIDTHS, { quality: 84 })}
                       sizes="40vw"
-                      alt=""
+                      alt={`${example.title} cover`}
                       width={getImageDimensions(example.coverImage)?.width}
                       height={getImageDimensions(example.coverImage)?.height}
                       decoding="async"
@@ -322,7 +322,7 @@ export default function Services() {
                   src={getOptimizedImageUrl(featured.coverImage, { width: 960, quality: 84 }) || featured.coverImage}
                   srcSet={buildImageSrcSet(featured.coverImage, COVER_WIDTHS, { quality: 84 })}
                   sizes="(min-width: 1024px) 45vw, 100vw"
-                  alt=""
+                  alt={`${featured.title} cover`}
                   width={getImageDimensions(featured.coverImage)?.width}
                   height={getImageDimensions(featured.coverImage)?.height}
                   loading="lazy"

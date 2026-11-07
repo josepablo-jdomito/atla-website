@@ -54,7 +54,7 @@ export default function Ventures() {
                     src={getOptimizedImageUrl(project.coverImage, { width: 320, quality: 82 }) || project.coverImage}
                     srcSet={buildImageSrcSet(project.coverImage, COVER_WIDTHS, { quality: 82 })}
                     sizes="160px"
-                    alt=""
+                    alt={`${item.name} cover`}
                     width={dims?.width}
                     height={dims?.height}
                     loading={index === 0 ? "eager" : "lazy"}
