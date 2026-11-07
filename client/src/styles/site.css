@@ -1140,12 +1140,18 @@ html[data-consent="open"] .site-explore { display: none; }
 .bcheck-status[data-tone="error"] { color: var(--site-error); }
 .bcheck-done { display: grid; gap: var(--space-4); max-width: 40rem; }
 .bcheck-done__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); }
-/* The free audit (/audit), a landing on the v2 system. Phone: one column with a short hero, the week as
-   a strip, three steps as rows with a small drawing, one row of marks, the form. From 1024: the hero in
-   two columns (the words, the week as the visual), three step columns, the form beside its argument. */
+/* The free audit (/audit), a landing on the v2 system, phone first (the poster composition, JP
+   2026-11-07). The hero is a poster: the title and one line at the top, the Inspector large running
+   off the right edge and the bottom. Then the three steps as one scene, the four marks with their
+   awards as seals, and a short note. The week's five float as a card, the one door. */
 .audit { display: grid; gap: var(--space-9); max-width: 76rem; margin: 0 auto; }
-.audit-hero { display: grid; gap: var(--space-6); padding-top: var(--space-7); }
-.audit-hero__art { margin: 0; justify-self: center; width: min(60%, 280px); }
+.audit-hero { position: relative; display: grid; align-content: start; padding-top: var(--space-6); overflow: hidden; }
+/* The art bleeds past the page gutter: the section's box widens by the gutter and the art hangs off it. */
+.audit-hero { margin-inline: calc(-1 * var(--site-gutter)); padding-inline: var(--site-gutter); }
+.audit-hero__text { position: relative; z-index: 1; display: grid; gap: var(--space-4); justify-items: start; }
+.audit-hero__title { margin: 0; max-width: 12ch; font-family: var(--site-display); font-size: clamp(2.375rem, 10.2vw, 4.5rem); font-weight: 400; line-height: 1.02; letter-spacing: -0.015em; text-wrap: balance; }
+.audit-hero__lead { margin: 0; max-width: 24ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
+.audit-hero__art { width: 72%; max-width: 30rem; margin: calc(-1 * var(--space-5)) calc(-1 * var(--site-gutter) - 10%) 0 auto; pointer-events: none; }
 .audit-hero__art img, .audit-hero__art video { display: block; width: 100%; height: auto; }
 @media (prefers-color-scheme: dark) { .audit-hero__art img { filter: invert(1); } }
 /* A drawing: the still underneath, the looping clip of the same drawing over it when it plays. The clip
@@ -1156,26 +1162,20 @@ html[data-consent="open"] .site-explore { display: none; }
 @media (prefers-color-scheme: dark) { [data-drawing] .drawing__clip { filter: invert(1); mix-blend-mode: screen; } }
 @keyframes audit-clip-in { from { opacity: 0; } to { opacity: 1; } }
 [data-drawing][data-live] > img { visibility: hidden; }
-.audit-hero__text { display: grid; gap: 0; justify-items: start; }
-.audit-hero__lead { margin: var(--space-5) 0 0; }
-.audit-hero__action { margin: var(--space-7) 0 0; }
-.audit-hero__title { max-width: 16ch; margin: 0; }
-.audit-hero__lead { max-width: 36rem; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
-.audit-hero__action { width: 100%; }
-.audit-hero__button { text-decoration: none; }
 
-/* The three steps: a small drawing beside each line on a phone, three columns from 768. */
-.audit-how { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--site-line); }
+/* The three steps as one scene: three panels on one ground line, the drawing large, the caption under.
+   On a phone the scene slides sideways (each panel most of the screen, the next one peeking); from 768
+   the three sit side by side. */
+.audit-how { display: grid; gap: var(--space-5); }
 .audit-how__title { margin: 0; }
-.audit-steps { display: grid; margin: 0; padding: 0; list-style: none; }
-.audit-step { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-3)) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: var(--space-1) var(--space-5); align-items: start; align-content: start; padding: var(--space-5) 0; border-top: 1px solid var(--site-line); }
-.audit-step__number { grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
-.audit-step__art { grid-column: 1; grid-row: 1 / span 2; }
-.audit-step__line { grid-column: 2; grid-row: 2; }
-.audit-step__art { display: block; width: 100%; aspect-ratio: 1; }
-.audit-step__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
-@media (prefers-color-scheme: dark) { .audit-step__art img { filter: invert(1); } }
-.audit-step__line { margin: 0; max-width: 36ch; font-size: var(--t-body); line-height: var(--lh-body); text-wrap: pretty; }
+.audit-scene { display: grid; grid-auto-flow: column; grid-auto-columns: 76%; gap: var(--space-5); margin: 0 calc(-1 * var(--site-gutter)); padding: 0 var(--site-gutter); list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--site-gutter); scrollbar-width: none; }
+.audit-scene::-webkit-scrollbar { display: none; }
+.audit-scene__panel { display: grid; gap: var(--space-4); align-content: start; scroll-snap-align: start; }
+.audit-scene__art { display: block; width: 100%; aspect-ratio: 1; border-bottom: 1px solid var(--site-line); }
+.audit-scene__art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; object-position: center bottom; }
+@media (prefers-color-scheme: dark) { .audit-scene__art img { filter: invert(1); } }
+.audit-scene__caption { margin: 0; font-size: var(--t-body); line-height: var(--lh-body); text-wrap: pretty; }
+.audit-scene__number { display: block; margin-bottom: var(--space-1); font-size: var(--t-ui); font-weight: 500; color: var(--site-muted); font-variant-numeric: tabular-nums; }
 
 /* The proof: the section head, the line that says where the work comes from, then the marks on one
    grid, every wordmark at one height (two columns on a phone, four from 768). */
@@ -1183,16 +1183,15 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-proof__head { display: grid; gap: var(--space-3); }
 .audit-proof__title { margin: 0; }
 .audit-proof__line { margin: 0; max-width: 40ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-/* The ledger: one row per brand, the mark first (it says the name), what it is, the proof. Phone: the
-   mark at the left, what and the proof stacked at the right. From 768: three columns on one line. */
-.audit-ledger { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
-.audit-ledger__row { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-5)) minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--space-5); row-gap: var(--space-1); align-items: center; align-content: center; min-height: calc(var(--space-10) - var(--space-3)); padding: var(--space-4) 0; border-bottom: 1px solid var(--site-line); }
-.audit-ledger__mark { grid-column: 1; grid-row: 1 / span 2; display: block; height: calc(var(--space-5) * var(--mark-scale, 1)); width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
-.audit-ledger__what { grid-column: 2; font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-muted); }
-.audit-ledger__proof { grid-column: 2; display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-ink); }
-.audit-ledger__proof:empty { display: none; }
-.audit-ledger__proof img { display: block; width: var(--space-5); height: var(--space-5); object-fit: contain; }
-@media (prefers-color-scheme: dark) { .audit-ledger__mark { filter: invert(1); } }
+/* The four marks, large: two by two on a phone, four across from 768. The award sits on the mark's
+   corner as a seal; one line of proof under each. */
+.audit-marks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-7) var(--space-6); margin: 0; padding: 0; list-style: none; }
+.audit-marks__item { display: grid; gap: var(--space-3); justify-items: start; min-width: 0; }
+.audit-marks__mark { position: relative; display: inline-block; max-width: 100%; padding-right: var(--space-7); }
+.audit-marks__mark > img:first-child { display: block; height: calc(var(--space-6) * var(--mark-scale, 1)); width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
+.audit-marks__seal { position: absolute; top: calc(-1 * var(--space-4)); right: 0; width: var(--space-6); height: var(--space-6); object-fit: contain; }
+.audit-marks__proof { font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-muted); }
+@media (prefers-color-scheme: dark) { .audit-marks__mark > img:first-child { filter: invert(1); } }
 
 /* The week, floating (components/audit/AuditFloat.tsx, JP's pick B): a card at the bottom of the phone
    screen, bottom right from 768. The label and the live mark, the rings beside the count, the pill. */
@@ -1210,15 +1209,12 @@ html[data-consent="open"] .site-explore { display: none; }
 @keyframes audit-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 .audit-float__row { display: flex; align-items: center; gap: var(--space-3); margin: 0; min-width: 0; }
 .audit-float__rings { display: inline-flex; flex: none; gap: var(--space-1); }
+.audit-float__rings[hidden] { display: none; }
 .audit-float__ring { width: var(--space-4); height: var(--space-4); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-move) var(--site-ease); }
 .audit-float__ring[data-taken] { background: var(--site-ink); }
 .audit-float__line { min-width: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .audit-float__action { width: 100%; min-height: 48px; margin-top: var(--space-2); font-size: var(--t-body); }
 @media (min-width: 768px) {
-  .audit-ledger__row { grid-template-columns: minmax(0, 6fr) minmax(0, 4fr) minmax(0, 8fr); grid-template-rows: auto; column-gap: var(--space-6); min-height: var(--space-9); padding: var(--space-3) 0; }
-  .audit-ledger__mark, .audit-ledger__what, .audit-ledger__proof { grid-column: auto; grid-row: 1; }
-  .audit-ledger__proof:empty { display: block; }
-  .audit-ledger__mark { height: calc(var(--space-5) * var(--mark-scale, 1)); }
   .audit-float { left: auto; right: var(--space-5); bottom: var(--space-5); width: 20rem; padding: var(--space-4) var(--space-5) var(--space-4); }
   /* The rings on their own line, the count under them, so neither wraps. */
   .audit-float__row { display: grid; gap: var(--space-2); }
@@ -1228,17 +1224,14 @@ html[data-consent="open"] .site-explore { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } .audit-float__pulse { animation: none; } .audit-float__pulse::after { animation: none; opacity: 0.4; transform: none; } }
 
-/* The closing section (JP, 2026-11-07): an ink rule, the statement in the display face, one line, the
-   pill, and the three assurances in a row of hairline cells. The plain form under <noscript> keeps the
-   field look. */
-.audit-close { display: grid; gap: var(--space-5); justify-items: start; padding-top: var(--space-7); border-top: 1px solid var(--site-ink); scroll-margin-top: var(--space-8); }
+/* The close: a note. "P.S." in the display face, three short paragraphs in the reading size, nothing
+   else; the floating card is the door. The plain form under <noscript> keeps the field look. */
+.audit-close { display: grid; gap: var(--space-4); justify-items: start; padding-top: var(--space-7); border-top: 1px solid var(--site-ink); scroll-margin-top: var(--space-8); }
+.audit-close__label { margin: 0; font-family: var(--site-display); font-size: var(--t-h1); font-weight: 400; line-height: var(--lh-tight); letter-spacing: -0.01em; }
+.audit-close__note { display: grid; gap: var(--space-3); max-width: 34ch; }
+.audit-close__note p { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); text-wrap: pretty; }
 .audit-close__title { margin: 0; font-family: var(--site-display); font-size: var(--t-display); font-weight: 400; line-height: var(--lh-tight); letter-spacing: -0.01em; max-width: 14ch; text-wrap: balance; }
 .audit-close__title:focus { outline: none; }
-.audit-close__line { margin: calc(-1 * var(--space-2)) 0 0; max-width: 36ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-.audit-close__action { margin: var(--space-2) 0 0; width: 100%; }
-.audit-close__button { width: 100%; min-height: var(--space-9); font-size: var(--t-h3); }
-.audit-close__assurances { display: grid; gap: 0; width: 100%; margin: var(--space-4) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
-.audit-close__assurances li { padding: var(--space-4) 0; border-bottom: 1px solid var(--site-line); font-size: var(--t-body); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
 .audit-form--plain { display: grid; gap: var(--space-6); width: 100%; max-width: 40rem; margin-top: var(--space-6); }
 .audit-form--plain .brief-input { min-height: var(--space-8); font-size: var(--t-h3); line-height: var(--lh-ui); }
 /* The one filled button on the site: the free audit's pill, the same everywhere (JP, 2026-11-07). */
@@ -1353,9 +1346,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit[data-motion] .audit-float__ring[data-taken] { animation: audit-pop var(--d-move) var(--site-ease); }
 .audit[data-motion] [data-reveal] { opacity: 0; transform: translateY(var(--space-4)); transition: opacity 500ms var(--site-ease), transform 500ms var(--site-ease); transition-delay: calc(var(--i, 0) * 90ms); }
 .audit[data-motion] [data-reveal][data-in] { opacity: 1; transform: none; }
-.audit[data-motion] .audit-step__art { transition: transform var(--d-move) var(--site-ease); }
 @media (hover: hover) and (pointer: fine) {
-  .audit[data-motion] .audit-step:hover .audit-step__art { transform: translateY(calc(-1 * var(--space-1))); }
 }
 
 /* The landing header on a phone: the wordmark left, the one action right; centered from 768 like the site. */
@@ -1367,35 +1358,26 @@ html[data-consent="open"] .site-explore { display: none; }
   .site-header--landing .site-header__bar { grid-template-columns: 1fr auto 1fr; }
   .site-header--landing .site-header__left { display: block; }
   .site-header--landing .site-header__brand { justify-self: center; }
-  .audit-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
-  .audit-step { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; align-items: start; gap: var(--space-4); padding: 0; border-top: 0; }
-  .audit-step__number { grid-column: 1; grid-row: 1; }
-  .audit-step__art { grid-column: 1; grid-row: 2; }
-  .audit-step__line { grid-column: 1; grid-row: 3; }
-  .audit-step__art { max-width: 300px; }
+  .audit-scene { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); margin: 0; padding: 0; overflow: visible; }
+  .audit-marks { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
+  .audit-hero { min-height: 0; padding-top: var(--space-8); padding-bottom: var(--space-6); }
+  .audit-hero__art { position: absolute; right: -6%; bottom: -8%; width: 46%; max-width: 34rem; margin: 0; }
+  .audit-hero__title { max-width: 12ch; }
   .audit-submit { width: auto; min-width: 16rem; }
   .audit-submit--compact { min-width: 0; }
-  .audit-close__action { width: auto; }
-  .audit-close__button { width: auto; min-width: 20rem; padding: 0 var(--space-8); }
-  .audit-close__assurances { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--space-7); margin-top: var(--space-6); }
-  .audit-close__assurances li { padding: var(--space-5) 0 0; border-bottom: 0; font-size: var(--t-small); }
-  .audit-hero__action { width: auto; }
-  .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-7); align-items: start; }
-  .audit-hero__art { width: min(100%, 320px); justify-self: end; }
 }
 @media (min-width: 1024px) {
   .audit { gap: var(--space-10); }
-  .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: start; padding-top: var(--space-9); }
-  .audit-hero__title { font-size: var(--t-display); }
-  .audit-hero__lead { font-size: var(--t-h3); font-weight: 400; }
-  .audit-hero__art { width: min(100%, 420px); justify-self: end; }
-  .audit-hero__title { max-width: 14ch; }
+  .audit-hero { min-height: min(calc(100svh - 64px), 46rem); padding-top: var(--space-9); align-content: center; }
+  .audit-hero__title { max-width: 13ch; font-size: clamp(3.5rem, 6.2vw, 6rem); }
+  .audit-hero__lead { font-size: var(--t-h3); font-weight: 400; max-width: 26ch; }
+  .audit-hero__art { right: 0; bottom: -4%; width: 40%; max-width: 36rem; }
   .audit-how { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); }
-  .audit-steps { gap: var(--space-7); }
+  .audit-scene { gap: var(--space-7); }
   .audit-proof { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
+  .audit-close { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
 }
 @media (min-width: 1280px) {
-  .audit-hero__title { max-width: 18ch; }
 }
 
 @media (min-width: 1024px) {

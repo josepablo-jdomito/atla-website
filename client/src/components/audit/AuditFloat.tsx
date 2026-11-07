@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from "react";
+import type { RefObject } from "react";
 import type { AuditStatus } from "@shared/audit";
 import { AUDIT_FORM_ID, openAuditFlow } from "@/components/audit/openFlow";
 import { siteCopy } from "@/content/siteCopy";
@@ -6,9 +6,8 @@ import { siteCopy } from "@/content/siteCopy";
 /**
  * The week, floating (JP, 2026-11-07, his pick B): a card at the bottom of the phone screen, bottom
  * right from 768. "This week" and the live mark on top, the five rings beside the count in words, the
- * one pill under. It is the only place the week lives. It shows once the hero's pill is above the
- * viewport and goes while the closing section is on screen (that one has the pill) or before the
- * first read; the page hides it once the request is sent.
+ * one pill under. It is the only place the week lives and the one door to the flow (the poster
+ * composition, JP 2026-11-07): there from the first read, gone once the request is sent.
  */
 
 const copy = siteCopy.audit.float;
@@ -16,38 +15,7 @@ const week = siteCopy.audit.week;
 const WORDS = ["zero", "one", "two", "three", "four", "five"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function AuditFloat({ status, root }: { status: AuditStatus | null; root: RefObject<HTMLElement | null> }) {
-  const [pastHero, setPastHero] = useState(false);
-  const [closeNear, setCloseNear] = useState(false);
-
-  // Read from the boxes on every scroll: shown once the hero's pill is above the viewport, hidden once
-  // the closing section reaches the lower fifth.
-  useEffect(() => {
-    const node = root.current;
-    if (!node) return;
-    let frame = 0;
-    const check = () => {
-      frame = 0;
-      const hero = node.querySelector(".audit-hero__action") ?? node.querySelector(".audit-hero");
-      const close = document.getElementById(AUDIT_FORM_ID);
-      if (!hero || !close) return;
-      const height = window.innerHeight || document.documentElement.clientHeight;
-      setPastHero(hero.getBoundingClientRect().bottom < 0);
-      setCloseNear(close.getBoundingClientRect().top < height * 0.8);
-    };
-    const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(check);
-    };
-    check();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, [root]);
-
+export function AuditFloat({ status }: { status: AuditStatus | null; root?: RefObject<HTMLElement | null> }) {
   const total = status?.cap ?? 5;
   const taken = status?.taken ?? 0;
   const left = Math.max(0, total - taken);
@@ -56,11 +24,12 @@ export function AuditFloat({ status, root }: { status: AuditStatus | null; root:
     : status.week === "full" || left === 0
       ? copy.full
       : taken === 0
-        ? week.resets
+        ? copy.open
         : left === 1
           ? copy.lastOne
           : cap(copy.left.replace("{left}", WORDS[left] ?? String(left)));
-  const shown = Boolean(status) && pastHero && !closeNear;
+  // The one door on the page, there from the first read of the week.
+  const shown = Boolean(status);
 
   return (
     <div className="audit-float" data-shown={shown ? "" : undefined} aria-hidden={shown ? undefined : true}>
@@ -72,7 +41,8 @@ export function AuditFloat({ status, root }: { status: AuditStatus | null; root:
         </span>
       </p>
       <p className="audit-float__row">
-        <span className="audit-float__rings" aria-hidden="true">
+        {/* No rings while none is taken: five empty rings read as no demand (CRO review). */}
+        <span className="audit-float__rings" aria-hidden="true" hidden={taken === 0}>
           {Array.from({ length: total }, (_, index) => (
             <span key={index} className="audit-float__ring" data-taken={index < taken ? "" : undefined} />
           ))}

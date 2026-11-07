@@ -105,38 +105,35 @@ export default function Audit() {
       <div ref={root} className="site-page-body audit">
         <section className="audit-hero" aria-labelledby={`${baseId}-title`}>
           <div className="audit-hero__text">
-            <h1 id={`${baseId}-title`} className="page-intro__title audit-hero__title">
+            <h1 id={`${baseId}-title`} className="audit-hero__title">
               {copy.title}
             </h1>
             <p className="audit-hero__lead">{copy.lead}</p>
-            {done ? null : (
-              <p className="audit-hero__action">
-                <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-hero__button" onClick={openAuditFlow}>
-                  {copy.cta}
-                </a>
-              </p>
-            )}
           </div>
-          <figure className="audit-hero__art">
-            <Drawing src={copy.heroArt.src} clip={copy.heroArt.clip} alt={copy.heroArt.alt} width={copy.heroArt.width} height={copy.heroArt.height} eager />
+          {/* The poster: the Inspector large, running off the right edge and the bottom. */}
+          <figure className="audit-hero__art" aria-hidden="true">
+            <Drawing src={copy.heroArt.src} clip={copy.heroArt.clip} alt="" width={copy.heroArt.width} height={copy.heroArt.height} eager />
           </figure>
         </section>
 
         {done ? null : <AuditFloat status={slots} root={root} />}
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
-          <h2 id={`${baseId}-how`} className="site-section-title audit-how__title" data-reveal>
+          <h2 id={`${baseId}-how`} className="site-section-title audit-how__title">
             {copy.howTitle}
           </h2>
-          <ol className="audit-steps">
+          {/* One scene: the three drawings on one ground line, a caption under each; on a phone it slides. */}
+          <ol className="audit-scene" data-reveal>
             {copy.steps.map((step, index) => (
-              <li key={step.src} className="audit-step" data-reveal style={{ ["--i" as string]: index }}>
-                {/* Step numbers, the one place on the site with digits (JP, 2026-11-07: "agrega números al how it works"). */}
-                <span className="site-label audit-step__number" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <Drawing className="audit-step__art" src={step.src} clip={step.clip} alt={step.alt} width={560} height={560} eager={index < 3} />
-                <p className="audit-step__line">{step.line}</p>
+              <li key={step.src} className="audit-scene__panel" style={{ ["--i" as string]: index }}>
+                <Drawing className="audit-scene__art" src={step.src} clip={step.clip} alt={step.alt} width={560} height={560} eager={index < 3} />
+                <p className="audit-scene__caption">
+                  {/* Step numbers, the one place on the site with digits (JP, 2026-11-07: "agrega números al how it works"). */}
+                  <span className="audit-scene__number" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  {step.line}
+                </p>
               </li>
             ))}
           </ol>
@@ -149,16 +146,14 @@ export default function Audit() {
             </h2>
             <p className="audit-proof__line">{copy.proofLine}</p>
           </div>
-          <ul className="audit-ledger">
+          <ul className="audit-marks">
             {copy.proofRows.map((row) => (
-              <li key={row.name} className="audit-ledger__row" style={{ ["--mark-scale" as string]: row.scale }}>
-                {/* The mark says the name (JP, 2026-11-07: no name in text beside its own logo). */}
-                <img className="audit-ledger__mark" src={row.mark} alt={row.name} width={row.width} height={row.height} loading="lazy" decoding="async" />
-                <span className="audit-ledger__what">{row.what}</span>
-                <span className="audit-ledger__proof">
-                  {row.badge ? <img src={row.badge} alt="" width={24} height={24} loading="lazy" decoding="async" /> : null}
-                  {row.proof}
+              <li key={row.name} className="audit-marks__item" style={{ ["--mark-scale" as string]: row.scale }}>
+                <span className="audit-marks__mark">
+                  <img src={row.mark} alt={row.name} width={row.width} height={row.height} loading="lazy" decoding="async" />
+                  {row.badge ? <img className="audit-marks__seal" src={row.badge} alt="" width={40} height={40} loading="lazy" decoding="async" /> : null}
                 </span>
+                <span className="audit-marks__proof">{row.proof}</span>
               </li>
             ))}
           </ul>
@@ -202,20 +197,14 @@ export default function Audit() {
             </div>
           ) : (
             <>
-              <h2 id={`${baseId}-close`} className="audit-close__title">
-                {copy.closeTitle}
+              <h2 id={`${baseId}-close`} className="audit-close__label">
+                {copy.psLabel}
               </h2>
-              <p className="audit-close__line">{copy.closeLine}</p>
-              <p className="audit-close__action">
-                <a href={`#${AUDIT_FORM_ID}-form`} className="audit-submit audit-close__button" onClick={openAuditFlow}>
-                  {copy.cta}
-                </a>
-              </p>
-              <ul className="audit-close__assurances">
-                {copy.assurances.map((line) => (
-                  <li key={line}>{line}</li>
+              <div className="audit-close__note">
+                {copy.ps.map((line) => (
+                  <p key={line}>{line}</p>
                 ))}
-              </ul>
+              </div>
               {/* Without scripts the pill cannot open the flow: the plain form posts to /api/audit/form instead. */}
               <noscript>
                 <form id={`${AUDIT_FORM_ID}-form`} className="audit-form audit-form--plain" method="post" action="/api/audit/form">

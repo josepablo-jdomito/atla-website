@@ -458,15 +458,15 @@ export const siteCopy = {
     // Horowitz). JP, 2026-11-07: only the four with a proof; the rest went.
     proofLine: "From VC-backed startups to a few of the best hotels and restaurants in the world.",
     proofRows: [
-      { name: "Casa Las Tortugas", what: "Hotel", proof: "MICHELIN Key", badge: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", width: 908, height: 202, scale: 1.15 },
-      { name: "Acre", what: "Restaurant", proof: "MICHELIN Green Star", badge: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", width: 1762, height: 600, scale: 1.1 },
+      { name: "Casa Las Tortugas", what: "Hotel", proof: "MICHELIN Key hotel", badge: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", width: 908, height: 202, scale: 1.15 },
+      { name: "Acre", what: "Restaurant", proof: "MICHELIN Green Star restaurant", badge: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", width: 1762, height: 600, scale: 1.1 },
       { name: "Ulysses", what: "Startup", proof: "Backed by Andreessen Horowitz", mark: "/logos-v2/ulysses.png", width: 1400, height: 161, scale: 0.72 },
       { name: "Anything", what: "Startup", proof: "Backed by Bessemer", mark: "/logos-v2/anything.svg", width: 971, height: 253, scale: 1 },
     ] as { name: string; what: string; proof: string; badge?: string; mark: string; width: number; height: number; scale: number }[],
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
-      open: "Five spots open this week.",
+      open: "Five a week, every one by me.",
       left: "{left} of five spots left.",
       lastOne: "One spot left this week.",
       full: "This week's five are taken. Yours goes in line for next week.",
@@ -474,6 +474,14 @@ export const siteCopy = {
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
     // assurances in a row. The plain form stays under <noscript> for a browser without scripts.
+    // The close (JP, 2026-11-07, the poster composition): a short note in his voice. No button here; the
+    // floating card is the one door.
+    psLabel: "P.S.",
+    ps: [
+      "The audit is only for you. I don't post it, and your brand doesn't end up in a reel.",
+      "A few of you will want to work with Atla later. Most won't, and that's all right.",
+      "Five a week, free, by email. You don't need a call or to prepare anything.",
+    ],
     closeTitle: "Send me your brand.",
     closeLine: "Five a week, free, and it comes by email as soon as it's ready.",
     // The flow's first two screens: the brand, then the name and the email.

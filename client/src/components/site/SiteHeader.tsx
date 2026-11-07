@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { AtlaWordmark } from "@/components/atla/AtlaMarks";
 import { siteCopy } from "@/content/siteCopy";
-import { openAuditFlow } from "@/components/audit/openFlow";
 import { focusablesIn, trapTab } from "@/components/site/focusTrap";
 import { useSiteProjects } from "@/components/site/siteProjects";
 import { menuThumbs } from "@/components/site/menuThumbs";
@@ -162,11 +161,8 @@ export function SiteHeader() {
           <Link href="/" className="site-header__brand" aria-label={header.homeLabel}>
             <AtlaWordmark title="Atla" style={{ width: "100%", height: "auto" }} />
           </Link>
-          <div className="site-header__right">
-            <a href={`#${landing.target}`} className="audit-submit audit-submit--compact site-header__cta" onClick={openAuditFlow}>
-              {landing.label}
-            </a>
-          </div>
+          {/* One door on the landing: the floating week card (JP, 2026-11-07). The header is the wordmark. */}
+          <div className="site-header__right" />
         </nav>
       </header>
     );
