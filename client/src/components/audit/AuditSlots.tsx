@@ -40,7 +40,9 @@ export function AuditSlots({ status, updatedAt }: { status: AuditStatus | null; 
     ? copy.neutral
     : status.week === "full" || left === 0
       ? copy.full
-      : left === 1
+      : taken === 0
+        ? copy.empty
+        : left === 1
         ? copy.lastOne.replace("{cap}", inWords(total))
         : cap(copy.left.replace("{left}", inWords(left)).replace("{cap}", inWords(total)));
 

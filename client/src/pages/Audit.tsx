@@ -125,6 +125,7 @@ export default function Audit() {
       <SeoHead title={formatMetaTitle(copy.metaTitle, "Atla")} description={copy.metaDescription} pathname="/audit" />
       <div className="site-page-body audit">
         <header className="page-intro audit-intro">
+          <p className="site-label audit-intro__eyebrow">{copy.eyebrow}</p>
           <h1 id={`${baseId}-title`} className="page-intro__title audit-intro__title">
             {copy.title}
           </h1>
@@ -173,6 +174,7 @@ export default function Audit() {
                 <h2 id={`${baseId}-ask`} className="site-section-title">
                   {copy.formTitle}
                 </h2>
+                <p className="audit-fit">{copy.fit}</p>
                 <form className="audit-form" onSubmit={submit} noValidate>
                   <div className="brief-fields audit-fields">
                     {FIELDS.map((field) => {
@@ -222,10 +224,6 @@ export default function Audit() {
                     />
                   </div>
 
-                  <p className="audit-terms">{copy.terms}</p>
-                  <p className="brief-privacy bcheck-privacy">
-                    {copy.privacyNotice} <Link href="/privacy">{copy.privacyLink}</Link>
-                  </p>
                   <div className="brief-actions">
                     <button type="submit" className="site-action" disabled={sending}>
                       {sending ? copy.sending : status === "failed" ? copy.retry : copy.submit}
@@ -238,6 +236,14 @@ export default function Audit() {
                       {message}
                     </p>
                   </div>
+                  <ul className="audit-assurances">
+                    {copy.assurances.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                  <p className="brief-privacy bcheck-privacy">
+                    {copy.privacyNotice} <Link href="/privacy">{copy.privacyLink}</Link>
+                  </p>
                 </form>
               </>
             )}
