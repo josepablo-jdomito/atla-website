@@ -30,7 +30,9 @@ export function Drawing({
 }) {
   const [motion, setMotion] = useState(() => initialClientState(false, () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches));
   const [failed, setFailed] = useState(false);
+  const [near, setNear] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
+  const frame = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -40,17 +42,49 @@ export function Drawing({
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  // Browsers may refuse autoplay or the format: the still is already underneath, so the clip just leaves.
+  // The clip is fetched only once the drawing is near the viewport, so a page with four clips does
+  // not load them all on arrival.
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || !motion || near) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setNear(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNear(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "25% 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [motion, near]);
+
+  // A browser may pause video in a background tab or refuse autoplay for a moment: that is not a
+  // failure, so the clip stays and play is asked again when the tab shows. Only a media error
+  // (no playable source) leaves the still alone.
   useEffect(() => {
     const el = video.current;
     if (!el) return;
-    const play = el.play();
-    if (play && typeof play.catch === "function") play.catch(() => setFailed(true));
-  }, [motion, clip]);
+    const ask = () => {
+      const play = el.play();
+      if (play && typeof play.catch === "function") play.catch(() => {});
+    };
+    ask();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") ask();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [motion, near, clip]);
 
-  const showClip = Boolean(clip) && motion && !failed;
+  const showClip = Boolean(clip) && motion && near && !failed;
   return (
-    <span className={className} data-drawing="" data-live={showClip ? "" : undefined}>
+    <span ref={frame} className={className} data-drawing="" data-live={showClip ? "" : undefined}>
       <img src={src} alt={alt} width={width} height={height} loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : undefined} />
       {showClip ? (
         <video
