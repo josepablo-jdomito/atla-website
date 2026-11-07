@@ -1,8 +1,10 @@
 # Journal cleanup card (2026-11-07)
 
+Round 2 applied the review: all minor findings and four of the five optional ones (the idiom finding was left as the reviewer advised), the repeated "serious budget" phrasing varied across four articles, and every link into the pricing article re-anchored ("guide to branding costs", "what drives the cost of branding") with the same markDef targets. Full rescan of all 13 entries: zero hits; block, span, mark and markDef structure checked key for key.
+
 Decision: nothing here is applied. Waiting for JP's «mándalo».
 
-Source: Sanity dvufm78f / production, 13 published `journalArticle` documents (`articles.json`). Patches: `patches.json` (12 articles, full new value per changed field, every `_key`, mark and `_type` kept; verified key-for-key against the export). Rescanned after the edits: zero digits (other than years), counts, dashes, banned words, MK+2 or WeLoveDaily left in the 12 patched articles.
+Source: Sanity dvufm78f / production, 13 published `journalArticle` documents (`articles.json`). Patches: `patches.json` (13 entries, 12 cleanups plus the full pricing rewrite, full new value per changed field, every `_key`, mark and `_type` kept; verified key-for-key against the export). Rescanned after the edits: zero digits (other than years), counts, dashes, banned words, MK+2 or WeLoveDaily left in the 12 patched articles.
 
 Hits found, all 13 articles: 392 (digits 225, spelled-out counts 119, em/en dashes 36, banned words 12, MK+2 0, WeLoveDaily 0).
 Banned words that appeared: landscape or landscapes 8, journey 3, robust 1. No other banned word appears.
@@ -15,7 +17,7 @@ Banned words that appeared: landscape or landscapes 8, journey 3, robust 1. No o
 | brand-audit-template | 51 (digit 31, spelled 20) | Section numbers and "0 to 2" removed (score words instead); counts of people, assets, competitors, touchpoints generalized; excerpt and seoDescription fixed | "one score from 0 to 2 per section" / "a score per section" |
 | brand-strategy-vs-brand-identity | 20 (spelled 12, digit 5, dash 2, banned 1) | Counts, pixel sizes, dash, price range removed | "$25K-$80K+ investment depending on scope" / "a serious investment, sized to scope" |
 | hospitality-branding-guide | 30 (digit 21, spelled 8, banned 1) | Numbered mistakes and phases de-numbered; week and month ranges removed; "guest journey" to "guest experience" | "This phase takes 3-6 weeks." / "Give this phase real time." |
-| how-much-does-branding-cost | 85 (digit 53, dash 31, spelled 1) | NOT patched, see recommendation | n/a |
+| how-much-does-branding-cost | 85 (digit 53, dash 31, spelled 1) | REWRITTEN as a no-prices piece on the same slug (JP's decision): new title, seoTitle, seoDescription, excerpt and full body (about 800 words). Covers what drives cost, what each service should include, how to read a proposal; points to Atla's brief page for ranges. Rescanned: zero hits. | "Branding costs anywhere from $5,000 to $150,000+" / "Branding costs what the work requires, and the work depends on your company." |
 | how-to-brief-a-branding-agency | 42 (digit 21, spelled 20, banned 1) | Headings de-numbered; budgets, ages, page counts, "three to five" removed; title loses "Three Months" | "Nine out of ten marketers admit" / "Most marketers admit" |
 | how-to-select-a-branding-agency | 28 (digit 25, spelled 3) | Step and filter numbers dropped; price and timeline ranges removed; B2B/B2C spelled out | "runs $25,000-$150,000+ depending on scope" / "is a serious investment" |
 | success-addiction | 4 (digit 2, spelled 2) | "5 steps", "four hours", "by 40", "just one thing" reworked | "No \"5 steps to overcoming success addiction.\"" / "No checklist for overcoming success addiction." |
@@ -26,27 +28,9 @@ Banned words that appeared: landscape or landscapes 8, journey 3, robust 1. No o
 Kept on purpose: years (2012, 2019, 2026) in text, titles and seoTitles; Series A and B and PMF (funding terms, not counts).
 
 Watch-outs for JP
-- Several articles link to `how-much-does-branding-cost` ("branding pricing guide", "complete pricing guide", "our breakdown of branding costs", and the "$30K-$100K+" link in the audit framework). The link text was reworded to match, but the targets still work only if that article stays published. Another reason to rewrite it rather than unpublish it.
+- The links into the pricing article use /blog/ in some articles and /journal/ in others (pre-existing, unchanged).
 - Internal SEO notes (`competitorGap`, `targetQuery`) had no hits and were not touched. `readingTime` is a number field, not public copy, and was not touched.
 
 ## Pricing article: how-much-does-branding-cost
 
-Recommendation: rewrite it as a no-prices piece on the same slug. It keeps the URL, the search intent ("how much does branding cost") and the inbound links from three other articles; unpublishing loses all three, and keeping it breaks the site rule on every table row.
-
-Why not keep: 53 digit hits and 31 dash hits, nearly all of them price tables and ranges, so no edit short of a rewrite removes them.
-
-Working title: How Much Does Branding Cost in 2026? What Drives the Number
-
-Outline
-1. The honest answer: branding is priced by scope and seniority, and we do not publish numbers because a number without a brief misleads.
-2. What moves the cost: the depth of strategy, the size of the identity system, naming and its legal screening, web design and build, the seniority of the people deciding.
-3. What each service includes: strategy, identity, naming, web. For each: what is in it, what is often missing, the question to ask in a proposal.
-4. Why a cheap quote is expensive: a logo sold as "branding", skipped screening, templates dressed as systems.
-5. How to read a proposal: deliverables against hours, who is in the room, what "web design" actually covers.
-6. How to frame the budget: against the business outcome, not the line item. Three questions before you talk to any agency (the problem, the assets you need, the impact).
-7. Close: what to bring to a first conversation, with a link to the contact page.
-
-First paragraph
-Most agencies keep their pricing vague until you are on a discovery call. We do not publish numbers either, and here is the reason: branding is priced by scope and by the people in the room, and a figure without your brief attached tells you nothing. What we can do is show you what moves the cost, what each service should include, and how to read a proposal so you know what you are paying for.
-
-(Checked against the site rules: no digits, no spelled-out counts, no dashes, no banned words, no prices.)
+JP decided: rewrite on the same slug. The rewrite is entry 13 in `patches.json` (title, seoTitle, seoDescription, excerpt, body). The links into it from the other articles stay and now promise what the article is, not prices.
