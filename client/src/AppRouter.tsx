@@ -1,6 +1,21 @@
 import React from "react";
 import type { ComponentType } from "react";
-import { Redirect, Route, Switch } from "wouter";
+import { Redirect, Route, Switch, useLocation } from "wouter";
+
+/**
+ * While the free audit ships ahead of the site (JP, 2026-11-07): audit.atla.design serves only /audit.
+ * Vercel redirects every other request there (vercel.json); this covers the client-side route changes
+ * the server never sees (the wordmark, "See the work", the privacy link).
+ */
+const AUDIT_HOST = "audit.atla.design";
+function useAuditHostGuard() {
+  const [location] = useLocation();
+  React.useEffect(() => {
+    if (window.location.hostname !== AUDIT_HOST) return;
+    if (location === "/audit" || location.startsWith("/audit?")) return;
+    window.location.replace(`https://www.atla.design${location}${window.location.search}`);
+  }, [location]);
+}
 
 type RouteComponent = ComponentType<any>;
 
@@ -53,6 +68,7 @@ export function AppRouter({
   BrandCheck,
   Audit,
 }: AppRouterProps) {
+  useAuditHostGuard();
   return (
     <Switch>
       <Route path="/" component={Home} />
