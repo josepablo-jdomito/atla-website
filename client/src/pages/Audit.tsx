@@ -7,6 +7,7 @@ import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
 import { fetchAuditStatus, readAuditAttribution, submitAudit, submitAuditFeedback } from "@/components/audit/auditApi";
 import { AuditSlots } from "@/components/audit/AuditSlots";
 import { useAuditMotion } from "@/components/audit/useMotion";
+import { Drawing } from "@/components/audit/Drawing";
 import { siteCopy } from "@/content/siteCopy";
 import { trackAuditComplete, trackAuditFormStart, trackAuditSubmitError, trackAuditView } from "@/lib/ga";
 
@@ -35,7 +36,10 @@ const FIELDS = [
 
 const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
 const FIELD_ORDER: Field[] = ["site", "name", "email"];
-const PROOF_MARKS = siteCopy.logos.items.slice(0, 6);
+// Anything first (the venture-backed one in the line), then the marks that read best small.
+const PROOF_MARKS = ["Anything", "Temakase", "Rústico", "Persona", "Sexto Abismo"]
+  .map((name) => siteCopy.logos.items.find((item) => item.name === name))
+  .filter((item): item is (typeof siteCopy.logos.items)[number] => Boolean(item));
 
 function newSubmissionId(): string {
   try {
@@ -192,14 +196,7 @@ export default function Audit() {
             )}
           </div>
           <figure className="audit-hero__art">
-            <img
-              src={copy.heroArt.src}
-              alt={copy.heroArt.alt}
-              width={copy.heroArt.width}
-              height={copy.heroArt.height}
-              decoding="async"
-              fetchPriority="high"
-            />
+            <Drawing src={copy.heroArt.src} clip={copy.heroArt.clip} alt={copy.heroArt.alt} width={copy.heroArt.width} height={copy.heroArt.height} eager />
           </figure>
         </section>
 
@@ -216,33 +213,40 @@ export default function Audit() {
                 <span className="site-label audit-step__number" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <img
-                  className="audit-step__art"
-                  src={step.src}
-                  alt={step.alt}
-                  width={560}
-                  height={560}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                />
+                <Drawing className="audit-step__art" src={step.src} clip={step.clip} alt={step.alt} width={560} height={560} eager={index === 0} />
                 <p className="audit-step__line">{step.line}</p>
               </li>
             ))}
           </ol>
         </section>
 
-        {PROOF_MARKS.length ? (
-          <section className="audit-proof" aria-label={copy.proofLabel} data-reveal>
+        <section className="audit-proof" aria-label={copy.proofLabel} data-reveal>
+          <div className="audit-proof__head">
             <p className="site-label audit-proof__label">{copy.proofLabel}</p>
-            <ul className="audit-proof__marks">
-              {PROOF_MARKS.map((item) => (
-                <li key={item.name} className="audit-proof__mark">
-                  <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+            <p className="audit-proof__line">{copy.proofLine}</p>
+          </div>
+          <ul className="audit-proof__marks">
+            {copy.proofAwards.map((item) => (
+              <li key={item.name} className="audit-proof__award">
+                <img src={item.src} alt={item.award} width={40} height={40} loading="lazy" decoding="async" />
+                <span className="audit-proof__award-text">
+                  <span className="audit-proof__award-name">{item.name}</span>
+                  <span className="audit-proof__award-what">{item.award}</span>
+                </span>
+              </li>
+            ))}
+            {copy.proofNames.map((name) => (
+              <li key={name} className="audit-proof__name">
+                {name}
+              </li>
+            ))}
+            {PROOF_MARKS.map((item) => (
+              <li key={item.name} className="audit-proof__mark">
+                <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`} data-reveal>
             {finished ? (

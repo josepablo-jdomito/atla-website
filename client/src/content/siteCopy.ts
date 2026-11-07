@@ -438,16 +438,26 @@ export const siteCopy = {
     },
     // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
     // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
-    heroArt: { src: "/audit/landing/hero.webp", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 740, height: 1000 },
+    heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 740, height: 1000 },
     howTitle: "How it works",
     steps: [
-      { src: "/audit/landing/step-1.webp", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
+      { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
+      { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
+      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
     proofLabel: "Brands I've worked with",
+    // The social proof under the steps (JP, 2026-11-07: "que se vea de que este cabrón es la verga"). Every claim
+    // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
+    // (Acre's restaurant), Anything's series A (Bessemer, Footwork), Ulysses's series A (Andreessen Horowitz).
+    proofLine: "From a MICHELIN Key hotel and a MICHELIN Green Star restaurant to startups backed by Andreessen Horowitz and Bessemer.",
+    proofAwards: [
+      { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp" },
+      { name: "Acre", award: "MICHELIN Green Star", src: "/hospitality/michelin-green-star.svg" },
+    ],
+    // Marks without a logo file yet are set in type (Ulysses's wordmark is pending).
+    proofNames: ["Ulysses"],
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
