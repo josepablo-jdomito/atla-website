@@ -35,17 +35,18 @@
       "description": "Anything, first called Create, is an AI app builder: you type what you want and it comes back as a working product. The company came to Atla with a launch date on the calendar and a brand to rebuild before it.\n\nThe company had been underestimated, and bigger rivals took the attention.",
       "stage": "Rebrand"
     },
-    "hold": "HOLD: no written portfolio approval on file (contract clause 5.1); ask Zaria. City unconfirmed (Sanity: New York; sheet: San Francisco).",
+    "hold": null,
     "note": "HOLD: no written portfolio approval on file (contract clause 5.1); ask Zaria. City unconfirmed (Sanity: New York; sheet: San Francisco)."
   },
   {
     "_id": "d608896b-7752-4648-92b6-3548117c4ca3",
     "slug": "arc-studio",
     "set": {
-      "description": "Arc Studio was planned as a boutique Pilates and recovery studio in Abu Dhabi, built around calm. Its founders came to Atla before opening, with no identity yet.\n\nThe founders were opening infrared-heated Pilates, sculpt, barre and mat classes, with saunas and cold plunges. The interior was decided, oak and curves and green, and the name was chosen, Arc, for movement, growth and story."
+      "description": "Arc Studio was planned as a boutique Pilates and recovery studio in Abu Dhabi, built around calm. Its founders came to Atla before opening, with no identity yet.\n\nThe founders were opening infrared-heated Pilates, sculpt, barre and mat classes, with saunas and cold plunges. The interior was decided, oak and curves and green, and the name was chosen, Arc, for movement, growth and story.",
+      "featured": false
     },
-    "hold": "HOLD: no evidence the studio opened; an internal review suggested cutting it. JP decides featured or not.",
-    "note": "HOLD: no evidence the studio opened; an internal review suggested cutting it. JP decides featured or not."
+    "hold": null,
+    "note": "HOLD: no evidence the studio opened; an internal review suggested cutting it. JP decides featured or not. JP 2026-11-07: off featured."
   },
   {
     "_id": "edde4d25-959a-4d5b-be8c-c852ad78f108",
@@ -200,9 +201,9 @@
     "_id": "4e219bd1-d773-4c93-8ba1-bf4b1ef41d87",
     "slug": "sexto-abismo",
     "set": {
-      "description": "Sexto Abismo is a gin from San Luis Potosí, named after the Sótano de las Golondrinas, one of the largest abysses on earth. José Pablo started it in 2021 with partners from San Luis Potosí and built its brand himself.\n\nThere was no outside client and no brief, only a bottle to fill and a region to put on the label."
+      "description": "Sexto Abismo is a gin from San Luis Potosí, named after the Sótano de las Golondrinas, one of the largest abysses on earth. José Pablo started it in 2021 with partners from San Luis Potosí and built its brand himself.\n\nMost gin borrows its look from Britain. Mexico has its own mystique, and Mexican surrealism offered more material than one label could hold. The hard part was choosing. The story on the bottle had to matter as much as the liquid inside it.\n\nThe icon is a swallow taking flight from an abyss under an eclipse, a sign of passage from one state to another. The wordmark is a custom organic letterform whose letters change size as they go. The label tells a story: a stranger crosses an abyss, meets La Felina and El Lacayo, drinks something clear and wakes in another world, where the characters watch him.\n\nThe name and the story. A brand book, the bottle label and the shipping box. Posters, stickers, postcards, a menu, a billboard, a mural, tent cards for the house cocktails, a trailer and a book for bartenders. In 2025, Atla added a content strategy and a refresh deck for the brand.\n\nThe gin went on sale in Mexico in 2022. In 2024 the Beverage Testing Institute gave it a Silver Medal and rated it Highly Recommended."
     },
-    "hold": "HOLD: framing as José Pablo's own gin; JP decides.",
+    "hold": null,
     "note": "HOLD: framing as José Pablo's own gin; JP decides."
   },
   {
@@ -222,7 +223,7 @@
       "description": "Tequila Unido is a tequila built alone by Carlos Alvarado, a Texan with roots in Jalisco. He came to Atla with a symbol, a bottle and a blue label; the brand had to be clarified and kept.\n\nCarlos calls himself \"tejano jalisciense.\" He registered the name, partnered with a family distillery in Arandas founded in 1915, and carried samples by bus to Dallas distributors.",
       "stage": "Rebrand"
     },
-    "hold": "HOLD: the agreement requires written portfolio approval and none was found; ask Carlos. The page is already live.",
+    "hold": null,
     "note": "HOLD: the agreement requires written portfolio approval and none was found; ask Carlos. The page is already live."
   },
   {
