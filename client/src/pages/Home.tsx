@@ -47,6 +47,7 @@ export default function Home() {
         image={featured[0]?.coverImage}
         structuredData={structuredData}
       />
+      <h1 className="sr-only">Atla, a strategy-led branding studio. Selected work.</h1>
       <WorkWall />
     </PageShell>
   );

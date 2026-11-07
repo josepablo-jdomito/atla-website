@@ -394,7 +394,7 @@ function ContactScreen({
         })}
       </div>
       {/* Honeypot: people never see or reach it; bots that fill every field give themselves away. */}
-      <div className="brief-hp" aria-hidden="true">
+      <div className="brief-hp" hidden>
         <label htmlFor={`${baseId}-gotcha`}>Leave this empty</label>
         <input ref={honeypot} id={`${baseId}-gotcha`} type="text" name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" />
       </div>

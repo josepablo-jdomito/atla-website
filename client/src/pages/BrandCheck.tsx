@@ -199,7 +199,7 @@ export default function BrandCheck() {
                       {options.map((option, i) => {
                         const id = i === 0 ? fieldId(key) : `${fieldId(key)}-${option.value}`;
                         return (
-                          <label key={option.value} htmlFor={id} className="bcheck-option">
+                          <label key={option.value} className="bcheck-option">
                             <input
                               id={id}
                               type="radio"
@@ -241,7 +241,7 @@ export default function BrandCheck() {
               </div>
 
               {/* Honeypot: people never see or reach it; bots that fill every field give themselves away. */}
-              <div className="brief-hp" aria-hidden="true">
+              <div className="brief-hp" hidden>
                 <label htmlFor={`${baseId}-gotcha`}>Leave this empty</label>
                 <input
                   ref={honeypot}

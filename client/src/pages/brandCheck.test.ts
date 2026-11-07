@@ -108,7 +108,7 @@ describe("Brand check page", () => {
     expect(main().querySelectorAll('input[name="size"]')).toHaveLength(4);
     expect(main().querySelectorAll('input[name="investing"]')).toHaveLength(3);
     expect(main().querySelector('textarea[name="message"]')).toBeTruthy();
-    expect(main().querySelector('[aria-hidden="true"] input[name="_gotcha"]')).toBeTruthy();
+    expect(main().querySelector('[hidden] input[name="_gotcha"]')).toBeTruthy();
     const privacy = Array.from(main().querySelectorAll("a")).find((a) => a.textContent === copy.privacyLink);
     expect(privacy?.getAttribute("href")).toBe("/privacy");
     expect(submitButton().textContent).toBe(copy.submit);

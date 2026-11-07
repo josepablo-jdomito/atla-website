@@ -49,7 +49,7 @@ export function SiteFooter() {
             <ul className="site-footer__list">
               {SOCIAL_PROFILES.map((social) => (
                 <li key={social.href}>
-                  <a href={social.href} target="_blank" rel="noreferrer" className="site-footer__link">
+                  <a href={social.href} target="_blank" rel="noopener noreferrer" className="site-footer__link">
                     {social.label === "Linkedin" ? "LinkedIn" : social.label}
                   </a>
                 </li>

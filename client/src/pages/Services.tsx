@@ -270,9 +270,9 @@ export default function Services() {
             </div>
             <div className="services-grid">
               <div className="services-rows">{rows.map(renderRow)}</div>
-              <aside className="services-aside" aria-hidden="true">
+              <aside className="services-aside">
                 {example ? (
-                  <Link href={`/projects/${example.slug}`} className="discipline__example" tabIndex={-1}>
+                  <Link href={`/projects/${example.slug}`} className="discipline__example">
                     <img
                       key={example.slug}
                       src={getOptimizedImageUrl(example.coverImage, { width: 960, quality: 84 }) || example.coverImage}

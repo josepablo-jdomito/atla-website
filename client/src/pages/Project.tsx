@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRoute, useSearch } from "wouter";
 import { PageShell } from "@/components/site/PageShell";
@@ -39,7 +39,7 @@ import { buildImageSrcSet, getImageDimensions, getOptimizedImageUrl } from "@sha
  * and the work as one horizontal strip at full height, every piece at its own ratio, the remaining
  * paragraphs as text frames between the images. A 2px line under the strip is the only chrome: no
  * digits, no arrows. Below 1024 the column stacks on top, the strip swipes at 70dvh, and the remaining
- * paragraphs read under it. A tile on the home links here with ?at=<asset>; the strip opens on it.
+ * paragraphs read under it. A tile on the home links here with #at=<asset>; the strip opens on it.
  */
 
 const { project: copy } = siteCopy;
@@ -316,6 +316,20 @@ function Lightbox({
   );
 }
 
+/** The URL fragment, live: wouter tracks the path only, and a tile links here with `#at=<asset>`. */
+const HASH_EVENTS = ["hashchange", "popstate", "pushState", "replaceState"] as const;
+function subscribeHash(onChange: () => void) {
+  for (const name of HASH_EVENTS) window.addEventListener(name, onChange);
+  return () => {
+    for (const name of HASH_EVENTS) window.removeEventListener(name, onChange);
+  };
+}
+const readHash = () => window.location.hash;
+const serverHash = () => "";
+function useLocationHash() {
+  return useSyncExternalStore(subscribeHash, readHash, serverHash);
+}
+
 export default function Project() {
   const [, params] = useRoute("/projects/:slug");
   const slug = params?.slug ?? "";
@@ -358,9 +372,13 @@ export default function Project() {
   useStrip(stripRef, fillRef, frames);
 
   // wouter does not reset scroll. A project reached by a push starts at the top of the page (on a
-  // phone with ?at=, the landing below scrolls the page to the strip instead); Back/Forward keeps
+  // phone with #at=, the landing below scrolls the page to the strip instead); Back/Forward keeps
   // the browser's position.
-  const at = useMemo(() => new URLSearchParams(search).get("at") ?? "", [search]);
+  const hash = useLocationHash();
+  const at = useMemo(
+    () => new URLSearchParams(hash.replace(/^#/, "")).get("at") || new URLSearchParams(search).get("at") || "",
+    [hash, search],
+  );
   useEffect(() => {
     if (consumePopNav()) return;
     if (!at || isDesktop()) window.scrollTo(0, 0);
@@ -475,7 +493,9 @@ export default function Project() {
                   {facet.key === "discipline" && facet.value === DISCIPLINE_ON_ALL ? (
                     facet.value
                   ) : (
-                    <Link href={wallHrefFor(facet.key, facet.value)}>{facetLabel(facet)}</Link>
+                    <Link href={wallHrefFor(facet.key, facet.value)} aria-label={`${facetLabel(facet)} work`}>
+                      {facetLabel(facet)}
+                    </Link>
                   )}
                 </span>
               ))}

@@ -222,7 +222,7 @@ describe("Ask answers", () => {
     act(() => input().focus());
     act(() => modeButton("Ask").click());
     const pieces = Array.from(document.querySelectorAll<HTMLAnchorElement>(".ask__piece"));
-    expect(pieces.map((a) => a.getAttribute("href"))).toEqual(["/projects/rustico?at=rustico-cover", "/projects/casa-colora?at=colora"]);
+    expect(pieces.map((a) => a.getAttribute("href"))).toEqual(["/projects/rustico#at=rustico-cover", "/projects/casa-colora#at=colora"]);
     expect(Array.from(document.querySelectorAll(".ask__links a")).map((a) => a.textContent)).toEqual(["Start a project"]);
     expect(document.querySelector('.ask__turn[data-role="visitor"] .ask__text')!.textContent).toBe("Show me hospitality work");
     expect(CSS).toMatch(/\.ask__piece-media \{[^}]*border-radius: 3px;/);

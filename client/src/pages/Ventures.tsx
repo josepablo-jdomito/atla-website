@@ -66,7 +66,7 @@ export default function Ventures() {
             return (
               <li key={item.name} className="ventures-list__row" data-has-cover={project ? "" : undefined}>
                 {external ? (
-                  <a href={item.href} target="_blank" rel="noreferrer" className="ventures-list__link">
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="ventures-list__link">
                     {inner}
                   </a>
                 ) : (

@@ -67,6 +67,8 @@ function normalizeHref(href: string) {
   const sameSite = trimmed.match(/^https?:\/\/(?:www\.)?atla\.design(\/[^\s]*)?$/i);
   const local = sameSite ? sameSite[1] || "/" : trimmed;
   if (local.startsWith("/blog/")) return local.replace(/^\/blog\//, "/journal/");
+  if (local === "/contact" || local.startsWith("/contact?")) return "/brief";
+  if (local === "/work" || local.startsWith("/work?")) return "/";
   return local;
 }
 

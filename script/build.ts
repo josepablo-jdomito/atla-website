@@ -614,8 +614,8 @@ async function prerenderRoutes() {
     },
     {
       pathname: "/ventures",
-      title: formatMetaTitle("Ventures", "Atla"),
-      description: "Companies Atla is involved in beyond client work.",
+      title: formatMetaTitle(siteCopy.ventures.metaTitle, "Atla"),
+      description: siteCopy.ventures.metaDescription,
       includeInSitemap: true,
       structuredData: ORGANIZATION_SCHEMA,
     },

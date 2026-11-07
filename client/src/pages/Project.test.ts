@@ -160,6 +160,7 @@ function render(slug: string, search = "") {
   client.setQueryData(["/api/projects"], API);
   client.setQueryData(["project", slug], API.find((p) => p.slug === slug) ?? null);
   location = memoryLocation({ path: `/projects/${slug}` });
+  if (search) window.history.replaceState(null, "", `/projects/${slug}#${search}`);
   act(() =>
     root.render(
       createElement(
@@ -403,7 +404,7 @@ describe("Project page", () => {
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
   });
 
-  it("lands the strip on the image clicked on the wall (?at=), at its left edge, and checks again at 250 and 900ms", () => {
+  it("lands the strip on the image clicked on the wall (#at=), at its left edge, and checks again at 250 and 900ms", () => {
     vi.useFakeTimers();
     // jsdom has no CSS.escape; the asset keys are plain hex in practice.
     const g = globalThis as { CSS?: { escape?: (value: string) => string } };
@@ -432,6 +433,7 @@ describe("Project page", () => {
       spy.mockRestore();
       HTMLElement.prototype.scrollTo = originalScrollTo;
       vi.useRealTimers();
+      window.history.replaceState(null, "", "/");
     }
   });
 
