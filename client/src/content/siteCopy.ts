@@ -476,6 +476,18 @@ export const siteCopy = {
       full: "This week is full.",
       action: "Start free audit request",
     },
+    // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
+    // assurances in a row. The plain form stays under <noscript> for a browser without scripts.
+    closeTitle: "Send me your brand.",
+    closeLine: "Five a week, free, and it comes by email as soon as it's ready.",
+    // The flow's first two screens: the brand, then the name and the email.
+    flow: {
+      brandTitle: "Where does your brand live?",
+      brandLine: "A website or an Instagram, whichever people see first.",
+      youTitle: "Where do I send the audit?",
+      youLine: "Your name and the email you actually read.",
+      send: "Send",
+    },
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
@@ -509,7 +521,7 @@ export const siteCopy = {
     // The quiz after the send (components/audit/AuditAnswers.tsx, after AG1's product quiz, JP 2026-11-07):
     // one question on the screen, the answers as cards with a title and one line, a tap moves on;
     // "Something else" opens a field, the last question is a field.
-    answersProgress: "{n} of four",
+    answersProgress: "{n} of {total}",
     answersLast: "Last one",
     answersBack: "Back",
     answersExit: "Leave the questions",

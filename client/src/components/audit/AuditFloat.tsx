@@ -1,6 +1,6 @@
 import { useEffect, useState, type RefObject } from "react";
 import type { AuditStatus } from "@shared/audit";
-import { AUDIT_FORM_ID, goToForm } from "@/pages/Audit";
+import { AUDIT_FORM_ID, openAuditFlow } from "@/components/audit/openFlow";
 import { siteCopy } from "@/content/siteCopy";
 
 /**
@@ -71,7 +71,7 @@ export function AuditFloat({ status, root }: { status: AuditStatus | null; root:
         <span className="audit-slots__pulse" aria-hidden="true" />
         {line}
       </p>
-      <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-submit--compact audit-float__action" onClick={goToForm} tabIndex={shown ? undefined : -1}>
+      <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-submit--compact audit-float__action" onClick={openAuditFlow} tabIndex={shown ? undefined : -1}>
         {copy.action}
       </a>
     </div>
