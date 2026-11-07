@@ -5,7 +5,6 @@ import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
 import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
 import { fetchAuditStatus, readAuditAttribution } from "@/components/audit/auditApi";
-import { AuditSlots } from "@/components/audit/AuditSlots";
 import { AuditFloat } from "@/components/audit/AuditFloat";
 import { AuditFlow, newSubmissionId, type SentResult } from "@/components/audit/AuditFlow";
 import { AUDIT_FORM_ID, AUDIT_OPEN_EVENT, openAuditFlow } from "@/components/audit/openFlow";
@@ -16,8 +15,7 @@ import { trackAuditView } from "@/lib/ga";
 
 /**
  * The free audit (/audit, JP 2026-11-07): a landing page. The offer in the title, JP's own line opening
- * the lead and his name signing it, the week's five as a live widget (AuditSlots, and AuditFloat once
- * it scrolls away), three drawn steps, the ledger of brands, then the closing section: the statement,
+ * the lead, the week's five as a floating card (AuditFloat, the only place the week lives), three drawn steps, the ledger of brands, then the closing section: the statement,
  * the one pill, the three assurances. The request itself is the flow that takes the screen
  * (AuditFlow): the brand, the name and the email, the send, then the four questions. Every door on the
  * page is the same pill; the plain form stays under <noscript>. Delivered like the brand check
@@ -102,7 +100,6 @@ export default function Audit() {
   };
 
   const finished = done ? copy.done[done] : null;
-  const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
   const walk = copy.steps[2];
 
   return (
@@ -128,8 +125,7 @@ export default function Audit() {
           </figure>
         </section>
 
-        <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
-        {done ? null : <AuditFloat status={slots} root={root} />}
+        {done ? null : <AuditFloat status={slots} updatedAt={slotsAt} root={root} />}
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
           <h2 id={`${baseId}-how`} className="site-section-title audit-how__title" data-reveal>

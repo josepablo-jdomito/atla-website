@@ -417,7 +417,7 @@ export const siteCopy = {
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
     title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
     lead: "We all need an extra pair of eyes. I think you're too close to your brand and you're attached to it.",
-    // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
+    // The week in words (the floating card, components/audit/AuditFloat.tsx, uses `label` and `live`).
     week: {
       label: "This week",
       live: "Live",
@@ -470,10 +470,10 @@ export const siteCopy = {
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
-      open: "Five spots open.",
-      left: "{left} of five left.",
-      lastOne: "One spot left.",
-      full: "This week is full.",
+      open: "Five spots open this week.",
+      left: "{left} of five spots left.",
+      lastOne: "One spot left this week.",
+      full: "This week's five are taken.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three

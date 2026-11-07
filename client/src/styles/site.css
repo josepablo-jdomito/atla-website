@@ -1165,23 +1165,6 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-hero__action { width: 100%; }
 .audit-hero__button { text-decoration: none; }
 
-/* The live widget: five rings, the taken ones filled, a mark that pulses, the count in words, the reason. */
-.audit-slots { display: grid; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--site-line); }
-.audit-slots__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0; }
-.audit-slots__live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--site-ink); }
-.audit-slots__pulse { position: relative; width: var(--space-2); height: var(--space-2); border-radius: 50%; background: var(--site-ink); }
-/* Three beats after each read, then rest: a studio page, not a dashboard. */
-.audit-slots__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-ink); opacity: 0; animation: audit-pulse 1.6s var(--site-ease) 3; }
-@keyframes audit-pulse { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
-.audit-slots__rings { display: flex; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
-.audit-slots__rings[hidden] { display: none; }
-.audit-slots__ring { width: var(--space-5); height: var(--space-5); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-move) var(--site-ease); }
-.audit-slots__ring[data-taken] { background: var(--site-ink); }
-.audit-slots__line { margin: 0; font-size: var(--t-h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; color: var(--site-ink); text-wrap: pretty; }
-.audit-slots__why { margin: 0; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-.audit-slots__meta { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); margin: 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
-@media (prefers-reduced-motion: reduce) { .audit-slots__pulse::after { animation: none; opacity: 0.4; transform: none; } }
-
 /* The three steps: a small drawing beside each line on a phone, three columns from 768. */
 .audit-how { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--site-line); }
 .audit-how__title { margin: 0; }
@@ -1213,36 +1196,36 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-ledger__mark { grid-column: 2; grid-row: 1 / span 3; display: block; height: calc(var(--space-5) * var(--mark-scale, 1)); width: auto; max-width: calc(var(--space-10) + var(--space-5)); object-fit: contain; object-position: right center; }
 @media (prefers-color-scheme: dark) { .audit-ledger__mark { filter: invert(1); } }
 
-/* The week, floating (components/audit/AuditFloat.tsx): the site's floating pill at the bottom, centred,
-   one row: the rings, the count with the live mark, the way to the form. Hidden until the strip is
-   behind, and while the form is on screen. */
-.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: var(--space-4); min-height: 56px; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-pill); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
+/* The week, floating (components/audit/AuditFloat.tsx, JP's pick B): a card at the bottom of the phone
+   screen, bottom right from 768. The label and the live mark, the rings beside the count, the pill. */
+.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: grid; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-3); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-panel); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
 .audit-float[data-shown] { opacity: 1; transform: none; pointer-events: auto; }
-.audit-float__rings { display: flex; flex: none; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
-.audit-float__rings .audit-slots__ring { width: var(--space-4); height: var(--space-4); }
-.audit-float__line { display: inline-flex; align-items: center; gap: var(--space-2); flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.audit-float__line .audit-slots__pulse { flex: none; }
-.audit-float__action { flex: none; white-space: nowrap; }
-.audit-float__count { display: none; }
-/* Below 768 the widget is the black pill itself: the words on the left, the count on the right, one line,
-   nothing wraps (JP, 2026-11-07: a count broken over two lines is a defect). */
-@media (max-width: 767px) {
-  .audit-float { gap: 0; padding: 0; background: var(--site-ink); border-color: var(--site-ink); }
-  .audit-float__rings, .audit-float__line { display: none; }
-  .audit-float__action { display: flex; flex: 1 1 auto; justify-content: space-between; gap: var(--space-3); min-height: 56px; padding: 0 var(--space-5); border-radius: var(--r-pill); }
-  .audit-float__count { display: inline; flex: none; font-size: var(--t-caption); font-weight: 400; opacity: 0.7; white-space: nowrap; }
-  .audit-float__action > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-}
+.audit-float__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0; }
+.audit-float__head .site-label { font-size: var(--t-caption); }
+.audit-float__live { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-float__pulse { position: relative; width: var(--space-2); height: var(--space-2); border-radius: 50%; background: var(--site-ink); }
+/* Three beats after each read, then rest: a studio page, not a dashboard. */
+.audit-float__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-ink); opacity: 0; animation: audit-pulse 1.6s var(--site-ease) 3; }
+@keyframes audit-pulse { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+.audit-float__row { display: flex; align-items: center; gap: var(--space-3); margin: 0; min-width: 0; }
+.audit-float__rings { display: inline-flex; flex: none; gap: var(--space-1); }
+.audit-float__ring { width: var(--space-4); height: var(--space-4); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-move) var(--site-ease); }
+.audit-float__ring[data-taken] { background: var(--site-ink); }
+.audit-float__line { min-width: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.audit-float__action { width: 100%; min-height: 48px; font-size: var(--t-body); }
 @media (min-width: 768px) {
   .audit-ledger__row { grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 7fr) minmax(0, 4fr); grid-template-rows: auto; column-gap: var(--space-5); min-height: var(--space-9); padding: var(--space-3) 0; }
   .audit-ledger__name, .audit-ledger__what, .audit-ledger__proof { grid-column: auto; grid-row: 1; }
   .audit-ledger__proof:empty { display: block; }
   .audit-ledger__mark { grid-column: 4; grid-row: 1; justify-self: end; height: calc(var(--space-5) * var(--mark-scale, 1)); }
-  .audit-float { left: 50%; right: auto; bottom: var(--space-5); transform: translate(-50%, var(--space-3)); gap: var(--space-5); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5); }
-  .audit-float[data-shown] { transform: translate(-50%, 0); }
+  .audit-float { left: auto; right: var(--space-5); bottom: var(--space-5); width: 20rem; padding: var(--space-4) var(--space-5) var(--space-4); }
+  /* The rings on their own line, the count under them, so neither wraps. */
+  .audit-float__row { display: grid; gap: var(--space-2); }
+  .audit-float__ring { width: var(--space-5); height: var(--space-5); }
   .audit-float__line { font-size: var(--t-body); }
+  .audit-float__action { min-width: 0; white-space: nowrap; }
 }
-@media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } .audit-float__pulse::after { animation: none; opacity: 0.4; transform: none; } }
 
 /* The closing section (JP, 2026-11-07): an ink rule, the statement in the display face, one line, the
    pill, and the three assurances in a row of hairline cells. The plain form under <noscript> keeps the
@@ -1362,9 +1345,8 @@ html[data-consent="open"] .site-explore { display: none; }
 .site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > :nth-child(3) { animation-delay: 120ms; }
 .site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__text > :nth-child(4) { animation-delay: 180ms; }
 .site-page:not([data-first-paint]) .audit[data-motion] .audit-hero__art { animation: audit-rise 500ms var(--site-ease) 120ms both; }
-.site-page:not([data-first-paint]) .audit[data-motion] .audit-slots { animation: audit-rise 400ms var(--site-ease) 240ms both; }
 .audit[data-motion] .audit-hero__art img { animation: audit-float 7s ease-in-out 700ms infinite; }
-.audit[data-motion] .audit-slots__ring[data-taken] { animation: audit-pop var(--d-move) var(--site-ease); }
+.audit[data-motion] .audit-float__ring[data-taken] { animation: audit-pop var(--d-move) var(--site-ease); }
 .audit[data-motion] [data-reveal] { opacity: 0; transform: translateY(var(--space-4)); transition: opacity 500ms var(--site-ease), transform 500ms var(--site-ease); transition-delay: calc(var(--i, 0) * 90ms); }
 .audit[data-motion] [data-reveal][data-in] { opacity: 1; transform: none; }
 .audit[data-motion] .audit-step__art { transition: transform var(--d-move) var(--site-ease); }
@@ -1404,11 +1386,6 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-hero__lead { font-size: var(--t-h3); font-weight: 400; }
   .audit-hero__art { width: min(100%, 420px); justify-self: end; }
   .audit-hero__title { max-width: 14ch; }
-  .audit-slots { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); padding: var(--space-5) 0; }
-  .audit-slots__head { grid-column: 1; align-items: start; }
-  .audit-slots__rings, .audit-slots__line, .audit-slots__why, .audit-slots__meta { grid-column: 2; }
-  .audit-slots__rings { grid-row: 1; }
-  .audit-slots__ring { width: var(--space-6); height: var(--space-6); }
   .audit-how { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); }
   .audit-steps { gap: var(--space-7); }
   .audit-proof { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); align-items: start; }
