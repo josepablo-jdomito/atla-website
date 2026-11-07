@@ -27,7 +27,13 @@ export const auditSchema = z.object({
   email: z.string().trim().email().max(200),
   site: siteOrHandle,
   /** Where the visit came from (utm_* and the referrer host), read by the page; never typed by the visitor. */
-  source: z.string().trim().max(240).optional().default(""),
+  source: z
+    .string()
+    .trim()
+    .max(240)
+    .regex(/^(direct|(utm_(source|medium|campaign|content)=[\w.-]{1,60}|referrer=[a-z0-9.-]{1,80})(, (utm_(source|medium|campaign|content)=[\w.-]{1,60}|referrer=[a-z0-9.-]{1,80}))*)$/)
+    .optional()
+    .default("direct"),
 });
 
 export const MAX_AUDIT_FEEDBACK = 600;
@@ -57,6 +63,15 @@ export type AuditStatus = { week: AuditWeek; taken: number; cap: number };
  * so the five open again every Monday at midnight UTC (Sunday evening in Austin).
  */
 export function isoWeek(date: Date = new Date()): string {
+  return isoWeekOf(date);
+}
+
+/** The ISO week seven days after `date`: where a request past this week's five is queued. */
+export function nextIsoWeek(date: Date = new Date()): string {
+  return isoWeekOf(new Date(date.getTime() + 7 * 86_400_000));
+}
+
+function isoWeekOf(date: Date): string {
   const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
   const day = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - day);

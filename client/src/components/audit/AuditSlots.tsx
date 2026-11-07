@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AuditStatus } from "@shared/audit";
+import type { AuditStatus, AuditWeek } from "@shared/audit";
 import { siteCopy } from "@/content/siteCopy";
 
 /**
@@ -7,7 +7,7 @@ import { siteCopy } from "@/content/siteCopy";
  * que piensen que es real"). Five slots drawn as rings, the taken ones filled; a pulsing mark and
  * "Updated just now" that ages; the page polls /api/audit/status. Numbers stay in words
  * ("two of five spots left"). Before the first read, and when a read fails, the neutral line shows
- * and no ring is filled.
+ * and no ring is filled. After the visitor's own send, the line says what they got (`sent`).
  */
 
 const copy = siteCopy.audit.week;
@@ -23,7 +23,7 @@ function ageLine(updatedAt: number | null, now: number): string {
   return copy.updatedMinutes;
 }
 
-export function AuditSlots({ status, updatedAt }: { status: AuditStatus | null; updatedAt: number | null }) {
+export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | null; updatedAt: number | null; sent?: AuditWeek | null }) {
   const [now, setNow] = useState(() => Date.now());
   // The "updated" line ages on its own, so the widget never says "just now" for an hour.
   useEffect(() => {
@@ -36,7 +36,11 @@ export function AuditSlots({ status, updatedAt }: { status: AuditStatus | null; 
   const total = status?.cap ?? 5;
   const taken = status?.taken ?? 0;
   const left = Math.max(0, total - taken);
-  const line = !status
+  const line = sent
+    ? sent === "full"
+      ? copy.sentFull
+      : copy.sentOpen
+    : !status
     ? copy.neutral
     : status.week === "full" || left === 0
       ? copy.full
@@ -47,7 +51,7 @@ export function AuditSlots({ status, updatedAt }: { status: AuditStatus | null; 
         : cap(copy.left.replace("{left}", inWords(left)).replace("{cap}", inWords(total)));
 
   return (
-    <div className="audit-slots" data-state={!status ? "pending" : status.week} aria-live="polite">
+    <div className="audit-slots" data-state={!status ? "pending" : status.week}>
       <p className="audit-slots__head">
         <span className="site-label">{copy.label}</span>
         <span className="audit-slots__live" aria-hidden={status ? undefined : true}>
@@ -55,12 +59,15 @@ export function AuditSlots({ status, updatedAt }: { status: AuditStatus | null; 
           {copy.live}
         </span>
       </p>
-      <ol className="audit-slots__rings" aria-label={line}>
+      <ol className="audit-slots__rings" aria-hidden="true">
         {Array.from({ length: total }, (_, index) => (
-          <li key={index} className="audit-slots__ring" data-taken={index < taken ? "" : undefined} aria-hidden="true" />
+          <li key={index} className="audit-slots__ring" data-taken={index < taken ? "" : undefined} />
         ))}
       </ol>
-      <p className="audit-slots__line">{line}</p>
+      {/* The one live region: the count in words. The age line below changes too often to be announced. */}
+      <p className="audit-slots__line" aria-live="polite">
+        {line}
+      </p>
       <p className="audit-slots__meta">
         {status ? (
           <>

@@ -407,16 +407,16 @@ export const siteCopy = {
   // What he usually finds, what they get, three fields; read in two minutes. The number is said in words only
   // ("five a week"); the cap lives in shared/audit.ts. Nothing here names a client or a past audit.
   audit: {
-    metaTitle: "Send me your brand and I'll tell you what works and what doesn't",
+    metaTitle: "Free brand audit from José Pablo",
     metaDescription:
-      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get a short video: what works, what doesn't, and what he'd change first. Five a week.",
+      "A free brand audit from José Pablo, founder of Atla. Send your website or Instagram and get a short video with what works and what he'd change first. Five a week.",
     // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP above the
     // title, state the offer in the title, JP's own line opens the lead. Policies confirmed by JP the same day:
     // the video is private; it is sent as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
     eyebrow: "José Pablo, founder of Atla",
-    title: "Send me your brand and I'll tell you what works and what doesn't.",
-    lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you: I look at it the way a customer does and record a short video. This is good, this is bad, and this is what I'd change first. It's free. I only do five a week because I record every one myself.",
+    title: "Send me your brand. I'll record a free video on what works and what doesn't.",
+    lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you: I look at it the way a customer does and record a short video. I start with what I like, and then I tell you what I'd change first. I only do five a week because I record every one myself.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
       label: "This week",
@@ -425,18 +425,21 @@ export const siteCopy = {
       empty: "This week's five are open. I record them in the order they come in.",
       left: "{left} of {cap} spots left this week.",
       lastOne: "One spot left this week.",
-      full: "This week's five are taken. Send yours now and you're first for next week.",
+      full: "This week's five are taken. Send yours anyway and I'll get to it after them, in the order it came in.",
+      // What the person who just sent sees in place of the call to send.
+      sentOpen: "You took one of this week's five.",
+      sentFull: "You're on the list, after this week's five.",
       updatedNow: "Updated just now",
       updatedMoment: "Updated a moment ago",
       updatedMinutes: "Updated a few minutes ago",
-      resets: "Five new spots every Monday",
+      resets: "Five new spots every week",
     },
     // Three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd, hand-inked, halftone), one line each.
     howTitle: "How it works",
     steps: [
-      { src: "/audit/landing/step-1.webp", alt: "A little shop with human legs climbing into a mailbox", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", alt: "A shopper whose head is one big eye, inspecting a little shop in his cart", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", alt: "A phone with legs and a bowler hat ringing a doorbell, holding a play button as a gift", line: "You get the video: what works, what doesn't, and what I'd fix first. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
+      { src: "/audit/landing/step-1.webp", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
+      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
+      { src: "/audit/landing/step-3.webp", alt: "The bottle walking off with a phone under its arm while the man waves goodbye", line: "You get the video by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
@@ -450,7 +453,8 @@ export const siteCopy = {
       "I think a few of you will want to work with Atla later. Most won't, and that's all right.",
       "No call, nothing to prepare. It's free, and I send it as soon as it's ready.",
     ],
-    privacyNotice: "We use this to reply and to run your audit.",
+    // JP, 2026-11-07: the email may join the lists, so the line says it (red team P0-3).
+    privacyNotice: "We use this to reply, to run your audit and, now and then, to send you news from Atla and WeLoveDaily. You can unsubscribe any time.",
     privacyLink: "Privacy",
     submit: "Send it",
     sending: "Sending",
@@ -458,18 +462,19 @@ export const siteCopy = {
     nameError: "I need a name.",
     emailError: "I need an email I can reply to.",
     siteError: "I need a website or an Instagram to look at.",
-    rateLimited: "Too many tries. Try again in a bit.",
+    rateLimited: "Too many tries from here. Try again later.",
     network: "That didn't go through. What you wrote is still here.",
     done: {
       open: { title: "Got it.", line: "You're in this week's five. The video comes by email, from me, as soon as it's ready." },
-      full: { title: "You're in next week's five.", line: "This week's are taken. The video comes by email as soon as it's ready." },
+      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them, in the order it came in. The video comes by email as soon as it's ready." },
+      error: { title: "That didn't go through.", line: "Nothing was lost. Scroll up and send it again in a moment." },
     },
     // After the send: one micro step and the one research question (CRO review, section six).
     doneFollow: "While it's on its way, I'm on Instagram every week.",
     doneFollowLink: "Follow @jdomito_",
     feedbackQuestion: "What almost stopped you from sending it?",
     feedbackSend: "Send",
-    feedbackDone: "Thanks. That helps more than you'd think.",
+    feedbackDone: "Thanks, that helps.",
     feedbackFailed: "That didn't save. Try again in a moment.",
     doneHome: "See the work",
   },

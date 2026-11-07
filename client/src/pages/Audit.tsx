@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent } from "react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import { EMPTY_AUDIT, MAX_AUDIT_FEEDBACK, auditSchema, type AuditDraft, type AuditStatus, type AuditWeek } from "@shared/audit";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { PageShell } from "@/components/site/PageShell";
@@ -45,7 +45,7 @@ function newSubmissionId(): string {
   }
 }
 
-/** Jumps to the form and puts the caret in its first field; the address bar keeps the hash. */
+/** Jumps to the form and puts the caret in its first field (the click is handled, so the hash does not change). */
 export function goToForm(event?: MouseEvent) {
   const form = document.getElementById(AUDIT_FORM_ID);
   if (!form) return;
@@ -62,7 +62,12 @@ export default function Audit() {
   const [status, setStatus] = useState<Status>("idle");
   const [slots, setSlots] = useState<AuditStatus | null>(null);
   const [slotsAt, setSlotsAt] = useState<number | null>(null);
-  const [done, setDone] = useState<AuditWeek | null>(null);
+  // ?sent= comes back from the plain form route (/api/audit/form) when the form was sent before hydration.
+  const search = useSearch();
+  const [done, setDone] = useState<AuditWeek | "error" | null>(() => {
+    const sent = new URLSearchParams(search).get("sent");
+    return sent === "open" || sent === "full" || sent === "error" ? sent : null;
+  });
   const [feedback, setFeedback] = useState("");
   const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
@@ -162,9 +167,10 @@ export default function Audit() {
 
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
   const finished = done ? copy.done[done] : null;
+  const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
 
   return (
-    <PageShell>
+    <PageShell logos={false}>
       <SeoHead title={formatMetaTitle(copy.metaTitle, "Atla")} description={copy.metaDescription} pathname="/audit" />
       <div className="site-page-body audit">
         <header className="page-intro audit-intro">
@@ -173,8 +179,8 @@ export default function Audit() {
             {copy.title}
           </h1>
           <p className="page-intro__lead audit-intro__lead">{copy.lead}</p>
-          <AuditSlots status={slots} updatedAt={slotsAt} />
-          {done ? null : (
+          <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
+          {done && done !== "error" ? null : (
             <p className="audit-intro__action">
               <a href={`#${AUDIT_FORM_ID}`} className="site-action" onClick={goToForm}>
                 {copy.cta}
@@ -226,13 +232,15 @@ export default function Audit() {
                   {finished.title}
                 </h2>
                 <p className="audit-done__line">{finished.line}</p>
+                {done === "error" ? null : (
                 <p className="audit-done__follow">
                   {copy.doneFollow}{" "}
                   <a href={INSTAGRAM_JP} target="_blank" rel="noopener noreferrer" className="audit-done__link">
                     {copy.doneFollowLink}
                   </a>
                 </p>
-                {feedbackState === "done" ? (
+                )}
+                {done === "error" || !sent.current ? null : feedbackState === "done" ? (
                   <p className="audit-done__line" role="status">
                     {copy.feedbackDone}
                   </p>
@@ -272,7 +280,9 @@ export default function Audit() {
                   {copy.formTitle}
                 </h2>
                 <p className="audit-fit">{copy.fit}</p>
-                <form className="audit-form" onSubmit={submit} noValidate>
+                {/* Before hydration or without JavaScript the browser posts the fields to /api/audit/form, never into a URL. */}
+                <form className="audit-form" method="post" action="/api/audit/form" onSubmit={submit} noValidate>
+                  <input type="hidden" name="submissionId" value={submissionId.current} />
                   <div className="brief-fields audit-fields">
                     {FIELDS.map((field) => {
                       const id = fieldId(field.key);

@@ -2,7 +2,8 @@ import type { AuditFeedback, AuditRequest, AuditStatus, AuditWeek } from "@share
 
 export type AuditResult = { status: "ok"; week: AuditWeek } | { status: "rate-limited" } | { status: "failed" };
 
-const SUBMIT_TIMEOUT_MS = 20000;
+// Attio (two or three calls) and Resend run in parallel on the server, each with an 8 s timeout; the function may take 30 s.
+const SUBMIT_TIMEOUT_MS = 30000;
 const STATUS_TIMEOUT_MS = 6000;
 
 const asWeek = (value: unknown): AuditWeek => (value === "full" ? "full" : "open");
@@ -64,17 +65,22 @@ const ATTRIBUTION_KEY = "atla-audit-attribution";
 
 /** Where the visit came from, kept for the tab so it survives a look around the site: utm_* and the referrer host. "direct" otherwise. */
 export function readAuditAttribution(): string {
-  try {
-    const saved = sessionStorage.getItem(ATTRIBUTION_KEY);
-    if (saved) return saved;
-  } catch {
-    // Storage blocked: read this visit only.
-  }
   const params = new URLSearchParams(window.location.search);
-  const parts = UTM_KEYS.filter((key) => params.get(key)).map((key) => `${key}=${params.get(key)!.slice(0, 60)}`);
+  const tagged = UTM_KEYS.some((key) => params.get(key));
+  // A tagged arrival (a reel) replaces what the tab saved; an untagged one keeps it.
+  if (!tagged) {
+    try {
+      const saved = sessionStorage.getItem(ATTRIBUTION_KEY);
+      if (saved) return saved;
+    } catch {
+      // Storage blocked: read this visit only.
+    }
+  }
+  // Only what the server accepts (shared/audit.ts): tag values as a slug, the referrer as a host.
+  const parts = UTM_KEYS.filter((key) => params.get(key)).map((key) => `${key}=${params.get(key)!.replace(/[^\w.-]/g, "").slice(0, 60)}`).filter((part) => !part.endsWith("="));
   try {
     const referrer = document.referrer ? new URL(document.referrer) : null;
-    if (referrer && referrer.origin !== window.location.origin) parts.push(`referrer=${referrer.hostname.slice(0, 80)}`);
+    if (referrer && referrer.origin !== window.location.origin) parts.push(`referrer=${referrer.hostname.toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 80)}`);
   } catch {
     // Not a URL.
   }

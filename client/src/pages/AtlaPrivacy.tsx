@@ -28,7 +28,7 @@ export default function AtlaPrivacy() {
             and Clarity behind consent). JP approved this text, the two-year retention, the 30-day reply and the
             transfer basis on 2026-11-05 ("Si"). Nothing here is legal advice. */}
         <div className="legal-body">
-          <p className="longform-text">Last updated: November 6, 2026.</p>
+          <p className="longform-text">Last updated: November 7, 2026.</p>
           <p className="longform-text">
             This site is operated by Atla & WeLoveDaily, LLC. This policy explains what information we collect, how we use it, which providers process it, and what your browser stores.
           </p>
@@ -50,6 +50,9 @@ export default function AtlaPrivacy() {
               If you ask for a brand check, we receive the name, email address, website or Instagram, moment, company size, brand investment answer and message you enter. We use them to reply and to manage your inquiry. They are saved in Attio and sent to the studio by email through Resend, like the brief. No AI service reads them.
             </p>
             <p className="longform-text">
+              If you ask for a free audit, we receive the name, email address and website or Instagram you enter, and how you arrived at the page (campaign tags and the referring site, kept in the tab's session storage). We use them to reply and to run the audit, and we may add your email address to Atla's or WeLoveDaily's mailing lists, which you can leave from any email. The request is saved in Attio and sent to the studio by email through Resend. The audit counts requests per week, per brand and per hashed address in Upstash, so that five are taken each week in the order they come in, and keeps a random submission reference for 24 hours so the optional question after you send can be tied to your request. The video we record is for you and is not published.
+            </p>
+            <p className="longform-text">
               To limit repeated requests, the brief and the brand check count requests per visitor in Upstash, keyed by a hashed version of your IP address rather than the address itself. A hashed address is pseudonymised, not anonymous. Each count expires after ten minutes. The brief also counts submissions per email address, keyed by a hash of the address, for 24 hours, and keeps a random submission reference for 24 hours to stop duplicates.
             </p>
             <p className="longform-text">
@@ -65,7 +68,7 @@ export default function AtlaPrivacy() {
               The site also uses Google Analytics 4 to understand which pages and links lead to inquiries. It records the pages you view, the links and buttons you use, the referring site, your approximate location, and your browser and device type. With your consent, it sets first-party cookies (named _ga) that recognize a returning browser for up to two years. Google Analytics never receives what you type into the search, the brief or the brand check, and never your name or email address. If you browse from the European Economic Area, the United Kingdom, or Switzerland, the cookies stay off until you accept them in the cookie notice. Anywhere else they are on by default, and you can decline them from the "Analytics cookies" link in the footer or with Google's opt-out browser add-on. While the cookies are off, Google Analytics still receives cookie-free measurements of page views and clicks, without an identifier stored in your browser, and the site sends none of its search or brief events.
             </p>
             <p className="longform-text">
-              If you accept analytics, the site also loads the Meta Pixel and Microsoft Clarity. The Meta Pixel records the pages you view and when you finish the brief, and Meta may use that to measure and optimize its ads and, if you are signed in to Meta, link the visit to your account. Clarity records how you move through pages (clicks, scrolling and page replays, with form fields masked). Neither receives what you type into the search, the brief or the brand check. They stay off for every visitor until you accept in the cookie notice, and they stop if you decline later from the footer.
+              If you accept analytics, the site also loads the Meta Pixel and Microsoft Clarity. The Meta Pixel records the pages you view and when you finish the brief, the brand check or the free audit, and Meta may use that to measure and optimize its ads and, if you are signed in to Meta, link the visit to your account. Clarity records how you move through pages (clicks, scrolling and page replays, with form fields masked). Neither receives what you type into the search, the brief or the brand check. They stay off for every visitor until you accept in the cookie notice, and they stop if you decline later from the footer.
             </p>
             <p className="longform-text">
               The /waitlist page is served from a separate Atla application and loads Google Analytics and the Meta Pixel to measure that campaign. Those tools use cookies and may link your visit to your Google or Meta account under their own privacy policies, and the choice you make on this site does not apply there.
@@ -89,7 +92,7 @@ export default function AtlaPrivacy() {
 
           <Section title="How we use information">
             <p className="longform-text">
-              We use what you send through the brief, the brand check and the hospitality page's form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
+              We use what you send through the brief, the brand check, the free audit and the hospitality page's form to respond to inquiries, manage studio communications, and evaluate potential project opportunities. The free audit is the one form whose email address may also join Atla's or WeLoveDaily's mailing lists; every email from a list carries a way to leave it. We keep an inquiry that does not become a project for two years after our last exchange, then delete it. If it becomes a project, we keep the record for the length of the engagement and as long as tax and contract law require. Access is limited to the people who run the studio.
             </p>
           </Section>
 

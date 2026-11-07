@@ -9,13 +9,19 @@ import { deliverNoteToAttio, sendStudioEmail } from "../brief/deliver.ts";
  * five or queued for the next. Each throws on failure, naming only statuses and missing config.
  */
 
-/** Which week the request landed in and where it sits in that week's count. */
-export type AuditSlot = { week: string; count: number; full: boolean };
+/**
+ * Which week the request landed in and where it sits. `full`: this week's five were taken, so the
+ * request took slot `count` of next week. `repeat`: the brand or the address already took a slot this
+ * week, so this request took none (count is the week's count as it stands).
+ */
+export type AuditSlot = { week: string; count: number; full: boolean; repeat: "brand" | "address" | null };
 
-const slotLine = (slot: AuditSlot) =>
-  slot.full
-    ? `Week ${slot.week}: request ${slot.count} of ${AUDITS_PER_WEEK}, this week is full, queued for next week`
-    : `Week ${slot.week}: request ${slot.count} of ${AUDITS_PER_WEEK}, in this week's five`;
+const slotLine = (slot: AuditSlot) => {
+  if (slot.repeat === "brand") return `Week ${slot.week}: this brand already asked this week, no new slot taken (week at ${slot.count} of ${AUDITS_PER_WEEK})`;
+  if (slot.repeat === "address") return `Week ${slot.week}: this address already took a slot this week, no new slot taken (week at ${slot.count} of ${AUDITS_PER_WEEK}); check it is not the same person`;
+  if (slot.full) return `Week ${slot.week}: this week's ${AUDITS_PER_WEEK} are taken, queued as request ${slot.count} of next week`;
+  return `Week ${slot.week}: request ${slot.count} of ${AUDITS_PER_WEEK}, in this week's five`;
+};
 
 /** English, deterministic, no AI: the fields as the visitor saw them. */
 export function formatAuditSummary(request: AuditRequest, slot: AuditSlot): string {

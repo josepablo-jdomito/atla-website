@@ -41,12 +41,12 @@ const HONEYPOT_FIELD = "_gotcha";
 const RESULT_PATH = "/api/contact/result";
 
 /** Collapse line breaks and control characters so a value stays on one line. */
-export const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029]+/g, " ").trim();
+export const singleLine = (value: string) => value.replace(/[\u0000-\u001f\u007f\u0085\u2028\u2029\u202a-\u202e\u2066-\u2069]+/g, " ").trim();
 /** Keep line breaks in free text but drop other control characters. */
 export const multiLine = (value: string) =>
   value
     .replace(/\r\n?/g, "\n")
-    .replace(/[\u0000-\u0009\u000b-\u001f\u007f\u0085\u2028\u2029]+/g, " ")
+    .replace(/[\u0000-\u0009\u000b-\u001f\u007f\u0085\u2028\u2029\u202a-\u202e\u2066-\u2069]+/g, " ")
     .trim();
 
 const contactSchema = z.object({
@@ -98,6 +98,11 @@ function headerValue(req: Request, name: string): string {
  * whatever the client sent, so only the socket address is trusted.
  */
 export function clientIp(req: Request): string {
+  // Tests run every request from one socket; a test header stands in for the address.
+  if (process.env.NODE_ENV === "test" && process.env.VERCEL !== "1") {
+    const testIp = headerValue(req, "x-test-ip");
+    if (testIp) return testIp;
+  }
   if (process.env.VERCEL === "1") {
     const platformIp = headerValue(req, "x-vercel-forwarded-for") || headerValue(req, "x-real-ip");
     if (platformIp) return platformIp;

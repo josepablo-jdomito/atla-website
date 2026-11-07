@@ -126,3 +126,33 @@ export async function decrement(key: string): Promise<void> {
   const entry = liveMemoryEntry(key, Date.now());
   if (entry) entry.count = Math.max(0, entry.count - 1);
 }
+
+const values = new Map<string, { value: string; expiresAt: number }>();
+
+/** Store a small string under `key` for `ttlSeconds` (a submission's email hash, for the feedback check). */
+export async function setValue(key: string, value: string, ttlSeconds: number): Promise<void> {
+  const config = upstashConfig();
+  if (config) {
+    const json = (await upstash(config, "", ["SET", key, value, "EX", String(ttlSeconds)])) as { error?: unknown } | null;
+    if (!json || json.error) throw new Error(`Upstash SET failed: ${String(json?.error ?? "no result")}`);
+    return;
+  }
+  values.set(key, { value, expiresAt: Date.now() + ttlSeconds * 1000 });
+}
+
+/** The string stored under `key`, or null when there is none or it expired. */
+export async function getValue(key: string): Promise<string | null> {
+  const config = upstashConfig();
+  if (config) {
+    const json = (await upstash(config, "", ["GET", key])) as { result?: unknown; error?: unknown } | null;
+    if (!json || json.error) throw new Error(`Upstash GET failed: ${String(json?.error ?? "no result")}`);
+    return typeof json.result === "string" ? json.result : null;
+  }
+  const entry = values.get(key);
+  if (!entry) return null;
+  if (entry.expiresAt <= Date.now()) {
+    values.delete(key);
+    return null;
+  }
+  return entry.value;
+}

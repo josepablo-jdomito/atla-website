@@ -24,6 +24,7 @@ afterEach(async () => {
 
 function counterStore() {
   const counts = new Map<string, number>();
+  const values = new Map<string, string>();
   return {
     counts,
     incr: vi.fn(async (key: string) => {
@@ -34,6 +35,8 @@ function counterStore() {
     del: vi.fn(async (key: string) => void counts.delete(key)),
     get: vi.fn(async (key: string) => counts.get(key) ?? 0),
     decr: vi.fn(async (key: string) => void counts.set(key, Math.max(0, (counts.get(key) ?? 0) - 1))),
+    set: vi.fn(async (key: string, value: string) => void values.set(key, value)),
+    getValue: vi.fn(async (key: string) => values.get(key) ?? null),
   };
 }
 
@@ -48,7 +51,10 @@ async function start(overrides: Partial<AuditDeps> = {}) {
     deliverToAttio: vi.fn(async () => {}),
     sendEmail: vi.fn(async () => {}),
     deliverFeedback: vi.fn(async () => {}),
+    setValue: store.set,
+    getValue: store.getValue,
     now: () => NOW,
+    adminKey: () => "",
     ...overrides,
   };
   const app = express();
@@ -57,10 +63,12 @@ async function start(overrides: Partial<AuditDeps> = {}) {
   server = app.listen(0);
   await new Promise<void>((resolve) => server!.once("listening", () => resolve()));
   const { port } = server.address() as AddressInfo;
+  let ipN = 0;
   const post = async (body: unknown, headers: Record<string, string> = {}) => {
+    ipN += 1;
     const res = await fetch(`http://127.0.0.1:${port}/api/audit`, {
       method: "POST",
-      headers: { "content-type": "application/json", origin: `http://127.0.0.1:${port}`, ...headers },
+      headers: { "content-type": "application/json", origin: `http://127.0.0.1:${port}`, "x-test-ip": `10.0.0.${ipN}`, ...headers },
       body: JSON.stringify(body),
     });
     return { status: res.status, json: (await res.json()) as Record<string, any> };
@@ -102,6 +110,7 @@ describe("POST /api/audit", () => {
       week: "2026-W45",
       count: 1,
       full: false,
+      repeat: null,
     });
     expect(deps.sendEmail).toHaveBeenCalledTimes(1);
   });
@@ -121,19 +130,35 @@ describe("POST /api/audit", () => {
     expect(deps.deliverToAttio).not.toHaveBeenCalled();
   });
 
-  it("takes one slot per request and turns full past the cap, still delivering", async () => {
+  it("takes one slot per brand and address, turns full at the cap, and queues the overflow into next week", async () => {
     const { post, deps, status, store } = await start();
     for (let n = 1; n <= AUDITS_PER_WEEK; n += 1) {
-      const res = await post({ request: { ...REQUEST, email: `ana${n}@casamar.example` }, submissionId: id(n) });
+      const res = await post({ request: { ...REQUEST, email: `ana${n}@casamar.example`, site: `brand${n}.example` }, submissionId: id(n) });
       expect(res.json).toEqual({ ok: true, week: "open" });
       expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full", taken: n, cap: AUDITS_PER_WEEK });
     }
-    const sixth = await post({ request: { ...REQUEST, email: "late@casamar.example" }, submissionId: id(99) });
+    const sixth = await post({ request: { ...REQUEST, email: "late@casamar.example", site: "late.example" }, submissionId: id(99) });
     expect(sixth.json).toEqual({ ok: true, week: "full" });
-    // Past the cap the widget still shows five of five, never six.
+    // The sixth took next week's first slot; this week stays at five, never six.
+    expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), { week: "2026-W45", count: 1, full: true, repeat: null });
+    expect(store.counts.get(weekKey(NOW))).toBe(AUDITS_PER_WEEK);
+    expect(store.counts.get("audit:week:2026-W46")).toBe(1);
     expect((await status()).json).toEqual({ week: "full", taken: AUDITS_PER_WEEK, cap: AUDITS_PER_WEEK });
-    expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), { week: "2026-W45", count: AUDITS_PER_WEEK + 1, full: true });
-    expect(store.counts.get(weekKey(NOW))).toBe(AUDITS_PER_WEEK + 1);
+  });
+
+  it("a brand or an address that already asked this week is delivered but takes no slot", async () => {
+    const { post, deps, store } = await start();
+    await post({ request: REQUEST, submissionId: id(1) });
+    // Same brand, another email, another address.
+    const again = await post({ request: { ...REQUEST, email: "other@casamar.example" }, submissionId: id(2) });
+    expect(again.json).toEqual({ ok: true, week: "open" });
+    expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ repeat: "brand", count: 1 }));
+    // Another brand from the first address.
+    const sameIp = await post({ request: { ...REQUEST, email: "third@casamar.example", site: "third.example" }, submissionId: id(3) }, { "x-test-ip": "10.0.0.1" });
+    expect(sameIp.json).toEqual({ ok: true, week: "open" });
+    expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ repeat: "address", count: 1 }));
+    expect(store.counts.get(weekKey(NOW))).toBe(1);
+    expect(deps.deliverToAttio).toHaveBeenCalledTimes(3);
   });
 
   it("delivers a submissionId once and answers the resend with the week as it stands", async () => {
@@ -177,6 +202,8 @@ describe("POST /api/audit", () => {
     expect(second.store.counts.get(weekKey(NOW))).toBe(0);
     expect(second.store.counts.has(`audit:${id(2)}`)).toBe(false);
     expect((await second.status()).json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK });
+    // Nothing delivered: the feedback question is not open for this submission.
+    expect(await second.store.getValue(`auditfb:${id(2)}`)).toBeNull();
   });
 
   it("answers 429 when the address is over its limit", async () => {
@@ -187,11 +214,16 @@ describe("POST /api/audit", () => {
 });
 
 describe("POST /api/audit/feedback", () => {
-  it("writes the answer once per submission, refuses cross-site posts and empty answers", async () => {
-    const { feedback, deps } = await start();
+  it("writes the answer once per delivered submission from the same email, and refuses the rest", async () => {
+    const { feedback, deps, post } = await start();
     const body = { ...REQUEST, submissionId: id(1), text: "I wasn't sure it was private." };
     expect((await feedback(body, { origin: "https://evil.example" })).status).toBe(403);
     expect((await feedback({ ...body, text: "" })).status).toBe(400);
+    // Not delivered yet: unknown.
+    expect((await feedback(body)).status).toBe(404);
+    await post({ request: REQUEST, submissionId: id(1) });
+    // Delivered, but another email: unknown.
+    expect((await feedback({ ...body, email: "someone@else.example" })).status).toBe(404);
     expect((await feedback(body)).json).toEqual({ ok: true });
     expect((await feedback(body)).json).toEqual({ ok: true });
     expect(deps.deliverFeedback).toHaveBeenCalledTimes(1);
@@ -200,7 +232,7 @@ describe("POST /api/audit/feedback", () => {
 });
 
 describe("GET /api/audit/status", () => {
-  it("is never cached and reads as open when the counter store fails", async () => {
+  it("is never cached at the edge and answers 503, not open, when the counter store fails", async () => {
     const { status } = await start({
       getCount: vi.fn(async () => {
         throw new Error("Upstash GET failed");
@@ -209,7 +241,19 @@ describe("GET /api/audit/status", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await status();
     expect(res.cache).toBe("no-store");
-    expect(res.json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK });
+    expect(res.status).toBe(503);
+  });
+
+  it("gives a slot back through the admin release only with the key", async () => {
+    const { post, port, status } = await start({ adminKey: () => "secret-key" });
+    await post({ request: REQUEST, submissionId: id(1) });
+    expect((await status()).json.taken).toBe(1);
+    const release = (headers: Record<string, string>) =>
+      fetch(`http://127.0.0.1:${port}/api/audit/release`, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: "{}" });
+    expect((await release({})).status).toBe(404);
+    expect((await release({ "x-audit-admin": "wrong" })).status).toBe(404);
+    const ok = await release({ "x-audit-admin": "secret-key" });
+    expect(await ok.json()).toEqual({ ok: true, taken: 0 });
   });
 });
 
@@ -217,12 +261,13 @@ describe("the note and the email", () => {
   it("name the brand in the title and say the week's slot in words JP can act on", () => {
     expect(auditTitle(REQUEST as any)).toBe("Free audit: casamar.example");
     expect(auditTitle({ ...REQUEST, site: "@casamar" } as any)).toBe("Free audit: @casamar");
-    const open = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 2, full: false });
+    const open = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 2, full: false, repeat: null });
     expect(open).toContain("Website or Instagram: casamar.example");
     expect(open).toContain("Source: direct");
-    expect(formatAuditSummary({ ...REQUEST, source: "utm_source=ig, utm_content=reel-coffee" } as any, { week: "2026-W45", count: 1, full: false })).toContain("Source: utm_source=ig, utm_content=reel-coffee");
+    expect(formatAuditSummary({ ...REQUEST, source: "utm_source=ig, utm_content=reel-coffee" } as any, { week: "2026-W45", count: 1, full: false, repeat: null })).toContain("Source: utm_source=ig, utm_content=reel-coffee");
     expect(open).toContain("Week 2026-W45: request 2 of 5, in this week's five");
-    const full = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 6, full: true });
-    expect(full).toContain("this week is full, queued for next week");
+    const full = formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 1, full: true, repeat: null });
+    expect(full).toContain("queued as request 1 of next week");
+    expect(formatAuditSummary(REQUEST as any, { week: "2026-W45", count: 3, full: false, repeat: "brand" })).toContain("this brand already asked this week");
   });
 });
