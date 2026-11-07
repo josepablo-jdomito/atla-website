@@ -422,7 +422,7 @@ export const siteCopy = {
       label: "This week",
       live: "Live",
       neutral: "Five spots a week, in the order they come in.",
-      empty: "This week's five are open. I record them in the order they come in.",
+      empty: "This week's five are open. I do them in the order they come in.",
       left: "{left} of {cap} spots left this week.",
       lastOne: "One spot left this week.",
       full: "This week's five are taken. Send yours anyway and I'll get to it after them, in the order it came in.",
@@ -432,7 +432,7 @@ export const siteCopy = {
       updatedNow: "Updated just now",
       updatedMoment: "Updated a moment ago",
       updatedMinutes: "Updated a few minutes ago",
-      resets: "Five a week, because I record every one myself.",
+      resets: "Five a week, because I do every one myself.",
     },
     // Three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd, hand-inked, halftone), one line each.
     howTitle: "How it works",
