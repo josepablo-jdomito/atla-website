@@ -1174,7 +1174,10 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-how { display: grid; gap: var(--space-5); }
 .audit-how__title { margin: 0; }
 .audit-steps { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
-.audit-step { display: grid; grid-template-columns: var(--space-10) minmax(0, 1fr); gap: var(--space-5); align-items: center; padding: var(--space-5) 0; border-bottom: 1px solid var(--site-line); }
+.audit-step { display: grid; grid-template-columns: var(--space-10) minmax(0, 1fr); grid-template-rows: auto auto; gap: var(--space-2) var(--space-5); align-items: center; padding: var(--space-5) 0; border-bottom: 1px solid var(--site-line); }
+.audit-step__number { grid-column: 1 / -1; font-variant-numeric: tabular-nums; }
+.audit-step__art { grid-row: 2; }
+.audit-step__line { grid-row: 2; }
 .audit-step__art { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
 @media (prefers-color-scheme: dark) { .audit-step__art { filter: invert(1); } }
 .audit-step__line { margin: 0; max-width: 36ch; font-size: var(--t-body); line-height: var(--lh-body); text-wrap: pretty; }
@@ -1213,7 +1216,10 @@ html[data-consent="open"] .site-explore { display: none; }
   .site-header--landing .site-header__left { display: block; }
   .site-header--landing .site-header__brand { justify-self: center; }
   .audit-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); border-top: 0; }
-  .audit-step { grid-template-columns: minmax(0, 1fr); align-items: start; gap: var(--space-4); padding: var(--space-5) 0 0; border-top: 1px solid var(--site-line); border-bottom: 0; }
+  .audit-step { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; align-items: start; gap: var(--space-4); padding: var(--space-5) 0 0; border-top: 1px solid var(--site-line); border-bottom: 0; }
+  .audit-step__number { grid-column: 1; }
+  .audit-step__art { grid-row: 2; }
+  .audit-step__line { grid-row: 3; }
   .audit-step__art { max-width: 220px; }
   .audit-ask { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-8); }
   .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-7); align-items: center; }

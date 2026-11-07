@@ -209,6 +209,10 @@ export default function Audit() {
           <ol className="audit-steps">
             {copy.steps.map((step, index) => (
               <li key={step.src} className="audit-step">
+                {/* Step numbers, the one place on the site with digits (JP, 2026-11-07: "agrega números al how it works"). */}
+                <span className="site-label audit-step__number" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <img
                   className="audit-step__art"
                   src={step.src}
