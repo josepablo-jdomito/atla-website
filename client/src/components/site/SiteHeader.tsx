@@ -164,7 +164,7 @@ export function SiteHeader() {
           <div className="site-header__right">
             <a
               href={`#${landing.target}`}
-              className="site-action site-header__cta"
+              className="audit-submit audit-submit--compact site-header__cta"
               onClick={(event) => {
                 const form = document.getElementById(landing.target);
                 if (!form) return;

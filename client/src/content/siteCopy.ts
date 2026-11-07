@@ -446,8 +446,9 @@ export const siteCopy = {
       { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
       { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes I fix one or two small things along the way, and if you don't need a studio yet, I'll tell you." },
     ],
-    // The hero action and the landing header on /audit both jump to the form (the page has no other door).
-    cta: "Send me your brand",
+    // The one call to action, the same words and the same black pill everywhere (JP, 2026-11-07): the
+    // landing header, the hero, the form, the floating week, the quiz.
+    cta: "Start free audit request",
     // The hero button (JP, 2026-11-07: "un botón que diga start free audit request"); the header keeps the short door.
     heroCta: "Start free audit request",
     proofTitle: "Brands I've worked with",
@@ -469,11 +470,11 @@ export const siteCopy = {
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
-      open: "Five spots open this week.",
-      left: "{left} of five spots left.",
-      lastOne: "One spot left this week.",
-      full: "This week's five are taken.",
-      action: "Send me your brand",
+      open: "Five spots open.",
+      left: "{left} of five left.",
+      lastOne: "One spot left.",
+      full: "This week is full.",
+      action: "Start free audit request",
     },
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",

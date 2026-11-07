@@ -1218,13 +1218,13 @@ html[data-consent="open"] .site-explore { display: none; }
 /* The week, floating (components/audit/AuditFloat.tsx): the site's floating pill at the bottom, centred,
    one row: the rings, the count with the live mark, the way to the form. Hidden until the strip is
    behind, and while the form is on screen. */
-.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: var(--space-4); min-height: 48px; padding: var(--space-2) var(--space-4) var(--space-2) var(--space-4); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-pill); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
+.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: var(--space-4); min-height: 56px; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-pill); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
 .audit-float[data-shown] { opacity: 1; transform: none; pointer-events: auto; }
 .audit-float__rings { display: flex; flex: none; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
 .audit-float__rings .audit-slots__ring { width: var(--space-4); height: var(--space-4); }
 .audit-float__line { display: inline-flex; align-items: center; gap: var(--space-2); flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .audit-float__line .audit-slots__pulse { flex: none; }
-.audit-float__action { flex: none; min-height: 32px; white-space: nowrap; }
+.audit-float__action { flex: none; white-space: nowrap; }
 /* On a narrow phone the count carries the rings, so the line keeps whole words. */
 @media (max-width: 479px) {
   .audit-float__rings { display: none; }
@@ -1235,7 +1235,7 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-ledger__name, .audit-ledger__what, .audit-ledger__proof { grid-column: auto; grid-row: 1; }
   .audit-ledger__proof:empty { display: block; }
   .audit-ledger__mark { grid-column: 4; grid-row: 1; justify-self: end; height: calc(var(--space-5) * var(--mark-scale, 1)); }
-  .audit-float { left: 50%; right: auto; bottom: var(--space-5); transform: translate(-50%, var(--space-3)); gap: var(--space-5); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-5); }
+  .audit-float { left: 50%; right: auto; bottom: var(--space-5); transform: translate(-50%, var(--space-3)); gap: var(--space-5); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5); }
   .audit-float[data-shown] { transform: translate(-50%, 0); }
   .audit-float__line { font-size: var(--t-body); }
 }
@@ -1263,7 +1263,7 @@ html[data-consent="open"] .site-explore { display: none; }
   min-height: var(--space-8);
   padding: 0 var(--space-6);
   border: 0;
-  border-radius: var(--r-row);
+  border-radius: var(--r-pill);
   background: var(--site-ink);
   color: var(--site-bg);
   font: inherit;
@@ -1274,6 +1274,9 @@ html[data-consent="open"] .site-explore { display: none; }
   transition: opacity var(--d-hover) var(--site-ease), transform 100ms var(--site-ease);
 }
 .audit-submit:hover:not(:disabled) { opacity: 0.88; }
+/* The compact pill: the landing header and the floating week. */
+.audit-submit--compact { width: auto; min-height: 40px; padding: 0 var(--space-5); font-size: var(--t-ui); }
+.site-header--landing .site-header__cta { text-decoration: none; }
 .audit-submit:active:not(:disabled) { transform: scale(0.985); }
 .audit-submit:disabled { opacity: 0.4; cursor: default; }
 .audit-form .brief-actions { display: grid; gap: var(--space-3); justify-items: start; }
@@ -1380,6 +1383,7 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-step__art { max-width: 300px; }
   .audit-ask { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-9); }
   .audit-submit { width: auto; min-width: 16rem; }
+  .audit-submit--compact { min-width: 0; }
   .audit-hero__action { width: auto; }
   .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-7); align-items: start; }
   .audit-hero__art { width: min(100%, 320px); justify-self: end; }
