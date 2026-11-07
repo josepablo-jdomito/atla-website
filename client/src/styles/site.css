@@ -1203,13 +1203,43 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-proof__head { display: grid; gap: var(--space-3); }
 .audit-proof__title { margin: 0; }
 .audit-proof__line { margin: 0; max-width: 40ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-.audit-proof__marks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-6); margin: 0; padding: 0; list-style: none; align-items: start; }
-.audit-proof__mark, .audit-proof__award { display: grid; gap: var(--space-2); justify-items: start; min-width: 0; }
-.audit-proof__mark img, .audit-proof__award-mark { display: block; height: calc(var(--space-6) * var(--mark-scale, 1)); width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
-.audit-proof__mark, .audit-proof__award { min-height: calc(var(--space-6) * 1.5); align-content: center; }
-.audit-proof__award-text { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-caption); color: var(--site-muted); line-height: var(--lh-ui); }
-.audit-proof__award-text img { display: block; width: var(--space-5); height: var(--space-5); object-fit: contain; }
-@media (prefers-color-scheme: dark) { .audit-proof__mark img, .audit-proof__award-mark { filter: invert(1); } }
+/* The ledger: one row per brand. Phone: the name and what it is, the mark at the right, the proof under.
+   From 768: name, what, proof and mark in four columns on one line. */
+.audit-ledger { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
+.audit-ledger__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto auto; column-gap: var(--space-5); row-gap: var(--space-1); align-items: center; padding: var(--space-4) 0; border-bottom: 1px solid var(--site-line); }
+.audit-ledger__name { grid-column: 1; font-size: var(--t-h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+.audit-ledger__what { grid-column: 1; font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-muted); }
+.audit-ledger__proof { grid-column: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 0; font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-ink); }
+.audit-ledger__proof:empty { display: none; }
+.audit-ledger__proof img { display: block; width: var(--space-5); height: var(--space-5); object-fit: contain; }
+.audit-ledger__mark { grid-column: 2; grid-row: 1 / span 3; display: block; height: calc(var(--space-5) * var(--mark-scale, 1)); width: auto; max-width: calc(var(--space-10) + var(--space-5)); object-fit: contain; object-position: right center; }
+@media (prefers-color-scheme: dark) { .audit-ledger__mark { filter: invert(1); } }
+
+/* The week, floating (components/audit/AuditFloat.tsx): the site's floating pill at the bottom, centred,
+   one row: the rings, the count with the live mark, the way to the form. Hidden until the strip is
+   behind, and while the form is on screen. */
+.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: var(--space-4); min-height: 48px; padding: var(--space-2) var(--space-4) var(--space-2) var(--space-4); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-pill); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
+.audit-float[data-shown] { opacity: 1; transform: none; pointer-events: auto; }
+.audit-float__rings { display: flex; flex: none; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+.audit-float__rings .audit-slots__ring { width: var(--space-4); height: var(--space-4); }
+.audit-float__line { display: inline-flex; align-items: center; gap: var(--space-2); flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.audit-float__line .audit-slots__pulse { flex: none; }
+.audit-float__action { flex: none; min-height: 32px; white-space: nowrap; }
+/* On a narrow phone the count carries the rings, so the line keeps whole words. */
+@media (max-width: 479px) {
+  .audit-float__rings { display: none; }
+  .audit-float__line { white-space: normal; overflow: visible; }
+}
+@media (min-width: 768px) {
+  .audit-ledger__row { grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 7fr) minmax(0, 4fr); grid-template-rows: auto; column-gap: var(--space-5); min-height: var(--space-9); padding: var(--space-3) 0; }
+  .audit-ledger__name, .audit-ledger__what, .audit-ledger__proof { grid-column: auto; grid-row: 1; }
+  .audit-ledger__proof:empty { display: block; }
+  .audit-ledger__mark { grid-column: 4; grid-row: 1; justify-self: end; height: calc(var(--space-5) * var(--mark-scale, 1)); }
+  .audit-float { left: 50%; right: auto; bottom: var(--space-5); transform: translate(-50%, var(--space-3)); gap: var(--space-5); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-5); }
+  .audit-float[data-shown] { transform: translate(-50%, 0); }
+  .audit-float__line { font-size: var(--t-body); }
+}
+@media (prefers-reduced-motion: reduce) { .audit-float { transition: none; } }
 
 /* The form and its argument. */
 .audit-ask { display: grid; gap: var(--space-7); padding-top: var(--space-7); border-top: 1px solid var(--site-ink); scroll-margin-top: var(--space-8); }
@@ -1343,7 +1373,6 @@ html[data-consent="open"] .site-explore { display: none; }
   .site-header--landing .site-header__left { display: block; }
   .site-header--landing .site-header__brand { justify-self: center; }
   .audit-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
-  .audit-proof__marks { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-7) var(--space-6); }
   .audit-step { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; align-items: start; gap: var(--space-4); padding: 0; border-top: 0; }
   .audit-step__number { grid-column: 1; }
   .audit-step__art { grid-row: 2; }

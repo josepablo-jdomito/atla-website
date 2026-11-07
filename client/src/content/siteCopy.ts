@@ -451,17 +451,30 @@ export const siteCopy = {
     // The hero button (JP, 2026-11-07: "un botón que diga start free audit request"); the header keeps the short door.
     heroCta: "Start free audit request",
     proofTitle: "Brands I've worked with",
-    // The social proof under the steps (JP, 2026-11-07: "que se vea de que este cabrón es la verga"). Every claim
-    // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
-    // (Acre's restaurant), Anything's series A (Bessemer, Footwork), Ulysses's series A (Andreessen Horowitz).
-    proofLine: "We did the brand for a MICHELIN Key hotel and a MICHELIN Green Star restaurant, and for startups backed by Andreessen Horowitz and Bessemer.",
-    // Each award with the brand's own mark (Acre's from the studio's files, Casa Las Tortugas's wordmark from its site).
-    proofAwards: [
-      { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", markWidth: 908, markHeight: 202 },
-      { name: "Acre", award: "MICHELIN Green Star", src: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", markWidth: 1762, markHeight: 600 },
-    ],
-    // Ulysses's wordmark, cut from its brand guidelines (Downloads, 2025-10-02), with Anything beside it as the two venture-backed ones.
-    proofMarks: [{ name: "Ulysses", src: "/logos-v2/ulysses.png", width: 1400, height: 161 }],
+    // The ledger (JP's pick, 2026-11-07): one row per brand, what it is, the proof, the mark. Every "what"
+    // is what the site or the studio's records already say: the two awards on /hospitality, the two rounds
+    // checked the same day (Anything's series A, Bessemer and Footwork; Ulysses's series A, Andreessen
+    // Horowitz), the sectors from the project records.
+    proofLine: "A MICHELIN Key hotel, a MICHELIN Green Star restaurant, and startups backed by Andreessen Horowitz and Bessemer.",
+    proofRows: [
+      { name: "Casa Las Tortugas", what: "Hotel", proof: "MICHELIN Key", badge: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", width: 908, height: 202, scale: 1.15 },
+      { name: "Acre", what: "Restaurant", proof: "MICHELIN Green Star", badge: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", width: 1762, height: 600, scale: 1.1 },
+      { name: "Ulysses", what: "Startup", proof: "Backed by Andreessen Horowitz", mark: "/logos-v2/ulysses.png", width: 1400, height: 161, scale: 0.72 },
+      { name: "Anything", what: "Startup", proof: "Backed by Bessemer", mark: "/logos-v2/anything.svg", width: 971, height: 253, scale: 1 },
+      { name: "Temakase", what: "Restaurant", proof: "", mark: "/logos-v2/temakase.svg", width: 660, height: 103, scale: 0.9 },
+      { name: "Rústico", what: "Hospitality", proof: "", mark: "/logos-v2/rustico.svg", width: 548, height: 130, scale: 1 },
+      { name: "Persona", what: "Nutrition", proof: "", mark: "/logos-v2/persona.svg", width: 1485, height: 259, scale: 0.78 },
+      { name: "Sexto Abismo", what: "Gin", proof: "", mark: "/logos-v2/sexto-abismo.svg", width: 574, height: 275, scale: 1.3 },
+    ] as { name: string; what: string; proof: string; badge?: string; mark: string; width: number; height: number; scale: number }[],
+    // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
+    // hero is behind, gone while the form is on screen. Short lines, the count in words.
+    float: {
+      open: "Five spots open this week.",
+      left: "{left} of five spots left.",
+      lastOne: "One spot left this week.",
+      full: "This week's five are taken.",
+      action: "Send me your brand",
+    },
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },

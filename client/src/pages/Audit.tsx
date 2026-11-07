@@ -7,6 +7,7 @@ import { SeoHead, useNoindex } from "@/components/seo/SeoHead";
 import { fetchAuditStatus, readAuditAttribution, submitAudit } from "@/components/audit/auditApi";
 import { AuditAnswers } from "@/components/audit/AuditAnswers";
 import { AuditSlots } from "@/components/audit/AuditSlots";
+import { AuditFloat } from "@/components/audit/AuditFloat";
 import { useAuditMotion } from "@/components/audit/useMotion";
 import { Drawing } from "@/components/audit/Drawing";
 import { siteCopy } from "@/content/siteCopy";
@@ -39,13 +40,6 @@ const FIELDS = [
 
 const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
 const FIELD_ORDER: Field[] = ["site", "name", "email"];
-// Anything first (the venture-backed one in the line), then the marks that read best small.
-/* Each wordmark at its own optical size (UX audit 2026-11-07): heavy wide marks smaller, stacked or
-   light ones larger, so the row sits at one visual weight. 1 = the row's base height. */
-const MARK_SCALE: Record<string, number> = { Ulysses: 0.72, Persona: 0.78, Anything: 1, Temakase: 0.9, Rústico: 1.05, "Sexto Abismo": 1.5, "Casa Las Tortugas": 1.25, Acre: 1.1 };
-const PROOF_MARKS = ["Anything", "Temakase", "Rústico", "Persona", "Sexto Abismo"]
-  .map((name) => siteCopy.logos.items.find((item) => item.name === name))
-  .filter((item): item is (typeof siteCopy.logos.items)[number] => Boolean(item));
 
 function newSubmissionId(): string {
   try {
@@ -180,7 +174,6 @@ export default function Audit() {
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
   const finished = done ? copy.done[done] : null;
   const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
-  const scaleOf = (name: string) => ({ ["--mark-scale" as string]: MARK_SCALE[name] ?? 1 });
 
   return (
     <PageShell landing>
@@ -207,6 +200,7 @@ export default function Audit() {
         </section>
 
         <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
+        {done ? null : <AuditFloat status={slots} root={root} />}
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
           <h2 id={`${baseId}-how`} className="site-section-title audit-how__title" data-reveal>
@@ -233,19 +227,16 @@ export default function Audit() {
             </h2>
             <p className="audit-proof__line">{copy.proofLine}</p>
           </div>
-          <ul className="audit-proof__marks">
-            {copy.proofAwards.map((item) => (
-              <li key={item.name} className="audit-proof__award" style={scaleOf(item.name)}>
-                <img className="audit-proof__award-mark" src={item.mark} alt={`${item.name} logo`} width={item.markWidth} height={item.markHeight} loading="lazy" decoding="async" />
-                <span className="audit-proof__award-text">
-                  <img src={item.src} alt={`${item.award} badge`} width={40} height={40} loading="lazy" decoding="async" />
-                  <span className="audit-proof__award-what">{item.award}</span>
+          <ul className="audit-ledger">
+            {copy.proofRows.map((row) => (
+              <li key={row.name} className="audit-ledger__row" style={{ ["--mark-scale" as string]: row.scale }}>
+                <span className="audit-ledger__name">{row.name}</span>
+                <span className="audit-ledger__what">{row.what}</span>
+                <span className="audit-ledger__proof">
+                  {row.badge ? <img src={row.badge} alt="" width={24} height={24} loading="lazy" decoding="async" /> : null}
+                  {row.proof}
                 </span>
-              </li>
-            ))}
-            {[...copy.proofMarks, ...PROOF_MARKS].map((item) => (
-              <li key={item.name} className="audit-proof__mark" style={scaleOf(item.name)}>
-                <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                <img className="audit-ledger__mark" src={row.mark} alt={`${row.name} logo`} width={row.width} height={row.height} loading="lazy" decoding="async" />
               </li>
             ))}
           </ul>
