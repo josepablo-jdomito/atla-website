@@ -1143,9 +1143,8 @@ html[data-consent="open"] .site-explore { display: none; }
 /* The free audit (/audit), a landing on the v2 system. Phone: one column with a short hero, the week as
    a strip, three steps as rows with a small drawing, one row of marks, the form. From 1024: the hero in
    two columns (the words, the week as the visual), three step columns, the form beside its argument. */
-.audit { display: grid; gap: var(--space-8); max-width: 76rem; margin: 0 auto; }
-.site-root .site-page-body.audit { padding-bottom: var(--space-8); }
-.audit-hero { display: grid; gap: var(--space-6); padding-top: var(--space-5); }
+.audit { display: grid; gap: var(--space-9); max-width: 76rem; margin: 0 auto; }
+.audit-hero { display: grid; gap: var(--space-6); padding-top: var(--space-7); }
 .audit-hero__art { margin: 0; justify-self: center; width: min(60%, 280px); }
 .audit-hero__art img, .audit-hero__art video { display: block; width: 100%; height: auto; }
 @media (prefers-color-scheme: dark) { .audit-hero__art img { filter: invert(1); } }
@@ -1169,7 +1168,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-how { display: grid; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--site-line); }
 .audit-how__title { margin: 0; }
 .audit-steps { display: grid; margin: 0; padding: 0; list-style: none; }
-.audit-step { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-3)) minmax(0, 1fr); grid-template-rows: auto auto; gap: var(--space-1) var(--space-5); align-items: start; align-content: start; padding: var(--space-5) 0; border-top: 1px solid var(--site-line); }
+.audit-step { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-3)) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: var(--space-1) var(--space-5); align-items: start; align-content: start; padding: var(--space-5) 0; border-top: 1px solid var(--site-line); }
 .audit-step__number { grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
 .audit-step__art { grid-column: 1; grid-row: 1 / span 2; }
 .audit-step__line { grid-column: 2; grid-row: 2; }
@@ -1187,7 +1186,7 @@ html[data-consent="open"] .site-explore { display: none; }
 /* The ledger: one row per brand, the mark first (it says the name), what it is, the proof. Phone: the
    mark at the left, what and the proof stacked at the right. From 768: three columns on one line. */
 .audit-ledger { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--site-line); }
-.audit-ledger__row { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-5)) minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--space-5); row-gap: var(--space-1); align-items: center; padding: var(--space-4) 0; border-bottom: 1px solid var(--site-line); }
+.audit-ledger__row { display: grid; grid-template-columns: calc(var(--space-10) + var(--space-5)) minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--space-5); row-gap: var(--space-1); align-items: center; align-content: center; min-height: calc(var(--space-10) - var(--space-3)); padding: var(--space-4) 0; border-bottom: 1px solid var(--site-line); }
 .audit-ledger__mark { grid-column: 1; grid-row: 1 / span 2; display: block; height: calc(var(--space-5) * var(--mark-scale, 1)); width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
 .audit-ledger__what { grid-column: 2; font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-muted); }
 .audit-ledger__proof { grid-column: 2; display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-small); line-height: var(--lh-ui); color: var(--site-ink); }
@@ -1197,7 +1196,7 @@ html[data-consent="open"] .site-explore { display: none; }
 
 /* The week, floating (components/audit/AuditFloat.tsx, JP's pick B): a card at the bottom of the phone
    screen, bottom right from 768. The label and the live mark, the rings beside the count, the pill. */
-.audit-float { position: fixed; z-index: 60; left: var(--space-3); right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); display: grid; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-3); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-panel); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
+.audit-float { position: fixed; z-index: 60; left: var(--site-gutter); right: var(--site-gutter); bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); display: grid; gap: var(--space-2); padding: var(--space-4); background: var(--site-surface); border: 1px solid var(--site-line); border-radius: var(--r-panel); box-shadow: var(--shadow-float); opacity: 0; transform: translateY(var(--space-3)); pointer-events: none; transition: opacity var(--d-enter) var(--site-ease), transform var(--d-enter) var(--site-ease); }
 .audit-float[data-shown] { opacity: 1; transform: none; pointer-events: auto; }
 .audit-float__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0; }
 .audit-float__head .site-label { font-size: var(--t-caption); }
@@ -1214,7 +1213,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-float__ring { width: var(--space-4); height: var(--space-4); border-radius: 50%; border: 1px solid var(--site-ink); transition: background-color var(--d-move) var(--site-ease); }
 .audit-float__ring[data-taken] { background: var(--site-ink); }
 .audit-float__line { min-width: 0; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); color: var(--site-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.audit-float__action { width: 100%; min-height: 48px; font-size: var(--t-body); }
+.audit-float__action { width: 100%; min-height: 48px; margin-top: var(--space-2); font-size: var(--t-body); }
 @media (min-width: 768px) {
   .audit-ledger__row { grid-template-columns: minmax(0, 6fr) minmax(0, 4fr) minmax(0, 8fr); grid-template-rows: auto; column-gap: var(--space-6); min-height: var(--space-9); padding: var(--space-3) 0; }
   .audit-ledger__mark, .audit-ledger__what, .audit-ledger__proof { grid-column: auto; grid-row: 1; }
@@ -1303,6 +1302,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__card--other { background: transparent; }
 .audit-quiz__form { display: grid; gap: var(--space-4); }
 .audit-quiz__line { margin: 0; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
+.audit-quiz__question + .audit-quiz__line { margin-top: calc(var(--space-3) - var(--space-6)); }
 .audit-quiz__field { resize: vertical; min-height: 3lh; font-size: var(--t-lead); }
 .audit-quiz__input { min-height: var(--space-8); font-size: var(--t-h3); line-height: var(--lh-ui); }
 .audit-quiz__form .brief-field__label { font-size: var(--t-body); }
@@ -1384,15 +1384,15 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-hero__art { width: min(100%, 320px); justify-self: end; }
 }
 @media (min-width: 1024px) {
-  .audit { gap: var(--space-9); }
-  .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: start; padding-top: var(--space-7); }
+  .audit { gap: var(--space-10); }
+  .audit-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: start; padding-top: var(--space-9); }
   .audit-hero__title { font-size: var(--t-display); }
   .audit-hero__lead { font-size: var(--t-h3); font-weight: 400; }
   .audit-hero__art { width: min(100%, 420px); justify-self: end; }
   .audit-hero__title { max-width: 14ch; }
   .audit-how { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); }
   .audit-steps { gap: var(--space-7); }
-  .audit-proof { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); align-items: start; }
+  .audit-proof { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
 }
 @media (min-width: 1280px) {
   .audit-hero__title { max-width: 18ch; }
