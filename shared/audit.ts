@@ -55,26 +55,42 @@ export const EMPTY_AUDIT: AuditDraft = { name: "", email: "", site: "" };
 
 /** Whether this week's five are still open. */
 export type AuditWeek = "open" | "full";
-/** What GET /api/audit/status answers: the week's slots as the page's live widget shows them. */
-export type AuditStatus = { week: AuditWeek; taken: number; cap: number };
+/** What GET /api/audit/status answers: the week's slots as the page's live widget shows them, and last week's count. */
+export type AuditStatus = { week: AuditWeek; taken: number; cap: number; last: number };
+
+/** The studio's clock: the five open again on Monday at midnight in Austin, not at midnight UTC. */
+export const AUDIT_TIME_ZONE = "America/Chicago";
+
+const dateParts = new Intl.DateTimeFormat("en-CA", { timeZone: AUDIT_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" });
+
+/** The civil date of `date` in Austin, as a UTC midnight, so ISO week arithmetic can run on it. */
+function austinDay(date: Date): Date {
+  const [y, m, d] = dateParts.format(date).split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
 
 /**
- * The ISO week a moment falls in, as "2026-W45", in UTC: the counter key. Weeks start on Monday,
- * so the five open again every Monday at midnight UTC (Sunday evening in Austin).
+ * The ISO week a moment falls in, as "2026-W45", on Austin's calendar: the counter key. Weeks start
+ * on Monday, so the five open again every Monday at midnight in Austin.
  */
 export function isoWeek(date: Date = new Date()): string {
-  return isoWeekOf(date);
+  return isoWeekOfDay(austinDay(date));
 }
 
 /** The ISO week seven days after `date`: where a request past this week's five is queued. */
 export function nextIsoWeek(date: Date = new Date()): string {
-  return isoWeekOf(new Date(date.getTime() + 7 * 86_400_000));
+  return isoWeekOfDay(new Date(austinDay(date).getTime() + 7 * 86_400_000));
 }
 
-function isoWeekOf(date: Date): string {
-  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-  const day = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - day);
+/** The ISO week seven days before `date`: last week's count, for the widget's proof line. */
+export function previousIsoWeek(date: Date = new Date()): string {
+  return isoWeekOfDay(new Date(austinDay(date).getTime() - 7 * 86_400_000));
+}
+
+function isoWeekOfDay(day: Date): string {
+  const d = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate()));
+  const weekday = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - weekday);
   const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
   const week = Math.ceil(((d.getTime() - yearStart) / 86_400_000 + 1) / 7);
   return `${d.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;

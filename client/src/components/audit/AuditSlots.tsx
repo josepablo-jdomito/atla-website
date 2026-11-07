@@ -55,11 +55,13 @@ export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | 
       <p className="audit-slots__head">
         <span className="site-label">{copy.label}</span>
         <span className="audit-slots__live" aria-hidden={status ? undefined : true}>
-          <span className="audit-slots__pulse" aria-hidden="true" />
+          {/* A new key on every read restarts the pulse; it beats a few times and rests (site.css). */}
+          <span key={updatedAt ?? 0} className="audit-slots__pulse" aria-hidden="true" />
           {copy.live}
         </span>
       </p>
-      <ol className="audit-slots__rings" aria-hidden="true">
+      {/* The rings show once a spot is taken: five empty rings on day one read as no demand (CRO review). */}
+      <ol className="audit-slots__rings" aria-hidden="true" hidden={taken === 0}>
         {Array.from({ length: total }, (_, index) => (
           <li key={index} className="audit-slots__ring" data-taken={index < taken ? "" : undefined} />
         ))}
@@ -69,7 +71,12 @@ export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | 
         {line}
       </p>
       <p className="audit-slots__why">{copy.resets}</p>
-      {status ? <p className="audit-slots__meta">{ageLine(updatedAt, now)}</p> : null}
+      {status ? (
+        <p className="audit-slots__meta">
+          {status.last >= total ? <span>{copy.lastWeek}</span> : null}
+          <span>{ageLine(updatedAt, now)}</span>
+        </p>
+      ) : null}
     </div>
   );
 }

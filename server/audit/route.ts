@@ -8,6 +8,7 @@ import {
   brandFromSite,
   isoWeek,
   nextIsoWeek,
+  previousIsoWeek,
   type AuditFeedback,
   type AuditRequest,
   type AuditStatus,
@@ -23,8 +24,8 @@ import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type 
  * plus one shared weekly counter. Hardened after the red team of 2026-11-07
  * (docs/superpowers/specs/2026-11-07-audit-landing/redteam-report.md).
  *
- * GET  /api/audit/status → { week: "open" | "full", taken, cap }
- *   This ISO week's slots (cap = AUDITS_PER_WEEK, taken clamped to it). Read from the store at most
+ * GET  /api/audit/status → { week: "open" | "full", taken, cap, last }
+ *   This week's slots on Austin's calendar (cap = AUDITS_PER_WEEK, taken clamped to it) and last week's count. Read from the store at most
  *   once every five seconds per instance; never cached at the edge. A store outage answers 503, so the
  *   page keeps its neutral line instead of claiming "open".
  *
@@ -54,7 +55,7 @@ import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type 
  */
 
 const SUBMISSION_TTL_SECONDS = 24 * 60 * 60;
-/** A week's counters outlive the week, so a status read on Monday never finds last week's number. */
+/** A week's counters outlive the week by two weeks: next week's queue and last week's proof line read them. */
 const WEEK_TTL_SECONDS = 21 * 24 * 60 * 60;
 const MAX_PER_EMAIL_PER_DAY = 3;
 const HONEYPOT_FIELD = "_gotcha";
@@ -102,7 +103,8 @@ const nextWeekKey = (date: Date) => `audit:week:${nextIsoWeek(date)}`;
 const sha = (value: string) => createHash("sha256").update(value).digest("hex").slice(0, 32);
 /** "full" from the fifth slot on when reading the status; a request itself is queued only past the cap. */
 const weekOf = (count: number): AuditWeek => (count >= AUDITS_PER_WEEK ? "full" : "open");
-const statusOf = (count: number): AuditStatus => ({ week: weekOf(count), taken: Math.min(Math.max(0, count), AUDITS_PER_WEEK), cap: AUDITS_PER_WEEK });
+const statusOf = (count: number, last: number): AuditStatus => ({ week: weekOf(count), taken: Math.min(Math.max(0, count), AUDITS_PER_WEEK), cap: AUDITS_PER_WEEK, last: Math.min(Math.max(0, last), AUDITS_PER_WEEK) });
+const previousWeekKey = (date: Date) => `audit:week:${previousIsoWeek(date)}`;
 
 /** The part of an address after "@", for a log line that must not name the person. */
 const emailDomain = (email: string) => email.split("@").pop()?.toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 80) || "unknown";
@@ -244,8 +246,8 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
     const nowMs = Date.now();
     if (statusCache && nowMs - statusCache.at < STATUS_CACHE_MS) return res.json(statusCache.value);
     try {
-      const count = await deps.getCount(weekKey(deps.now()));
-      statusCache = { at: nowMs, value: statusOf(count) };
+      const [count, last] = await Promise.all([deps.getCount(weekKey(deps.now())), deps.getCount(previousWeekKey(deps.now())).catch(() => 0)]);
+      statusCache = { at: nowMs, value: statusOf(count, last) };
       return res.json(statusCache.value);
     } catch (err) {
       // A counter outage is not "open": the page keeps its neutral line.

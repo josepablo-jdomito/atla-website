@@ -21,7 +21,11 @@ export const SITE_CITIES = [
  * paragraph, the Atlas symbol at the right, then a rule and the bottom line with Back to top, the
  * legal links and the rights. No clocks beside the cities: no numbers on the site.
  */
-export function SiteFooter() {
+/**
+ * `slim`: a landing page's footer (JP, 2026-11-07): the studio line, the legal links and the rights,
+ * without the site's columns, so the page keeps its one door.
+ */
+export function SiteFooter({ slim = false }: { slim?: boolean } = {}) {
   const year = useMemo(() => new Date().getFullYear(), []);
   const backToTop = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -29,8 +33,9 @@ export function SiteFooter() {
   };
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" data-slim={slim ? "" : undefined}>
       <div className="site-footer__body">
+        {slim ? null : (
         <div className="site-footer__columns">
           <nav aria-label={footer.navLabel} className="site-footer__column">
             <h2 className="site-footer__head">{footer.pagesLabel}</h2>
@@ -70,6 +75,7 @@ export function SiteFooter() {
             </ul>
           </div>
         </div>
+        )}
         <p className="site-footer__line">{footer.line}</p>
         <span className="site-footer__symbol" role="img" aria-label={footer.symbolLabel} />
       </div>

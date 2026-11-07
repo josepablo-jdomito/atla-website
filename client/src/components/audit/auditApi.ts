@@ -36,10 +36,10 @@ export async function fetchAuditStatus(signal?: AbortSignal): Promise<AuditStatu
   try {
     const res = await fetch("/api/audit/status", { signal: signal ?? AbortSignal.timeout(STATUS_TIMEOUT_MS), cache: "no-store" });
     if (!res.ok) return null;
-    const body = (await res.json()) as { week?: unknown; taken?: unknown; cap?: unknown };
+    const body = (await res.json()) as { week?: unknown; taken?: unknown; cap?: unknown; last?: unknown };
     const cap = typeof body.cap === "number" && body.cap > 0 ? body.cap : 5;
-    const taken = typeof body.taken === "number" ? Math.min(Math.max(0, Math.round(body.taken)), cap) : 0;
-    return { week: asWeek(body.week), taken, cap };
+    const clamp = (value: unknown) => (typeof value === "number" ? Math.min(Math.max(0, Math.round(value)), cap) : 0);
+    return { week: asWeek(body.week), taken: clamp(body.taken), cap, last: clamp(body.last) };
   } catch {
     return null;
   }

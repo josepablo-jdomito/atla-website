@@ -146,7 +146,7 @@ export default function Audit() {
       setSlots((current) => {
         const total = current?.cap ?? 5;
         const taken = Math.min(total, (current?.taken ?? 0) + 1);
-        return { week: result.week === "full" || taken >= total ? "full" : "open", taken, cap: total };
+        return { week: result.week === "full" || taken >= total ? "full" : "open", taken, cap: total, last: current?.last ?? 0 };
       });
       setSlotsAt(Date.now());
       setDone(result.week);
@@ -170,7 +170,7 @@ export default function Audit() {
   const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
 
   return (
-    <PageShell logos={false}>
+    <PageShell landing>
       <SeoHead title={formatMetaTitle(copy.metaTitle, "Atla")} description={copy.metaDescription} pathname="/audit" />
       <div className="site-page-body audit">
         <section className="audit-hero" aria-labelledby={`${baseId}-title`}>
@@ -188,10 +188,19 @@ export default function Audit() {
               </p>
             )}
           </div>
-          <div className="audit-hero__aside">
-            <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
-          </div>
+          <figure className="audit-hero__art">
+            <img
+              src={copy.heroArt.src}
+              alt={copy.heroArt.alt}
+              width={copy.heroArt.width}
+              height={copy.heroArt.height}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </figure>
         </section>
+
+        <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
 
         <section className="audit-how" aria-labelledby={`${baseId}-how`}>
           <h2 id={`${baseId}-how`} className="site-section-title audit-how__title">

@@ -15,7 +15,18 @@ let landed = false;
  * three passes and the footer comes out under it (JP, 2026-11-06).
  * `logos={false}` keeps the footer but not the client marks: the legal pages and the 404 are not a sales moment.
  */
-export function PageShell({ children, tail = true, logos = true }: { children: ReactNode; tail?: boolean; logos?: boolean }) {
+export function PageShell({
+  children,
+  tail = true,
+  logos = true,
+  landing = false,
+}: {
+  children: ReactNode;
+  tail?: boolean;
+  logos?: boolean;
+  /** A landing page: no logo band and the slim footer, so the page keeps its one door. */
+  landing?: boolean;
+}) {
   const [location] = useLocation();
   const [firstPaint] = useState(() => !landed);
 
@@ -46,8 +57,8 @@ export function PageShell({ children, tail = true, logos = true }: { children: R
           {children}
         </div>
       </main>
-      {tail && logos ? <ClientLogos /> : null}
-      {tail ? <SiteFooter /> : null}
+      {tail && logos && !landing ? <ClientLogos /> : null}
+      {tail ? <SiteFooter slim={landing} /> : null}
     </div>
   );
 }

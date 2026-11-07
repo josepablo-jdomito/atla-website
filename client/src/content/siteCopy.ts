@@ -432,9 +432,13 @@ export const siteCopy = {
       updatedNow: "Updated just now",
       updatedMoment: "Updated a moment ago",
       updatedMinutes: "Updated a few minutes ago",
+      // Shown once a full week has gone by with its five taken: the one proof the counter can carry.
+      lastWeek: "Last week's five were taken too.",
       resets: "Five a week, because I do every one myself.",
     },
-    // Three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd, hand-inked, halftone), one line each.
+    // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
+    // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
+    heroArt: { src: "/audit/landing/hero.webp", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 740, height: 1000 },
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
@@ -444,7 +448,7 @@ export const siteCopy = {
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
     proofLabel: "Brands I've worked with",
-    formTitle: "Send me your brand",
+    formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
     // Under the button: the private promise (JP, 2026-11-07), the no-catch line, the no-effort line.

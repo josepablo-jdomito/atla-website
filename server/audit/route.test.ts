@@ -89,10 +89,12 @@ async function start(overrides: Partial<AuditDeps> = {}) {
 }
 
 describe("isoWeek", () => {
-  it("names the ISO week in UTC, Monday to Sunday", () => {
+  it("names the ISO week on Austin's calendar, Monday to Sunday", () => {
     expect(isoWeek(new Date("2026-11-07T18:00:00Z"))).toBe("2026-W45");
-    expect(isoWeek(new Date("2026-11-08T23:59:59Z"))).toBe("2026-W45");
-    expect(isoWeek(new Date("2026-11-09T00:00:00Z"))).toBe("2026-W46");
+    // Sunday evening in Austin is still Sunday, although it is already Monday in UTC.
+    expect(isoWeek(new Date("2026-11-09T05:59:59Z"))).toBe("2026-W45");
+    // Monday at midnight in Austin (six in the morning UTC) opens the next week.
+    expect(isoWeek(new Date("2026-11-09T06:00:00Z"))).toBe("2026-W46");
     expect(isoWeek(new Date("2027-01-01T12:00:00Z"))).toBe("2026-W53");
   });
 });
@@ -135,7 +137,7 @@ describe("POST /api/audit", () => {
     for (let n = 1; n <= AUDITS_PER_WEEK; n += 1) {
       const res = await post({ request: { ...REQUEST, email: `ana${n}@casamar.example`, site: `brand${n}.example` }, submissionId: id(n) });
       expect(res.json).toEqual({ ok: true, week: "open" });
-      expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full", taken: n, cap: AUDITS_PER_WEEK });
+      expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full", taken: n, cap: AUDITS_PER_WEEK, last: 0 });
     }
     const sixth = await post({ request: { ...REQUEST, email: "late@casamar.example", site: "late.example" }, submissionId: id(99) });
     expect(sixth.json).toEqual({ ok: true, week: "full" });
@@ -143,7 +145,7 @@ describe("POST /api/audit", () => {
     expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), { week: "2026-W45", count: 1, full: true, repeat: null });
     expect(store.counts.get(weekKey(NOW))).toBe(AUDITS_PER_WEEK);
     expect(store.counts.get("audit:week:2026-W46")).toBe(1);
-    expect((await status()).json).toEqual({ week: "full", taken: AUDITS_PER_WEEK, cap: AUDITS_PER_WEEK });
+    expect((await status()).json).toEqual({ week: "full", taken: AUDITS_PER_WEEK, cap: AUDITS_PER_WEEK, last: 0 });
   });
 
   it("a brand or an address that already asked this week is delivered but takes no slot", async () => {
@@ -201,7 +203,7 @@ describe("POST /api/audit", () => {
     expect(res.json.error).toMatch(/send it again/);
     expect(second.store.counts.get(weekKey(NOW))).toBe(0);
     expect(second.store.counts.has(`audit:${id(2)}`)).toBe(false);
-    expect((await second.status()).json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK });
+    expect((await second.status()).json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK, last: 0 });
     // Nothing delivered: the feedback question is not open for this submission.
     expect(await second.store.getValue(`auditfb:${id(2)}`)).toBeNull();
   });
@@ -232,6 +234,12 @@ describe("POST /api/audit/feedback", () => {
 });
 
 describe("GET /api/audit/status", () => {
+  it("carries last week's count for the proof line", async () => {
+    const { status, store } = await start();
+    store.counts.set("audit:week:2026-W44", 5);
+    expect((await status()).json).toEqual({ week: "open", taken: 0, cap: AUDITS_PER_WEEK, last: 5 });
+  });
+
   it("is never cached at the edge and answers 503, not open, when the counter store fails", async () => {
     const { status } = await start({
       getCount: vi.fn(async () => {
