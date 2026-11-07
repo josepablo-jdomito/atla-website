@@ -1,6 +1,7 @@
 import type { AuditFeedback, AuditRequest, AuditStatus, AuditWeek } from "@shared/audit";
 
-export type AuditResult = { status: "ok"; week: AuditWeek } | { status: "rate-limited" } | { status: "failed" };
+/** `repeat`: the brand (or the address) already asked this week, so this request took no slot. */
+export type AuditResult = { status: "ok"; week: AuditWeek; repeat: boolean } | { status: "rate-limited" } | { status: "failed" };
 
 // Attio (two or three calls) and Resend run in parallel on the server, each with an 8 s timeout; the function may take 30 s.
 const SUBMIT_TIMEOUT_MS = 30000;
@@ -21,9 +22,9 @@ export async function submitAudit(request: AuditRequest, submissionId: string, h
     });
     if (res.status === 429) return { status: "rate-limited" };
     if (!res.ok) return { status: "failed" };
-    const body = (await res.json()) as { ok?: unknown; week?: unknown };
+    const body = (await res.json()) as { ok?: unknown; week?: unknown; repeat?: unknown };
     if (body.ok !== true) return { status: "failed" };
-    return { status: "ok", week: asWeek(body.week) };
+    return { status: "ok", week: asWeek(body.week), repeat: body.repeat === true };
   } catch {
     return { status: "failed" };
   } finally {

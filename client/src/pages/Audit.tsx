@@ -27,6 +27,8 @@ export const AUDIT_FORM_ID = "send";
 
 type Field = keyof AuditDraft;
 type Status = "idle" | "sending" | "rate-limited" | "failed";
+/** What the visitor sent: a slot this week, the queue, or a repeat (the brand already asked this week). */
+type Done = AuditWeek | "repeat";
 
 const FIELDS = [
   { key: "site", type: "text", autoComplete: "url" },
@@ -37,6 +39,9 @@ const FIELDS = [
 const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
 const FIELD_ORDER: Field[] = ["site", "name", "email"];
 // Anything first (the venture-backed one in the line), then the marks that read best small.
+/* Each wordmark at its own optical size (UX audit 2026-11-07): heavy wide marks smaller, stacked or
+   light ones larger, so the row sits at one visual weight. 1 = the row's base height. */
+const MARK_SCALE: Record<string, number> = { Ulysses: 0.72, Persona: 0.78, Anything: 1, Temakase: 0.9, Rústico: 1.05, "Sexto Abismo": 1.5, "Casa Las Tortugas": 1.25, Acre: 1.1 };
 const PROOF_MARKS = ["Anything", "Temakase", "Rústico", "Persona", "Sexto Abismo"]
   .map((name) => siteCopy.logos.items.find((item) => item.name === name))
   .filter((item): item is (typeof siteCopy.logos.items)[number] => Boolean(item));
@@ -69,10 +74,12 @@ export default function Audit() {
   const [slotsAt, setSlotsAt] = useState<number | null>(null);
   // ?sent= comes back from the plain form route (/api/audit/form) when the form was sent before hydration.
   const search = useSearch();
-  const [done, setDone] = useState<AuditWeek | "error" | null>(() => {
-    const sent = new URLSearchParams(search).get("sent");
-    return sent === "open" || sent === "full" || sent === "error" ? sent : null;
-  });
+  const arrived = new URLSearchParams(search).get("sent");
+  const [done, setDone] = useState<Done | null>(() => (arrived === "open" || arrived === "full" ? arrived : null));
+  // A failed plain send (?sent=error) comes back to the form with its message, never to a dead end.
+  useEffect(() => {
+    if (arrived === "error") setStatus("failed");
+  }, [arrived]);
   const [answers, setAnswers] = useState<Record<AuditAnswerKey, string>>({ frustration: "", outcome: "", tried: "", anything: "" });
   const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   // One id per request: a retry after a failure is the same request, so the server delivers it once.
@@ -80,6 +87,7 @@ export default function Audit() {
   const sent = useRef<AuditDraft | null>(null);
   const started = useRef(false);
   const honeypot = useRef<HTMLInputElement>(null);
+  const sendButton = useRef<HTMLButtonElement>(null);
   const doneHeading = useRef<HTMLHeadingElement>(null);
   const root = useRef<HTMLDivElement>(null);
   useAuditMotion(root);
@@ -149,6 +157,11 @@ export default function Audit() {
       trackAuditComplete(submissionId.current);
       sent.current = { name: parsed.data.name, email: parsed.data.email, site: parsed.data.site };
       setStatus("idle");
+      if (result.repeat) {
+        // The brand already asked this week: no new ring, and the line says it keeps its place.
+        setDone("repeat");
+        return;
+      }
       // The visitor's own request takes a ring at once; the next poll confirms it.
       setSlots((current) => {
         const total = current?.cap ?? 5;
@@ -161,6 +174,8 @@ export default function Audit() {
     }
     trackAuditSubmitError(result.status === "rate-limited" ? "rate_limited" : "failed");
     setStatus(result.status);
+    // The keyboard stays on the button, where the message is, so a retry is one key away.
+    sendButton.current?.focus();
   };
 
   const anyAnswer = AUDIT_ANSWER_KEYS.some((key) => answers[key].trim());
@@ -175,6 +190,7 @@ export default function Audit() {
   const message = status === "rate-limited" ? copy.rateLimited : status === "failed" ? copy.network : "";
   const finished = done ? copy.done[done] : null;
   const sentWeek: AuditWeek | null = done === "open" || done === "full" ? done : null;
+  const scaleOf = (name: string) => ({ ["--mark-scale" as string]: MARK_SCALE[name] ?? 1 });
 
   return (
     <PageShell landing>
@@ -187,7 +203,7 @@ export default function Audit() {
             </h1>
             <p className="audit-hero__lead">{copy.lead}</p>
             <p className="audit-hero__byline">{copy.byline}</p>
-            {done && done !== "error" ? null : (
+            {done ? null : (
               <p className="audit-hero__action">
                 <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-hero__button" onClick={goToForm}>
                   {copy.heroCta}
@@ -229,7 +245,7 @@ export default function Audit() {
           </div>
           <ul className="audit-proof__marks">
             {copy.proofAwards.map((item) => (
-              <li key={item.name} className="audit-proof__award">
+              <li key={item.name} className="audit-proof__award" style={scaleOf(item.name)}>
                 <img className="audit-proof__award-mark" src={item.mark} alt={`${item.name} logo`} width={item.markWidth} height={item.markHeight} loading="lazy" decoding="async" />
                 <span className="audit-proof__award-text">
                   <img src={item.src} alt={`${item.award} badge`} width={40} height={40} loading="lazy" decoding="async" />
@@ -237,13 +253,8 @@ export default function Audit() {
                 </span>
               </li>
             ))}
-            {copy.proofMarks.map((item) => (
-              <li key={item.name} className="audit-proof__mark">
-                <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
-              </li>
-            ))}
-            {PROOF_MARKS.map((item) => (
-              <li key={item.name} className="audit-proof__mark">
+            {[...copy.proofMarks, ...PROOF_MARKS].map((item) => (
+              <li key={item.name} className="audit-proof__mark" style={scaleOf(item.name)}>
                 <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
               </li>
             ))}
@@ -257,15 +268,13 @@ export default function Audit() {
                   {finished.title}
                 </h2>
                 <p className="audit-done__line">{finished.line}</p>
-                {done === "error" ? null : (
                 <p className="audit-done__follow">
                   {copy.doneFollow}{" "}
                   <a href={INSTAGRAM_JP} target="_blank" rel="noopener noreferrer" className="audit-done__link">
                     {copy.doneFollowLink}
                   </a>
                 </p>
-                )}
-                {done === "error" || !sent.current ? null : feedbackState === "done" ? (
+                {!sent.current ? null : feedbackState === "done" ? (
                   <p className="audit-done__line" role="status">
                     {copy.feedbackDone}
                   </p>
@@ -344,7 +353,7 @@ export default function Audit() {
                             value={draft[field.key]}
                             onFocus={onFieldFocus}
                             onChange={(event) => set(field.key, event.target.value)}
-                            disabled={sending}
+                            readOnly={sending}
                           />
                           {error ? (
                             <p id={`${id}-error`} className="brief-field__error">
@@ -371,7 +380,7 @@ export default function Audit() {
                   </div>
 
                   <div className="brief-actions">
-                    <button type="submit" className="audit-submit" disabled={sending}>
+                    <button ref={sendButton} type="submit" className="audit-submit" aria-disabled={sending || undefined} aria-busy={sending || undefined}>
                       {sending ? copy.sending : status === "failed" ? copy.retry : copy.submit}
                     </button>
                     <p

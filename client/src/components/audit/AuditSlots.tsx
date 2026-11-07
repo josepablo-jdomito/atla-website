@@ -54,11 +54,6 @@ export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | 
     <div className="audit-slots" data-state={!status ? "pending" : status.week}>
       <p className="audit-slots__head">
         <span className="site-label">{copy.label}</span>
-        <span className="audit-slots__live" aria-hidden={status ? undefined : true}>
-          {/* A new key on every read restarts the pulse; it beats a few times and rests (site.css). */}
-          <span key={updatedAt ?? 0} className="audit-slots__pulse" aria-hidden="true" />
-          {copy.live}
-        </span>
       </p>
       {/* The rings show once a spot is taken: five empty rings on day one read as no demand (CRO review). */}
       <ol className="audit-slots__rings" aria-hidden="true" hidden={taken === 0}>
@@ -71,10 +66,16 @@ export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | 
         {line}
       </p>
       <p className="audit-slots__why">{copy.resets}</p>
+      {/* The live row under the sentence: the beating mark, the age of the read, last week's proof. */}
       {status ? (
         <p className="audit-slots__meta">
-          {status.last >= total ? <span>{copy.lastWeek}</span> : null}
+          <span className="audit-slots__live">
+            {/* A new key on every read restarts the pulse; it beats a few times and rests (site.css). */}
+            <span key={updatedAt ?? 0} className="audit-slots__pulse" aria-hidden="true" />
+            {copy.live}
+          </span>
           <span>{ageLine(updatedAt, now)}</span>
+          {status.last >= total && taken > 0 ? <span>{copy.lastWeek}</span> : null}
         </p>
       ) : null}
     </div>

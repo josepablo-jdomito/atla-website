@@ -413,11 +413,11 @@ export const siteCopy = {
     // CRO review 2026-11-07 (docs/superpowers/specs/2026-11-07-audit-landing/cro-review.md): name JP, state the
     // offer in the title, JP's own line opens the lead. His name signs the lead (a byline), not a kicker above
     // the title (design pass 2026-11-07). Policies confirmed by JP the same day:
-    // the video is private; it is sent as soon as it is ready (no fixed window); the audit says what works and
+    // the audit is private; it is sent by email as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
     byline: "José Pablo, founder of Atla",
     title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
-    lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you.",
+    lead: "We all need an extra pair of eyes. I think you're too close to your brand and you're attached to it, so on Instagram I break down brands I don't work for, and here I do the same with yours.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
       label: "This week",
@@ -426,16 +426,16 @@ export const siteCopy = {
       empty: "This week's five are open. I do them in the order they come in.",
       left: "{left} of {cap} spots left this week.",
       lastOne: "One spot left this week.",
-      full: "This week's five are taken. Send yours anyway and I'll get to it after them, in the order it came in.",
+      full: "This week's five are taken. Send yours anyway and I'll get to it after them.",
       // What the person who just sent sees in place of the call to send.
       sentOpen: "You took one of this week's five.",
       sentFull: "You're on the list, after this week's five.",
       updatedNow: "Updated just now",
       updatedMoment: "Updated a moment ago",
       updatedMinutes: "Updated a few minutes ago",
-      // Shown once a full week has gone by with its five taken: the one proof the counter can carry.
-      lastWeek: "Last week's five were taken too.",
-      resets: "Five a week, because I do every one myself.",
+      // Shown once a full week has gone by with its five taken and this week has started: the one proof the counter can carry.
+      lastWeek: "Last week's five were taken.",
+      resets: "Five a week, because I do every one myself. Five open again every Monday.",
     },
     // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
     // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
@@ -444,7 +444,7 @@ export const siteCopy = {
     steps: [
       { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
       { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change, in order." },
-      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
+      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes I fix one or two small things along the way, and if you don't need a studio yet, I'll tell you." },
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
@@ -454,7 +454,7 @@ export const siteCopy = {
     // The social proof under the steps (JP, 2026-11-07: "que se vea de que este cabrón es la verga"). Every claim
     // is on the site already or checked the same day: MICHELIN Key (Casa Las Tortugas), MICHELIN Green Star
     // (Acre's restaurant), Anything's series A (Bessemer, Footwork), Ulysses's series A (Andreessen Horowitz).
-    proofLine: "From a MICHELIN Key hotel and a MICHELIN Green Star restaurant to startups backed by Andreessen Horowitz and Bessemer.",
+    proofLine: "We did the brand for a MICHELIN Key hotel and a MICHELIN Green Star restaurant, and for startups backed by Andreessen Horowitz and Bessemer.",
     // Each award with the brand's own mark (Acre's from the studio's files, Casa Las Tortugas's wordmark from its site).
     proofAwards: [
       { name: "Casa Las Tortugas", award: "MICHELIN Key", src: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", markWidth: 908, markHeight: 202 },
@@ -469,7 +469,7 @@ export const siteCopy = {
     assurances: [
       "The audit is only for you. I don't post it, and your brand doesn't end up in a reel.",
       "I think a few of you will want to work with Atla later. Most won't, and that's all right.",
-      "No call, nothing to prepare. It's free, and I send it as soon as it's ready.",
+      "You don't need a call or to prepare anything. It's free, and it comes by email as soon as it's ready.",
     ],
     // JP, 2026-11-07: the email may join the lists, so the line says it (red team P0-3).
     privacyNotice: "We use this to reply, to run your audit and, now and then, to send you news from Atla and WeLoveDaily. You can unsubscribe any time.",
@@ -484,15 +484,16 @@ export const siteCopy = {
     network: "That didn't go through. What you wrote is still here.",
     done: {
       open: { title: "Got it.", line: "You're in this week's five. The audit comes by email, from me, as soon as it's ready." },
-      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them, in the order it came in. The audit comes by email as soon as it's ready." },
-      error: { title: "That didn't go through.", line: "Nothing was lost. Scroll up and send it again in a moment." },
+      full: { title: "You're on the list.", line: "This week's five are taken, so yours comes after them. The audit comes by email as soon as it's ready." },
+      // The brand (or the address) already asked this week: it keeps its place, no second slot.
+      repeat: { title: "Got it.", line: "I already have this one, so it keeps its place. The audit comes by email, from me, as soon as it's ready." },
     },
     // After the send: one micro step, then the questions that make the audit sharper (Daniel Priestley's
     // scorecard questions, JP 2026-11-07): frustration, outcome, what they tried, and always "anything else" last.
-    doneFollow: "While it's on its way, I'm on Instagram every week.",
+    doneFollow: "While you wait, I break down a brand on Instagram every week.",
     doneFollowLink: "Follow @jdomito_",
     answersTitle: "Four questions, so the audit is about you",
-    answersLine: "Skip any of them. What you write goes to me, not to a form.",
+    answersLine: "Skip any of them. I read every answer myself.",
     answers: [
       { key: "frustration", label: "What's bugging you about your brand right now?" },
       { key: "outcome", label: "Where do you want it to be a year from now?" },

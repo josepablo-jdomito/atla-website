@@ -107,7 +107,7 @@ describe("POST /api/audit", () => {
     expect(deps.deliverToAttio).not.toHaveBeenCalled();
     const ok = await post(body);
     expect(ok.status).toBe(200);
-    expect(ok.json).toEqual({ ok: true, week: "open" });
+    expect(ok.json).toEqual({ ok: true, week: "open", repeat: false });
     expect(deps.deliverToAttio).toHaveBeenCalledWith(expect.objectContaining({ email: REQUEST.email }), {
       week: "2026-W45",
       count: 1,
@@ -120,7 +120,7 @@ describe("POST /api/audit", () => {
   it("answers a filled honeypot with ok and delivers nothing", async () => {
     const { post, deps, store } = await start();
     const res = await post({ request: REQUEST, submissionId: id(1), _gotcha: "http://spam" });
-    expect(res.json).toEqual({ ok: true, week: "open" });
+    expect(res.json).toEqual({ ok: true, week: "open", repeat: false });
     expect(deps.deliverToAttio).not.toHaveBeenCalled();
     expect(store.counts.get(weekKey(NOW))).toBeUndefined();
   });
@@ -136,11 +136,11 @@ describe("POST /api/audit", () => {
     const { post, deps, status, store } = await start();
     for (let n = 1; n <= AUDITS_PER_WEEK; n += 1) {
       const res = await post({ request: { ...REQUEST, email: `ana${n}@casamar.example`, site: `brand${n}.example` }, submissionId: id(n) });
-      expect(res.json).toEqual({ ok: true, week: "open" });
+      expect(res.json).toEqual({ ok: true, week: "open", repeat: false });
       expect((await status()).json).toEqual({ week: n < AUDITS_PER_WEEK ? "open" : "full", taken: n, cap: AUDITS_PER_WEEK, last: 0 });
     }
     const sixth = await post({ request: { ...REQUEST, email: "late@casamar.example", site: "late.example" }, submissionId: id(99) });
-    expect(sixth.json).toEqual({ ok: true, week: "full" });
+    expect(sixth.json).toEqual({ ok: true, week: "full", repeat: false });
     // The sixth took next week's first slot; this week stays at five, never six.
     expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), { week: "2026-W45", count: 1, full: true, repeat: null });
     expect(store.counts.get(weekKey(NOW))).toBe(AUDITS_PER_WEEK);
@@ -153,11 +153,11 @@ describe("POST /api/audit", () => {
     await post({ request: REQUEST, submissionId: id(1) });
     // Same brand, another email, another address.
     const again = await post({ request: { ...REQUEST, email: "other@casamar.example" }, submissionId: id(2) });
-    expect(again.json).toEqual({ ok: true, week: "open" });
+    expect(again.json).toEqual({ ok: true, week: "open", repeat: true });
     expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ repeat: "brand", count: 1 }));
     // Another brand from the first address.
     const sameIp = await post({ request: { ...REQUEST, email: "third@casamar.example", site: "third.example" }, submissionId: id(3) }, { "x-test-ip": "10.0.0.1" });
-    expect(sameIp.json).toEqual({ ok: true, week: "open" });
+    expect(sameIp.json).toEqual({ ok: true, week: "open", repeat: true });
     expect(deps.deliverToAttio).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ repeat: "address", count: 1 }));
     expect(store.counts.get(weekKey(NOW))).toBe(1);
     expect(deps.deliverToAttio).toHaveBeenCalledTimes(3);
@@ -168,7 +168,7 @@ describe("POST /api/audit", () => {
     const body = { request: REQUEST, submissionId: id(1) };
     await post(body);
     const again = await post(body);
-    expect(again.json).toEqual({ ok: true, week: "open" });
+    expect(again.json).toEqual({ ok: true, week: "open", repeat: false });
     expect(deps.deliverToAttio).toHaveBeenCalledTimes(1);
     expect(store.counts.get(weekKey(NOW))).toBe(1);
   });
@@ -188,7 +188,7 @@ describe("POST /api/audit", () => {
     });
     const first = await start({ deliverToAttio: attioDown });
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect((await first.post({ request: REQUEST, submissionId: id(1) })).json).toEqual({ ok: true, week: "open" });
+    expect((await first.post({ request: REQUEST, submissionId: id(1) })).json).toEqual({ ok: true, week: "open", repeat: false });
     expect(error.mock.calls.flat().join(" ")).toContain("partly delivered");
     expect(error.mock.calls.flat().join(" ")).not.toContain("Ana");
     await new Promise<void>((resolve) => server!.close(() => resolve()));

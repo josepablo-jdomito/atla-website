@@ -29,7 +29,7 @@ import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type 
  *   once every five seconds per instance; never cached at the edge. A store outage answers 503, so the
  *   page keeps its neutral line instead of claiming "open".
  *
- * POST /api/audit  { request, submissionId, _gotcha } → { ok: true, week: "open" | "full" }
+ * POST /api/audit  { request, submissionId, _gotcha } → { ok: true, week: "open" | "full", repeat: boolean }
  *   Same-site posts only (403 otherwise). A filled honeypot gets ok and delivers nothing. More than
  *   5 posts per hashed address in 10 min, or 3 per email a day, get 429. The same submissionId
  *   within 24 h skips delivery and answers with the week as it stands. A slot is taken once per
@@ -128,7 +128,7 @@ async function handleAudit(deps: AuditDeps, ip: string, raw: unknown): Promise<O
     await deps.rateLimit(ip, "audit");
     console.warn("[audit] honeypot hit");
     const count = await deps.getCount(weekKey(deps.now())).catch(() => 0);
-    return { status: 200, body: { ok: true, week: weekOf(count) } };
+    return { status: 200, body: { ok: true, week: weekOf(count), repeat: false } };
   }
 
   const parsed = body.safeParse(record);
@@ -143,7 +143,7 @@ async function handleAudit(deps: AuditDeps, ip: string, raw: unknown): Promise<O
     if ((await deps.incrWithExpiry(submissionKey, SUBMISSION_TTL_SECONDS)) > 1) {
       // Already delivered: answer with the week as it stands, without taking another slot.
       const count = await deps.getCount(week).catch(() => 0);
-      return { status: 200, body: { ok: true, week: weekOf(count) } };
+      return { status: 200, body: { ok: true, week: weekOf(count), repeat: false } };
     }
   } catch (err) {
     console.error(`[audit] idempotency store failed, delivering anyway: ${err instanceof Error ? err.message : "unknown error"}`);
@@ -216,14 +216,14 @@ async function handleAudit(deps: AuditDeps, ip: string, raw: unknown): Promise<O
     // Delivered (fully or partly): the feedback question may now be answered for this submission.
     await deps.setValue(`auditfb:${parsed.data.submissionId}`, sha(request.email.toLowerCase()), SUBMISSION_TTL_SECONDS).catch(() => {});
   }
-  if (!failures.length) return { status: 200, body: { ok: true, week: answer } };
+  if (!failures.length) return { status: 200, body: { ok: true, week: answer, repeat: repeat !== null } };
 
   const ref = randomUUID();
   const allFailed = failures.length === steps.length;
   console.error(
     `[audit] delivery failed ref=${ref} domain=${emailDomain(request.email)} ${allFailed ? "nothing delivered, visitor asked to resend" : "partly delivered"} (${failures.join("; ")})`,
   );
-  if (!allFailed) return { status: 200, body: { ok: true, week: answer } };
+  if (!allFailed) return { status: 200, body: { ok: true, week: answer, repeat: repeat !== null } };
 
   try {
     await deps.deleteKey(submissionKey);
