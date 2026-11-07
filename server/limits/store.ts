@@ -1,7 +1,8 @@
 /**
  * Counters with expiry for rate limits and the brief's idempotency marks.
  *
- * With UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN set, counters live in
+ * With UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN set (or the KV_REST_API_URL and
+ * KV_REST_API_TOKEN the Vercel Marketplace Upstash store injects), counters live in
  * Upstash Redis (plain REST, no SDK), so every Vercel instance shares them.
  * Without them, counters fall back to a per-process Map: on Vercel each
  * instance then keeps its own, which is a brake, not a control. That fallback
@@ -19,8 +20,8 @@ export const isProduction = () =>
   process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview";
 
 function upstashConfig() {
-  const url = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/+$/, "");
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || "";
+  const url = (process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || "").replace(/\/+$/, "");
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || "";
   if (url && token) return { url, token };
   if (!warnedNoUpstash) {
     warnedNoUpstash = true;
