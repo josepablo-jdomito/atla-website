@@ -152,13 +152,13 @@ export default function Audit() {
           <ul className="audit-ledger">
             {copy.proofRows.map((row) => (
               <li key={row.name} className="audit-ledger__row" style={{ ["--mark-scale" as string]: row.scale }}>
-                <span className="audit-ledger__name">{row.name}</span>
+                {/* The mark says the name (JP, 2026-11-07: no name in text beside its own logo). */}
+                <img className="audit-ledger__mark" src={row.mark} alt={row.name} width={row.width} height={row.height} loading="lazy" decoding="async" />
                 <span className="audit-ledger__what">{row.what}</span>
                 <span className="audit-ledger__proof">
                   {row.badge ? <img src={row.badge} alt="" width={24} height={24} loading="lazy" decoding="async" /> : null}
                   {row.proof}
                 </span>
-                <img className="audit-ledger__mark" src={row.mark} alt={`${row.name} logo`} width={row.width} height={row.height} loading="lazy" decoding="async" />
               </li>
             ))}
           </ul>
