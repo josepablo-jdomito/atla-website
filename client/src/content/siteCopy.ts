@@ -455,17 +455,13 @@ export const siteCopy = {
     // The ledger (JP's pick, 2026-11-07): one row per brand, what it is, the proof, the mark. Every "what"
     // is what the site or the studio's records already say: the two awards on /hospitality, the two rounds
     // checked the same day (Anything's series A, Bessemer and Footwork; Ulysses's series A, Andreessen
-    // Horowitz), the sectors from the project records.
+    // Horowitz). JP, 2026-11-07: only the four with a proof; the rest went.
     proofLine: "From VC-backed startups to a few of the best hotels and restaurants in the world.",
     proofRows: [
       { name: "Casa Las Tortugas", what: "Hotel", proof: "MICHELIN Key", badge: "/hospitality/michelin-key.webp", mark: "/logos-v2/casa-las-tortugas.png", width: 908, height: 202, scale: 1.15 },
       { name: "Acre", what: "Restaurant", proof: "MICHELIN Green Star", badge: "/hospitality/michelin-green-star.svg", mark: "/logos-v2/acre.svg", width: 1762, height: 600, scale: 1.1 },
       { name: "Ulysses", what: "Startup", proof: "Backed by Andreessen Horowitz", mark: "/logos-v2/ulysses.png", width: 1400, height: 161, scale: 0.72 },
       { name: "Anything", what: "Startup", proof: "Backed by Bessemer", mark: "/logos-v2/anything.svg", width: 971, height: 253, scale: 1 },
-      { name: "Temakase", what: "Restaurant", proof: "", mark: "/logos-v2/temakase.svg", width: 660, height: 103, scale: 0.9 },
-      { name: "Rústico", what: "Hospitality", proof: "", mark: "/logos-v2/rustico.svg", width: 548, height: 130, scale: 1 },
-      { name: "Persona", what: "Nutrition", proof: "", mark: "/logos-v2/persona.svg", width: 1485, height: 259, scale: 0.78 },
-      { name: "Sexto Abismo", what: "Gin", proof: "", mark: "/logos-v2/sexto-abismo.svg", width: 574, height: 275, scale: 1.3 },
     ] as { name: string; what: string; proof: string; badge?: string; mark: string; width: number; height: number; scale: number }[],
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
