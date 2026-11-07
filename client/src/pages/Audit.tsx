@@ -34,7 +34,7 @@ const FIELDS = [
 
 const ERROR_FOR: Record<Field, string> = { name: copy.nameError, email: copy.emailError, site: copy.siteError };
 const FIELD_ORDER: Field[] = ["site", "name", "email"];
-const PROOF_MARKS = siteCopy.logos.items.slice(0, 8);
+const PROOF_MARKS = siteCopy.logos.items.slice(0, 6);
 
 function newSubmissionId(): string {
   try {
@@ -173,59 +173,62 @@ export default function Audit() {
     <PageShell logos={false}>
       <SeoHead title={formatMetaTitle(copy.metaTitle, "Atla")} description={copy.metaDescription} pathname="/audit" />
       <div className="site-page-body audit">
-        <header className="page-intro audit-intro">
-          <p className="site-label audit-intro__eyebrow">{copy.eyebrow}</p>
-          <h1 id={`${baseId}-title`} className="page-intro__title audit-intro__title">
-            {copy.title}
-          </h1>
-          <p className="page-intro__lead audit-intro__lead">{copy.lead}</p>
-          <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
-          {done && done !== "error" ? null : (
-            <p className="audit-intro__action">
-              <a href={`#${AUDIT_FORM_ID}`} className="site-action" onClick={goToForm}>
-                {copy.cta}
-              </a>
-            </p>
-          )}
-        </header>
+        <section className="audit-hero" aria-labelledby={`${baseId}-title`}>
+          <div className="audit-hero__text">
+            <p className="site-label audit-hero__eyebrow">{copy.eyebrow}</p>
+            <h1 id={`${baseId}-title`} className="page-intro__title audit-hero__title">
+              {copy.title}
+            </h1>
+            <p className="audit-hero__lead">{copy.lead}</p>
+            {done && done !== "error" ? null : (
+              <p className="audit-hero__action">
+                <a href={`#${AUDIT_FORM_ID}`} className="site-action" onClick={goToForm}>
+                  {copy.cta}
+                </a>
+              </p>
+            )}
+          </div>
+          <div className="audit-hero__aside">
+            <AuditSlots status={slots} updatedAt={slotsAt} sent={sentWeek} />
+          </div>
+        </section>
 
-        <div className="audit-body">
-          <section className="audit-section" aria-labelledby={`${baseId}-how`}>
-            <h2 id={`${baseId}-how`} className="site-section-title">
-              {copy.howTitle}
-            </h2>
-            <ol className="audit-steps">
-              {copy.steps.map((step, index) => (
-                <li key={step.src} className="audit-step">
-                  <img
-                    className="audit-step__art"
-                    src={step.src}
-                    alt={step.alt}
-                    width={800}
-                    height={800}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
-                  <p className="audit-step__line">{step.line}</p>
+        <section className="audit-how" aria-labelledby={`${baseId}-how`}>
+          <h2 id={`${baseId}-how`} className="site-section-title audit-how__title">
+            {copy.howTitle}
+          </h2>
+          <ol className="audit-steps">
+            {copy.steps.map((step, index) => (
+              <li key={step.src} className="audit-step">
+                <img
+                  className="audit-step__art"
+                  src={step.src}
+                  alt={step.alt}
+                  width={560}
+                  height={560}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <p className="audit-step__line">{step.line}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {PROOF_MARKS.length ? (
+          <section className="audit-proof" aria-label={copy.proofLabel}>
+            <p className="site-label audit-proof__label">{copy.proofLabel}</p>
+            <ul className="audit-proof__marks">
+              {PROOF_MARKS.map((item) => (
+                <li key={item.name} className="audit-proof__mark">
+                  <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
                 </li>
               ))}
-            </ol>
+            </ul>
           </section>
+        ) : null}
 
-          {PROOF_MARKS.length ? (
-            <section className="audit-proof" aria-label={copy.proofLabel}>
-              <p className="site-label audit-proof__label">{copy.proofLabel}</p>
-              <ul className="audit-proof__marks">
-                {PROOF_MARKS.map((item) => (
-                  <li key={item.name} className="audit-proof__mark">
-                    <img src={item.src} alt={`${item.name} logo`} width={item.width} height={item.height} loading="lazy" decoding="async" />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <section id={AUDIT_FORM_ID} className="audit-section audit-ask" aria-labelledby={`${baseId}-ask`}>
+        <section id={AUDIT_FORM_ID} className="audit-ask" aria-labelledby={`${baseId}-ask`}>
             {finished ? (
               <div className="audit-done">
                 <h2 id={`${baseId}-ask`} ref={doneHeading} tabIndex={-1} className="site-section-title audit-ask__title">
@@ -276,10 +279,17 @@ export default function Audit() {
               </div>
             ) : (
               <>
-                <h2 id={`${baseId}-ask`} className="site-section-title">
-                  {copy.formTitle}
-                </h2>
-                <p className="audit-fit">{copy.fit}</p>
+                <div className="audit-ask__intro">
+                  <h2 id={`${baseId}-ask`} className="site-section-title">
+                    {copy.formTitle}
+                  </h2>
+                  <p className="audit-fit">{copy.fit}</p>
+                  <ul className="audit-assurances">
+                    {copy.assurances.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
                 {/* Before hydration or without JavaScript the browser posts the fields to /api/audit/form, never into a URL. */}
                 <form className="audit-form" method="post" action="/api/audit/form" onSubmit={submit} noValidate>
                   <input type="hidden" name="submissionId" value={submissionId.current} />
@@ -344,19 +354,13 @@ export default function Audit() {
                       {message}
                     </p>
                   </div>
-                  <ul className="audit-assurances">
-                    {copy.assurances.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
                   <p className="brief-privacy bcheck-privacy">
                     {copy.privacyNotice} <Link href="/privacy">{copy.privacyLink}</Link>
                   </p>
                 </form>
               </>
             )}
-          </section>
-        </div>
+        </section>
       </div>
     </PageShell>
   );

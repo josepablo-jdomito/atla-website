@@ -416,7 +416,7 @@ export const siteCopy = {
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
     eyebrow: "José Pablo, founder of Atla",
     title: "Send me your brand. I'll record a free video on what works and what doesn't.",
-    lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you: I look at it the way a customer does and record a short video. I start with what I like, and then I tell you what I'd change first. I only do five a week because I record every one myself.",
+    lead: "We all need an extra pair of eyes. You're too close to your brand, and attached to it. On Instagram I break down brands I don't work for. This one I do for you.",
     // The live widget (components/audit/AuditSlots.tsx). {left} and {cap} are said in words.
     week: {
       label: "This week",
@@ -432,20 +432,20 @@ export const siteCopy = {
       updatedNow: "Updated just now",
       updatedMoment: "Updated a moment ago",
       updatedMinutes: "Updated a few minutes ago",
-      resets: "Five new spots every week",
+      resets: "Five a week, because I record every one myself.",
     },
     // Three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd, hand-inked, halftone), one line each.
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does. I start with what I like, but then I tell you what I'd change, in order." },
+      { src: "/audit/landing/step-2.webp", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and record a short video. I start with what I like, then what I'd change, in order." },
       { src: "/audit/landing/step-3.webp", alt: "The bottle walking off with a phone under its arm while the man waves goodbye", line: "You get the video by email. Sometimes we fix a couple of things along the way. If you don't need a studio yet, I'll say so." },
     ],
     // The hero action and the landing header on /audit both jump to the form (the page has no other door).
     cta: "Send me your brand",
     proofLabel: "Brands I've worked with",
     formTitle: "Send me your brand",
-    fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off but I don't know what, send it.",
+    fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
     fields: { site: "Website or Instagram", name: "Name", email: "Email" },
     // Under the button: the private promise (JP, 2026-11-07), the no-catch line, the no-effort line.
     assurances: [

@@ -68,17 +68,8 @@ export function AuditSlots({ status, updatedAt, sent }: { status: AuditStatus | 
       <p className="audit-slots__line" aria-live="polite">
         {line}
       </p>
-      <p className="audit-slots__meta">
-        {status ? (
-          <>
-            <span>{ageLine(updatedAt, now)}</span>
-            <span className="audit-slots__sep" aria-hidden="true">
-              ·
-            </span>
-          </>
-        ) : null}
-        <span>{copy.resets}</span>
-      </p>
+      <p className="audit-slots__why">{copy.resets}</p>
+      {status ? <p className="audit-slots__meta">{ageLine(updatedAt, now)}</p> : null}
     </div>
   );
 }
