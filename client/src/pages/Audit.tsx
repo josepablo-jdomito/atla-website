@@ -75,7 +75,9 @@ export default function Audit() {
   const fieldId = (key: Field) => `${baseId}-${key}`;
   useNoindex(done !== null);
 
+  // The visit's source is read on arrival (the utm_* are on this first URL) and sent with the request.
   useEffect(() => {
+    readAuditAttribution();
     trackAuditView();
   }, []);
 
