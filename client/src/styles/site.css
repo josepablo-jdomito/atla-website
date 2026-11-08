@@ -54,6 +54,7 @@
   --site-serif: var(--site-display);
   --site-accent: #f6c428;
   --site-error: #b3261e;
+  --site-live: #e0261c;
   /* The phone menu card and its current row (JP's reference, 2026-11-06). */
   --site-sheet: #ffffff;
   --site-sheet-tint: #eaeaea;
@@ -111,6 +112,7 @@
     --site-line: rgba(239, 234, 224, 0.14);
     --site-surface: #1d1b18;
     --site-error: #f2b8b5;
+    --site-live: #ff5a4f;
     --site-sheet: var(--site-surface);
     --site-sheet-tint: var(--site-line);
   }
@@ -1202,11 +1204,12 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-float__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0; }
 .audit-float__head .site-label { font-size: var(--t-caption); }
 .audit-float__live { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); }
-.audit-float__pulse { position: relative; width: var(--space-2); height: var(--space-2); border-radius: 50%; background: var(--site-ink); }
+/* The Live mark in red (JP, 2026-11-07: "rojo"), the one color on the page. */
+.audit-float__pulse { position: relative; width: var(--space-2); height: var(--space-2); border-radius: 50%; background: var(--site-live); }
 /* The live mark beats the whole time (JP, 2026-11-07: "el live intermitente"): a slow ring that grows
    and fades, and the dot itself breathes with it. */
 .audit-float__pulse { animation: audit-breathe 2.4s ease-in-out infinite; }
-.audit-float__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-ink); opacity: 0; animation: audit-pulse 2.4s ease-out infinite; }
+.audit-float__pulse::after { content: ""; position: absolute; inset: calc(-1 * var(--space-1)); border-radius: 50%; border: 1px solid var(--site-live); opacity: 0; animation: audit-pulse 2.4s ease-out infinite; }
 @keyframes audit-pulse { 0% { transform: scale(0.6); opacity: 0.8; } 70%, 100% { transform: scale(1.8); opacity: 0; } }
 @keyframes audit-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 .audit-float__row { display: flex; align-items: center; gap: var(--space-3); margin: 0; min-width: 0; }
