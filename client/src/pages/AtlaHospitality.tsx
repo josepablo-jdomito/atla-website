@@ -1,72 +1,132 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { Link } from "wouter";
 import { formatMetaTitle } from "@shared/siteSeo";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { PageShell } from "@/components/site/PageShell";
 import { buildServiceSchema, type FaqItem } from "@/components/atla/AtlaLongformLayout";
 import { trackEvent } from "@/hooks/use-analytics";
-import { useIsMobile } from "@/hooks/use-mobile";
+
+/**
+ * Hospitality, at /hospitality, on the v2 system (JP, 2026-11-07: "rebuild completo a v2"): the page title,
+ * one action, the two cases per kind, the ways in, the places, the questions and the written form. Same
+ * classes as Why Atla and Services; no page-only styles, no photo slot without a photo.
+ */
 
 const PATHNAME = "/hospitality";
 const DESCRIPTION =
   "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.";
 
-// The face every visitor gets (loaded site-wide in index.html). No local-only trial fonts: JP reviews what visitors see.
-const DISPLAY = "'Instrument Serif', Georgia, serif";
-const SANS = "'Libre Franklin', Helvetica, sans-serif";
-// v2 tokens (client/src/styles/site.css), so the page follows the system light/dark setting.
-const INK = "var(--site-ink)";
-const PAPER = "var(--site-bg)";
-const PLACEHOLDER = "var(--site-line)";
-const MUTED = "var(--site-muted)";
-const RULE = "var(--site-line)";
-const SURFACE = "var(--site-surface)";
-const ERROR = "var(--site-error)";
-// Text on the inverted (ink) bands: the page background at reduced strength.
-const onInk = (percent: number) => `color-mix(in srgb, ${PAPER} ${percent}%, transparent)`;
-// The atlas plates are printed maps with their own paper and ink baked into the SVG files,
-// so their labels keep the plate palette in both light and dark mode.
-const PLATE_INK = "#111111";
-const PLATE_PAPER = "#f4f0e8";
-const PLATE_MUTED = "#6b6a66";
-
 // "Atla* Branding Agency" intro event on Calendly.
 const INTRO_URL = "https://calendly.com/josepablo-atla/30min?utm_source=atla.design&utm_medium=hospitality";
-
-// Project photography is pending; a slot without a photo renders as a quiet, unlabelled block.
-// TEMPORARY (design review only): `src` points at deck and Sanity images so JP can judge the layout.
-// JP's own photos replace every one of them before this page is merged.
-type CaseImage = { alt: string; ratio: string; src?: string; position?: string };
 
 const SANITY = "https://cdn.sanity.io/images/dvufm78f/production";
 const sanityImage = (file: string, width: number) => `${SANITY}/${file}?w=${width}&auto=format&q=80`;
 
-type CaseSpec = { label: string; value: string };
+const HERO = { alt: "Rústico menu in embossed suede, Acre Resort", src: sanityImage("18a02d9a640324bce8de4272d67087c7c1ab3fbe-1396x1781.png", 1400) };
+
+const AWARDS = [
+  { src: "/hospitality/michelin-key.webp", label: "MICHELIN Key", who: "Casa Las Tortugas" },
+  { src: "/hospitality/michelin-green-star.svg", label: "MICHELIN Green Star", who: "Acre" },
+];
 
 type HospitalityCase = {
   name: string;
   place: string;
   tagline: string;
   summary: string;
-  specs: CaseSpec[];
-  image: CaseImage;
+  scope: string;
+  // JP's photos replace these; a case without one shows no picture (critique Ho2, 2026-11-05).
+  image?: { alt: string; src: string };
   link?: { href: string; label: string };
 };
 
-const MICHELIN_KEY = { src: "/hospitality/michelin-key.webp", alt: "MICHELIN Key" };
-const MICHELIN_GREEN_STAR = { src: "/hospitality/michelin-green-star.svg", alt: "MICHELIN Green Star" };
-
-const AWARDS = [
-  { ...MICHELIN_KEY, label: "MICHELIN Key", who: "Casa Las Tortugas" },
-  { ...MICHELIN_GREEN_STAR, label: "MICHELIN Green Star", who: "Acre" },
+const HOTELS: HospitalityCase[] = [
+  {
+    name: "Acre Resort",
+    place: "Los Cabos, Mexico",
+    tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
+    summary:
+      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds. Acre's restaurant holds a MICHELIN Green Star.",
+    scope: "Audit, brand architecture, brand book, website, Rústico",
+    image: { alt: "Rústico napkin with the embroidered wordmark", src: sanityImage("0cd9da27361a74cf11d59ee76bf054f30ffe97bc-1188x1781.png", 1200) },
+    link: { href: "/projects/rustico", label: "See Rústico" },
+  },
+  {
+    name: "Casa Las Tortugas",
+    place: "Holbox, Mexico",
+    tagline: "Restaurants and a spa on one beach.",
+    summary:
+      "A family-owned hotel on Holbox's main beach, and a MICHELIN Key. We audited the property, then set the brand architecture across its restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
+    scope: "Hospitality audit, brand architecture, operating standards",
+  },
 ];
 
-const PROPERTY_TYPES = [
-  "Independent hotel or resort",
-  "Hotel within a brand or group",
-  "Restaurant or bar inside a hotel",
-  "Standalone restaurant or bar",
-  "Other",
+const RESTAURANTS: HospitalityCase[] = [
+  {
+    name: "Christophe's Fine Foods",
+    place: "Chicago",
+    tagline: "A neighborhood market with a chef behind the counter.",
+    summary:
+      "Built from a blank page: logotype, monogram, awning, aprons, totes and a line of reheatable meal trays, with a supplier sheet so the owner could order everything directly.",
+    scope: "Identity, packaging, signage, uniforms, website",
+    image: { alt: "Christophe's Fine Foods awning and monogram sign", src: "/hospitality/review/christophes-storefront.webp" },
+  },
+  {
+    name: "Temakase",
+    place: "New York",
+    tagline: "Home of the handroll.",
+    summary:
+      "Hand roll bars with a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck, and appears on the window, the catering box and the sidewalk sign.",
+    scope: "Identity, character, storefront, menus, catering",
+    image: { alt: "Temakase storefront with window graphics", src: "/hospitality/review/temakase-storefront.webp" },
+  },
 ];
+
+// The same ways in as Services, named for hospitality. No prices or durations (JP's rule).
+const WAYS = [
+  {
+    name: "Audit",
+    line: "For a property that is open and feels off, or before you commit to a rebrand.",
+    body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own. Casa Las Tortugas started here.",
+    includes: ["On-site walk of every guest touchpoint", "Findings, ranked by what to fix first", "What to keep and what to change", "Operating standards for your team"],
+  },
+  {
+    name: "Rebranding",
+    line: "For a hotel or restaurant whose brand no longer matches the place.",
+    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the guests who come back. Acre Resort is the example.",
+    includes: ["Brand architecture across rooms, restaurants and spa", "Repositioning", "New identity and signature marks", "Rollout across signage, menus, uniforms and rooms", "Website and booking path"],
+  },
+  {
+    name: "Branding",
+    line: "For a new opening: a hotel, restaurant, spa or coffee shop.",
+    body: "We build the brand before the doors open: the name, the identity and every object a guest touches, ready for the vendors who make them. Christophe's and Temakase opened this way.",
+    includes: ["Naming and positioning", "Identity, character and signature marks", "Facade, signage and interiors direction", "Menus, packaging and uniforms", "Website, launch and production files"],
+  },
+];
+
+const PLACES = "Los Cabos, Holbox, La Saladita, Querétaro, San Luis Potosí and Monterrey in Mexico. Chicago and New York. Bali.";
+
+const FAQ_ITEMS: FaqItem[] = [
+  {
+    question: "Is this right for a small independent property?",
+    answer:
+      "Yes. What matters is where you are: open and something feels off, start with the audit; opening soon, start with branding. The size of the property changes the scope, not the method.",
+  },
+  {
+    question: "Do you work with hotels that belong to a brand or group?",
+    answer: "Yes. We start from the group's standards and design what makes this hotel its own. Across several properties, the audit runs the same way on each one.",
+  },
+  {
+    question: "Will you show our project?",
+    answer: "Only with your permission. With Casa Las Tortugas we name the client and the method, and the findings stay private.",
+  },
+  {
+    question: "What happens on the call?",
+    answer: "A short conversation about the property and what is not working. We tell you what we would do first.",
+  },
+];
+
+const PROPERTY_TYPES = ["Independent hotel or resort", "Hotel within a brand or group", "Restaurant or bar inside a hotel", "Standalone restaurant or bar", "Other"];
 const STAGES_OF_WORK = ["Opening a new property", "Repositioning an existing property", "Adding an outlet or concept", "Other"];
 const DECIDERS = ["I do", "I do, with partners or a board", "Someone else; I am gathering options"];
 
@@ -94,604 +154,33 @@ function readAttribution(): string {
   return attribution;
 }
 
-const HERO: CaseImage = { alt: "Rústico menu in embossed suede, Acre Resort", ratio: "16 / 9", src: sanityImage("18a02d9a640324bce8de4272d67087c7c1ab3fbe-1396x1781.png", 1400) };
-
-// Project locations. Sanity coordinates (atla.design/api/projects, read 2026-10-23) plus the
-// hospitality clients that have no project page yet: Casa Las Tortugas, Christophe's, Temakase.
-type Place = { name: string; projects: string; lat: number; lng: number; hospitality: boolean };
-
-const PLACES: Place[] = [
-  { name: "Los Cabos, Mexico", projects: "Acre Resort, Rústico", lat: 22.8905, lng: -109.9167, hospitality: true },
-  { name: "Holbox, Mexico", projects: "Casa Las Tortugas", lat: 21.5236, lng: -87.378, hospitality: true },
-  { name: "La Saladita, Mexico", projects: "Mundã", lat: 17.8762, lng: -101.7431, hospitality: true },
-  { name: "Querétaro, Mexico", projects: "Huémac", lat: 20.5888, lng: -100.3899, hospitality: true },
-  { name: "San Luis Potosí, Mexico", projects: "TigreTigre", lat: 22.1565, lng: -100.9855, hospitality: true },
-  { name: "Monterrey, Mexico", projects: "Casa Colora", lat: 25.6866, lng: -100.3161, hospitality: true },
-  { name: "Chicago, United States", projects: "Christophe's", lat: 41.8781, lng: -87.6298, hospitality: true },
-  { name: "New York, United States", projects: "Temakase", lat: 40.7128, lng: -74.006, hospitality: true },
-  { name: "Bali, Indonesia", projects: "The Bridge", lat: -8.6705, lng: 115.2126, hospitality: true },
-  { name: "Austin", projects: "", lat: 30.2672, lng: -97.7431, hospitality: false },
-  { name: "Dallas", projects: "", lat: 32.7767, lng: -96.797, hospitality: false },
-  { name: "Denver", projects: "", lat: 39.7392, lng: -104.9903, hospitality: false },
-  { name: "Los Angeles", projects: "", lat: 34.0522, lng: -118.2437, hospitality: false },
-  { name: "San Diego", projects: "", lat: 32.7157, lng: -117.1611, hospitality: false },
-  { name: "Bellevue", projects: "", lat: 47.6101, lng: -122.2015, hospitality: false },
-  { name: "Charlotte", projects: "", lat: 35.2271, lng: -80.8431, hospitality: false },
-  { name: "Upstate New York", projects: "", lat: 42.6526, lng: -73.7562, hospitality: false },
-  { name: "Toronto", projects: "", lat: 43.6532, lng: -79.3832, hospitality: false },
-  { name: "Amsterdam", projects: "", lat: 52.3676, lng: 4.9041, hospitality: false },
-  { name: "Abu Dhabi", projects: "Arc Studio", lat: 24.4539, lng: 54.3773, hospitality: false },
-  { name: "Dubai", projects: "Oxylife", lat: 25.2048, lng: 55.2708, hospitality: false },
-];
-
-// Names stand in for the logo files until they arrive.
-const SELECTED_CLIENTS = [
-  "Acre Resort",
-  "Casa Las Tortugas",
-  "Christophe's",
-  "Temakase",
-  "TigreTigre",
-  "Casa Colora",
-  "Mundã",
-  "Huémac",
-  "The Bridge",
-];
-
-const HOTELS: HospitalityCase[] = [
-  {
-    name: "Acre Resort",
-    place: "Los Cabos, Mexico",
-    tagline: "Treehouses, villas, a restaurant and a bar under one brand.",
-    summary:
-      "Acre runs treehouses, villas, a restaurant, a mezcal bar and weddings on one property. We audited it the way a guest moves through it, wrote one brand architecture and the brand book, designed the website and created Rústico, an open-air dinner on the grounds.",
-    specs: [
-      { label: "Scope", value: "Audit, brand architecture, brand book, website, Rústico" },
-      { label: "Distinction", value: "MICHELIN Green Star, Acre's restaurant" },
-    ],
-    image: { alt: "Rústico napkin with the embroidered wordmark", ratio: "4 / 5", src: sanityImage("0cd9da27361a74cf11d59ee76bf054f30ffe97bc-1188x1781.png", 1200) },
-    link: { href: "/projects/rustico", label: "Rústico" },
-  },
-  {
-    name: "Casa Las Tortugas",
-    place: "Holbox, Mexico",
-    tagline: "Restaurants and a spa on one beach.",
-    summary:
-      "A family-owned hotel on Holbox's main beach. We audited the property, then set the brand architecture across its restaurants and spa, and wrote the operating standards the team works from. The findings stay with the client.",
-    specs: [
-      { label: "Scope", value: "Hospitality audit, brand architecture, operating standards" },
-      { label: "Distinction", value: "MICHELIN Key" },
-    ],
-    image: { alt: "Casa Las Tortugas, Holbox", ratio: "4 / 5" },
-  },
-];
-
-const RESTAURANTS: HospitalityCase[] = [
-  {
-    name: "Christophe's Fine Foods",
-    place: "Chicago",
-    tagline: "A neighborhood market with a chef behind the counter.",
-    summary:
-      "Built from a blank page: logotype, monogram, awning, aprons, totes and a line of reheatable meal trays, with a supplier sheet so the owner could order everything directly.",
-    specs: [{ label: "Scope", value: "Identity, packaging, signage, uniforms, website" }],
-    image: { alt: "Christophe's Fine Foods awning and monogram sign", ratio: "3 / 2", src: "/hospitality/review/christophes-storefront.webp" },
-  },
-  {
-    name: "Temakase",
-    place: "New York",
-    tagline: "Home of the handroll.",
-    summary:
-      "Hand roll bars with a wordmark and a character. Mako is drawn after Ebisu, the Japanese god of fishermen and luck, and appears on the window, the catering box and the sidewalk sign.",
-    specs: [{ label: "Scope", value: "Identity, character, storefront, menus, catering" }],
-    image: { alt: "Temakase storefront with window graphics", ratio: "3 / 2", src: "/hospitality/review/temakase-storefront.webp" },
-  },
-];
-
-// The engagements: the same ways in as Services (Audit, Brand system, Full build), named for hospitality. No prices or durations on the page (JP's rule); proof comes from the cases below.
-const SERVICES = [
-  {
-    name: "Audit",
-    forWhom: "For a property that is open and feels off, or before you commit to a rebrand.",
-    body: "We walk the property the way a guest does, from the booking page to the room, and read every outlet, sign and object. The audit stands on its own.",
-    includes: [
-      "On-site walk of every guest touchpoint",
-      "Findings, ranked by what to fix first",
-      "What to keep and what to change",
-      "Operating standards for your team",
-    ],
-    example: "Casa Las Tortugas, Holbox. The audit led to its brand architecture.",
-  },
-  {
-    name: "Rebranding",
-    forWhom: "For a hotel or restaurant whose brand no longer matches the place.",
-    body: "We keep what guests already recognize and redesign the rest, then roll it out without confusing the guests who come back.",
-    includes: [
-      "Brand architecture across rooms, restaurants and spa",
-      "Repositioning",
-      "New identity and signature marks",
-      "Rollout across signage, menus, uniforms and rooms",
-      "Website and booking path",
-    ],
-    example: "Acre Resort, Los Cabos",
-  },
-  {
-    name: "Branding",
-    forWhom: "For a new opening: a hotel, restaurant, spa or coffee shop.",
-    body: "We build the brand before the doors open: the name, the identity and every object a guest touches from the first guest on, ready for the vendors who make them.",
-    includes: [
-      "Naming and positioning",
-      "Identity, character and signature marks",
-      "Facade, signage and interiors direction",
-      "Menus, packaging and uniforms",
-      "Website, launch and production files",
-    ],
-    example: "Christophe's, Chicago. Temakase, New York.",
-  },
-];
-
-
-
-const FAQ_ITEMS: FaqItem[] = [
-  {
-    question: "Is this right for a small independent property?",
-    answer:
-      "Yes. What matters is where you are: open and something feels off, start with the audit; opening soon, start with branding. The size of the property changes the scope, not the method.",
-  },
-  {
-    question: "Do you work with hotels that belong to a brand or group?",
-    answer:
-      "Yes. We start from the group's standards and design what makes this hotel its own. Across several properties, the audit runs the same way on each one.",
-  },
-  {
-    question: "Will you show our project?",
-    answer: "Only with your permission. With Casa Las Tortugas we name the client and the method, and the findings stay private.",
-  },
-  {
-    question: "What happens on the call?",
-    answer:
-      "A short conversation about the property and what is not working. We tell you what we would do first.",
-  },
-];
-
-
-// Section labels, as on the rest of the site: small sans, sentence case, muted, no tracking.
-const labelStyle: CSSProperties = {
-  fontFamily: SANS,
-  fontSize: 14,
-  fontWeight: 500,
-  lineHeight: "1.4",
-  color: MUTED,
-  margin: 0,
-};
-
-const bodyStyle: CSSProperties = {
-  fontFamily: SANS,
-  fontSize: 15,
-  fontWeight: 400,
-  letterSpacing: 0.1,
-  lineHeight: "1.65",
-  color: INK,
-  margin: 0,
-};
-
-const ctaStyle: CSSProperties = {
-  fontFamily: SANS,
-  fontSize: 15,
-  fontWeight: 500,
-  textDecoration: "underline",
-  textDecorationThickness: 2,
-  textUnderlineOffset: 6,
-  color: INK,
-  minHeight: 44,
-  display: "inline-flex",
-  alignItems: "center",
-};
-
-// "Our take on branding", rebuilt from slide 29:592 of the Atla Intro Deck (Figma).
-// Positions are percentages of a 1060 x 750 frame, measured from the slide.
-const TAKE_TILES = [
-  { name: "TigreTigre", src: sanityImage("4db603342969023ae67d8fde174854cdc3bc0aa4-1400x788.png", 600), x: 0, y: 37, w: 15.7, ratio: "166 / 200" },
-  { name: "Rústico", src: sanityImage("7cc46aa684db97a142951eea093612947de54122-2616x1445.png", 600), x: 18, y: 13, w: 15.7, ratio: "166 / 200" },
-  { name: "Baristio", src: sanityImage("0d972a00ce19c334bee663286c8bdec400d70ccb-2616x1445.png", 600), x: 42, y: 0, w: 15.7, ratio: "166 / 216" },
-  { name: "Angeles Wellness", src: sanityImage("97d041917fb7859099cf40caef8e25704b6faf25-1080x1440.png", 600), x: 63, y: 7.7, w: 14, ratio: "1 / 1" },
-  { name: "Persona", src: sanityImage("0a70dd45515bc5ed36769a8d9ae87b8f4f499dce-1453x803.jpg", 600), x: 83, y: 23.5, w: 14, ratio: "150 / 182" },
-  { name: "Casa Colora", src: sanityImage("38132ee83995acfe226e73b2d0fa72edd40e31c3-1722x986.png", 600), x: 84.5, y: 52, w: 15.5, ratio: "166 / 192" },
-  { name: "Bond&Bloom", src: sanityImage("4347625dbb9d17c5d2e1ed6b2e87e9a18ab59125-3840x2160.jpg", 600), x: 64, y: 63.7, w: 13.4, ratio: "142 / 192" },
-  { name: "Reggie", src: sanityImage("ba880c418a42908393fec8329d62677112533e9d-1744x964.png", 600), x: 42.5, y: 71, w: 13.4, ratio: "142 / 216" },
-  { name: "Arc Studio", src: sanityImage("05dd95e74edfd5572c9c6c677ceab72b53207760-3000x2000.jpg", 600), x: 19, y: 65, w: 13.4, ratio: "142 / 208" },
-];
-const TAKE_WORDS = [
-  { word: "Voice & values", x: 37.7, y: 44.5 },
-  { word: "Strategy", x: 54.7, y: 45 },
-  { word: "Loyalty", x: 32.9, y: 49 },
-  { word: "Brands", x: 47.5, y: 49.2 },
-  { word: "Humans", x: 41.2, y: 52.8 },
-  { word: "Visual identity", x: 51, y: 52.7 },
-  { word: "Customer experience", x: 37.4, y: 57.5 },
-  { word: "Storytelling", x: 56.8, y: 56 },
-];
-
-function Figure({ image, eager = false }: { image: CaseImage; eager?: boolean }) {
-  if (image.src) {
-    return (
-      <img
-        src={image.src}
-        alt={image.alt}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-        style={{
-          display: "block",
-          width: "100%",
-          height: "auto",
-          aspectRatio: image.ratio,
-          objectFit: "cover",
-          objectPosition: image.position ?? "center",
-          backgroundColor: PLACEHOLDER,
-        }}
-      />
-    );
-  }
-  // Photo still to come (JP supplies it): a quiet paper-tone block, silent to screen readers.
-  return <div aria-hidden="true" style={{ width: "100%", aspectRatio: image.ratio, backgroundColor: PLACEHOLDER }} />;
-}
-
-function BookCall({ position, inverted = false }: { position: string; inverted?: boolean }) {
+function Case({ item, wide }: { item: HospitalityCase; wide?: boolean }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
-      <a
-        href={INTRO_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: position })}
-        style={{
-          ...ctaStyle,
-          minHeight: 52,
-          padding: "0 26px",
-          background: inverted ? PAPER : INK,
-          color: inverted ? INK : PAPER,
-        }}
-      >
-        Book a call
-      </a>
-      <p style={{ ...bodyStyle, fontSize: 13, color: inverted ? onInk(65) : MUTED }}>
-        A short conversation about your property. We tell you what we would do first.
-      </p>
-    </div>
-  );
-}
-
-function Label({ children, inverted = false }: { children: ReactNode; inverted?: boolean }) {
-  return <p style={{ ...labelStyle, color: inverted ? onInk(60) : MUTED }}>{children}</p>;
-}
-
-// Atlas plates (script/build_hospitality_atlas.py, Natural Earth 50m): plate carree, x scaled by
-// cos(reference latitude). These frames must match PLATES in the script.
-type AtlasPlate = {
-  id: string;
-  title: string;
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
-  refLat: number;
-  scale: number;
-  grid: number;
-  // Where each label sits relative to its point (plate units). Long offsets get a leader line.
-  labels: Record<string, { dx: number; dy: number; anchor: "start" | "end" }>;
-};
-
-const ATLAS_PLATES: AtlasPlate[] = [
-  {
-    id: "americas",
-    title: "The Americas",
-    left: -124,
-    right: -62,
-    top: 50,
-    bottom: 14,
-    refLat: 32,
-    scale: 20,
-    grid: 10,
-    labels: {
-      "Los Cabos, Mexico": { dx: -14, dy: 4, anchor: "end" },
-      "Holbox, Mexico": { dx: 30, dy: 54, anchor: "start" },
-      "La Saladita, Mexico": { dx: -14, dy: 20, anchor: "end" },
-      "Querétaro, Mexico": { dx: 74, dy: 14, anchor: "start" },
-      "San Luis Potosí, Mexico": { dx: 84, dy: -4, anchor: "start" },
-      "Monterrey, Mexico": { dx: 34, dy: -10, anchor: "start" },
-      "Chicago, United States": { dx: -14, dy: -6, anchor: "end" },
-      "New York, United States": { dx: 16, dy: 6, anchor: "start" },
-    },
-  },
-  {
-    id: "gulf",
-    title: "The Gulf",
-    left: 47,
-    right: 61,
-    top: 28,
-    bottom: 21,
-    refLat: 25,
-    scale: 40,
-    grid: 5,
-    labels: {
-      "Dubai": { dx: 14, dy: -14, anchor: "start" },
-      "Abu Dhabi": { dx: -12, dy: 22, anchor: "end" },
-    },
-  },
-  {
-    id: "bali",
-    title: "Bali",
-    left: 111,
-    right: 120,
-    top: -5.5,
-    bottom: -10.5,
-    refLat: -8,
-    scale: 44,
-    grid: 5,
-    labels: {
-      "Bali, Indonesia": { dx: 18, dy: -30, anchor: "start" },
-    },
-  },
-];
-
-const plateSize = (plate: AtlasPlate) => {
-  const kx = Math.cos((plate.refLat * Math.PI) / 180);
-  return {
-    kx,
-    width: Math.round((plate.right - plate.left) * kx * plate.scale),
-    height: Math.round((plate.top - plate.bottom) * plate.scale),
-  };
-};
-const inPlate = (plate: AtlasPlate, place: Place) =>
-  place.lng >= plate.left && place.lng <= plate.right && place.lat <= plate.top && place.lat >= plate.bottom;
-const onAnyPlate = (place: Place) => ATLAS_PLATES.some((plate) => inPlate(plate, place));
-
-// `unit` keeps text and points the same on-screen size across plates drawn at different widths.
-function AtlasPlateView({ plate, showLabels, unit = 1 }: { plate: AtlasPlate; showLabels: boolean; unit?: number }) {
-  const { kx, width, height } = plateSize(plate);
-  const project = (lng: number, lat: number) => ({ x: (lng - plate.left) * kx * plate.scale, y: (plate.top - lat) * plate.scale });
-  const places = PLACES.filter((place) => inPlate(plate, place)).sort((x, y) => Number(x.hospitality) - Number(y.hospitality));
-  const latMarks: number[] = [];
-  for (let lat = Math.ceil(plate.bottom / plate.grid) * plate.grid; lat <= plate.top; lat += plate.grid) {
-    if (lat > plate.bottom && lat < plate.top) latMarks.push(lat);
-  }
-  const lngMarks: number[] = [];
-  for (let lng = Math.ceil(plate.left / plate.grid) * plate.grid; lng <= plate.right; lng += plate.grid) {
-    if (lng > plate.left && lng < plate.right) lngMarks.push(lng);
-  }
-  const degree = (value: number, positive: string, negative: string) => `${Math.abs(value)}°${value >= 0 ? positive : negative}`;
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      role="img"
-      aria-label={`${plate.title}: ${places.map((place) => place.name).join(", ")}`}
-      style={{ display: "block", width: "100%", height: "auto" }}
-    >
-      <image href={`/hospitality/atlas-${plate.id}.svg`} x={0} y={0} width={width} height={height} />
-      {showLabels
-        ? latMarks.map((lat) => (
-            <text key={`lat${lat}`} x={8 * unit} y={project(0, lat).y - 5 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={PLATE_MUTED}>
-              {degree(lat, "N", "S")}
-            </text>
-          ))
-        : null}
-      {showLabels
-        ? lngMarks.map((lng) => (
-            <text key={`lng${lng}`} x={project(lng, 0).x + 5 * unit} y={height - 8 * unit} fontFamily={SANS} fontSize={9 * unit} letterSpacing={unit} fill={PLATE_MUTED}>
-              {degree(lng, "E", "W")}
-            </text>
-          ))
-        : null}
-      {places.map((place) => {
-        const { x, y } = project(place.lng, place.lat);
-        const label = plate.labels[place.name];
-        return (
-          <g key={place.name}>
-            {label && showLabels && Math.abs(label.dx) > 24 ? (
-              <line x1={x} y1={y} x2={x + label.dx - 4 * unit} y2={y + label.dy - 5 * unit} stroke={PLATE_INK} strokeWidth={0.6 * unit} />
-            ) : null}
-            {place.hospitality ? (
-              <circle cx={x} cy={y} r={(showLabels ? 4 : 13) * unit} fill={PLATE_INK} />
-            ) : (
-              <circle cx={x} cy={y} r={(showLabels ? 3.5 : 10) * unit} fill={PLATE_PAPER} stroke={PLATE_INK} strokeWidth={(showLabels ? 1 : 3) * unit} />
-            )}
-            {label && showLabels ? (
-              <text x={x + label.dx} y={y + label.dy} textAnchor={label.anchor} fill={PLATE_INK}>
-                <tspan fontFamily={DISPLAY} fontStyle="italic" fontSize={17 * unit}>
-                  {place.name.split(",")[0]}
-                </tspan>
-                <tspan x={x + label.dx} dy={13 * unit} fontFamily={SANS} fontSize={9.5 * unit} fill={PLATE_MUTED}>
-                  {place.projects}
-                </tspan>
-              </text>
-            ) : null}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
-function ProjectAtlas() {
-  const isMobile = useIsMobile();
-  const [main, ...insets] = ATLAS_PLATES;
-  // Insets render at half the main plate's width, so one plate unit covers a different number of pixels.
-  const mainWidth = plateSize(main).width;
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 20 }}>
-      <AtlasPlateView plate={main} showLabels={!isMobile} />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: isMobile ? 12 : 20, alignItems: "start" }}>
-        {insets.map((plate) => (
-          <figure key={plate.id} style={{ margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-            <AtlasPlateView plate={plate} showLabels={!isMobile} unit={plateSize(plate).width / (mainWidth / 2)} />
-            <figcaption style={labelStyle}>{plate.title}</figcaption>
-          </figure>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Specs({ specs }: { specs: CaseSpec[] }) {
-  return (
-    <dl style={{ margin: 0, borderTop: `1px solid ${RULE}` }}>
-      {specs.map((spec) => (
-        <div key={spec.label} style={{ display: "grid", gridTemplateColumns: "112px 1fr", gap: 16, padding: "12px 0", borderBottom: `1px solid ${RULE}` }}>
-          <dt style={labelStyle}>{spec.label}</dt>
-          <dd style={{ ...bodyStyle, fontSize: 14, margin: 0 }}>{spec.value}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-function HotelFeature({ item, flip }: { item: HospitalityCase; flip: boolean }) {
-  const isMobile = useIsMobile();
-  return (
-    <article
-      style={{
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.15fr) minmax(0, 1fr)",
-        gap: isMobile ? 24 : 72,
-        alignItems: "center",
-      }}
-    >
-      <div style={{ order: isMobile || !flip ? 0 : 1 }}>
-        <Figure image={item.image} />
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 480 }}>
-        <Label>{item.place}</Label>
-        <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 34 : 48, fontWeight: 400, lineHeight: "1.02", color: INK, margin: 0 }}>{item.name}</h3>
-        <p style={{ fontFamily: DISPLAY, fontStyle: "italic", fontSize: isMobile ? 19 : 22, lineHeight: "1.3", color: INK, margin: 0 }}>{item.tagline}</p>
-        <p style={bodyStyle}>{item.summary}</p>
-        <Specs specs={item.specs} />
+    <article className={wide ? "hcase hcase--wide" : "hcase"}>
+      {item.image ? <img className="hcase__cover" src={item.image.src} alt={item.image.alt} loading="lazy" decoding="async" /> : null}
+      <div className="hcase__text">
+        <p className="site-label">{item.place}</p>
+        <h3 className="site-item-title">{item.name}</h3>
+        <p className="hcase__line">{item.tagline}</p>
+        <p className="hcase__body">{item.summary}</p>
+        <p className="hcase__body">{item.scope}</p>
         {item.link ? (
-          <a href={item.link.href} style={{ ...ctaStyle, minHeight: 0, alignSelf: "flex-start", borderBottom: `1px solid ${INK}`, paddingBottom: 4 }}>
+          <Link href={item.link.href} className="why-proof__link">
             {item.link.label}
-          </a>
+          </Link>
         ) : null}
       </div>
     </article>
   );
 }
 
-function RestaurantFeature({ item }: { item: HospitalityCase }) {
-  return (
-    <article style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <Figure image={item.image} />
-      <Label>{item.place}</Label>
-      <h3 style={{ fontFamily: DISPLAY, fontSize: 32, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0 }}>{item.name}</h3>
-      <p style={{ fontFamily: DISPLAY, fontStyle: "italic", fontSize: 19, lineHeight: "1.3", color: INK, margin: 0 }}>{item.tagline}</p>
-      <p style={bodyStyle}>{item.summary}</p>
-      <Specs specs={item.specs} />
-    </article>
-  );
-}
-
-function TakeConstellation() {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <p style={{ ...labelStyle, color: INK, lineHeight: "2" }}>{TAKE_WORDS.map((item) => item.word).join(" · ")}</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-          {TAKE_TILES.map((tile) => (
-            <Figure key={tile.name} image={{ alt: tile.name, ratio: "3 / 4", src: tile.src }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div style={{ position: "relative", width: "100%", aspectRatio: "1060 / 750" }}>
-      {/* Thin lines from each project to the middle, like the deck slide. */}
-      <svg viewBox="0 0 1060 750" aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-        {TAKE_TILES.map((tile) => {
-          const cx = ((tile.x + tile.w / 2) / 100) * 1060;
-          const cy = (tile.y / 100) * 750 + 90;
-          return (
-            <path
-              key={tile.name}
-              d={`M${cx} ${cy} Q ${(cx + 500) / 2} ${cy > 375 ? cy - 60 : cy + 60} 500 375`}
-              fill="none"
-              style={{ stroke: RULE }}
-              strokeWidth={1}
-            />
-          );
-        })}
-      </svg>
-      {TAKE_TILES.map((tile) => (
-        <div key={tile.name} style={{ position: "absolute", left: `${tile.x}%`, top: `${tile.y}%`, width: `${tile.w}%` }}>
-          <Figure image={{ alt: tile.name, ratio: tile.ratio, src: tile.src }} />
-        </div>
-      ))}
-      {TAKE_WORDS.map((item) => (
-        <span
-          key={item.word}
-          style={{
-            ...labelStyle,
-            fontSize: 11,
-            color: INK,
-            position: "absolute",
-            left: `${item.x}%`,
-            top: `${item.y}%`,
-            background: PAPER,
-            padding: "2px 4px",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {item.word}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-const fieldStyle: CSSProperties = {
-  ...bodyStyle,
-  fontSize: 15,
-  width: "100%",
-  minHeight: 48,
-  padding: "12px 14px",
-  border: `1px solid ${RULE}`,
-  borderRadius: 4,
-  background: SURFACE,
-  boxSizing: "border-box",
-  outlineOffset: 2,
-};
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <span style={labelStyle}>{label}</span>
-      {children}
-    </label>
-  );
-}
-
-function Choice({ name, label, options }: { name: string; label: string; options: string[] }) {
-  return (
-    <Field label={label}>
-      <select name={name} required defaultValue="" style={{ ...fieldStyle, appearance: "auto" }}>
-        <option value="" disabled>
-          Choose one
-        </option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </Field>
-  );
-}
-
 type InquiryStatus = { state: "idle" | "submitting" | "sent" | "offline" } | { state: "error"; message: string };
 
-// Posts to /api/contact like the audit questionnaire: the qualifying answers travel inside
-// the message, so the Attio note carries them without a server change.
-function InquiryForm() {
-  const isMobile = useIsMobile();
+// Posts to /api/contact like the brief: the qualifying answers travel inside the message, so the
+// Attio note carries them without a server change.
+function InquiryForm({ id }: { id: string }) {
   const [status, setStatus] = useState<InquiryStatus>({ state: "idle" });
-  const statusRef = useRef<HTMLDivElement | null>(null);
+  const sentRef = useRef<HTMLHeadingElement | null>(null);
   const attributionRef = useRef("direct");
 
   useEffect(() => {
@@ -699,7 +188,7 @@ function InquiryForm() {
   }, []);
 
   useEffect(() => {
-    if (status.state === "sent") statusRef.current?.focus();
+    if (status.state === "sent") sentRef.current?.focus();
   }, [status]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -753,94 +242,99 @@ function InquiryForm() {
     }
   }
 
-  const isSent = status.state === "sent";
-  const isSubmitting = status.state === "submitting";
+  if (status.state === "sent") {
+    return (
+      <div className="bcheck-done">
+        <h3 ref={sentRef} tabIndex={-1} className="site-section-title bcheck-ask__title">
+          Sent.
+        </h3>
+        <p className="bcheck-done__line">We will write back with what we would do first.</p>
+      </div>
+    );
+  }
+
+  const submitting = status.state === "submitting";
+  const trouble =
+    status.state === "error" ? status.message : status.state === "offline" ? "The form is offline right now. Write to josepablo@atla.design." : "";
+  const field = (key: string) => `${id}-${key}`;
+  const choice = (name: string, label: string, options: string[]) => (
+    <div className="brief-field" data-field={name}>
+      <label htmlFor={field(name)} className="brief-field__label">
+        {label}
+      </label>
+      <select id={field(name)} name={name} className="brief-input" required defaultValue="" disabled={submitting}>
+        <option value="" disabled>
+          Choose one
+        </option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} style={{ outline: "none" }}>
-        {isSent ? (
-          <p style={{ ...bodyStyle, fontWeight: 600 }}>Got it. We will write back with what we would do next.</p>
-        ) : null}
+    <form className="bcheck-form hospitality-form" method="post" action="/api/contact" onSubmit={handleSubmit}>
+      <input type="hidden" name="source" value="atla.design/hospitality" />
+      <div className="brief-fields">
+        <div className="brief-field" data-field="name">
+          <label htmlFor={field("name")} className="brief-field__label">
+            Name
+          </label>
+          <input id={field("name")} className="brief-input" name="name" type="text" required maxLength={120} autoComplete="name" disabled={submitting} />
+        </div>
+        <div className="brief-field" data-field="email">
+          <label htmlFor={field("email")} className="brief-field__label">
+            Email
+          </label>
+          <input id={field("email")} className="brief-input" name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" disabled={submitting} />
+        </div>
+        <div className="brief-field" data-field="company">
+          <label htmlFor={field("company")} className="brief-field__label">
+            Property, brand or group
+          </label>
+          <input id={field("company")} className="brief-input" name="company" type="text" required maxLength={160} autoComplete="organization" disabled={submitting} />
+        </div>
+        <div className="brief-field" data-field="opening">
+          <label htmlFor={field("opening")} className="brief-field__label">
+            Opening or launch date, if there is one
+          </label>
+          <input id={field("opening")} className="brief-input" name="opening" type="text" maxLength={60} disabled={submitting} />
+        </div>
+        {choice("propertyType", "Type of property", PROPERTY_TYPES)}
+        {choice("stage", "Stage of the project", STAGES_OF_WORK)}
+        {choice("decider", "Who decides on this project?", DECIDERS)}
       </div>
-      {isSent ? null : (
-        <form method="post" action="/api/contact" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <input type="hidden" name="source" value="atla.design/hospitality" />
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 18 }}>
-            <Field label="Name">
-              <input name="name" type="text" required maxLength={120} autoComplete="name" style={fieldStyle} />
-            </Field>
-            <Field label="Email">
-              <input name="email" type="email" required maxLength={200} autoComplete="email" inputMode="email" style={fieldStyle} />
-            </Field>
-            <Field label="Property, brand or group">
-              <input name="company" type="text" required maxLength={160} autoComplete="organization" style={fieldStyle} />
-            </Field>
-            <Choice name="propertyType" label="Type of property" options={PROPERTY_TYPES} />
-            <Choice name="stage" label="Stage of the project" options={STAGES_OF_WORK} />
-            <Field label="Opening or launch date">
-              <input name="opening" type="text" maxLength={60} placeholder="Month and year" style={fieldStyle} />
-            </Field>
-            <Choice name="decider" label="Who decides on this project?" options={DECIDERS} />
-          </div>
-          <Field label="What should the guest feel when they walk in?">
-            <textarea name="message" required minLength={10} maxLength={3000} rows={5} style={{ ...fieldStyle, resize: "vertical" }} />
-          </Field>
-          <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
-            <label>
-              Leave this field empty
-              <input name="_gotcha" type="text" tabIndex={-1} autoComplete="off" />
-            </label>
-          </div>
-          {status.state === "offline" || status.state === "error" ? (
-            <p role="alert" style={{ ...bodyStyle, color: status.state === "error" ? ERROR : MUTED }}>
-              {status.state === "error" ? status.message : "The form is offline right now. Write to us at"}{" "}
-              <a href="mailto:josepablo@atla.design" style={{ color: INK }}>
-                josepablo@atla.design
-              </a>
-            </p>
-          ) : null}
-          <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
-            What you send goes to our CRM so we can answer you. See the{" "}
-            <a href="/privacy" style={{ color: INK }}>
-              privacy policy
-            </a>
-            .
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              style={{
-                ...ctaStyle,
-                padding: "12px 24px",
-                border: `1px solid ${INK}`,
-                borderRadius: 0,
-                background: INK,
-                color: PAPER,
-                cursor: "pointer",
-                opacity: isSubmitting ? 0.7 : 1,
-              }}
-            >
-              {isSubmitting ? "Sending…" : "Send the details"}
-            </button>
-            <a href="mailto:josepablo@atla.design" style={{ ...bodyStyle, color: MUTED, textDecoration: "underline" }}>
-              or email josepablo@atla.design
-            </a>
-          </div>
-        </form>
-      )}
-    </div>
+      <div className="brief-field" data-field="message">
+        <label htmlFor={field("message")} className="brief-field__label">
+          What should the guest feel when they walk in?
+        </label>
+        <textarea id={field("message")} className="brief-input bcheck-message" name="message" required minLength={10} maxLength={3000} rows={4} disabled={submitting} />
+      </div>
+      {/* Honeypot: people never see or reach it; bots that fill every field give themselves away. */}
+      <div className="brief-hp" hidden>
+        <label htmlFor={field("gotcha")}>Leave this empty</label>
+        <input id={field("gotcha")} type="text" name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" />
+      </div>
+      <p className="brief-privacy bcheck-privacy">
+        What you send goes to our CRM so we can answer you. <Link href="/privacy">Privacy</Link>
+      </p>
+      <div className="brief-actions">
+        <button type="submit" className="site-action" disabled={submitting}>
+          {submitting ? "Sending" : status.state === "error" ? "Try again" : "Send the details"}
+        </button>
+        <p className="brief-status bcheck-status" role="status" data-tone={trouble ? "error" : undefined}>
+          {trouble}
+        </p>
+      </div>
+    </form>
   );
 }
 
 export default function AtlaHospitality() {
-  const isMobile = useIsMobile();
-  const gutter = isMobile ? 16 : 48;
-  const sectionGap = isMobile ? 72 : 120;
-
-
-
+  const id = useId();
   return (
     <PageShell>
       <SeoHead
@@ -854,249 +348,121 @@ export default function AtlaHospitality() {
           faqItems: FAQ_ITEMS,
         })}
       />
-      <div
-        className="hospitality-page"
-        style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", background: PAPER }}
-      >
-        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap }}>
-          {/* Hero: text and photo side by side so the place is in the first screen */}
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.05fr) minmax(0, 0.95fr)",
-              gap: isMobile ? 28 : 56,
-              alignItems: "center",
-              paddingTop: isMobile ? 32 : 64,
-            }}
+      <div className="site-page-body hospitality">
+        <header className="page-intro">
+          <h1 className="page-intro__title">Brands for hotels and restaurants, from the booking page to the room.</h1>
+          <p className="page-intro__lead">
+            Audits, rebrands and new openings for hotels, restaurants, spas and coffee shops. Acre's restaurant holds a MICHELIN Green Star and Casa Las
+            Tortugas a MICHELIN Key.
+          </p>
+          <ul className="hospitality-awards" aria-label="Awards our clients hold">
+            {AWARDS.map((award) => (
+              <li key={award.label}>
+                <img src={award.src} alt="" width={22} height={22} decoding="async" className="hospitality-award" />
+                <span>
+                  {award.label}, {award.who}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <a
+            className="site-action"
+            href={INTRO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("book_call_click", { page: "hospitality", cta_type: "hero" })}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 26 }}>
-              <Label>Restaurants, wellness, coffee shops, hotels</Label>
-              {/* PP Playground drawn as outlines (script/build_hospitality_wordmark.py) so every visitor sees it. */}
-              <img
-                src="/hospitality/hospitality-wordmark.svg"
-                alt="Hospitality"
-                decoding="async"
-                className="hospitality-wordmark"
-                style={{ display: "block", width: isMobile ? "88%" : 520, maxWidth: "100%", height: "auto", aspectRatio: "3560 / 1100", marginLeft: isMobile ? -6 : -12 }}
-              />
-              <h1
-                style={{
-                  fontFamily: DISPLAY,
-                  fontSize: isMobile ? 28 : 38,
-                  fontWeight: 400,
-                  lineHeight: "1.14",
-                  color: INK,
-                  margin: 0,
-                  maxWidth: 620,
-                }}
-              >
-                Brands for hotels and restaurants, from the booking page to the room.
-              </h1>
-              <BookCall position="hero" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: `1px solid ${RULE}`, paddingTop: 18 }}>
-                <Label>Awards our clients hold</Label>
-                {AWARDS.map((award) => (
-                  <div key={award.src} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <img src={award.src} alt="" width={22} height={22} decoding="async" className="hospitality-award" style={{ width: 22, height: 22, objectFit: "contain" }} />
-                    <span style={{ ...bodyStyle, fontSize: 14 }}>
-                      {award.label} <span style={{ color: MUTED }}>· {award.who}</span>
-                    </span>
-                  </div>
-                ))}
-              </div>
+            Book a call
+          </a>
+        </header>
+
+        <img className="hospitality-hero" src={HERO.src} alt={HERO.alt} decoding="async" fetchPriority="high" />
+
+        <section className="page-section" aria-labelledby={`${id}-hotels`}>
+          <h2 id={`${id}-hotels`} className="site-section-title">
+            Hotels
+          </h2>
+          <div className="page-section__body">
+            <div className="hcases">
+              {HOTELS.map((item) => (
+                <Case key={item.name} item={item} wide />
+              ))}
             </div>
-            <Figure image={{ ...HERO, ratio: isMobile ? "4 / 3" : "4 / 5" }} eager />
-          </section>
-        </div>
-
-
-        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: isMobile ? 64 : 104 }}>
-          {/* Selected clients */}
-          <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 12 : 40 }}>
-            <Label>Selected clients</Label>
-            <p style={{ fontFamily: DISPLAY, fontSize: isMobile ? 22 : 30, lineHeight: "1.35", color: INK, margin: 0 }}>
-              {SELECTED_CLIENTS.join(" · ")}
-            </p>
-          </section>
-
           </div>
+        </section>
 
-        {/* Services, on ink */}
-        <section style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center" }}>
-          <div
-            style={{
-              width: "100%",
-              maxWidth: 1280,
-              padding: isMobile ? `72px ${gutter}px` : `120px ${gutter}px`,
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              gap: isMobile ? 44 : 64,
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 760 }}>
-              <Label inverted>Services</Label>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 32 : 52, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
-                Ways to work with us.
-              </h2>
-              <p style={{ ...bodyStyle, color: onInk(75) }}>
-                The same ways in we offer every client, named for hospitality: the audit, the rebrand and the new brand.
-                One team does the strategy, the identity and the rollout, so the brand stays one brand.
-              </p>
+        <section className="page-section" aria-labelledby={`${id}-restaurants`}>
+          <h2 id={`${id}-restaurants`} className="site-section-title">
+            Restaurants
+          </h2>
+          <div className="page-section__body">
+            <div className="hcases hcases--pair">
+              {RESTAURANTS.map((item) => (
+                <Case key={item.name} item={item} />
+              ))}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: isMobile ? 56 : 48 }}>
-              {SERVICES.map((service) => (
-                <article
-                  key={service.name}
-                  style={{ display: "flex", flexDirection: "column", gap: 14, borderTop: `1px solid ${onInk(22)}`, paddingTop: 22 }}
-                >
-                  <h3 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 34 : 40, fontWeight: 400, lineHeight: "1.05", color: PAPER, margin: 0 }}>
-                    {service.name}
-                  </h3>
-                  <p style={{ fontFamily: DISPLAY, fontStyle: "italic", fontSize: 19, lineHeight: "1.3", color: PAPER, margin: 0 }}>{service.forWhom}</p>
-                  <p style={{ ...bodyStyle, color: onInk(75) }}>{service.body}</p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 6 }}>
-                    <Label inverted>Includes</Label>
-                    <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                      {service.includes.map((item) => (
-                        <li
-                          key={item}
-                          style={{ ...bodyStyle, fontSize: 14, color: PAPER, padding: "9px 0", borderBottom: `1px solid ${onInk(14)}` }}
-                        >
-                          {item}
-                        </li>
+          </div>
+        </section>
+
+        <section className="page-section" aria-labelledby={`${id}-ways`}>
+          <h2 id={`${id}-ways`} className="site-section-title">
+            Ways to work with us
+          </h2>
+          <div className="page-section__body">
+            <ol className="how-steps">
+              {WAYS.map((way) => (
+                <li key={way.name} className="how-step">
+                  <h3 className="site-item-title how-step__title">{way.name}</h3>
+                  <p className="hcase__line">{way.line}</p>
+                  <p className="how-step__body">{way.body}</p>
+                  <details className="discipline__includes">
+                    <summary className="discipline__summary">Includes</summary>
+                    <ul className="discipline__list">
+                      {way.includes.map((item) => (
+                        <li key={item}>{item}</li>
                       ))}
                     </ul>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 6 }}>
-                    <Label inverted>Example</Label>
-                    <p style={{ fontFamily: DISPLAY, fontSize: 18, color: PAPER, margin: 0 }}>{service.example}</p>
-                  </div>
-                </article>
+                  </details>
+                </li>
               ))}
-            </div>
-            <p style={{ ...bodyStyle, fontSize: 14, color: onInk(60), maxWidth: 760 }}>
-              After launch we can stay on, so new outlets and rooms come out of the same system.
-            </p>
+            </ol>
+            <p className="how-step__body">After launch we can stay on, so new outlets and rooms come out of the same system.</p>
           </div>
         </section>
 
-        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: sectionGap }}>
-          {/* Our take on branding */}
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.4fr) minmax(0, 1fr)",
-              gap: isMobile ? 32 : 56,
-              alignItems: "center",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <Label>Our take on branding</Label>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 28 : 36, fontWeight: 400, lineHeight: "1.12", color: INK, margin: 0 }}>
-                Branding starts before the logo.
-              </h2>
-              <p style={bodyStyle}>
-                Strategy decides the tone, the voice and what the place is for. Design follows.
-              </p>
-              <p style={bodyStyle}>
-                A brand is what a guest remembers on the way home.
-              </p>
-            </div>
-            <TakeConstellation />
-          </section>
-
-          {/* Hotels */}
-          <section id="work" style={{ display: "flex", flexDirection: "column", gap: isMobile ? 64 : 96, scrollMarginTop: 80 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <Label>Hotels</Label>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 52, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0, maxWidth: 820 }}>
-                One brand, whether you have a few rooms or several restaurants.
-              </h2>
-            </div>
-            {HOTELS.map((item, index) => (
-              <HotelFeature key={item.name} item={item} flip={index % 2 === 1} />
-            ))}
-          </section>
-
-          {/* Restaurants */}
-          <section style={{ display: "flex", flexDirection: "column", gap: isMobile ? 40 : 56 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <Label>Restaurants</Label>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 30 : 52, fontWeight: 400, lineHeight: "1.05", color: INK, margin: 0, maxWidth: 820 }}>
-                Restaurant work, from the awning to the takeout bag.
-              </h2>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: isMobile ? 64 : 56 }}>
-              {RESTAURANTS.map((item) => (
-                <RestaurantFeature key={item.name} item={item} />
-              ))}
-            </div>
-          </section>
-        </div>
-
-        <div style={{ width: "100%", maxWidth: 1280, padding: `0 ${gutter}px`, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: sectionGap, paddingTop: sectionGap }}>
-          {/* Places */}
-          <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 12 : 40 }}>
-            <Label>Where we have worked</Label>
-            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 20 : 28 }}>
-              <ProjectAtlas />
-              <p style={{ ...bodyStyle, fontSize: 13, color: MUTED }}>
-                Solid points mark hospitality work; open points mark the rest of our work. Also in{" "}
-                {PLACES.filter((place) => !onAnyPlate(place))
-                  .map((place) => place.name.split(",")[0])
-                  .join(", ")}
-                .
-              </p>
-            </div>
-          </section>
-
-        </div>
-
-        {/* Closing, on ink: the call and the written form side by side */}
-        <section
-          id="inquire"
-          style={{ width: "100%", background: INK, marginTop: sectionGap, display: "flex", justifyContent: "center", scrollMarginTop: 80 }}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: 1280,
-              padding: isMobile ? `72px ${gutter}px` : `112px ${gutter}px`,
-              boxSizing: "border-box",
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.9fr) minmax(0, 1.1fr)",
-              gap: isMobile ? 40 : 72,
-              alignItems: "start",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: 28, alignItems: "flex-start" }}>
-              <h2 style={{ fontFamily: DISPLAY, fontSize: isMobile ? 36 : 60, fontWeight: 400, lineHeight: "1.02", color: PAPER, margin: 0 }}>
-                Tell us about your property.
-              </h2>
-              <BookCall position="closing" inverted />
-            </div>
-            <div style={{ background: PAPER, padding: isMobile ? "28px 20px" : "40px 40px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-              <Label>Prefer to write</Label>
-              <InquiryForm />
-            </div>
+        <section className="page-section" aria-labelledby={`${id}-places`}>
+          <h2 id={`${id}-places`} className="site-section-title">
+            Where we have worked
+          </h2>
+          <div className="page-section__body">
+            <p className="hospitality-places">{PLACES}</p>
           </div>
         </section>
 
-        <div style={{ width: "100%", maxWidth: 1280, padding: `${isMobile ? 64 : 104}px ${gutter}px ${isMobile ? 72 : 112}px`, boxSizing: "border-box" }}>
-          {/* FAQ as plain text */}
-          <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? 20 : 40 }}>
-            <Label>Questions</Label>
-            <dl style={{ margin: 0, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: isMobile ? 28 : 48 }}>
+        <section className="page-section" aria-labelledby={`${id}-questions`}>
+          <h2 id={`${id}-questions`} className="site-section-title">
+            Questions
+          </h2>
+          <div className="page-section__body">
+            <ol className="how-steps">
               {FAQ_ITEMS.map((item) => (
-                <div key={item.question} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <dt style={{ fontFamily: DISPLAY, fontSize: 22, lineHeight: "1.25", color: INK }}>{item.question}</dt>
-                  <dd style={{ ...bodyStyle, margin: 0, color: MUTED }}>{item.answer}</dd>
-                </div>
+                <li key={item.question} className="how-step">
+                  <h3 className="site-item-title how-step__title">{item.question}</h3>
+                  <p className="how-step__body">{item.answer}</p>
+                </li>
               ))}
-            </dl>
-          </section>
-        </div>
+            </ol>
+          </div>
+        </section>
+
+        <section id="inquire" className="page-section" aria-labelledby={`${id}-inquire`}>
+          <h2 id={`${id}-inquire`} className="site-section-title">
+            Tell us about your property
+          </h2>
+          <div className="page-section__body">
+            <InquiryForm id={id} />
+          </div>
+        </section>
       </div>
     </PageShell>
   );

@@ -527,7 +527,7 @@ async function routeModulePreloadTags(pathname: string) {
 }
 
 /** Routes whose prerendered markup differs from the desktop layout until hydration (index.html gate). */
-const PRERENDER_GATED_ROUTES = new Set(["/", "/hospitality"]);
+const PRERENDER_GATED_ROUTES = new Set(["/"]);
 
 async function injectPrerenderedApp(
   template: string,
@@ -545,7 +545,7 @@ async function injectPrerenderedApp(
   // cache, wipes the prerendered markup and refetches (CLS ~0.8 on the home).
   const hydrationTag = `<script defer src="${publicPath}"></script>`;
   // data-prerender-gate: see the #root rule in client/index.html. Only routes whose first render is the
-  // phone layout by script (the wall's columns, /hospitality's useIsMobile) wait on wide screens; every
+  // phone layout by script (the wall's columns) wait on wide screens; every
   // other route is pure CSS layout and paints its prerender at once.
   const gate = PRERENDER_GATED_ROUTES.has(pathname) ? " data-prerender-gate" : "";
   const withRoot = template.replace(
