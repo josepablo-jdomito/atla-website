@@ -485,12 +485,21 @@ export const siteCopy = {
     closeTitle: "Send me your brand.",
     closeLine: "Five a week, free, and it comes by email as soon as it's ready.",
     // The flow's first two screens: the brand, then the name and the email.
+    // The flow that takes the screen, in Storetasker's pattern (JP, 2026-11-07): one request screen, two
+    // screens of questions, the one button fixed at the bottom.
     flow: {
-      brandTitle: "Where does your brand live?",
-      brandLine: "A website or an Instagram, whichever people see first.",
-      youTitle: "Where do I send the audit?",
-      youLine: "Your name and the email you check.",
+      requestTitle: "Send me your brand",
+      requestLine: "Where it lives, your name and the email you check. Five a week, every one by me, no call needed.",
+      placeholders: { site: "yourbrand.com or @yourbrand", name: "Your name", email: "you@yourbrand.com" },
       send: "Send",
+      close: "close",
+      back: "back",
+      questionsTitle: "Four quick questions",
+      questionsLine: "They make the audit about you. Pick what fits, or skip ahead.",
+      questionsLastTitle: "Last two",
+      questionsLastLine: "Then it's with me.",
+      saving: "saving",
+      saved: "saved",
     },
     formTitle: "Where does your brand live?",
     fit: "Any brand that's live works: a shop, a restaurant, a product, an app. If you look at it and say, hey, something is off, send it.",
