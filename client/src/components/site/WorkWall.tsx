@@ -29,7 +29,7 @@ const WIDTHS = [320, 480, 640, 800, 1000, 1280];
 const SIZES = "(min-width: 2000px) 12vw, (min-width: 1440px) 17vw, (min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw";
 /**
  * Only the tiles of the first viewport load eagerly (perf-network 2: 88 image requests starved the entry
- * script). At most 8 on a desktop and 4 on the phone; all of them ask for high priority, since on a phone the largest first-screen tile is rarely the first.
+ * script). At most 8 on a desktop and 4 on the phone; one of them, the first, asks for high priority.
  * Everything else is lazy. The prerender has no window and measures a 375 x 812 phone.
  */
 export const EAGER_MAX_DESKTOP = 8;
@@ -351,6 +351,7 @@ export function WorkWall() {
   }, [sequence, shown, urlQuery]);
   const placed = useMemo(() => placeInColumns(tiles, columns), [tiles, columns]);
   const eagerKeys = useMemo(() => firstViewportKeys(placed, tiles, columns), [placed, tiles, columns]);
+  const priorityKey = tiles[0]?.key;
   // Whether more exists past what is shown: a search ends with its last match; the open wall loops.
   const hasMore = sequence.length > 0 && (urlQuery ? shown < sequence.length : true);
   // A search loads to its end on its own; the open wall stops after three passes.
@@ -457,7 +458,7 @@ export function WorkWall() {
                   key={tile.key}
                   tile={tile}
                   eager={eagerKeys.has(tile.key)}
-                  priority={eagerKeys.has(tile.key)}
+                  priority={tile.key === priorityKey}
                   reduced={reduced}
                 />
               ))}
