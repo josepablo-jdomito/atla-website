@@ -1149,9 +1149,11 @@ html[data-consent="open"] .site-explore { display: none; }
 /* The art bleeds past the page gutter: the section's box widens by the gutter and the art hangs off it. */
 .audit-hero { margin-inline: calc(-1 * var(--site-gutter)); padding-inline: var(--site-gutter); }
 .audit-hero__text { position: relative; z-index: 1; display: grid; gap: var(--space-4); justify-items: start; }
-.audit-hero__title { margin: 0; max-width: 12ch; font-family: var(--site-display); font-size: clamp(2.375rem, 10.2vw, 4.5rem); font-weight: 400; line-height: 1.02; letter-spacing: -0.015em; text-wrap: balance; }
+.audit-hero__title { margin: 0; max-width: none; font-family: var(--site-display); font-size: clamp(2.125rem, 9.4vw, 4.5rem); font-weight: 400; line-height: 1.02; letter-spacing: -0.015em; text-wrap: balance; }
 .audit-hero__lead { margin: 0; max-width: 24ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
-.audit-hero__art { width: 72%; max-width: 30rem; margin: calc(-1 * var(--space-5)) calc(-1 * var(--site-gutter) - 10%) 0 auto; pointer-events: none; }
+/* Phone: the Inspector sits under the lead with air above it, runs off the right edge and is cropped at the
+   hips by the hero's bottom edge, on purpose, above the floating card (JP, 2026-11-07: never behind it). */
+.audit-hero__art { width: 74%; max-width: 30rem; margin: var(--space-3) calc(-1 * var(--site-gutter) - 8%) -27% auto; pointer-events: none; }
 .audit-hero__art img, .audit-hero__art video { display: block; width: 100%; height: auto; }
 @media (prefers-color-scheme: dark) { .audit-hero__art img { filter: invert(1); } }
 /* A drawing: the still underneath, the looping clip of the same drawing over it when it plays. The clip
@@ -1378,7 +1380,8 @@ html[data-consent="open"] .site-explore { display: none; }
   .audit-hero { min-height: min(calc(100svh - 64px), 46rem); padding-top: var(--space-9); align-content: center; }
   .audit-hero__title { max-width: 13ch; font-size: clamp(3.5rem, 6.2vw, 6rem); }
   .audit-hero__lead { font-size: var(--t-h3); font-weight: 400; max-width: 26ch; }
-  .audit-hero__art { right: 0; bottom: -4%; width: 40%; max-width: 36rem; }
+  /* The whole figure, standing above the floating card instead of under it (JP, 2026-11-07). */
+  .audit-hero__art { right: 2rem; bottom: 7.5rem; width: 31%; max-width: 30rem; }
   .audit-how { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: var(--space-8); }
   .audit-scene { gap: var(--space-7); }
   .audit-proof { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--space-8); align-items: start; }
