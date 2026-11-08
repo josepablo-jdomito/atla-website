@@ -16,6 +16,7 @@ const RATE_LIMITS = {
   submit: { max: 5, windowSeconds: 10 * 60 },
   brandCheck: { max: 5, windowSeconds: 10 * 60 },
   audit: { max: 5, windowSeconds: 10 * 60 },
+  auditCheck: { max: 40, windowSeconds: 10 * 60 },
 } as const;
 
 const APP_SALT = "atla-site-v2-rate-limit";

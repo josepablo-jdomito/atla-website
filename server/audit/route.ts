@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { lookup } from "node:dns/promises";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import {
@@ -55,6 +56,12 @@ import { deliverAuditFeedbackToAttio, deliverAuditToAttio, sendAuditEmail, type 
  *   24 h, from the same email (P1-6); one answer per submission; an Attio note on the Person. Never
  *   logged; a failure answers 502.
  *
+ * GET  /api/audit/check?q=<site or handle> → { kind: "site" | "instagram", label, ok: boolean | null }
+ *   The live check beside the field (JP, 2026-11-07): a domain is looked up and its front page
+ *   requested (any HTTP answer counts, bot walls included); an Instagram handle is only normalized,
+ *   since Business Discovery is not granted to this app, so ok is null. Never cached, 40 per address
+ *   per 10 min, 400 for anything the form would not accept.
+ *
  * POST /api/audit/release  { week?: "2026-W45" }  with header x-audit-admin: AUDIT_ADMIN_KEY
  *   Gives one slot back (a junk request JP discarded). 404 when the key is not configured.
  */
@@ -74,7 +81,9 @@ const body = z.object({
 const RETRY_MESSAGE = "We could not send your request. Nothing was lost: please send it again in a moment.";
 
 export type AuditDeps = {
-  rateLimit: (ip: string, bucket: "audit") => Promise<boolean>;
+  rateLimit: (ip: string, bucket: "audit" | "auditCheck") => Promise<boolean>;
+  /** Does this host answer on the web? DNS, then one request to its front page. */
+  hostIsLive: (host: string) => Promise<boolean>;
   incrWithExpiry: (key: string, ttlSeconds: number) => Promise<number>;
   deleteKey: (key: string) => Promise<void>;
   getCount: (key: string) => Promise<number>;
@@ -90,6 +99,7 @@ export type AuditDeps = {
 
 const defaultDeps: AuditDeps = {
   rateLimit,
+  hostIsLive,
   incrWithExpiry,
   deleteKey,
   getCount,
@@ -243,6 +253,36 @@ async function handleAudit(deps: AuditDeps, ip: string, raw: unknown): Promise<O
   return { status: 502, body: { error: RETRY_MESSAGE, ref } };
 }
 
+
+/** DNS first, then the front page; a bot wall or a 5xx still means someone is home. */
+export async function hostIsLive(host: string): Promise<boolean> {
+  try {
+    await lookup(host);
+  } catch {
+    return false;
+  }
+  for (const scheme of ["https", "http"]) {
+    try {
+      const res = await fetch(`${scheme}://${host}/`, { method: "GET", redirect: "follow", signal: AbortSignal.timeout(5000), headers: { "user-agent": "Mozilla/5.0 (compatible; AtlaAuditCheck/1.0)" } });
+      void res.body?.cancel();
+      return true;
+    } catch {
+      // Try the next scheme.
+    }
+  }
+  return false;
+}
+
+/** What the visitor typed, as the check reads it: a host or an Instagram handle. */
+export function checkTarget(raw: string): { kind: "site" | "instagram"; label: string; host?: string } | null {
+  const parsed = auditSchema.shape.site.safeParse(raw);
+  if (!parsed.success) return null;
+  const brand = brandFromSite(parsed.data);
+  if (brand.startsWith("@")) return /^@[A-Za-z0-9._]{1,30}$/.test(brand) ? { kind: "instagram", label: brand } : null;
+  if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(brand)) return null;
+  return { kind: "site", label: brand, host: brand };
+}
+
 export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps) {
   let statusCache: { at: number; value: AuditStatus } | null = null;
 
@@ -259,6 +299,17 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
       console.error(`[audit] status read failed: ${err instanceof Error ? err.message : "unknown error"}`);
       return res.status(503).json({ error: "Unavailable" });
     }
+  });
+
+
+  app.get("/api/audit/check", async (req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    if (!(await deps.rateLimit(clientIp(req), "auditCheck"))) return res.status(429).json({ error: "Too many requests." });
+    const target = checkTarget(typeof req.query.q === "string" ? req.query.q : "");
+    if (!target) return res.status(400).json({ error: "Invalid request" });
+    if (target.kind === "instagram") return res.json({ kind: "instagram", label: target.label, ok: null });
+    const ok = await deps.hostIsLive(target.host!);
+    return res.json({ kind: "site", label: target.label, ok });
   });
 
   app.post("/api/audit", sameSiteOnly, async (req, res) => {

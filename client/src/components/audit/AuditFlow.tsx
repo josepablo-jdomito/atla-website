@@ -8,9 +8,11 @@ import {
   type AuditWeek,
 } from "@shared/audit";
 import {
+  checkBrand,
   readAuditAttribution,
   submitAudit,
   submitAuditFeedback,
+  type BrandCheck,
 } from "@/components/audit/auditApi";
 import { Drawing } from "@/components/audit/Drawing";
 import { siteCopy } from "@/content/siteCopy";
@@ -117,6 +119,13 @@ export function AuditFlow({
     site: "",
   });
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  // The live check of the site field: what was checked and what came back.
+  const [siteCheck, setSiteCheck] = useState<{
+    q: string;
+    result: BrandCheck | null;
+  } | null>(null);
+  const checkTimer = useRef<number | undefined>(undefined);
+  const checkAbort = useRef<AbortController | null>(null);
   const [stage, setStage] = useState<Stage>(sent ? 0 : "request");
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
   // The questions whose "Something else" pill is open: their field shows under the pills.
@@ -193,6 +202,31 @@ export function AuditFlow({
   const set = (key: Field, value: string) => {
     setDraft((value0) => ({ ...value0, [key]: value }));
     if (errors[key]) setErrors((value0) => ({ ...value0, [key]: undefined }));
+    if (key === "site") scheduleCheck(value);
+  };
+
+  // The check runs once the visitor pauses, and again on blur; the last answer wins.
+  const runCheck = (value: string) => {
+    const q = value.trim();
+    checkAbort.current?.abort();
+    if (!q || !auditSchema.shape.site.safeParse(q).success) {
+      setSiteCheck(null);
+      return;
+    }
+    if (siteCheck?.q === q) return;
+    const controller = new AbortController();
+    checkAbort.current = controller;
+    void checkBrand(q, controller.signal).then((result) => {
+      if (controller.signal.aborted) return;
+      setSiteCheck({ q, result });
+    });
+  };
+  const scheduleCheck = (value: string) => {
+    window.clearTimeout(checkTimer.current);
+    setSiteCheck((current) =>
+      current && current.q !== value.trim() ? null : current,
+    );
+    checkTimer.current = window.setTimeout(() => runCheck(value), 700);
   };
 
   const onFieldFocus = () => {
@@ -510,6 +544,11 @@ export function AuditFlow({
                     spellCheck={key === "name" ? undefined : false}
                     value={draft[key]}
                     onFocus={onFieldFocus}
+                    onBlur={
+                      key === "site"
+                        ? (event) => runCheck(event.target.value)
+                        : undefined
+                    }
                     onChange={(event) => set(key, event.target.value)}
                     readOnly={phase === "sending"}
                     aria-invalid={errors[key] ? true : undefined}
@@ -523,6 +562,36 @@ export function AuditFlow({
                       className="audit-quiz__error"
                     >
                       {errors[key]}
+                    </p>
+                  ) : key === "site" &&
+                    siteCheck?.result &&
+                    siteCheck.q === draft.site.trim() ? (
+                    <p
+                      className="audit-quiz__check"
+                      data-ok={siteCheck.result.ok === true ? "" : undefined}
+                      role="status"
+                    >
+                      {siteCheck.result.ok === true ? (
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.75"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="m2.5 7.5 3 3 6-7" />
+                        </svg>
+                      ) : null}
+                      {(siteCheck.result.kind === "instagram"
+                        ? flow.checkHandle
+                        : siteCheck.result.ok
+                          ? flow.checkLive
+                          : flow.checkDown
+                      ).replace("{label}", siteCheck.result.label)}
                     </p>
                   ) : null}
                 </div>

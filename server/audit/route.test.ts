@@ -55,6 +55,7 @@ async function start(overrides: Partial<AuditDeps> = {}) {
     getValue: store.getValue,
     now: () => NOW,
     adminKey: () => "",
+    hostIsLive: vi.fn(async (host: string) => host === "rustico.mx"),
     ...overrides,
   };
   const app = express();
@@ -85,7 +86,11 @@ async function start(overrides: Partial<AuditDeps> = {}) {
     const res = await fetch(`http://127.0.0.1:${port}/api/audit/status`);
     return { status: res.status, cache: res.headers.get("cache-control"), json: (await res.json()) as Record<string, any> };
   };
-  return { deps, store, port, post, status, feedback };
+  const check = async (q: string) => {
+    const res = await fetch(`http://127.0.0.1:${port}/api/audit/check?q=${encodeURIComponent(q)}`);
+    return { status: res.status, cache: res.headers.get("cache-control"), json: (await res.json()) as Record<string, any> };
+  };
+  return { deps, store, port, post, status, feedback, check };
 }
 
 describe("isoWeek", () => {
@@ -96,6 +101,23 @@ describe("isoWeek", () => {
     // Monday at midnight in Austin (six in the morning UTC) opens the next week.
     expect(isoWeek(new Date("2026-11-09T06:00:00Z"))).toBe("2026-W46");
     expect(isoWeek(new Date("2027-01-01T12:00:00Z"))).toBe("2026-W53");
+  });
+});
+
+describe("GET /api/audit/check", () => {
+  it("says whether a domain answers, normalizes a handle without claiming it exists, and refuses junk", async () => {
+    const { check, deps } = await start();
+    expect(await check("https://www.rustico.mx/menu")).toMatchObject({ status: 200, cache: "no-store", json: { kind: "site", label: "rustico.mx", ok: true } });
+    expect(await check("nope.example")).toMatchObject({ status: 200, json: { kind: "site", label: "nope.example", ok: false } });
+    expect(await check("instagram.com/jdomito_")).toMatchObject({ status: 200, json: { kind: "instagram", label: "@jdomito_", ok: null } });
+    expect(await check("@acre.resort")).toMatchObject({ status: 200, json: { kind: "instagram", label: "@acre.resort", ok: null } });
+    expect((await check("not a site")).status).toBe(400);
+    expect((await check("")).status).toBe(400);
+    expect(deps.hostIsLive).toHaveBeenCalledTimes(2);
+  });
+  it("answers 429 past the check limit", async () => {
+    const { check } = await start({ rateLimit: vi.fn(async (_ip, bucket) => bucket !== "auditCheck") });
+    expect((await check("rustico.mx")).status).toBe(429);
   });
 });
 

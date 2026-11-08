@@ -502,6 +502,10 @@ export const siteCopy = {
       back: "back",
       questionsTitle: "Four quick questions",
       questionsLastTitle: "Last two",
+      // The live check under the site field (JP, 2026-11-07): a domain that answers, one that doesn't, a handle as read.
+      checkLive: "{label} is live.",
+      checkDown: "I can't reach {label}. Check the spelling, or send it anyway.",
+      checkHandle: "{label} on Instagram.",
       thanksTitle: "Thank you, {name}.",
       thanksTitleNoName: "Thank you.",
       thanksLine: "Your audit lands in your inbox this week, from me.",
