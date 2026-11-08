@@ -50,6 +50,8 @@ const HEADER = 64;
 const DESKTOP = "(min-width: 1024px)";
 /** A sideways scroller sits outside the browser's lazy-load margin: the first screen's frames load at once. */
 const EAGER_FRAMES = 4;
+/** A phone shows one frame and a sliver: four eager JPEGs starved the first one (Lighthouse, 2026-11-08). */
+const EAGER_FRAMES_PHONE = 2;
 /** Text frames sit after every third or fourth piece, spread as evenly as that allows. */
 const TEXT_EVERY_MIN = 3;
 const TEXT_EVERY_MAX = 4;
@@ -544,7 +546,7 @@ export default function Project() {
                         alt={`${project.title}, image`}
                         index={index}
                         priority={index === 0}
-                        eager={index < EAGER_FRAMES || assetKey(item.src) === at}
+                        eager={index < (isDesktop() ? EAGER_FRAMES : EAGER_FRAMES_PHONE) || assetKey(item.src) === at}
                         onOpen={() => setOpen(index)}
                       />
                     </figure>

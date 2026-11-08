@@ -362,7 +362,7 @@ html[data-consent="open"] .site-explore { display: none; }
   letter-spacing: 0;
   -webkit-tap-highlight-color: transparent;
 }
-.site-sheet__link:active { background: rgba(27, 26, 23, 0.04); }
+.site-sheet__link:active { background: color-mix(in srgb, var(--site-ink) 6%, transparent); }
 /* The page you are on: a light grey row, like the reference. */
 .site-sheet__link[aria-current="page"] { background: var(--site-sheet-tint); }
 .site-sheet__thumb {

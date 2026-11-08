@@ -24,7 +24,7 @@ import { creativeWorkSchema } from "@/lib/seoSchema";
  * hint a bare href, and a bare href never matches a srcset choice.
  */
 export const FRAME_WIDTHS = [480, 800, 1200, 1600, 2000, 2400];
-export const FRAME_QUALITY = 88;
+export const FRAME_QUALITY = 82;
 
 /** The frame's width over height, from the asset URL; 1.5 when the URL carries no size. */
 export function frameRatio(src: string) {
