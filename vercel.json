@@ -24,8 +24,7 @@
     }
   ],
   "redirects": [
-    { "source": "/audit", "destination": "https://audit.atla.design/audit", "permanent": false },
-    { "source": "/audit/", "destination": "https://audit.atla.design/audit", "permanent": false },
+    { "source": "/audit/", "destination": "/audit", "permanent": false },
     { "source": "/:path*", "has": [{ "type": "host", "value": "atla-website.vercel.app" }], "destination": "https://www.atla.design/:path*", "permanent": true },
     { "source": "/studio", "destination": "https://atla-dvufm78f.sanity.studio", "permanent": true },
     { "source": "/studio/:path*", "destination": "https://atla-dvufm78f.sanity.studio/:path*", "permanent": true },
@@ -56,6 +55,14 @@
     { "source": "/10-successful-rebranding-examples-that-changed-the-game", "destination": "/journal/why-most-startups-rebrand-too-late", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/audit", "destination": "https://audit.atla.design/audit" },
+    { "source": "/audit/landing/:path*", "destination": "https://audit.atla.design/audit/landing/:path*" },
+    { "source": "/api/audit", "destination": "https://audit.atla.design/api/audit" },
+    { "source": "/api/audit/:path*", "destination": "https://audit.atla.design/api/audit/:path*" },
+    { "source": "/assets/:path*", "destination": "https://audit.atla.design/assets/:path*" },
+    { "source": "/logos-v2/:path*", "destination": "https://audit.atla.design/logos-v2/:path*" },
+    { "source": "/hospitality/:path*", "destination": "https://audit.atla.design/hospitality/:path*" },
+    { "source": "/fonts/:path*", "destination": "https://audit.atla.design/fonts/:path*" },
     { "source": "/waitlist", "destination": "https://start.atla.design/waitlist" },
     { "source": "/waitlist/:path*", "destination": "https://start.atla.design/waitlist/:path*" },
     { "source": "/_next/:path*", "destination": "https://start.atla.design/_next/:path*" },
