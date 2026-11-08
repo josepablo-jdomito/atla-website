@@ -10,3 +10,6 @@ skills-lock.json
 attached_assets/
 .vercel
 .env*.local
+.env
+.env.*
+!.env.example

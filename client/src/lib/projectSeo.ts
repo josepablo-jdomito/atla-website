@@ -2,7 +2,7 @@ import { SITE_ORIGIN } from "../../../shared/siteSeo.ts";
 import { buildBreadcrumbList } from "./seoSchema.ts";
 
 /**
- * Case-study text helpers shared by AtlaProject (runtime) and script/build.ts (prerender),
+ * Case-study text helpers shared by pages/Project.tsx (runtime, via lib/projectPage.ts) and script/build.ts (prerender),
  * so meta descriptions and the narrative sections read the same in both.
  */
 
@@ -27,6 +27,19 @@ export function truncateOnWord(value: string, max = META_DESCRIPTION_MAX) {
   const lastSpace = slice.lastIndexOf(" ");
   const cut = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
   return `${cut.replace(/[\s,;:.\-–—]+$/, "")}…`;
+}
+
+/**
+ * A description longer than the meta limit ends at its last whole sentence inside the limit, when
+ * that leaves enough of it (the descriptions are written so the first sentence or two carry the
+ * page); otherwise it is cut on a word with an ellipsis.
+ */
+export function cutAtSentence(value: string, max = META_DESCRIPTION_MAX, min = 60) {
+  if (value.length <= max) return value;
+  const window = value.slice(0, max + 1);
+  const match = window.match(/^[\s\S]*[.!?]["')\]]*(?=\s)/);
+  if (match && match[0].length >= min) return match[0].trim();
+  return truncateOnWord(value, max);
 }
 
 /** Drops Sanity placeholder text: a leading "testing" token and the generic "X is an Atla case study…" line. */
@@ -73,17 +86,19 @@ export function buildProjectMetaDescription(input: ProjectMetaInput) {
   const summary = cleanProjectSummary(input.description);
 
   if (summary.length >= META_DESCRIPTION_KEEP) {
-    return truncateOnWord(summary);
+    return cutAtSentence(summary);
   }
 
+  // The dek stands alone with a short close; no generated tail that gets cut mid-phrase.
   const client = collapseWhitespace(input.client);
   const hasDistinctClient = Boolean(client) && client !== "Confidential" && textKey(client) !== textKey(title);
   const facets = joinFacets(projectFacets(input));
-  const summaryNamesTitle = summary.toLowerCase().includes(title.toLowerCase());
-  const generated = hasDistinctClient
-    ? `${summaryNamesTitle ? "Case study" : `${title} case study`} by Atla for ${client}: ${facets}.`
-    : `${summaryNamesTitle ? "Brand identity case study" : `${title} brand identity case study`} by Atla: ${facets}.`;
-  const combined = summary ? `${summary.replace(/[\s.]*$/, ".")} ${generated}` : generated;
+  const close = summary
+    ? "Case study by Atla."
+    : hasDistinctClient
+      ? `${title} case study by Atla for ${client}: ${facets}.`
+      : `${title} brand identity case study by Atla: ${facets}.`;
+  const combined = summary ? `${summary.replace(/[\s.]*$/, ".")} ${close}` : close;
 
   return truncateOnWord(combined);
 }

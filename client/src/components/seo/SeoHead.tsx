@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
+import { getOptimizedImageUrl } from "@shared/imageDelivery";
 import { toAbsoluteUrl } from "@/lib/seoSchema";
 
 type SeoHeadProps = {
@@ -70,7 +71,9 @@ export function SeoHead({
     const canonicalUrl = new URL(pathname, origin).toString();
     // Share images resolve against the production origin, never the current host: crawlers
     // need an absolute URL, and a preview host's URL would expire.
-    const imageUrl = toAbsoluteUrl(image || DEFAULT_OG_IMAGE_URL);
+    // Share images from Sanity go out at 1200 wide (crawlers fetched the raw multi-megabyte file).
+    const shareImage = image || DEFAULT_OG_IMAGE_URL;
+    const imageUrl = toAbsoluteUrl(getOptimizedImageUrl(shareImage, { width: 1200, quality: 82 }) || shareImage);
     const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
     document.title = fullTitle;
@@ -91,7 +94,8 @@ export function SeoHead({
     upsertLink("canonical", canonicalUrl);
     const preloadSet = new Set<string>([
       new URL("/figmaAssets/logo.svg", origin).toString(),
-      new URL(image || DEFAULT_OG_IMAGE_URL, origin).toString(),
+      // Never the share image: it is the raw, full-size asset (a 3 MB PNG on a case study). Pages pass
+      // their own sized preloads; the share image stays a meta tag for crawlers.
       ...preloadImages.filter(Boolean),
     ]);
     syncImagePreloads(Array.from(preloadSet));
@@ -116,4 +120,17 @@ export function SeoHead({
   }, [description, image, pathname, preloadImages, robots, structuredData, title, type]);
 
   return null;
+}
+
+/** While `active`, the page asks crawlers not to index it (a thank-you state at the form's own URL). */
+export function useNoindex(active: boolean) {
+  useEffect(() => {
+    if (!active) return;
+    const meta = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    const previous = meta?.getAttribute("content") ?? null;
+    upsertMeta('meta[name="robots"]', { name: "robots" }, "noindex,follow");
+    return () => {
+      if (previous !== null) upsertMeta('meta[name="robots"]', { name: "robots" }, previous);
+    };
+  }, [active]);
 }

@@ -1,42 +1,64 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { hasThirdPartyTags } from "@/lib/consent-tags";
 import { likelyNeedsConsentPrompt, readStoredConsent, setAnalyticsConsent } from "@/lib/ga";
+import { siteCopy } from "@/content/siteCopy";
 
 /**
- * Cookie notice for Google Analytics. It shows only to visitors on a European
- * time zone who have not chosen yet, or when the footer's "Analytics cookies"
+ * Cookie notice for Google Analytics and, when their ids are set, Microsoft
+ * Clarity and the Meta Pixel. It shows to visitors on a European time zone
+ * who have not chosen yet, to everyone who has not chosen once Meta or
+ * Clarity is configured (they load only on Accept), or when the footer's "Analytics cookies"
  * link asks for it. Consent defaults themselves live in lib/ga.ts.
+ *
+ * On the site's tokens (paper and ink, dark mode), styled in site.css `.consent`. Focus moves into it
+ * when it opens and goes back where it was when it closes. Escape closes it without choosing: nothing
+ * is stored and nothing changes, which is what the privacy page promises (in Europe the cookies stay
+ * off until Accept). While it is open, html[data-consent="open"] hides the Explore pill, which took
+ * Decline's taps on the phone.
  */
 export const OPEN_CONSENT_EVENT = "atla:open-analytics-consent";
 
-const textStyle: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 13,
-  fontWeight: 500,
-  lineHeight: "1.45",
-  letterSpacing: 0.2,
-  color: "#222",
-  margin: 0,
-};
-
-const buttonStyle: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 13,
-  fontWeight: 600,
-  padding: "10px 16px",
-  minHeight: 40,
-  borderRadius: 999,
-  cursor: "pointer",
-};
+const { consent: copy } = siteCopy;
 
 export function AnalyticsConsent() {
   const [open, setOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const acceptRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const textId = useId();
 
   useEffect(() => {
-    if (!readStoredConsent() && likelyNeedsConsentPrompt()) setOpen(true);
+    if (!readStoredConsent() && (likelyNeedsConsentPrompt() || hasThirdPartyTags())) setOpen(true);
     const reopen = () => setOpen(true);
     window.addEventListener(OPEN_CONSENT_EVENT, reopen);
     return () => window.removeEventListener(OPEN_CONSENT_EVENT, reopen);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const active = document.activeElement;
+    openerRef.current = active instanceof HTMLElement && active !== document.body ? active : null;
+    acceptRef.current?.focus({ preventScroll: true });
+    document.documentElement.setAttribute("data-consent", "open");
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      // Only when focus is in the notice or nowhere in particular: Escape in another open layer is that layer's.
+      const target = document.activeElement;
+      if (target && target !== document.body && !dialogRef.current?.contains(target)) return;
+      event.preventDefault();
+      setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.documentElement.removeAttribute("data-consent");
+      const opener = openerRef.current;
+      openerRef.current = null;
+      // Focus goes back to whatever opened it (the footer link); an automatic notice hands it to <main>.
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      else document.getElementById("main")?.focus({ preventScroll: true });
+    };
+  }, [open]);
 
   if (!open) return null;
 
@@ -46,38 +68,19 @@ export function AnalyticsConsent() {
   };
 
   return (
-    <div
-      role="dialog"
-      aria-live="polite"
-      aria-label="Analytics cookies"
-      style={{
-        position: "fixed",
-        left: "max(12px, env(safe-area-inset-left, 0px))",
-        right: "max(12px, env(safe-area-inset-right, 0px))",
-        bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-        zIndex: 60,
-        maxWidth: 520,
-        marginLeft: "auto",
-        background: "#fafafa",
-        border: "1px solid #222",
-        padding: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-      }}
-    >
-      <p style={textStyle}>
-        We use Google Analytics cookies to see which pages lead to projects. Nothing is used for ads.{" "}
-        <a href="/privacy" style={{ color: "#222" }}>
-          Privacy policy
+    <div ref={dialogRef} role="dialog" aria-label={copy.label} aria-describedby={textId} className="consent">
+      <p id={textId} className="consent__text">
+        {copy.body}{" "}
+        <a href="/privacy" className="consent__link">
+          {copy.privacy}
         </a>
       </p>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button type="button" onClick={() => choose("granted")} style={{ ...buttonStyle, background: "#222", color: "#fafafa", border: "1px solid #222" }}>
-          Accept
+      <div className="consent__actions">
+        <button ref={acceptRef} type="button" className="site-action" onClick={() => choose("granted")}>
+          {copy.accept}
         </button>
-        <button type="button" onClick={() => choose("denied")} style={{ ...buttonStyle, background: "transparent", color: "#222", border: "1px solid #222" }}>
-          Decline
+        <button type="button" className="site-text-button" onClick={() => choose("denied")}>
+          {copy.decline}
         </button>
       </div>
     </div>

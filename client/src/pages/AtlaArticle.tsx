@@ -3,53 +3,68 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { trackEvent, useScrollDepthTracking } from "@/hooks/use-analytics";
 import { JournalPortableText } from "@/components/journal/JournalPortableText";
-import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
+import { PageError, PageShell, PageSkeleton } from "@/components/site/PageShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import NotFound from "@/pages/not-found";
 import { fetchJournalArticle, fetchJournalArticles } from "@/lib/journalApi";
 import { articleBodyText, articleDescription, buildArticleBreadcrumb, buildBlogPostingSchema } from "@/lib/journalSeo";
 import { formatJournalMetaTitle } from "@/lib/seoSchema";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { getImageDimensions } from "@shared/imageDelivery";
+import { ownCovers } from "@/lib/journalCovers";
 import { DEFAULT_OG_IMAGE_URL } from "@shared/siteSeo";
-
-const BODY: React.CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.1",
-  color: "#222",
-  margin: 0,
-};
-
-const LABEL: React.CSSProperties = {
-  ...BODY,
-  color: "#666",
-};
 
 export default function AtlaArticle() {
   const [, params] = useRoute("/journal/:slug");
-  const isMobile = useIsMobile();
   const slug = params?.slug ?? "";
-  const { data: articleData, isPending: isArticlePending } = useQuery({
+  const {
+    data: articleData,
+    isPending: isArticlePending,
+    isError: articleFailed,
+    refetch: refetchArticle,
+  } = useQuery({
     queryKey: ["/api/journal", slug],
     queryFn: () => fetchJournalArticle(slug),
   });
-  const { data: articlesData, isPending: areArticlesPending } = useQuery({
+  const {
+    data: articlesData,
+    isPending: areArticlesPending,
+    isError: articlesFailed,
+    refetch: refetchArticles,
+  } = useQuery({
     queryKey: ["/api/journal"],
     queryFn: fetchJournalArticles,
   });
   const articles = useMemo(() => articlesData ?? [], [articlesData]);
+  // Only a cover no other article shares is shown (see journalCovers.ts).
+  const covers = useMemo(() => ownCovers(articles), [articles]);
   const article = useMemo(
     () => articleData ?? articles.find((item) => item.slug === slug) ?? null,
     [articleData, articles, slug],
   );
   useScrollDepthTracking(article?.slug ?? "", article?.category, "journal_article");
 
+  // Loading keeps the header and footer (states report 6).
   if (!slug || (!article && (isArticlePending || areArticlesPending))) {
-    return null;
+    return (
+      <PageShell>
+        <PageSkeleton rows={1} />
+      </PageShell>
+    );
+  }
+
+  // A failure to load says so, with Try again, instead of "page not found" (a missing slug comes back
+  // as null from fetchJournalArticle, not as an error).
+  if (!article && (articlesFailed || articleFailed)) {
+    return (
+      <PageShell>
+        <PageError
+          onRetry={() => {
+            void refetchArticle();
+            void refetchArticles();
+          }}
+        />
+      </PageShell>
+    );
   }
 
   if (!article) {
@@ -77,7 +92,9 @@ export default function AtlaArticle() {
     article.bodySections.find((section) => Boolean(section.image))?.image ||
     article.bodySections.find((section) => Boolean(section.wideImage))?.wideImage ||
     DEFAULT_OG_IMAGE_URL;
-  const articleImage = article.coverImage || article.heroImage || fallbackBodyImage;
+  // A cover shared with other articles is the placeholder, not this article's picture (journalCovers.ts).
+  const articleImage = covers.get(article.slug) || fallbackBodyImage;
+  const showHero = articleImage !== DEFAULT_OG_IMAGE_URL;
   const hasPortableTextBody = article.body.length > 0;
   const hasLegacyBody = article.introParagraphs.length > 0 || article.bodySections.some(
     (section) => section.paragraphs.length > 0 || Boolean(section.image) || Boolean(section.wideImage),
@@ -91,7 +108,7 @@ export default function AtlaArticle() {
   const breadcrumbSchema = buildArticleBreadcrumb(article);
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+    <PageShell>
       <SeoHead
         title={formatJournalMetaTitle(article.seoTitle || article.title)}
         description={description}
@@ -101,255 +118,139 @@ export default function AtlaArticle() {
         robots={robots}
         structuredData={[articleSchema, breadcrumbSchema]}
       />
-      <div className="atla-dark-surface">
-      <main style={{ width: "100%", position: "relative" }}>
-        <AtlaNav />
+      <article className="site-page-body article">
+        <header className="page-intro article-intro">
+          <p className="site-label">
+            {article.category} · {article.date}
+          </p>
+          <h1 className="page-intro__title">{article.title}</h1>
+        </header>
 
-        <section
-          style={{
-            padding: isMobile ? "60px 10px 0" : "60px 20px 0",
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: 10,
-            alignItems: "start",
-          }}
-        >
-          {isMobile && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              {articleImage ? (
-                <div style={{ width: "100%", aspectRatio: "370 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
-                  <img
-                    src={articleImage}
-                    alt={article.title}
-                    width={getImageDimensions(articleImage)?.width}
-                    height={getImageDimensions(articleImage)?.height}
-                    fetchPriority="high"
-                    decoding="async"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                </div>
-              ) : null}
-              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <h1
-                  style={{
-                    fontFamily: "Helvetica, sans-serif",
-                    fontSize: 40,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: "#222",
-                    margin: 0,
-                  }}
-                >
-                  {article.title}
-                </h1>
-                <p style={{ ...LABEL, fontSize: 12 }}>{article.category}</p>
-                <p style={{ ...LABEL, fontSize: 12 }}>{article.date.toUpperCase()}</p>
-              </div>
-            </div>
-          )}
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 40, minWidth: 0 }}>
-            {!isMobile && articleImage ? <div style={{ height: 450 }} /> : null}
-
-            {hasPortableTextBody ? (
-              <JournalPortableText value={article.body} />
-            ) : (
-              <>
-                {article.introParagraphs.length > 0 && (
-                  <div style={{ maxWidth: 620, display: "flex", flexDirection: "column", gap: 20 }}>
-                    {article.introParagraphs.map((paragraph) => (
-                      <p key={paragraph} style={BODY}>
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                {article.bodySections.map((section, index) => (
-                  <div key={`${article.slug}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 620 }}>
-                    {section.paragraphs.length > 0 && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: section.image || section.wideImage ? "0 0 20px" : 0 }}>
-                        {section.paragraphs.map((paragraph) => (
-                          <p key={paragraph} style={BODY}>
-                            {paragraph}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                    {section.image && (
-                      <div style={{ width: "100%", minHeight: 400 }}>
-                        <img
-                          src={section.image}
-                          alt={`${article.title} editorial image ${index + 1}`}
-                          width={getImageDimensions(section.image)?.width}
-                          height={getImageDimensions(section.image)?.height}
-                          loading="lazy"
-                          decoding="async"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      </div>
-                    )}
-                    {section.wideImage && (
-                      <div style={{ width: "100%", minHeight: 400 }}>
-                        <img
-                          src={section.wideImage}
-                          alt={`${article.title} wide editorial image ${index + 1}`}
-                          width={getImageDimensions(section.wideImage)?.width}
-                          height={getImageDimensions(section.wideImage)?.height}
-                          loading="lazy"
-                          decoding="async"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
-
-            {!hasPortableTextBody && !hasLegacyBody ? null : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 40, maxWidth: 620 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                  <p style={LABEL}>Source:</p>
-                  <p style={BODY}>{article.sourceName || "Atla Journal"}</p>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                  <p style={LABEL}>Author:</p>
-                  <p style={BODY}>{article.authorName || "Atla"}</p>
-                </div>
-              </div>
-            )}
+        {showHero ? (
+          <div className="article-hero">
+            <img
+              src={articleImage}
+              alt={article.title}
+              width={getImageDimensions(articleImage)?.width}
+              height={getImageDimensions(articleImage)?.height}
+              fetchPriority="high"
+              decoding="async"
+            />
           </div>
+        ) : null}
 
-          {!isMobile && (
-            <div style={{ position: "sticky", top: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {articleImage ? (
-                <div style={{ width: "100%", aspectRatio: "575 / 400", overflow: "hidden", backgroundColor: "#efefef" }}>
-                  <img
-                    src={articleImage}
-                    alt={article.title}
-                    width={getImageDimensions(articleImage)?.width}
-                    height={getImageDimensions(articleImage)?.height}
-                    fetchPriority="high"
-                    decoding="async"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
+        <div className="article-body longform-prose">
+          {hasPortableTextBody ? (
+            <JournalPortableText value={article.body} />
+          ) : (
+            <>
+              {article.introParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+
+              {article.bodySections.map((section, index) => (
+                <div key={`${article.slug}-${index}`} className="article-section">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {section.image && (
+                    <img
+                      className="article-figure"
+                      src={section.image}
+                      alt={`${article.title} editorial image ${index + 1}`}
+                      width={getImageDimensions(section.image)?.width}
+                      height={getImageDimensions(section.image)?.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  {section.wideImage && (
+                    <img
+                      className="article-figure"
+                      src={section.wideImage}
+                      alt={`${article.title} wide editorial image ${index + 1}`}
+                      width={getImageDimensions(section.wideImage)?.width}
+                      height={getImageDimensions(section.wideImage)?.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {(hasPortableTextBody || hasLegacyBody) && (article.sourceName || article.authorName) ? (
+            <dl className="article-credits">
+              {article.sourceName ? (
+                <div>
+                  <dt className="site-label">Source:</dt>
+                  <dd>{article.sourceName}</dd>
                 </div>
               ) : null}
-              <div style={{ paddingTop: articleImage ? 20 : 0, display: "flex", flexDirection: "column", gap: 4 }}>
-                <h1
-                  style={{
-                    fontFamily: "Helvetica, sans-serif",
-                    fontSize: 64,
-                    fontWeight: 400,
-                    lineHeight: "1.1",
-                    color: "#222",
-                    margin: 0,
-                  }}
-                >
-                  {article.title}
-                </h1>
-                <p style={LABEL}>{article.category}</p>
-                <p style={LABEL}>{article.date.toUpperCase()}</p>
-              </div>
-            </div>
-          )}
-        </section>
+              {article.authorName ? (
+                <div>
+                  <dt className="site-label">Author:</dt>
+                  <dd>{article.authorName}</dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : null}
+        </div>
 
-        <section style={{ padding: isMobile ? "100px 10px" : "200px 20px", minHeight: 500 }}>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
-            <div />
-            <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-              <p
-                style={{
-                  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: 0.48,
-                  lineHeight: "1.2",
-                  textTransform: "uppercase",
-                  color: "#222",
-                  margin: 0,
-                }}
-              >
-                Other news
-              </p>
-              <p style={{ ...BODY, lineHeight: "1.5", maxWidth: 520 }}>
-                Keep reading through related journal pieces, or jump into the broader archive to see how strategy,
-                identity, digital craft, and category-specific thinking connect across the studio&apos;s writing.
-              </p>
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 64 : 10 }}>
-                {otherNews.map((item) => (
-                  <a
-                    key={item.slug}
-                    href={`/journal/${item.slug}`}
-                    className="atla-card"
-                    onClick={() =>
-                      trackEvent("journal_cta_click", {
-                        page: canonicalPath,
-                        article_slug: item.slug,
-                        article_category: item.category,
-                        cta_type: "related_article",
-                      })}
-                    style={{ textDecoration: "none", color: "#222", display: "flex", flexDirection: "column", gap: 20 }}
-                  >
-                    <div style={{ width: "100%", aspectRatio: "282.5 / 246.54", overflow: "hidden", backgroundColor: "#efefef" }}>
-                      {item.coverImage ? (
-                        <img
-                          src={item.coverImage}
-                          alt={item.title}
-                          width={getImageDimensions(item.coverImage)?.width}
-                          height={getImageDimensions(item.coverImage)?.height}
-                          loading="lazy"
-                          decoding="async"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      ) : null}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      <p style={{ ...LABEL, fontSize: 12 }}>{item.category}</p>
-                      <h2
-                        style={{
-                          fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                          fontSize: isMobile ? 24 : 32,
-                          fontWeight: 400,
-                          lineHeight: "1.1",
-                          color: "#222",
-                          margin: 0,
-                        }}
-                      >
-                        {item.title}
-                      </h2>
-                      <p style={{ ...BODY, color: "#5f5f5f", lineHeight: "1.5", maxWidth: 260 }}>{item.excerpt}</p>
-                      <p style={BODY}>{item.date}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-                {article.categorySlug ? (
-                  <a
-                    href={`/journal/category/${article.categorySlug}`}
-                    className="atla-link"
-                    style={{ ...LABEL, color: "#222", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}
-                  >
-                    More in {article.category}
-                  </a>
-                ) : null}
+        <section className="page-section article-more" aria-labelledby="article-more">
+          <h2 id="article-more" className="site-section-title">
+            More from the journal
+          </h2>
+          <div className="page-section__body">
+            <div className="journal-grid journal-grid--related">
+              {otherNews.map((item) => (
                 <a
-                  href="/journal"
-                  className="atla-link"
-                  style={{ ...LABEL, color: "#222", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 52, padding: "14px 4px" }}
+                  key={item.slug}
+                  href={`/journal/${item.slug}`}
+                  className="journal-card"
+                  onClick={() =>
+                    trackEvent("journal_cta_click", {
+                      page: canonicalPath,
+                      article_slug: item.slug,
+                      article_category: item.category,
+                      cta_type: "related_article",
+                    })}
                 >
-                  Browse all journal articles
+                  {covers.has(item.slug) ? (
+                    <div className="journal-card__media">
+                      <img
+                        src={covers.get(item.slug)}
+                        alt={item.title}
+                        width={getImageDimensions(covers.get(item.slug)!)?.width}
+                        height={getImageDimensions(covers.get(item.slug)!)?.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  ) : null}
+                  <div className="journal-card__text">
+                    <p className="site-label">{item.category}</p>
+                    <h3 className="site-item-title journal-card__title">{item.title}</h3>
+                    <p className="journal-card__excerpt">{item.excerpt}</p>
+                    <p className="journal-card__date">{item.date}</p>
+                  </div>
                 </a>
-              </div>
+              ))}
+            </div>
+            <div className="longform-actions">
+              {article.categorySlug ? (
+                <a href={`/journal/category/${article.categorySlug}`} className="site-action">
+                  More in {article.category}
+                </a>
+              ) : null}
+              <a href="/journal" className="site-text-button">
+                Browse all journal articles
+              </a>
             </div>
           </div>
         </section>
-      </main>
-      </div>
-      <AtlaFooter />
-    </div>
+      </article>
+    </PageShell>
   );
 }

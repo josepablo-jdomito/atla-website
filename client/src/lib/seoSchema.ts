@@ -38,7 +38,8 @@ export function buildBreadcrumbList(items: BreadcrumbItem[]) {
 const JOURNAL_SUFFIX = "Atla Journal";
 
 /** Journal titles: appends "| Atla Journal" only when the base title does not already name it. */
-export function formatJournalMetaTitle(base: string) {
+export function formatJournalMetaTitle(rawBase: string) {
+  const base = rawBase.replace(/\s*[\u2013\u2014]\s*/g, " | ");
   return base.toLowerCase().includes(JOURNAL_SUFFIX.toLowerCase())
     ? formatMetaTitle(base)
     : formatMetaTitle(base, JOURNAL_SUFFIX);
@@ -84,5 +85,47 @@ export function buildArticleAuthor(authorName?: string) {
     "@type": "Person",
     name,
     worksFor: ORGANIZATION_REF,
+  };
+}
+
+export type CreativeWorkInput = {
+  slug: string;
+  title: string;
+  description: string;
+  heroImage: string;
+  gallery: string[];
+  /** The project year as shown on the page; dateCreated is left out when it is not a year. */
+  year: string;
+  /** Sector, disciplines (lead first), place and stage: the controlled facets. */
+  sector: string;
+  disciplines: string[];
+  place: string;
+  stage: string;
+  /** Hidden search terms; they reach machines through `keywords`, never the page. */
+  searchTerms: string[];
+  locationName: string;
+};
+
+/**
+ * schema.org CreativeWork for a case study. Built by buildProjectSeoHead
+ * (lib/projectPage.ts), which both the Project page and the prerender use.
+ */
+export function creativeWorkSchema(project: CreativeWorkInput) {
+  const year = Number.parseInt(project.year, 10);
+  const keywords = Array.from(new Set([...project.disciplines, ...project.searchTerms].map((k) => k.trim()).filter(Boolean)));
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: `${project.title} case study`,
+    description: project.description,
+    url: `${SITE_ORIGIN}/projects/${project.slug}`,
+    image: [project.heroImage, ...project.gallery.slice(0, 7)].filter(Boolean),
+    ...(Number.isFinite(year) ? { dateCreated: String(year) } : {}),
+    creator: ORGANIZATION_REF,
+    publisher: ORGANIZATION_REF,
+    ...(project.sector ? { about: project.sector } : {}),
+    ...(project.disciplines[0] ? { genre: project.disciplines[0] } : {}),
+    ...(keywords.length > 0 ? { keywords: keywords.join(", ") } : {}),
+    ...(project.locationName ? { contentLocation: { "@type": "Place", name: project.locationName } } : {}),
   };
 }

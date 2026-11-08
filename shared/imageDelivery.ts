@@ -4,6 +4,8 @@ type ImageDeliveryOptions = {
   quality?: number;
   fit?: "max" | "clip" | "crop" | "fill" | "fillmax" | "min" | "scale";
   autoFormat?: boolean;
+  /** Sanity hotspot centre (0..1). With a width and a height it crops around that point. */
+  focal?: { x: number; y: number } | null;
 };
 
 const SANITY_IMAGE_HOST = "cdn.sanity.io";
@@ -84,6 +86,7 @@ export function getOptimizedImageUrl(
     quality = 92,
     fit = "max",
     autoFormat = true,
+    focal,
   }: ImageDeliveryOptions = {},
 ) {
   if (!src || !isSanityImageUrl(src)) {
@@ -98,7 +101,13 @@ export function getOptimizedImageUrl(
     url.searchParams.set("auto", "format");
   }
 
-  url.searchParams.set("fit", fit);
+  const cropAround = focal && resolvedWidth && resolvedHeight && Number.isFinite(focal.x) && Number.isFinite(focal.y);
+  url.searchParams.set("fit", cropAround ? "crop" : fit);
+  if (cropAround) {
+    url.searchParams.set("crop", "focalpoint");
+    url.searchParams.set("fp-x", String(Math.max(0, Math.min(1, focal.x))));
+    url.searchParams.set("fp-y", String(Math.max(0, Math.min(1, focal.y))));
+  }
 
   if (resolvedWidth) {
     url.searchParams.set("w", String(resolvedWidth));
@@ -118,7 +127,7 @@ export function getOptimizedImageUrl(
 export function buildImageSrcSet(
   src?: string | null,
   widths: number[] = [],
-  options: Omit<ImageDeliveryOptions, "width"> = {},
+  options: Omit<ImageDeliveryOptions, "width"> & { ratio?: number } = {},
 ) {
   if (!src || !isSanityImageUrl(src)) {
     return undefined;
@@ -133,8 +142,10 @@ export function buildImageSrcSet(
     return undefined;
   }
 
+  // With a crop ratio (`height` as a share of the width), each candidate gets its own height.
+  const { ratio, ...rest } = options;
   return normalizedWidths
-    .map((width) => `${getOptimizedImageUrl(src, { ...options, width })} ${width}w`)
+    .map((width) => `${getOptimizedImageUrl(src, { ...rest, width, height: ratio ? width / ratio : rest.height })} ${width}w`)
     .join(", ");
 }
 

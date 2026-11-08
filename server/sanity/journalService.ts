@@ -115,11 +115,7 @@ const JOURNAL_ARTICLE_LIST_QUERY = `
   }
 `;
 
-const JOURNAL_ARTICLE_DETAIL_QUERY = `
-  *[
-    ${JOURNAL_ARTICLE_FILTER} &&
-    slug.current == $slug
-  ][0] {
+const JOURNAL_ARTICLE_DETAIL_PROJECTION = `{
     "slug": slug.current,
     title,
     "categoryValue": category,
@@ -157,7 +153,20 @@ const JOURNAL_ARTICLE_DETAIL_QUERY = `
     sourceName,
     "seoTitle": coalesce(seo.title, seoTitle),
     "seoDescription": coalesce(seo.description, seoDescription)
-  }
+  }`;
+
+const JOURNAL_ARTICLE_DETAIL_QUERY = `
+  *[
+    ${JOURNAL_ARTICLE_FILTER} &&
+    slug.current == $slug
+  ][0] ${JOURNAL_ARTICLE_DETAIL_PROJECTION}
+`;
+
+/** Every article with its body, in one query: the build prerenders all of them (fix pass A, was N+1). */
+const JOURNAL_ARTICLE_DETAILS_QUERY = `
+  *[
+    ${JOURNAL_ARTICLE_FILTER}
+  ] | order(publishedAt desc, _createdAt desc) ${JOURNAL_ARTICLE_DETAIL_PROJECTION}
 `;
 
 const JOURNAL_CATEGORY_QUERY = `
@@ -307,6 +316,18 @@ export async function fetchJournalArticleBySlugFromSanity(slug: string) {
   }
 
   return normalizeArticle(article);
+}
+
+/** Every article's detail (body included), keyed by slug. One Sanity query instead of one per article. */
+export async function fetchJournalArticleDetailsFromSanity(): Promise<Record<string, JournalArticleRecord>> {
+  if (!isJournalSanityConfigured()) return {};
+  const client = getJournalSanityClient();
+  const data = await client.fetch<SanityJournalArticleBase[]>(JOURNAL_ARTICLE_DETAILS_QUERY);
+  return Object.fromEntries(
+    data
+      .filter((article) => isNonEmptyString(article.slug) && isNonEmptyString(article.title))
+      .map((article) => [article.slug, normalizeArticle(article)] as const),
+  );
 }
 
 export async function fetchJournalCategoriesFromSanity() {

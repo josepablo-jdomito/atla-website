@@ -1,38 +1,38 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { formatMetaTitle, ORGANIZATION_NAME, SITE_ORIGIN } from "@shared/siteSeo";
-import { AtlaNav } from "@/components/atla/AtlaNav";
-import { AtlaFooter } from "@/components/atla/AtlaFooter";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { PageShell } from "@/components/site/PageShell";
 
 // Copy source: marketing-plans/atla/oferta-A.md, sections 3, 4 and 6 (offer approved by JP, 2026-10-13).
 // No prices and no durations on this page by design.
+// Offer names follow the Services vocabulary (Audit, Brand system, Full build, Fractional brand director);
+// the steps follow the five on Why Atla.
 
 export const PROGRAMS_META_TITLE = formatMetaTitle("Brand Programs for Companies at a Turning Point", "Atla");
 export const PROGRAMS_META_DESCRIPTION =
-  "When a brand has to change, start with the Loved or Lost Diagnostic. Then the Atla Brand Program, in three levels, and Brand Stewardship after launch.";
+  "When a brand has to change, start with an audit. Then a brand system or a full build, and a fractional brand director after launch.";
 
 const HERO_COPY = "When your brand has to change, start here.";
 
 const HERO_SUPPORT =
-  "A new leader, new capital, a new brand in the house, a new market. These are the moments a brand either earns its next chapter or gets left behind.";
+  "A new leader, new capital, a new brand in the house, a new market. At moments like these the brand moves with the company, or the company outgrows it.";
 
 type NumberedItem = { title: string; description: string; href?: string };
 
 const PATH: NumberedItem[] = [
   {
-    title: "Loved or Lost Diagnostic",
+    title: "Audit",
     description:
       "We find out where your customers fall in love with the brand and where they fall out, then decide with your leadership what has to change.",
   },
   {
-    title: "Atla Brand Program",
+    title: "Brand system or full build",
     description:
-      "We build what the evidence calls for: strategy, identity and the system behind them, scoped in one of three levels.",
+      "We build what the evidence calls for: strategy, identity and the system behind them, scoped before work starts.",
   },
   {
-    title: "Brand Stewardship",
-    description: "We stay on after launch so the brand holds its shape as the company grows.",
+    title: "Fractional brand director",
+    description: "We stay on after launch so the brand keeps its shape as the company grows.",
   },
 ];
 
@@ -40,20 +40,20 @@ const DIAGNOSTIC_ITEMS: NumberedItem[] = [
   {
     title: "What your customers say",
     description:
-      "Every public review and conversation we can reach about your brand and two competitors, coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend. Where the public record is thin, we tell you.",
+      "Every public review and conversation we can reach about your brand and its closest competitors, coded loved or lost at every stage: discover, choose, buy, first use, repeat, recommend. Where the public record is thin, we tell you.",
   },
   {
     title: "What your team says",
-    description: "Six to eight interviews across leadership, sales, product and service.",
+    description: "Interviews across leadership, sales, product and service.",
   },
   {
     title: "Touchpoint audit",
     description: "Everything a customer sees, from the first ad to the package in their hands.",
   },
   {
-    title: "The 20/5 workshop",
+    title: "The position workshop",
     description:
-      "A working session with your leadership team. Twenty things the brand could be, reduced to the five it will be.",
+      "A working session with your leadership team. Everything the brand could be, reduced to what it will be.",
   },
   {
     title: "The roadmap",
@@ -64,154 +64,69 @@ const DIAGNOSTIC_ITEMS: NumberedItem[] = [
 
 const PROGRAM_LEVELS: NumberedItem[] = [
   {
-    title: "Core",
+    title: "Brand system",
     description: "Strategy, identity, the system that holds them together, and the guidelines your team runs it with.",
   },
   {
-    title: "Complete",
+    title: "Full build",
     description:
-      "Everything in Core, plus brand architecture or naming, the touchpoints that matter most (packaging, space or digital) and launch.",
+      "Everything in the brand system, plus brand architecture or naming, the touchpoints that matter most (packaging, space or digital) and launch.",
   },
   {
-    title: "Integral",
+    title: "Full build across markets",
     description:
-      "Everything in Complete, plus rollout across multiple US markets and six months of Brand Stewardship included.",
+      "Everything in the full build, plus rollout across US markets, with a fractional brand director after launch.",
   },
 ];
 
 const PROOF: NumberedItem[] = [
   {
     title: "Persona",
-    description: "A pioneer in personalized vitamins with more than 5 million users.",
+    description: "The personalized vitamin company.",
     href: "/projects/persona",
   },
   {
     title: "Anything",
-    description: "The vibe-coding company valued at $100M.",
+    description: "The vibe-coding company.",
     href: "/projects/anything-ai",
   },
 ];
 
-const LF_REG18: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 18,
-  fontWeight: 400,
-  lineHeight: "1.1",
-  color: "#222",
-  margin: 0,
-};
-
-const LF_SB12: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: 0.48,
-  lineHeight: "1.2",
-  color: "#6f6f6f",
-  textTransform: "uppercase",
-  margin: 0,
-};
-
-const ITEM_BODY: CSSProperties = {
-  fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-  fontSize: 14,
-  fontWeight: 500,
-  letterSpacing: 0.28,
-  lineHeight: "1.35",
-  color: "#222",
-  margin: 0,
-};
-
-function SectionTitle({ children, mobile = false }: { children: ReactNode; mobile?: boolean }) {
+function SectionRow({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <div style={{ flex: "1 0 0", minWidth: 0 }}>
-      <h2
-        style={{
-          fontFamily: "'PP Playground', 'Libre Franklin', Helvetica, sans-serif",
-          fontSize: mobile ? 40 : 140,
-          fontWeight: 500,
-          lineHeight: "1.1",
-          color: "#222",
-          margin: 0,
-          whiteSpace: mobile ? "normal" : "nowrap",
-        }}
-      >
-        {children}
+    <section className="page-section" aria-labelledby={id}>
+      <h2 id={id} className="site-section-title page-section__title">
+        {title}
       </h2>
-    </div>
-  );
-}
-
-function SectionRow({ title, mobile, children }: { title: string; mobile: boolean; children: ReactNode }) {
-  return (
-    <section
-      style={{
-        display: "flex",
-        flexDirection: mobile ? "column" : "row",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: mobile ? 24 : 0,
-        width: "100%",
-      }}
-    >
-      <SectionTitle mobile={mobile}>{title}</SectionTitle>
-      <div style={{ width: mobile ? "100%" : 615, flexShrink: 0, display: "flex", flexDirection: "column", gap: 18 }}>
-        {children}
-      </div>
+      <div className="page-section__body">{children}</div>
     </section>
   );
 }
 
-function Lead({ children, mobile }: { children: ReactNode; mobile: boolean }) {
-  return <div style={{ width: mobile ? "100%" : 456, display: "flex", flexDirection: "column", gap: 18 }}>{children}</div>;
-}
-
-function NumberedList({ items, mobile }: { items: NumberedItem[]; mobile: boolean }) {
+function NumberedList({ items }: { items: NumberedItem[] }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", marginTop: 6 }}>
-      {items.map((item, index) => (
-        <div
-          key={item.title}
-          style={{
-            borderTop: "1px solid #d7d7d7",
-            padding: mobile ? "20px 0" : "28px 0",
-            display: "grid",
-            gridTemplateColumns: mobile ? "1fr" : "76px minmax(0, 1fr)",
-            gap: mobile ? 12 : 20,
-            alignItems: "start",
-          }}
-        >
-          <p style={LF_SB12}>{String(index + 1).padStart(2, "0")}</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <h3
-              style={{
-                fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-                fontSize: mobile ? 24 : 32,
-                fontWeight: 400,
-                lineHeight: "1.1",
-                color: "#222",
-                margin: 0,
-              }}
-            >
+    <ol className="numbered-list">
+      {items.map((item) => (
+        <li key={item.title} className="numbered-list__item">
+          <div className="numbered-list__text">
+            <h3 className="site-item-title numbered-list__title">
               {item.href ? (
-                <a href={item.href} className="atla-link" style={{ color: "#222", textDecoration: "none" }}>
+                <a href={item.href} className="longform-link">
                   {item.title}
                 </a>
               ) : (
                 item.title
               )}
             </h3>
-            <p style={ITEM_BODY}>{item.description}</p>
+            <p className="numbered-list__body">{item.description}</p>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
 
 export default function AtlaPrograms() {
-  const isMobile = useIsMobile();
-
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -227,17 +142,17 @@ export default function AtlaPrograms() {
 
   const programSchema = [
     {
-      name: "Loved or Lost Diagnostic",
+      name: "Audit",
       description:
-        "Customer evidence at scale, internal interviews, a touchpoint audit and a leadership workshop, ending in a roadmap and a fixed scope.",
+        "Customer evidence at scale, team interviews, a touchpoint audit and a leadership workshop, ending in a roadmap and a fixed scope.",
     },
     {
-      name: "Atla Brand Program",
-      description: "Brand strategy, identity and system in three levels: Core, Complete and Integral.",
+      name: "Brand system and full build",
+      description: "Brand strategy, identity and the system behind them, scoped from the audit's roadmap.",
     },
     {
-      name: "Brand Stewardship",
-      description: "Ongoing senior brand guidance after launch.",
+      name: "Fractional brand director",
+      description: "A senior creative director on the team after launch.",
     },
   ].map((program) => ({
     "@context": "https://schema.org",
@@ -253,142 +168,75 @@ export default function AtlaPrograms() {
     areaServed: ["United States", "Latin America"],
   }));
 
-  const ctaStyle: CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    minHeight: 48,
-    padding: "0 22px",
-    borderRadius: 999,
-    background: "#1c1f27",
-    color: "#fafafa",
-    fontFamily: "'Libre Franklin', Helvetica, sans-serif",
-    fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: "-0.01em",
-    textDecoration: "none",
-    whiteSpace: "nowrap",
-    alignSelf: "flex-start",
-  };
-
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", backgroundColor: "#fafafa" }}>
+    <PageShell>
       <SeoHead
         title={PROGRAMS_META_TITLE}
         description={PROGRAMS_META_DESCRIPTION}
         pathname="/programs"
         structuredData={[breadcrumbSchema, ...programSchema]}
       />
-      <div className="atla-dark-surface">
-        <AtlaNav />
+      <div className="site-page-body">
+        <header className="page-intro">
+          <p className="site-label">Programs</p>
+          <h1 className="page-intro__title">{HERO_COPY}</h1>
+          <p className="page-intro__lead">{HERO_SUPPORT}</p>
+        </header>
 
-        <main
-          className="atla-enter"
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: isMobile ? 80 : 240,
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: isMobile ? "40px 10px 100px" : "160px 20px 240px",
-            boxSizing: "border-box",
-          }}
-        >
-          <section
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: isMobile ? 20 : 28,
-              width: "100%",
-              maxWidth: 960,
-            }}
-          >
-            <p style={LF_SB12}>Programs</p>
-            <h1
-              style={{
-                fontFamily: "'ABC Synt Variable Unlicensed Trial', Helvetica, sans-serif",
-                fontSize: isMobile ? 40 : 64,
-                fontWeight: 400,
-                lineHeight: "1.1",
-                color: "#222",
-                margin: 0,
-              }}
-            >
-              {HERO_COPY}
-            </h1>
-            <p style={{ ...LF_REG18, maxWidth: 548 }}>{HERO_SUPPORT}</p>
-          </section>
+        <SectionRow id="programs-path" title="The path">
+          <p className="longform-text">
+            The same steps as every Atla project. We read the market, talk to your people and pick the position with
+            your leadership. Then we design the system and hand it over. We stay on if you want us to.
+          </p>
+          <NumberedList items={PATH} />
+        </SectionRow>
 
-          <SectionRow title="The Path" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                One sequence, three steps. We read the evidence before we design anything, build only what it calls for,
-                and stay close once the brand is live.
-              </p>
-            </Lead>
-            <NumberedList items={PATH} mobile={isMobile} />
-          </SectionRow>
+        <SectionRow id="programs-diagnose" title="Diagnose">
+          <p className="longform-text">
+            The audit. We read what your customers say about you, at scale, and find where
+            they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit with
+            your leadership and decide what the brand must keep, and what it must stop saying.
+          </p>
+          <NumberedList items={DIAGNOSTIC_ITEMS} />
+          <p className="longform-text">
+            You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
+            you that too.
+          </p>
+          <p className="longform-text">
+            The audit is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to the
+            build when you continue with us.
+          </p>
+        </SectionRow>
 
-          <SectionRow title="Diagnose" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                The Loved or Lost Diagnostic. We read what your customers actually say about you, at scale, and find where
-                they fall in love and where they fall out. We talk to your team. We audit every touchpoint. Then we sit
-                with your leadership and decide what the brand must keep, and what it must stop saying.
-              </p>
-            </Lead>
-            <NumberedList items={DIAGNOSTIC_ITEMS} mobile={isMobile} />
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                You leave with a roadmap and a fixed scope for what comes next. If the problem isn't your brand, we'll tell
-                you that too.
-              </p>
-              <p style={LF_REG18}>
-                The Diagnostic is not a rebrand. It brings no logos and no visual concepts, and it is credited in full to
-                the Atla Brand Program if you continue within 60 days.
-              </p>
-            </Lead>
-          </SectionRow>
+        <SectionRow id="programs-build" title="Build">
+          <p className="longform-text">
+            A brand system or a full build, chosen from the roadmap, with the scope fixed before work starts. Strategy
+            decisions come first, then design, then production.
+          </p>
+          <NumberedList items={PROGRAM_LEVELS} />
+        </SectionRow>
 
-          <SectionRow title="Build" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                The Atla Brand Program. Three levels, chosen from the roadmap, with the scope fixed before work starts.
-                Strategy decisions come first, design decisions second, production last.
-              </p>
-            </Lead>
-            <NumberedList items={PROGRAM_LEVELS} mobile={isMobile} />
-          </SectionRow>
+        <SectionRow id="programs-steward" title="Steward">
+          <p className="longform-text">
+            A fractional brand director: a creative director on your team after launch. We review new work, extend the system as the company
+            grows, and help every team and partner use the brand the same way.
+          </p>
+        </SectionRow>
 
-          <SectionRow title="Steward" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>
-                Brand Stewardship. A monthly engagement after launch. We review new work, extend the system as the company
-                grows, and help every team and partner use the brand the same way.
-              </p>
-            </Lead>
-          </SectionRow>
+        <SectionRow id="programs-proof" title="Selected work">
+          <NumberedList items={PROOF} />
+        </SectionRow>
 
-          <SectionRow title="Proof" mobile={isMobile}>
-            <NumberedList items={PROOF} mobile={isMobile} />
-          </SectionRow>
-
-          <SectionRow title="Start" mobile={isMobile}>
-            <Lead mobile={isMobile}>
-              <p style={LF_REG18}>Atla*. Senior team, founder at the table, no handoff chain.</p>
-              <p style={LF_REG18}>
-                Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next
-                step.
-              </p>
-              <a href="/contact" style={ctaStyle}>
-                Start a project
-              </a>
-            </Lead>
-          </SectionRow>
-        </main>
+        <SectionRow id="programs-start" title="Start">
+          <p className="longform-text">Atla. Senior team, founder at the table, no handoff chain.</p>
+          <p className="longform-text">
+            Tell us what changed: the leader, the capital, the portfolio or the market. We reply with a clear next step.
+          </p>
+          <a href="/brief" className="site-action">
+            Start a project
+          </a>
+        </SectionRow>
       </div>
-
-      <AtlaFooter />
-    </div>
+    </PageShell>
   );
 }

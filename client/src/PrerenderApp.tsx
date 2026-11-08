@@ -1,17 +1,16 @@
 import React from "react";
-import { dehydrate, QueryClient, QueryClientProvider, type DehydratedState } from "@tanstack/react-query";
+import { dehydrate, QueryClient, type DehydratedState } from "@tanstack/react-query";
 import { renderToString } from "react-dom/server";
-import { Router } from "wouter";
 import type { JournalArticle, JournalCategory } from "@shared/journal";
 import type { Project } from "@shared/schema";
-import { AppRouter } from "./AppRouter";
-import { ThemeProvider } from "./components/theme/ThemeProvider";
+import type { ProjectListItem } from "@shared/projectList";
+import { AppShell } from "./App";
 import ProjectsAdmin from "./pages/ProjectsAdmin";
-import AtlaAbout from "./pages/AtlaAbout";
-import AtlaContact from "./pages/AtlaContact";
-import AtlaServices from "./pages/AtlaServices";
-import AtlaWork from "./pages/AtlaWork";
-import AtlaProject from "./pages/AtlaProject";
+import About from "./pages/About";
+import Ventures from "./pages/Ventures";
+import Services from "./pages/Services";
+import Home from "./pages/Home";
+import ProjectPage from "./pages/Project";
 import AtlaJournal from "./pages/AtlaJournal";
 import AtlaArticle from "./pages/AtlaArticle";
 import AtlaPrivacy from "./pages/AtlaPrivacy";
@@ -24,10 +23,14 @@ import AtlaSaasBranding from "./pages/AtlaSaasBranding";
 import AtlaBrandStrategy from "./pages/AtlaBrandStrategy";
 import AtlaHowWeWork from "./pages/AtlaHowWeWork";
 import AtlaPrograms from "./pages/AtlaPrograms";
+import Brief from "./pages/Brief";
+import BrandCheck from "./pages/BrandCheck";
+import Audit from "./pages/Audit";
 import NotFound from "./pages/not-found";
 
 export type PrerenderRouteData = {
-  projects?: Project[];
+  /** The lite list (shared/projectList.ts), the same shape GET /api/projects answers. */
+  projects?: ProjectListItem[];
   project?: Project | null;
   articles?: JournalArticle[];
   article?: JournalArticle | null;
@@ -88,34 +91,36 @@ export function renderPrerenderedRoute(
   const queryClient = createPrerenderQueryClient();
   seedRouteData(queryClient, pathname, data);
 
+  // The same tree the browser hydrates (App.tsx AppShell), with eager pages.
   const appHtml = renderToString(
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <Router ssrPath={pathname}>
-          <AppRouter
-            NotFound={NotFound}
-            ProjectsAdmin={ProjectsAdmin}
-            AtlaAbout={AtlaAbout}
-            AtlaContact={AtlaContact}
-            AtlaServices={AtlaServices}
-            AtlaWork={AtlaWork}
-            AtlaProject={AtlaProject}
-            AtlaJournal={AtlaJournal}
-            AtlaArticle={AtlaArticle}
-            AtlaPrivacy={AtlaPrivacy}
-            AtlaTerms={AtlaTerms}
-            AtlaHospitality={AtlaHospitality}
-            AtlaHospitalityBranding={AtlaHospitalityBranding}
-            AtlaCpgBranding={AtlaCpgBranding}
-            AtlaWellnessBranding={AtlaWellnessBranding}
-            AtlaSaasBranding={AtlaSaasBranding}
-            AtlaBrandStrategy={AtlaBrandStrategy}
-            AtlaHowWeWork={AtlaHowWeWork}
-            AtlaPrograms={AtlaPrograms}
-          />
-        </Router>
-      </ThemeProvider>
-    </QueryClientProvider>,
+    <AppShell
+      client={queryClient}
+      ssrPath={pathname}
+      pages={{
+        NotFound,
+        ProjectsAdmin,
+        About,
+        Ventures,
+        Services,
+        Home,
+        Project: ProjectPage,
+        AtlaJournal,
+        AtlaArticle,
+        AtlaPrivacy,
+        AtlaTerms,
+        AtlaHospitality,
+        AtlaHospitalityBranding,
+        AtlaCpgBranding,
+        AtlaWellnessBranding,
+        AtlaSaasBranding,
+        AtlaBrandStrategy,
+        AtlaHowWeWork,
+        AtlaPrograms,
+        Brief,
+        BrandCheck,
+        Audit,
+      }}
+    />,
   );
 
   return {
