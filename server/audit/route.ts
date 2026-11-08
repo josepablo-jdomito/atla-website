@@ -1,4 +1,5 @@
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
+import { isIP } from "node:net";
 import { lookup } from "node:dns/promises";
 import type { Express, NextFunction, Request, Response } from "express";
 import { z } from "zod";
@@ -81,7 +82,7 @@ const body = z.object({
 const RETRY_MESSAGE = "We could not send your request. Nothing was lost: please send it again in a moment.";
 
 export type AuditDeps = {
-  rateLimit: (ip: string, bucket: "audit" | "auditCheck") => Promise<boolean>;
+  rateLimit: (ip: string, bucket: "audit" | "auditCheck" | "auditCheckAll") => Promise<boolean>;
   /** Does this host answer on the web? DNS, then one request to its front page. */
   hostIsLive: (host: string) => Promise<boolean>;
   incrWithExpiry: (key: string, ttlSeconds: number) => Promise<number>;
@@ -254,20 +255,35 @@ async function handleAudit(deps: AuditDeps, ip: string, raw: unknown): Promise<O
 }
 
 
-/** DNS first, then the front page; a bot wall or a 5xx still means someone is home. */
+/** An address the check must never knock on: loopback, link-local (the cloud metadata service), private ranges, multicast. */
+export function isPrivateAddress(raw: string): boolean {
+  let ip = raw.toLowerCase();
+  const mapped = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
+  if (mapped) ip = mapped[1];
+  if (isIP(ip) === 4) {
+    const [a, b] = ip.split(".").map(Number);
+    return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
+  }
+  return ip === "::" || ip === "::1" || /^fe[89ab]/.test(ip) || /^f[cd]/.test(ip) || ip.startsWith("ff");
+}
+
+/** DNS first (every address public), then one request to the front page, redirects not followed; a bot wall or
+ * a 5xx still means someone is home. A silent 443 is not retried on 80: four seconds is the whole budget. */
 export async function hostIsLive(host: string): Promise<boolean> {
+  let addresses: { address: string }[];
   try {
-    await lookup(host);
+    addresses = await lookup(host, { all: true });
   } catch {
     return false;
   }
-  for (const scheme of ["https", "http"]) {
+  if (!addresses.length || addresses.some((entry) => isPrivateAddress(entry.address))) return false;
+  for (const scheme of ["https", "http"] as const) {
     try {
-      const res = await fetch(`${scheme}://${host}/`, { method: "GET", redirect: "follow", signal: AbortSignal.timeout(5000), headers: { "user-agent": "Mozilla/5.0 (compatible; AtlaAuditCheck/1.0)" } });
+      const res = await fetch(`${scheme}://${host}/`, { method: "GET", redirect: "manual", signal: AbortSignal.timeout(4000), headers: { "user-agent": "Mozilla/5.0 (compatible; AtlaAuditCheck/1.0)" } });
       void res.body?.cancel();
       return true;
-    } catch {
-      // Try the next scheme.
+    } catch (err) {
+      if (err instanceof Error && err.name === "TimeoutError") return false;
     }
   }
   return false;
@@ -283,11 +299,19 @@ export function checkTarget(raw: string): { kind: "site" | "instagram"; label: s
   return { kind: "site", label: brand, host: brand };
 }
 
+/** The admin header against the configured key, in constant time. Unset key: nothing is admin. */
+function adminOk(key: string, given: unknown): boolean {
+  if (!key || typeof given !== "string" || given.length !== key.length) return false;
+  return timingSafeEqual(Buffer.from(given), Buffer.from(key));
+}
+
 export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps) {
   let statusCache: { at: number; value: AuditStatus } | null = null;
 
-  app.get("/api/audit/status", async (_req, res) => {
+  app.get("/api/audit/status", async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
+    // With the admin header: the address the server keys its limits on (to verify what the www proxy forwards).
+    if (adminOk(deps.adminKey(), req.headers["x-audit-admin"])) return res.json({ address: clientIp(req), forwardedHost: req.headers["x-forwarded-host"] ?? null });
     const nowMs = Date.now();
     if (statusCache && nowMs - statusCache.at < STATUS_CACHE_MS) return res.json(statusCache.value);
     try {
@@ -304,7 +328,7 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
 
   app.get("/api/audit/check", async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
-    if (!(await deps.rateLimit(clientIp(req), "auditCheck"))) return res.status(429).json({ error: "Too many requests." });
+    if (!(await deps.rateLimit(clientIp(req), "auditCheck")) || !(await deps.rateLimit("all", "auditCheckAll"))) return res.status(429).json({ error: "Too many requests." });
     const target = checkTarget(typeof req.query.q === "string" ? req.query.q : "");
     if (!target) return res.status(400).json({ error: "Invalid request" });
     if (target.kind === "instagram") return res.json({ kind: "instagram", label: target.label, ok: null });
@@ -381,7 +405,7 @@ export function registerAuditRoutes(app: Express, deps: AuditDeps = defaultDeps)
   app.post("/api/audit/release", async (req, res) => {
     const key = deps.adminKey();
     const given = req.headers["x-audit-admin"];
-    if (!key || typeof given !== "string" || given !== key) return res.status(404).json({ error: "Not found" });
+    if (!adminOk(key, given)) return res.status(404).json({ error: "Not found" });
     const named = (req.body as { week?: unknown } | undefined)?.week;
     const week = typeof named === "string" && /^\d{4}-W\d{2}$/.test(named) ? `audit:week:${named}` : weekKey(deps.now());
     try {

@@ -1310,8 +1310,9 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__field--ask .audit-quiz__label { font-size: var(--t-lead); font-weight: 500; line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
 /* The site's own field: one line under the text, the ink line on focus. */
 .audit-quiz__box { width: 100%; min-height: 48px; padding: var(--space-2) 0; border: 0; border-bottom: 1px solid var(--site-ink); border-radius: 0; background: transparent; color: var(--site-ink); font: inherit; font-size: var(--t-lead); line-height: var(--lh-ui); transition: box-shadow var(--d-hover) var(--site-ease); }
-.audit-quiz__box::placeholder { color: var(--site-muted); opacity: 0.7; }
-.site-root .audit-quiz__box:focus, .site-root .audit-quiz__box:focus-visible { outline: none; box-shadow: 0 1px 0 var(--site-ink); }
+.audit-quiz__box::placeholder { color: var(--site-muted); opacity: 1; }
+.site-root .audit-quiz__box:focus { outline: none; box-shadow: 0 1px 0 var(--site-ink); }
+.site-root .audit-quiz__box:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 4px; border-radius: var(--r-row); }
 .audit-quiz__box[aria-invalid="true"] { border-bottom-color: var(--site-error); }
 .audit-quiz__box--area { min-height: 5.5rem; padding: var(--space-3) var(--space-4); border: 1px solid var(--site-ink); border-radius: var(--r-panel); font-size: var(--t-lead); line-height: var(--lh-body); resize: none; }
 .site-root .audit-quiz__box--area:focus, .site-root .audit-quiz__box--area:focus-visible { box-shadow: inset 0 0 0 1px var(--site-ink); }
@@ -1332,7 +1333,6 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__status[data-tone="error"] { color: var(--site-error); }
 /* The one button is the site's black pill; muted until the request has its three answers. */
 .audit-quiz__go { width: auto; min-width: 10rem; gap: var(--space-3); padding: 0 var(--space-6); -webkit-tap-highlight-color: transparent; transition: opacity var(--d-hover) var(--site-ease), background-color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
-.audit-quiz__go:not([data-ready]) { background: var(--site-muted); }
 .audit-quiz__arrow { flex: none; }
 .audit-quiz__done .audit-quiz__cast { width: 60%; max-width: 16rem; margin-bottom: calc(-1 * var(--space-2)); aspect-ratio: 1; }
 /* Each step comes in from the right, the way the next card in a deck would. */
@@ -2418,3 +2418,13 @@ html { scroll-padding-top: 80px; }
 .site-footer[data-slim] .site-footer__body { padding-top: var(--space-5); }
 /* The landing stops at 56, so the slim footer sits one section step (72) under the form, not 168. */
 .site-root .site-footer[data-slim] { margin-top: var(--space-4); }
+/* Room under the floating card: the last lines and the footer links are never under it (2.4.11). */
+@media (max-width: 767px) {
+  html:has(.audit-float[data-shown]) { scroll-padding-bottom: 10rem; }
+  html:has(.audit-float[data-shown]) .site-footer[data-slim] { padding-bottom: calc(10rem + env(safe-area-inset-bottom, 0px)); }
+}
+.audit-scene:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; border-radius: var(--r-row); }
+.audit-close__cta { width: auto; margin-top: var(--space-2); }
+.audit-close__status { margin-top: var(--space-3); text-align: start; }
+.audit-quiz__line--proof { color: var(--site-ink); }
+html[data-consent="open"]:has(.site-page[data-landing]) .site-root .site-skip-link:focus { z-index: 80; }

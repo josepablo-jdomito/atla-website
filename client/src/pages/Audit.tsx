@@ -50,6 +50,7 @@ export default function Audit() {
   const arrived = new URLSearchParams(search).get("sent");
   const arrivedDone: Done | null =
     arrived === "open" || arrived === "full" ? arrived : null;
+  const arrivedError = arrived === "error";
   const done: Done | null = sent
     ? sent.repeat
       ? "repeat"
@@ -58,6 +59,21 @@ export default function Audit() {
   const doneHeading = useRef<HTMLHeadingElement>(null);
   const root = useRef<HTMLDivElement>(null);
   useAuditMotion(root);
+
+  // While the flow is up, the page behind it is inert: focus and the virtual cursor cannot leave the sheet.
+  useEffect(() => {
+    if (!flowOpen) return;
+    const others = [
+      root.current,
+      ...Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".site-header, .site-footer, .consent",
+        ),
+      ),
+    ].filter(Boolean) as HTMLElement[];
+    others.forEach((el) => el.setAttribute("inert", ""));
+    return () => others.forEach((el) => el.removeAttribute("inert"));
+  }, [flowOpen]);
   useNoindex(done !== null);
 
   // The visit's source is read on arrival (the utm_* are on this first URL) and sent with the request.
@@ -158,7 +174,12 @@ export default function Audit() {
             {copy.howTitle}
           </h2>
           {/* One scene: the three drawings on one ground line, a caption under each; on a phone it slides. */}
-          <ol className="audit-scene" data-reveal>
+          <ol
+            className="audit-scene"
+            data-reveal
+            tabIndex={0}
+            aria-labelledby={`${baseId}-how`}
+          >
             {copy.steps.map((step, index) => (
               <li
                 key={step.src}
@@ -291,6 +312,23 @@ export default function Audit() {
                   <p key={line}>{line}</p>
                 ))}
               </div>
+              {/* The second door, at the second point of intent (CRO review, 2026-11-07). */}
+              <button
+                type="button"
+                className="audit-submit audit-close__cta"
+                onClick={openAuditFlow}
+              >
+                {copy.cta}
+              </button>
+              {arrivedError ? (
+                <p
+                  className="audit-quiz__status audit-close__status"
+                  role="alert"
+                  data-tone="error"
+                >
+                  {copy.network}
+                </p>
+              ) : null}
               {/* Without scripts the pill cannot open the flow: the plain form posts to /api/audit/form instead. */}
               <noscript>
                 <form
@@ -299,11 +337,7 @@ export default function Audit() {
                   method="post"
                   action="/api/audit/form"
                 >
-                  <input
-                    type="hidden"
-                    name="submissionId"
-                    value={newSubmissionId()}
-                  />
+                  {/* No submissionId here: a prerendered one would be the same for every visitor and the server would drop every send after the first (red team, 2026-11-07). The server mints one. */}
                   <div className="brief-fields">
                     {(["site", "name", "email"] as const).map((key) => (
                       <div key={key} className="brief-field" data-field={key}>
@@ -346,7 +380,7 @@ export default function Audit() {
             () =>
               (
                 document.querySelector<HTMLElement>(
-                  ".audit-float__action, .audit-done__button",
+                  ".audit-float__action, .audit-done__button, .audit-close__title",
                 ) ?? undefined
               )?.focus(),
             0,

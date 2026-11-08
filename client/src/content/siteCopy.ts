@@ -421,7 +421,7 @@ export const siteCopy = {
     week: {
       label: "This week",
       live: "Live",
-      neutral: "Five spots a week, in the order they come in.",
+      neutral: "Five free audits a week, in the order they come in.",
       empty: "This week's five are open. I do them in the order they come in.",
       left: "{left} of {cap} spots left this week.",
       lastOne: "One spot left this week.",
@@ -438,7 +438,7 @@ export const siteCopy = {
     },
     // The hero drawing and three drawn steps (Higgsfield GPT Image, after JP's references, 2026-11-07: absurd,
     // hand-inked, halftone; one cast, the Inspector with his giant magnifying glass and the Bottle).
-    heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 810, height: 1080 },
+    heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 640, height: 853 },
     howTitle: "How it works",
     steps: [
       { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram, nothing else." },
@@ -466,10 +466,11 @@ export const siteCopy = {
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
-      open: "Five this week, every one by me.",
-      left: "{left} of five left this week.",
-      lastOne: "One spot left this week.",
-      full: "This week's five are taken. Yours waits for next week.",
+      // Every visitor reads this for the first time (JP, 2026-11-07): it says what the five are.
+      open: "Five free audits this week, every one by me.",
+      left: "{left} of five free audits left this week.",
+      lastOne: "One free audit left this week.",
+      full: "This week's five audits are taken. Yours waits for next week.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
@@ -496,19 +497,20 @@ export const siteCopy = {
       },
       requestTitle: "Send me your brand",
       requestLine: "Where it lives, and where to send the audit.",
+      requestProof: "The same eye I give Casa Las Tortugas, Acre, Ulysses and Anything.",
       placeholders: { site: "yourbrand.com or @yourbrand", name: "Your name", email: "you@yourbrand.com" },
       send: "Send",
       close: "close",
       back: "back",
       questionsTitle: "Four quick questions",
-      questionsLastTitle: "Last two",
+      questionsLastTitle: "Last two questions",
       // The live check under the site field (JP, 2026-11-07): a domain that answers, one that doesn't, a handle as read.
       checkLive: "{label} is live.",
       checkDown: "I can't reach {label}. Check the spelling, or send it anyway.",
       checkHandle: "{label} on Instagram.",
       thanksTitle: "Thank you, {name}.",
       thanksTitleNoName: "Thank you.",
-      thanksLine: "Your audit lands in your inbox this week, from me.",
+      thanksLine: "Your audit comes by email, from me, as soon as it's ready.",
       thanksWork: "See the work",
       saving: "saving",
       saved: "saved",

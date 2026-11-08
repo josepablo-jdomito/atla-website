@@ -25,7 +25,7 @@ export function AuditFloat({
   const taken = status?.taken ?? 0;
   const left = Math.max(0, total - taken);
   const line = !status
-    ? ""
+    ? week.neutral
     : status.week === "full" || left === 0
       ? copy.full
       : taken === 0
@@ -34,7 +34,8 @@ export function AuditFloat({
           ? copy.lastOne
           : cap(copy.left.replace("{left}", WORDS[left] ?? String(left)));
   // The one door on the page, there from the first read of the week.
-  const shown = Boolean(status);
+  // Always there (CRO and accessibility reviews, 2026-11-07): a slow or blocked status read must not hide the one door.
+  const shown = true;
 
   return (
     <div

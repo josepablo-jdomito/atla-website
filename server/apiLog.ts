@@ -7,7 +7,7 @@ import type { NextFunction, Request, Response } from "express";
  * because Express routing does too (/api/BRIEF reaches the brief handler).
  */
 
-const PRIVATE_PATHS = [/^\/api\/ask(\/|$)/i, /^\/api\/brief(\/|$)/i, /^\/api\/brand-check(\/|$)/i, /^\/api\/contact(\/|$)/i];
+const PRIVATE_PATHS = [/^\/api\/ask(\/|$)/i, /^\/api\/brief(\/|$)/i, /^\/api\/brand-check(\/|$)/i, /^\/api\/contact(\/|$)/i, /^\/api\/audit(\/|$)/i];
 
 export const isPrivateApiPath = (path: string) => PRIVATE_PATHS.some((pattern) => pattern.test(path));
 

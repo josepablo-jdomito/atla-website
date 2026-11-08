@@ -168,35 +168,38 @@ export function AuditFlow({
     };
   }, [open]);
 
-  // The tab closing midway through the questions: what was given goes out as the closing post.
+  // Leaving mid-questions: a tab switch saves what is there (a step post, nothing closes), the page
+  // going away sends the closing post. Mobile fires "hidden" on every app switch (red team, 2026-11-07).
   useEffect(() => {
-    const flush = () => {
-      if (closed.current || document.visibilityState !== "hidden") return;
+    const send = (final: boolean) => {
+      if (closed.current) return;
       const { answers: value, sent: request } = latest.current;
       if (!request || !hasAny(value)) return;
-      closed.current = true;
-      const payload = JSON.stringify({
+      if (final) closed.current = true;
+      const body = {
         submissionId: submissionId.current,
         ...request.draft,
         ...value,
-        final: true,
-      });
+        final,
+      };
       if (
         !navigator.sendBeacon?.(
           "/api/audit/feedback",
-          new Blob([payload], { type: "application/json" }),
+          new Blob([JSON.stringify(body)], { type: "application/json" }),
         )
-      ) {
-        void submitAuditFeedback({
-          submissionId: submissionId.current,
-          ...request.draft,
-          ...value,
-          final: true,
-        });
-      }
+      )
+        void submitAuditFeedback(body);
     };
-    document.addEventListener("visibilitychange", flush);
-    return () => document.removeEventListener("visibilitychange", flush);
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") send(false);
+    };
+    const onPageHide = () => send(true);
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", onPageHide);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onPageHide);
+    };
   }, []);
 
   const set = (key: Field, value: string) => {
@@ -235,6 +238,12 @@ export function AuditFlow({
     trackAuditFormStart();
   };
 
+  // The first failing field takes focus once its error is in the DOM, so it is read with its message.
+  useEffect(() => {
+    const bad = (["site", "name", "email"] as const).find((key) => errors[key]);
+    if (bad) document.getElementById(`${baseId}-${bad}`)?.focus();
+  }, [errors, baseId]);
+
   const check = (): boolean => {
     const parsed = auditSchema.safeParse({
       ...draft,
@@ -248,9 +257,7 @@ export function AuditFlow({
     const keys: Field[] = ["site", "name", "email"];
     for (const key of keys) if (issues.has(key)) next[key] = ERROR_FOR[key];
     setErrors(next);
-    const firstBad = keys.find((key) => next[key]);
-    if (firstBad) document.getElementById(`${baseId}-${firstBad}`)?.focus();
-    return !firstBad;
+    return !keys.some((key) => next[key]);
   };
 
   const sendRequest = async (event?: FormEvent) => {
@@ -386,9 +393,6 @@ export function AuditFlow({
   const firstName = sent?.draft.name.trim().split(/\s+/)[0] ?? "";
   const walk = copy.steps[2];
   const canBack = asking && typeof stage === "number" && stage > 0 && !done;
-  const requestReady = Boolean(
-    draft.site.trim() && draft.name.trim() && draft.email.trim(),
-  );
   const message =
     phase === "rate-limited"
       ? copy.rateLimited
@@ -473,7 +477,7 @@ export function AuditFlow({
               <Drawing
                 className="audit-quiz__cast"
                 src={walk.src}
-                alt={walk.alt}
+                alt=""
                 width={560}
                 height={560}
               />
@@ -522,6 +526,9 @@ export function AuditFlow({
                 {flow.requestTitle}
               </h2>
               <p className="audit-quiz__line">{flow.requestLine}</p>
+              <p className="audit-quiz__line audit-quiz__line--proof">
+                {flow.requestProof}
+              </p>
             </div>
             <div className="audit-quiz__fields">
               {(["site", "name", "email"] as const).map((key, index) => (
@@ -693,6 +700,9 @@ export function AuditFlow({
                   {chosen ? (
                     <p className="audit-quiz__note">{chosen.line}</p>
                   ) : null}
+                  {question.hint ? (
+                    <p className="audit-quiz__note">{question.hint}</p>
+                  ) : null}
                   {open ? (
                     <textarea
                       id={`${baseId}-${question.key}-field`}
@@ -704,7 +714,7 @@ export function AuditFlow({
                       }
                       rows={3}
                       maxLength={MAX_AUDIT_FEEDBACK}
-                      placeholder={question.hint ?? copy.answersOtherLine}
+                      placeholder={copy.answersOtherLine}
                       value={chosen ? "" : current}
                       onChange={(event) =>
                         setAnswers((value) => ({
@@ -746,7 +756,7 @@ export function AuditFlow({
             type="submit"
             form={`${baseId}-form`}
             className="audit-submit audit-quiz__go"
-            data-ready={asking || requestReady ? "" : undefined}
+            data-ready=""
             aria-disabled={phase === "sending" || undefined}
             aria-busy={phase === "sending" || undefined}
           >
