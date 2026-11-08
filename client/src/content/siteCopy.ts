@@ -415,8 +415,8 @@ export const siteCopy = {
     // Policies confirmed by JP the same day:
     // the audit is private; it is sent by email as soon as it is ready (no fixed window); the audit says what works and
     // what doesn't, fixes are a sometimes; the email may join the list (so no "only for the video" line).
-    title: "Send me your brand. I'll audit it, free, and tell you what works and what doesn't.",
-    lead: "We all need an extra pair of eyes. I think you're too close to your brand and you're attached to it.",
+    title: "Send me your brand. I'll audit it, free.",
+    lead: "You're too close to it and you're attached to it. I'll tell you what works and what doesn't.",
     // The week in words (the floating card, components/audit/AuditFloat.tsx, uses `label` and `live`).
     week: {
       label: "This week",
@@ -441,9 +441,9 @@ export const siteCopy = {
     heroArt: { src: "/audit/landing/hero.webp", clip: "/audit/landing/hero", alt: "José Pablo as a drawn inspector, his face magnified through a magnifying glass bigger than himself", width: 810, height: 1080 },
     howTitle: "How it works",
     steps: [
-      { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram." },
-      { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and put the audit together. I start with what I like, then what I'd change first." },
-      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email. Sometimes I mock up one or two small fixes so you can see them, and if you don't need a studio yet, I'll tell you." },
+      { src: "/audit/landing/step-1.webp", clip: "/audit/landing/step-1", alt: "A bottle with little legs climbing into an envelope", line: "You send me your website or your Instagram, nothing else." },
+      { src: "/audit/landing/step-2.webp", clip: "/audit/landing/step-2", alt: "A man holding a magnifying glass bigger than himself up to the bottle", line: "I look at it the way a customer does and write what I'd change first." },
+      { src: "/audit/landing/step-3.webp", clip: "/audit/landing/step-3", alt: "The bottle walking off with its audit sheet under its arm while the man waves goodbye", line: "You get the audit by email, sometimes with a small fix mocked up." },
     ],
     // The one call to action, the same words and the same black pill everywhere (JP, 2026-11-07): the
     // landing header, the hero, the form, the floating week, the quiz.
@@ -466,10 +466,10 @@ export const siteCopy = {
     // The week, floating (JP, 2026-11-07: "un widget flotante sin importar el scroll"): a small card once the
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
-      open: "Five a week, every one by me.",
-      left: "{left} of five spots left.",
+      open: "Five this week, every one by me.",
+      left: "{left} of five left this week.",
       lastOne: "One spot left this week.",
-      full: "This week's five are taken. Yours goes in line for next week.",
+      full: "This week's five are taken. Yours waits for next week.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
@@ -501,9 +501,11 @@ export const siteCopy = {
       close: "close",
       back: "back",
       questionsTitle: "Four quick questions",
-      questionsLine: "Pick what fits, or skip ahead.",
       questionsLastTitle: "Last two",
-      questionsLastLine: "Then it's with me.",
+      thanksTitle: "Thank you, {name}.",
+      thanksTitleNoName: "Thank you.",
+      thanksLine: "Your audit lands in your inbox this week, from me.",
+      thanksWork: "See the work",
       saving: "saving",
       saved: "saved",
     },
@@ -549,8 +551,6 @@ export const siteCopy = {
     answersNext: "Next",
     answersSkip: "Skip this one",
     answersSkipLast: "Nothing else, send it",
-    answersClose: "Back to the page",
-    answersDoneLine: "I read your answers before I look at your brand.",
     answersClosed: "Four quick questions make the audit about you.",
     answersReopen: "Answer them",
     answers: [
@@ -587,8 +587,6 @@ export const siteCopy = {
       { key: "anything", label: "Is there anything else you want me to know?", hint: "A deadline, a competitor you keep looking at, a thing you love and won't change." },
     ] as { key: "frustration" | "outcome" | "tried" | "anything"; label: string; hint?: string; cards?: { title: string; line: string }[] }[],
     feedbackSend: "Send the answers",
-    feedbackDone: "Got them.",
-    feedbackSkipped: "No problem. The audit is on its way.",
     feedbackFailed: "That didn't save. Try again in a moment.",
     doneHome: "See the work",
   },

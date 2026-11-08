@@ -38,6 +38,9 @@ export type SentResult = {
 };
 
 const copy = siteCopy.audit;
+const INSTAGRAM_JP = "https://www.instagram.com/jdomito_/";
+/** The work lives on www; on audit.atla.design every other route redirects there anyway. */
+const WORK_URL = "https://www.atla.design/";
 const flow = copy.flow;
 const QUESTIONS = copy.answers;
 const SCREENS: (typeof QUESTIONS)[] = [
@@ -346,6 +349,7 @@ export function AuditFlow({
   if (!open) return null;
 
   const done = phase === "done";
+  const firstName = sent?.draft.name.trim().split(/\s+/)[0] ?? "";
   const walk = copy.steps[2];
   const canBack = asking && typeof stage === "number" && stage > 0 && !done;
   const requestReady = Boolean(
@@ -369,11 +373,6 @@ export function AuditFlow({
           : last
             ? copy.feedbackSend
             : copy.answersNext;
-  const nod = sent
-    ? sent.repeat
-      ? copy.done.repeat.line
-      : copy.done[sent.week].line
-    : "";
 
   return (
     <div
@@ -445,10 +444,24 @@ export function AuditFlow({
                 height={560}
               />
               <h2 className="audit-quiz__title" id={`${baseId}-q`}>
-                {hasAny(answers) ? copy.feedbackDone : copy.feedbackSkipped}
+                {firstName
+                  ? flow.thanksTitle.replace("{name}", firstName)
+                  : flow.thanksTitleNoName}
               </h2>
-              <p className="audit-quiz__line">{copy.answersDoneLine}</p>
+              <p className="audit-quiz__line">{flow.thanksLine}</p>
             </div>
+            {/* They are engaged: two doors while they wait, the work and the weekly breakdowns. */}
+            <p className="audit-quiz__line">
+              {copy.doneFollow}{" "}
+              <a
+                href={INSTAGRAM_JP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="audit-quiz__link"
+              >
+                {copy.doneFollowLink}
+              </a>
+            </p>
           </div>
         ) : stage === "request" ? (
           <form
@@ -554,13 +567,6 @@ export function AuditFlow({
               >
                 {stage === 0 ? flow.questionsTitle : flow.questionsLastTitle}
               </h2>
-              <p className="audit-quiz__line">
-                {stage === 0 && nod
-                  ? `${nod} ${flow.questionsLine}`
-                  : stage === 0
-                    ? flow.questionsLine
-                    : flow.questionsLastLine}
-              </p>
             </div>
             {screen.map((question) => {
               const current = answers[question.key];
@@ -658,14 +664,14 @@ export function AuditFlow({
           </p>
         )}
         {done ? (
-          <button
-            type="button"
+          <a
+            href={WORK_URL}
             className="audit-submit audit-quiz__go"
             data-ready=""
-            onClick={onClose}
           >
-            {copy.answersClose}
-          </button>
+            {flow.thanksWork}
+            <Arrow />
+          </a>
         ) : (
           <button
             type="submit"

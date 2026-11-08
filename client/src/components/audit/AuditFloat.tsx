@@ -15,7 +15,12 @@ const week = siteCopy.audit.week;
 const WORDS = ["zero", "one", "two", "three", "four", "five"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function AuditFloat({ status }: { status: AuditStatus | null; root?: RefObject<HTMLElement | null> }) {
+export function AuditFloat({
+  status,
+}: {
+  status: AuditStatus | null;
+  root?: RefObject<HTMLElement | null>;
+}) {
   const total = status?.cap ?? 5;
   const taken = status?.taken ?? 0;
   const left = Math.max(0, total - taken);
@@ -32,26 +37,40 @@ export function AuditFloat({ status }: { status: AuditStatus | null; root?: RefO
   const shown = Boolean(status);
 
   return (
-    <div className="audit-float" data-shown={shown ? "" : undefined} aria-hidden={shown ? undefined : true}>
-      <p className="audit-float__head">
-        <span className="site-label">{week.label}</span>
-        <span className="audit-float__live">
-          <span className="audit-float__pulse" aria-hidden="true" />
-          {week.live}
-        </span>
-      </p>
+    <div
+      className="audit-float"
+      data-shown={shown ? "" : undefined}
+      aria-hidden={shown ? undefined : true}
+    >
       <p className="audit-float__row">
         {/* No rings while none is taken: five empty rings read as no demand (CRO review). */}
-        <span className="audit-float__rings" aria-hidden="true" hidden={taken === 0}>
+        <span
+          className="audit-float__rings"
+          aria-hidden="true"
+          hidden={taken === 0}
+        >
           {Array.from({ length: total }, (_, index) => (
-            <span key={index} className="audit-float__ring" data-taken={index < taken ? "" : undefined} />
+            <span
+              key={index}
+              className="audit-float__ring"
+              data-taken={index < taken ? "" : undefined}
+            />
           ))}
         </span>
         <span className="audit-float__line" aria-live="polite">
           {line}
         </span>
+        <span className="audit-float__live">
+          <span className="audit-float__pulse" aria-hidden="true" />
+          {week.live}
+        </span>
       </p>
-      <a href={`#${AUDIT_FORM_ID}`} className="audit-submit audit-float__action" onClick={openAuditFlow} tabIndex={shown ? undefined : -1}>
+      <a
+        href={`#${AUDIT_FORM_ID}`}
+        className="audit-submit audit-float__action"
+        onClick={openAuditFlow}
+        tabIndex={shown ? undefined : -1}
+      >
         {copy.action}
       </a>
     </div>
