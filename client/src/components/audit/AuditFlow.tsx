@@ -459,6 +459,14 @@ export function AuditFlow({
             noValidate
           >
             <div className="audit-quiz__head">
+              <Drawing
+                className="audit-quiz__cast"
+                src={flow.art.request.src}
+                alt=""
+                width={560}
+                height={560}
+                eager
+              />
               <h2
                 ref={heading}
                 className="audit-quiz__title"
@@ -529,6 +537,15 @@ export function AuditFlow({
             onSubmit={next}
           >
             <div className="audit-quiz__head">
+              <Drawing
+                key={stage}
+                className="audit-quiz__cast audit-quiz__cast--scene"
+                src={(stage === 0 ? flow.art.one : flow.art.two).src}
+                alt=""
+                width={(stage === 0 ? flow.art.one : flow.art.two).width}
+                height={(stage === 0 ? flow.art.one : flow.art.two).height}
+                eager
+              />
               <h2
                 ref={heading}
                 tabIndex={-1}

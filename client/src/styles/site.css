@@ -1292,8 +1292,10 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__body:has(.audit-quiz__done) { align-content: center; }
 .audit-quiz__head { display: grid; gap: var(--space-2); }
 /* The cast: a small drawing in the corner, above the title, the way the Inspector sits beside the hero. */
-.audit-quiz__cast { display: block; width: 34%; max-width: 9rem; justify-self: end; margin: 0 calc(-1 * var(--space-2)) calc(-1 * var(--space-4)) 0; aspect-ratio: 1; }
-.audit-quiz__cast img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+/* The scene for the screen, sitting on the title like the Inspector sits beside the hero. */
+.audit-quiz__cast { display: block; width: 38%; max-width: 10.5rem; justify-self: end; margin: 0 calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) 0; }
+.audit-quiz__cast--scene { width: 64%; max-width: 17rem; }
+.audit-quiz__cast img { display: block; width: 100%; height: auto; }
 @media (prefers-color-scheme: dark) { .audit-quiz__cast img { filter: invert(1); } }
 .audit-quiz__title { margin: 0; font-family: var(--site-display); font-size: var(--t-h1); font-weight: 400; line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
 .audit-quiz__title:focus { outline: none; }
@@ -1325,7 +1327,7 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__go { width: auto; min-width: 10rem; gap: var(--space-3); padding: 0 var(--space-6); -webkit-tap-highlight-color: transparent; transition: opacity var(--d-hover) var(--site-ease), background-color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
 .audit-quiz__go:not([data-ready]) { background: var(--site-muted); }
 .audit-quiz__arrow { flex: none; }
-.audit-quiz__done .audit-quiz__cast { width: 60%; max-width: 16rem; margin-bottom: calc(-1 * var(--space-2)); }
+.audit-quiz__done .audit-quiz__cast { width: 60%; max-width: 16rem; margin-bottom: calc(-1 * var(--space-2)); aspect-ratio: 1; }
 /* Each step comes in from the right, the way the next card in a deck would. */
 @keyframes audit-step-in { from { opacity: 0; transform: translateX(var(--space-4)); } to { opacity: 1; transform: none; } }
 /* The done screen animates its words, never the drawing's box: a kept animation would isolate the clip's

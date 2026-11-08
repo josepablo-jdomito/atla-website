@@ -488,6 +488,12 @@ export const siteCopy = {
     // The flow that takes the screen, in Storetasker's pattern (JP, 2026-11-07): one request screen, two
     // screens of questions, the one button fixed at the bottom.
     flow: {
+      // One drawing per screen of the flow (JP, 2026-11-07: "crea ilustraciones nuevas para cada sección").
+      art: {
+        request: { src: "/audit/landing/flow-request.webp", width: 640, height: 846, alt: "The bottle on tiptoe, pushing an envelope bigger than itself into a street mailbox" },
+        one: { src: "/audit/landing/flow-one.webp", width: 640, height: 362, alt: "The bottle lying on a psychoanalyst's couch while the man takes notes from an armchair" },
+        two: { src: "/audit/landing/flow-two.webp", width: 640, height: 767, alt: "The bottle scratching its head beside a wobbly pile of hats, a blank sign, a poster and a brush" },
+      },
       requestTitle: "Send me your brand",
       requestLine: "Where it lives, and where to send the audit.",
       placeholders: { site: "yourbrand.com or @yourbrand", name: "Your name", email: "you@yourbrand.com" },
