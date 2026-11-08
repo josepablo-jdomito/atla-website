@@ -74,3 +74,16 @@ describe("contact failure log", () => {
     expect(warns.mock.calls.map((call) => call.join(" ")).join("\n")).toContain("no Origin or Referer");
   });
 });
+
+describe("foreignPostSource", () => {
+  const req = (headers: Record<string, string>) => ({ headers }) as unknown as import("express").Request;
+  it("treats www and audit under atla.design as one site, and another site as foreign", async () => {
+    const { foreignPostSource } = await import("./contact.ts");
+    // The free audit served at atla.design/audit through a rewrite: the origin is www, the host is audit.
+    expect(foreignPostSource(req({ origin: "https://www.atla.design", host: "audit.atla.design" }))).toBeNull();
+    expect(foreignPostSource(req({ origin: "https://atla.design", host: "www.atla.design" }))).toBeNull();
+    expect(foreignPostSource(req({ origin: "http://localhost:5052", host: "localhost:5052" }))).toBeNull();
+    expect(foreignPostSource(req({ origin: "https://evil.example", host: "audit.atla.design" }))).toBe("evil.example");
+    expect(foreignPostSource(req({ origin: "https://atla.design.evil.example", host: "www.atla.design" }))).toBe("atla.design.evil.example");
+  });
+});

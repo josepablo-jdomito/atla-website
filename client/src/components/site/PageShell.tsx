@@ -53,7 +53,7 @@ export function PageShell({
     <div className="site-root">
       <SiteHeader />
       <main ref={mainRef} id={MAIN_CONTENT_ID} className="site-main" tabIndex={-1}>
-        <div key={location} className="site-page" data-first-paint={firstPaint ? "" : undefined}>
+        <div key={location} className="site-page" data-first-paint={firstPaint ? "" : undefined} data-landing={landing ? "" : undefined}>
           {children}
         </div>
       </main>

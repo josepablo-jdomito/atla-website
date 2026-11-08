@@ -2324,6 +2324,14 @@ html[data-consent="open"] .site-explore { display: none; }
 @starting-style {
   .consent { opacity: 0; transform: translateY(8px); }
 }
+/* On a landing the notice is a strip at the top, out of the way of the floating card (JP, 2026-11-07:
+   "el pop-up de los cookies tapa el otro pop-up"). */
+html:has(.site-page[data-landing]) .consent { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; max-width: none; flex-direction: row; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-4); }
+html:has(.site-page[data-landing]) .consent__text { flex: 1 1 auto; min-width: 0; font-size: var(--t-caption); }
+html:has(.site-page[data-landing]) .consent__actions { flex: none; gap: 0 var(--space-4); }
+@starting-style {
+  html:has(.site-page[data-landing]) .consent { transform: translateY(-8px); }
+}
 .consent__text { margin: 0; font-size: var(--t-ui); line-height: var(--lh-body); }
 /* Inline padding grows the tap area to 44 px without opening up the paragraph's lines. */
 .consent__link {

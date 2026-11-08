@@ -127,7 +127,13 @@ function isRateLimited(ip: string): boolean {
 }
 
 /** atla.design and www.atla.design are the same site. */
-const siteKey = (host: string) => host.toLowerCase().replace(/^www\./, "");
+/** The site a host belongs to: its last two labels, so www.atla.design and audit.atla.design (the free
+ * audit, served under atla.design/audit through a rewrite) are one site. A bare host (localhost) is itself. */
+const siteKey = (host: string) => {
+  const name = host.toLowerCase().replace(/:\d+$/, "");
+  const labels = name.split(".");
+  return labels.length > 2 ? labels.slice(-2).join(".") : name;
+};
 
 /** What a post that names no site at all is called in the log. */
 export const NO_POST_SOURCE = "no Origin or Referer";
