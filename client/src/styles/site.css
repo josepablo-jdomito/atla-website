@@ -1287,10 +1287,10 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__nav--end { margin: 0 calc(-1 * var(--space-2)) 0 0; color: var(--site-muted); }
 @media (hover: hover) { .audit-quiz__nav:hover { opacity: 0.6; } }
 .audit-quiz__nav:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 2px; }
-.audit-quiz__body { display: grid; justify-items: center; padding: var(--space-2) var(--site-gutter) var(--space-7); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-.audit-quiz__step, .audit-quiz__done { display: grid; gap: var(--space-7); width: 100%; max-width: 34rem; align-content: start; }
+.audit-quiz__body { display: grid; justify-items: center; padding: var(--space-3) var(--site-gutter) var(--space-6); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.audit-quiz__step, .audit-quiz__done { display: grid; gap: var(--space-6); width: 100%; max-width: 34rem; align-content: start; }
 .audit-quiz__body:has(.audit-quiz__done) { align-content: center; }
-.audit-quiz__head { display: grid; gap: var(--space-3); }
+.audit-quiz__head { display: grid; gap: var(--space-2); }
 /* The cast: a small drawing in the corner, above the title, the way the Inspector sits beside the hero. */
 .audit-quiz__cast { display: block; width: 34%; max-width: 9rem; justify-self: end; margin: 0 calc(-1 * var(--space-2)) calc(-1 * var(--space-4)) 0; aspect-ratio: 1; }
 .audit-quiz__cast img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
@@ -1298,25 +1298,25 @@ html[data-consent="open"] .site-explore { display: none; }
 .audit-quiz__title { margin: 0; font-family: var(--site-display); font-size: var(--t-h1); font-weight: 400; line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
 .audit-quiz__title:focus { outline: none; }
 .audit-quiz__line { margin: 0; max-width: 32ch; font-size: var(--t-lead); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
-.audit-quiz__fields { display: grid; gap: var(--space-5); }
+.audit-quiz__fields { display: grid; gap: var(--space-4); }
 .audit-quiz__field { display: grid; gap: var(--space-2); }
-.audit-quiz__field--ask { gap: var(--space-4); }
+.audit-quiz__field--ask { gap: var(--space-3); }
 .audit-quiz__label { font-size: var(--t-ui); font-weight: 500; line-height: var(--lh-ui); color: var(--site-muted); }
-.audit-quiz__field--ask .audit-quiz__label { font-size: var(--t-h3); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--site-ink); text-wrap: balance; }
+.audit-quiz__field--ask .audit-quiz__label { font-size: var(--t-lead); font-weight: 500; line-height: var(--lh-body); color: var(--site-ink); text-wrap: pretty; }
 /* The site's own field: one line under the text, the ink line on focus. */
-.audit-quiz__box { width: 100%; min-height: var(--space-8); padding: var(--space-3) 0; border: 0; border-bottom: 1px solid var(--site-ink); border-radius: 0; background: transparent; color: var(--site-ink); font: inherit; font-size: var(--t-h3); line-height: var(--lh-ui); transition: box-shadow var(--d-hover) var(--site-ease); }
+.audit-quiz__box { width: 100%; min-height: 48px; padding: var(--space-2) 0; border: 0; border-bottom: 1px solid var(--site-ink); border-radius: 0; background: transparent; color: var(--site-ink); font: inherit; font-size: var(--t-lead); line-height: var(--lh-ui); transition: box-shadow var(--d-hover) var(--site-ease); }
 .audit-quiz__box::placeholder { color: var(--site-muted); opacity: 0.7; }
 .site-root .audit-quiz__box:focus, .site-root .audit-quiz__box:focus-visible { outline: none; box-shadow: 0 1px 0 var(--site-ink); }
 .audit-quiz__box[aria-invalid="true"] { border-bottom-color: var(--site-error); }
-.audit-quiz__box--area { min-height: 6.5rem; padding: var(--space-4); border: 1px solid var(--site-ink); border-radius: var(--r-panel); font-size: var(--t-lead); line-height: var(--lh-body); resize: none; }
+.audit-quiz__box--area { min-height: 5.5rem; padding: var(--space-3) var(--space-4); border: 1px solid var(--site-ink); border-radius: var(--r-panel); font-size: var(--t-lead); line-height: var(--lh-body); resize: none; }
 .site-root .audit-quiz__box--area:focus, .site-root .audit-quiz__box--area:focus-visible { box-shadow: inset 0 0 0 1px var(--site-ink); }
 .audit-quiz__error { margin: 0; font-size: var(--t-caption); line-height: var(--lh-body); color: var(--site-error); }
 .audit-quiz__pills { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.audit-quiz__pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-4); border: 1px solid var(--site-ink); border-radius: var(--r-pill); background: transparent; color: var(--site-ink); font: inherit; font-size: var(--t-small); font-weight: 500; line-height: var(--lh-ui); text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--d-hover) var(--site-ease), color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
+.audit-quiz__pill { display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--space-4); border: 1px solid var(--site-ink); border-radius: var(--r-pill); background: transparent; color: var(--site-ink); font: inherit; font-size: var(--t-ui); font-weight: 500; line-height: var(--lh-ui); text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--d-hover) var(--site-ease), color var(--d-hover) var(--site-ease), transform 100ms var(--site-ease); }
 .audit-quiz__pill:active { transform: scale(0.97); }
 .audit-quiz__pill[aria-pressed="true"] { background: var(--site-ink); color: var(--site-bg); }
 .audit-quiz__pill:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 3px; }
-.audit-quiz__note { margin: 0; font-size: var(--t-small); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
+.audit-quiz__note { margin: 0; font-size: var(--t-ui); line-height: var(--lh-body); color: var(--site-muted); text-wrap: pretty; }
 .audit-quiz__privacy { margin: 0; font-size: var(--t-caption); line-height: var(--lh-body); color: var(--site-muted); }
 .audit-quiz__foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-4); width: 100%; max-width: calc(34rem + 2 * var(--site-gutter)); margin-inline: auto; padding: var(--space-3) var(--site-gutter) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); background: var(--site-bg); }
 .audit-quiz__status { margin: 0; font-size: var(--t-caption); line-height: var(--lh-ui); color: var(--site-muted); text-align: right; }

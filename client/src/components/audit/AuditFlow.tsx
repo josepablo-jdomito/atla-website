@@ -459,15 +459,6 @@ export function AuditFlow({
             noValidate
           >
             <div className="audit-quiz__head">
-              {/* The Bottle climbing into the envelope: the page's cast walks into the flow. */}
-              <Drawing
-                className="audit-quiz__cast"
-                src={copy.steps[0].src}
-                alt=""
-                width={560}
-                height={560}
-                eager
-              />
               <h2
                 ref={heading}
                 className="audit-quiz__title"
@@ -538,15 +529,6 @@ export function AuditFlow({
             onSubmit={next}
           >
             <div className="audit-quiz__head">
-              {/* The Inspector at his glass: the questions are what he asks before he looks. */}
-              <Drawing
-                className="audit-quiz__cast"
-                src={copy.steps[1].src}
-                alt=""
-                width={560}
-                height={560}
-                eager
-              />
               <h2
                 ref={heading}
                 tabIndex={-1}
