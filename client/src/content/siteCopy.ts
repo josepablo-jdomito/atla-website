@@ -489,7 +489,7 @@ export const siteCopy = {
     // screens of questions, the one button fixed at the bottom.
     flow: {
       requestTitle: "Send me your brand",
-      requestLine: "Where it lives, your name and the email you check. Five a week, every one by me, no call needed.",
+      requestLine: "Where it lives, your name and the email you check. I take five a week and do every one myself, and you won't need a call.",
       placeholders: { site: "yourbrand.com or @yourbrand", name: "Your name", email: "you@yourbrand.com" },
       send: "Send",
       close: "close",
@@ -540,7 +540,6 @@ export const siteCopy = {
     answersExit: "Leave the questions",
     answersOther: "Something else",
     answersOtherLine: "Tell me in your words.",
-    answersKeys: "Enter sends it. Shift and Enter for a new line.",
     answersNext: "Next",
     answersSkip: "Skip this one",
     answersSkipLast: "Nothing else, send it",

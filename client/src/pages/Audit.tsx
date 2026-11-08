@@ -233,7 +233,17 @@ export default function Audit() {
           )}
         </section>
       </div>
-      <AuditFlow open={flowOpen} sent={sent} onClose={() => setFlowOpen(false)} onSent={onSent} onDone={() => setAnswered(true)} />
+      <AuditFlow
+        open={flowOpen}
+        sent={sent}
+        onClose={() => {
+          setFlowOpen(false);
+          // Focus goes back to the door the visitor came through.
+          window.setTimeout(() => (document.querySelector<HTMLElement>(".audit-float__action, .audit-done__button") ?? undefined)?.focus(), 0);
+        }}
+        onSent={onSent}
+        onDone={() => setAnswered(true)}
+      />
     </PageShell>
   );
 }

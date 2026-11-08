@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { AUDIT_ANSWER_KEYS, MAX_AUDIT_FEEDBACK, auditSchema, type AuditAnswerKey, type AuditDraft, type AuditWeek } from "@shared/audit";
 import { readAuditAttribution, submitAudit, submitAuditFeedback } from "@/components/audit/auditApi";
 import { Drawing } from "@/components/audit/Drawing";
@@ -231,13 +231,6 @@ export function AuditFlow({
     return () => document.removeEventListener("keydown", onKey);
   });
 
-  const onFieldKey = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
-      event.preventDefault();
-      next();
-    }
-  };
-
   if (!open) return null;
 
   const done = phase === "done";
@@ -336,9 +329,15 @@ export function AuditFlow({
               const open = !question.cards || typing[question.key];
               return (
                 <div key={question.key} className="audit-quiz__field">
-                  <label htmlFor={`${baseId}-${question.key}-field`} className="audit-quiz__label" id={`${baseId}-${question.key}-label`}>
-                    {question.label}
-                  </label>
+                  {question.cards ? (
+                    <p className="audit-quiz__label" id={`${baseId}-${question.key}-label`}>
+                      {question.label}
+                    </p>
+                  ) : (
+                    <label htmlFor={`${baseId}-${question.key}-field`} className="audit-quiz__label">
+                      {question.label}
+                    </label>
+                  )}
                   {question.cards ? (
                     <div className="audit-quiz__pills" role="group" aria-labelledby={`${baseId}-${question.key}-label`}>
                       {question.cards.map((card) => (
@@ -356,12 +355,12 @@ export function AuditFlow({
                     <textarea
                       id={`${baseId}-${question.key}-field`}
                       className="audit-quiz__box audit-quiz__box--area"
+                      aria-labelledby={question.cards ? `${baseId}-${question.key}-label` : undefined}
                       rows={3}
                       maxLength={MAX_AUDIT_FEEDBACK}
                       placeholder={question.hint ?? copy.answersOtherLine}
                       value={chosen ? "" : current}
                       onChange={(event) => setAnswers((value) => ({ ...value, [question.key]: event.target.value }))}
-                      onKeyDown={onFieldKey}
                       readOnly={phase === "sending"}
                     />
                   ) : null}
