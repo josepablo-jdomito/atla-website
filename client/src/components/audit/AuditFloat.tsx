@@ -44,12 +44,8 @@ export function AuditFloat({
       aria-hidden={shown ? undefined : true}
     >
       <p className="audit-float__row">
-        {/* No rings while none is taken: five empty rings read as no demand (CRO review). */}
-        <span
-          className="audit-float__rings"
-          aria-hidden="true"
-          hidden={taken === 0}
-        >
+        {/* The five rings show from zero: the cap is visible before the first request fills a ring (JP, 2026-11-08). */}
+        <span className="audit-float__rings" aria-hidden="true">
           {Array.from({ length: total }, (_, index) => (
             <span
               key={index}
