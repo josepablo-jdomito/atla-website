@@ -470,7 +470,7 @@ export const siteCopy = {
       open: "Five free audits this week, all by me.",
       left: "{left} of five free audits left this week.",
       lastOne: "One free audit left this week.",
-      full: "This week's five audits are taken. Yours waits for next week.",
+      full: "This week's five are taken. Send yours anyway, I'll get to it.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three
