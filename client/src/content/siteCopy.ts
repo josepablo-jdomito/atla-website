@@ -467,10 +467,10 @@ export const siteCopy = {
     // hero is behind, gone while the form is on screen. Short lines, the count in words.
     float: {
       // Every visitor reads this for the first time (JP, 2026-11-07): it says what the five are.
-      open: "Five free audits this week, every one by me.",
+      open: "Five free audits this week, all by me.",
       left: "{left} of five free audits left this week.",
       lastOne: "One free audit left this week.",
-      full: "This week's five audits are taken. Yours waits for next week.",
+      full: "This week's five are taken. Send yours anyway, I'll get to it.",
       action: "Start free audit request",
     },
     // The closing section (JP, 2026-11-07: the request is the flow): the statement, the pill, the three

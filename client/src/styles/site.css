@@ -2349,6 +2349,15 @@ html:has(.site-page[data-landing]) .consent__actions { flex: none; gap: 0 var(--
 @starting-style {
   html:has(.site-page[data-landing]) .consent { transform: translateY(-8px); }
 }
+/* On a phone the strip sits above the float, not over the title: the first screen from Instagram
+   keeps its title, lead and the one door clear (JP, 2026-11-08). The offset is the float's height
+   plus its gap. */
+@media (max-width: 767px) {
+  html:has(.site-page[data-landing]):has(.audit-float[data-shown]) .consent { top: auto; bottom: calc(11.25rem + env(safe-area-inset-bottom, 0px)); }
+  @starting-style {
+    html:has(.site-page[data-landing]):has(.audit-float[data-shown]) .consent { transform: translateY(8px); }
+  }
+}
 .consent__text { margin: 0; font-size: var(--t-ui); line-height: var(--lh-body); }
 /* Inline padding grows the tap area to 44 px without opening up the paragraph's lines. */
 .consent__link {
