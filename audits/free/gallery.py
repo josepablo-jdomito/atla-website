@@ -32,22 +32,29 @@ header button{flex:none;background:var(--fg);color:#fff;border-color:var(--fg)}
 """
 
 JS = """
-const D=%DATE%,dec={};
-const cnt=document.getElementById('count');
-function upd(){cnt.textContent=Object.keys(dec).length+' de '+document.querySelectorAll('#ready .card').length+' decididos';}
+const D=%DATE%,KEY='decisions-'+D;let dec={},ok=true,dirty=false;
+const cnt=document.getElementById('count'),note=document.getElementById('save');
+function save(){try{localStorage.setItem(KEY,JSON.stringify(dec));ok=true;}catch(e){ok=false;}}
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'{}');if(v&&typeof v==='object')dec=v;ok=true;}catch(e){ok=false;}}
+function paint(c){const s=c.dataset.slug;c.classList.toggle('si',dec[s]==='si');c.classList.toggle('no',dec[s]==='no');
+  c.querySelectorAll('button[data-v]').forEach(x=>x.classList.toggle('on',dec[s]===x.dataset.v));}
+function upd(){cnt.textContent=Object.keys(dec).length+' de '+document.querySelectorAll('#ready .card').length+' decididos';
+  note.textContent=ok?'Decisiones guardadas en este navegador':'No se pueden guardar: exporta antes de cerrar';}
+load();
 document.querySelectorAll('#ready .card').forEach(c=>{
+  if(!dec[c.dataset.slug])delete dec[c.dataset.slug];
+  paint(c);
   c.querySelectorAll('button[data-v]').forEach(b=>b.addEventListener('click',()=>{
     const v=b.dataset.v,s=c.dataset.slug;
     if(dec[s]===v){delete dec[s];}else{dec[s]=v;}
-    c.classList.toggle('si',dec[s]==='si');c.classList.toggle('no',dec[s]==='no');
-    c.querySelectorAll('button[data-v]').forEach(x=>x.classList.toggle('on',dec[s]===x.dataset.v));
-    upd();
+    dirty=true;paint(c);save();upd();
   }));
 });
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
 document.getElementById('export').addEventListener('click',()=>{
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(dec,null,2)],{type:'application/json'}));
-  a.download='decisions-'+D+'.json';document.body.appendChild(a);a.click();a.remove();
+  a.download='decisions-'+D+'.json';document.body.appendChild(a);a.click();a.remove();dirty=false;
 });
 upd();
 """
@@ -68,6 +75,28 @@ def _pins_section(audit: dict | None) -> dict | None:
     for s in (audit or {}).get("sections", []):
         if s.get("type") == "pins":
             return s
+    return None
+
+
+def _problem(item: dict) -> str | None:
+    """Why a 'ready' item cannot be shown as a Sí/No card, or None if it can."""
+    sec = _pins_section(item["audit"])
+    pins = (sec or {}).get("pins")
+    if not sec or not isinstance(pins, list) or not pins:
+        return "sin pines"
+    for p in pins:
+        try:
+            ok = isinstance(p, dict) and int(p["n"]) >= 1 and 0 <= float(p["x"]) <= 1 and 0 <= float(p["y"]) <= 1 \
+                and int(p.get("on", 1)) in (1, 2)
+        except (KeyError, TypeError, ValueError):
+            ok = False
+        if not ok:
+            return "pines inválidos"
+    base = Path(item["image_dir"])
+    for p in pins:
+        name = sec.get("image2" if int(p.get("on", 1)) == 2 else "image")
+        if not name or _data_uri(base / name) is None:
+            return "sin captura"
     return None
 
 
@@ -132,12 +161,19 @@ def build_gallery(items: list[dict], out_path: Path | str, date: str | None = No
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ordered = _order(items)
-    ready = [i for i in ordered if i["status"] == "ready" and not i["qa"]]
-    sent_not = [i for i in ordered if i not in ready]
+    ready, sent_not = [], []
+    for i in ordered:
+        if i["status"] == "ready" and not i["qa"]:
+            prob = _problem(i)
+            if prob is None:
+                ready.append(i)
+                continue
+            i = {**i, "status": "unusable", "reason": prob}
+        sent_not.append(i)
     doc = f"""<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Revisión auditorías {_e(date)}</title>
 <style>{CSS}</style></head><body>
-<header><h1>Auditorías gratis · {_e(date)}</h1><span id="count"></span><button id="export">Exportar decisiones</button></header>
+<header><h1>Auditorías gratis · {_e(date)}</h1><span id="count"></span><small id="save"></small><button id="export">Exportar decisiones</button></header>
 <main>
 <h2>Listos ({len(ready)})</h2><section id="ready" class="grid">{"".join(_card(i, True) for i in ready)}</section>
 <h2>No enviados ({len(sent_not)})</h2><section id="notsent" class="grid">{"".join(_card(i, False) for i in sent_not)}</section>

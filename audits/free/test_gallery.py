@@ -73,3 +73,46 @@ def test_escapes_embeds_and_hides_email(tmp_path):
     assert "secret.test" not in html
     assert "left:20.0%" in html
     assert 'const D="2026-11-11"' in html and "'decisions-'+D" in html
+
+
+def _notsent_reason(tmp_path, it, reason):
+    html = build(tmp_path, [it])
+    ready, notsent = html.split('id="notsent"')
+    assert 'data-slug="' + it["slug"] + '"' not in ready
+    assert reason in notsent
+
+
+def test_ready_without_audit_or_pins_goes_not_sent(tmp_path):
+    _notsent_reason(tmp_path, item(tmp_path, "n", "N", "1", has_audit=False), "sin pines")
+    it = item(tmp_path, "p", "P", "1")
+    it["audit"]["sections"] = [{"type": "cover", "id": "cover"}]
+    _notsent_reason(tmp_path, it, "sin pines")
+
+
+def test_ready_without_screenshot_goes_not_sent(tmp_path):
+    it = item(tmp_path, "s", "S", "1")
+    (tmp_path / "site.png").unlink()
+    _notsent_reason(tmp_path, it, "sin captura")
+    it = item(tmp_path, "t", "T", "1")
+    it["audit"]["sections"][1]["image"] = None
+    _notsent_reason(tmp_path, it, "sin captura")
+
+
+def test_invalid_pins_do_not_crash_gallery(tmp_path):
+    good = item(tmp_path, "g", "G", "1")
+    bad = item(tmp_path, "b", "B", "2")
+    del bad["audit"]["sections"][1]["pins"][0]["x"]
+    bad2 = item(tmp_path, "b2", "B2", "3")
+    bad2["audit"]["sections"][1]["pins"][0]["on"] = "zzz"
+    html = build(tmp_path, [good, bad, bad2])
+    ready, notsent = html.split('id="notsent"')
+    assert 'data-slug="g"' in ready
+    assert notsent.count("pines inválidos") == 2
+
+
+def test_decisions_persist_and_warn(tmp_path):
+    html = build(tmp_path, [item(tmp_path, "a", "A", "1")])
+    assert "localStorage" in html and "'decisions-'+D" in html
+    assert "beforeunload" in html
+    assert "Decisiones guardadas en este navegador" in html
+    assert "No se pueden guardar: exporta antes de cerrar" in html
