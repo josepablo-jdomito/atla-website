@@ -674,9 +674,15 @@ __GLYPHS__
 
 def build(slug, o):
     src = CONTENT / f"{slug}.json"
-    if not src.exists():
+    free = not src.exists()
+    if free:
         src = CONTENT / "free" / f"{slug}.json"
     d = with_shared(json.loads(src.read_text()))
+    if free:
+        # Free audits live at an unguessable address; `path` is set once by audits.free.privacy.
+        if not d.get("path") or not d["path"].startswith(f"{slug}-"):
+            sys.exit(f"{src}: free audit needs a private 'path' (audits.free.privacy.private_path)")
+        d["slug"] = slug = d["path"]
     out = OUT / slug
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(page(o, d))

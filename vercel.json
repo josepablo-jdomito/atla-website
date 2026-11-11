@@ -69,13 +69,56 @@
           "value": "public, max-age=2592000"
         }
       ]
+    },
+    {
+      "source": "/audit/:path+",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noimageindex"
+        }
+      ]
     }
   ],
   "redirects": [
-    { "source": "/", "has": [{ "type": "host", "value": "audit.atla.design" }], "destination": "/audit", "permanent": false },
-    { "source": "/audit/:slug(bevel|parktool)/:rest*", "has": [{ "type": "host", "value": "audit.atla.design" }], "destination": "https://www.atla.design/audit/:slug/:rest*", "permanent": false },
-    { "source": "/:path((?!audit|api/audit|assets|fonts|logos-v2|hospitality|share|figmaAssets|favicon|robots|sitemap|_vercel).*)", "has": [{ "type": "host", "value": "audit.atla.design" }], "destination": "https://www.atla.design/:path", "permanent": false },
-    { "source": "/audit/", "destination": "/audit", "permanent": false },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "audit.atla.design"
+        }
+      ],
+      "destination": "/audit",
+      "permanent": false
+    },
+    {
+      "source": "/audit/:slug(bevel|parktool)/:rest*",
+      "has": [
+        {
+          "type": "host",
+          "value": "audit.atla.design"
+        }
+      ],
+      "destination": "https://www.atla.design/audit/:slug/:rest*",
+      "permanent": false
+    },
+    {
+      "source": "/:path((?!audit|api/audit|assets|fonts|logos-v2|hospitality|share|figmaAssets|favicon|robots|sitemap|_vercel).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "audit.atla.design"
+        }
+      ],
+      "destination": "https://www.atla.design/:path",
+      "permanent": false
+    },
+    {
+      "source": "/audit/",
+      "destination": "/audit",
+      "permanent": false
+    },
     {
       "source": "/:path*",
       "has": [

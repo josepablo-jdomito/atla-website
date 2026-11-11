@@ -136,6 +136,9 @@ def _card(item: dict, ready: bool) -> str:
     r = item["request"]
     brand = (item["audit"] or {}).get("brand") or r.site or r.name
     hot = '<span class="hot">Lead caliente</span>' if item["hot"] else ""
+    from audits.free.privacy import owner_verified
+    if not owner_verified(r):
+        hot += '<span class="hot" style="background:var(--no)">Dueño sin verificar</span>'
     head = (f'<div class="top"><div><span class="brand">{_e(brand)}</span> '
             f'<span class="slug">{_e(item["slug"])}</span></div>{hot}</div>')
     pain = (r.answers or {}).get("frustration", "").strip()
