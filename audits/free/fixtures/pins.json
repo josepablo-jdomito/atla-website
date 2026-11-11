@@ -1,15 +1,15 @@
 {
   "slug": "zz-pins-fixture",
   "brand": "Fixture Co",
-  "title": "Fixture Co Brand Audit",
-  "description": "A short brand audit of Fixture Co, prepared by Atla.",
+  "title": "Fixture Co Branding Analysis",
+  "description": "A short look at Fixture Co's front door, prepared by Atla.",
   "date": "November 2026",
-  "mailSubject": "Fixture Co brand audit",
+  "mailSubject": "Fixture Co Branding Analysis",
   "email": "josepablo@atla.design",
   "author": "José Pablo Domínguez",
   "authorRole": "Founder and Creative Director, Atla",
   "sections": [
-    {"type": "cover", "id": "cover", "title": [["Fixture Co", "Brand Audit"]], "kicker": "Prepared for Fixture Co by Atla · November 2026", "readTime": "2 minute read"},
+    {"type": "cover", "id": "cover", "title": [["Fixture Co", "Branding Analysis"]], "kicker": "Prepared for Fixture Co by Atla · November 2026", "readTime": "2 minute read"},
     {"type": "pins", "id": "front-door", "label": "Front door", "title": [["Where Fixture Co", "meets people."]],
      "image": "pixel.png", "image2": null,
      "pins": [

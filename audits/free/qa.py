@@ -16,12 +16,24 @@ def _norm(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip().lower()
 
 
-def _strings(value):
+SKIP_KEYS = {"slug", "email", "href", "image", "image2", "date", "id", "type"}
+
+
+def _walk(value, label, errs):
+    """Apply the text rules to every user-visible string under value."""
     if isinstance(value, str):
-        yield value
+        if not value.startswith("http"):
+            errs += _text_rules(label, value)
     elif isinstance(value, list):
+        if value and all(isinstance(v, str) for v in value):
+            # lines of one title: also check them joined as the reader sees them
+            errs += _text_rules(label, " ".join(value))
         for v in value:
-            yield from _strings(v)
+            _walk(v, label, errs)
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            if k not in SKIP_KEYS:
+                _walk(v, f"{label}.{k}" if label else k, errs)
 
 
 def _text_rules(label: str, text: str) -> list[str]:
@@ -43,20 +55,17 @@ def _text_rules(label: str, text: str) -> list[str]:
 
 def check(audit: dict, source_text: str) -> list[str]:
     errs: list[str] = []
-    for s in _strings(audit.get("description", "")):
-        errs += _text_rules("description", s)
+    top = {k: v for k, v in audit.items() if k != "sections"}
+    _walk(top, "", errs)
 
     source = _norm(source_text or "")
     for sec in audit.get("sections", []):
         kind = sec.get("type", "section")
         name = sec.get("id") or kind
-        for key in ("label", "title"):
-            for s in _strings(sec.get(key, [])):
-                errs += _text_rules(f"{name} {key}", s)
-        if kind == "cta":
-            for key in ("text", "button"):
-                for s in _strings(sec.get(key, "")):
-                    errs += _text_rules(f"cta {key}", s)
+        for key, v in sec.items():
+            if key in SKIP_KEYS or key == "pins":
+                continue
+            _walk(v, f"{name} {key}", errs)
         if kind == "pins":
             pins = sec.get("pins", [])
             if len(pins) != 3:
@@ -68,6 +77,8 @@ def check(audit: dict, source_text: str) -> list[str]:
                     errs.append(f"pin {n}: quote is empty")
                 elif q not in source:
                     errs.append(f"pin {n}: quote not found in source")
-                for key in ("quote", "what", "why", "how"):
-                    errs += _text_rules(f"pin {n}", pin.get(key, "") or "")
-    return errs
+                for k, v in pin.items():
+                    if k not in SKIP_KEYS:
+                        _walk(v, f"pin {n}", errs)
+    # drop duplicates, keep order
+    return list(dict.fromkeys(errs))

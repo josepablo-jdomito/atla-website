@@ -87,14 +87,60 @@ def test_no_scarcity_claims():
         a = clean()
         a["sections"][2]["text"] = phrase
         errs = check(a, SOURCE)
-        assert any("cta" in e and "scarcity" in e for e in errs), phrase
+        assert any("next" in e and "scarcity" in e for e in errs), phrase
 
 
-def test_checks_labels_titles_description_and_cta():
+def test_top_level_title_mailsubject_gate_privacy_kicker():
     a = clean()
-    a["description"] = "Brand audit — done"
+    a["title"] = "Fixture Co Brand Audit"
+    a["mailSubject"] = "Fixture Co brand audit"
+    a["gate"] = {"text": "Book a call", "button": "View", "privacy": "We use conversion data"}
+    a["privacy"] = "We never leverage it"
+    a["sections"][0]["kicker"] = "Selected for Fixture Co"
+    a["sections"][0]["readTime"] = "2 minute read"
+    errs = check(a, SOURCE)
+    assert "title: banned word 'Brand Audit'" in errs
+    assert "mailSubject: banned word 'brand audit'" in errs
+    assert "gate.text: banned word 'call'" in errs
+    assert "gate.privacy: banned word 'conversion'" in errs
+    assert "privacy: banned word 'leverage'" in errs
+    assert "cover kicker: scarcity claim 'selected'" in errs
+
+
+def test_split_title_lines_are_joined():
+    a = clean()
+    a["sections"][0]["title"] = [["Fixture Co", "Brand", "Audit"]]
+    assert check(a, SOURCE) == ["cover title: banned word 'Brand Audit'"]
+
+
+def test_skips_urls_and_ids():
+    a = clean()
+    a["slug"] = "selected-brand-audit"
+    a["email"] = "call@x.test"
+    a["sections"][2]["href"] = "https://x.test/call-synergy"
+    a["sections"][1]["image"] = "call.png"
+    assert check(a, SOURCE) == []
+
+
+def test_labels_titles_description_and_cta_exact():
+    a = clean()
+    a["description"] = "Brand audit \u2014 done"
     a["sections"][1]["label"] = "Selected"
     a["sections"][1]["title"][0][1] = "synergy."
     a["sections"][2]["button"] = "Book a call"
-    errs = check(a, SOURCE)
-    assert len(errs) >= 5
+    assert check(a, SOURCE) == [
+        "description: dash found",
+        "description: banned word 'Brand audit'",
+        "front-door label: scarcity claim 'selected'",
+        "front-door title: banned word 'synergy'",
+        "next button: banned word 'call'",
+    ]
+
+
+def test_template_copy_is_clean():
+    import json
+    from pathlib import Path
+    raw = (Path(__file__).parent / "template.json").read_text()
+    audit = json.loads(raw.replace("{brand}", "Acme").replace("{month year}", "November 2026"))
+    source = "{verbatim quote from the brand}"
+    assert check(audit, source) == []
