@@ -318,3 +318,27 @@ a{color:inherit;text-underline-offset:3px}
 .tile .mark-img{width:78%}
 .plot .pt em{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);font:500 10px/1 var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;color:var(--grey)}
 .plot .pt.focus em{color:var(--ink)}
+
+/* ---------- Free audit: pins and CTA ---------- */
+.pins{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,3.2vw,56px);margin-top:clamp(40px,5vw,72px);align-items:start}
+.pins.pins-two{grid-template-columns:1fr}
+.pin-shots{display:grid;gap:clamp(16px,2.4vw,32px)}
+.pins-two .pin-shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pin-img{position:relative;line-height:0}
+.pin-img img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--rule);background:#fff}
+.pin{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:var(--accent);color:var(--ink);box-shadow:0 0 0 2px var(--ink),0 2px 8px rgba(0,0,0,.25);display:grid;place-items:center;font:500 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.callouts{list-style:none;margin:0;padding:0;display:grid;gap:clamp(20px,2.4vw,32px)}
+.pins-two .callouts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.callout{display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px}
+.callout-n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--ink);box-shadow:0 0 0 2px var(--ink);display:grid;place-items:center;font:500 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.callout blockquote{margin:0 0 10px;font-weight:500;font-size:17px;line-height:1.4}
+.callout dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:15px;color:var(--grey)}
+.callout dt{font:500 11px/1.9 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.callout dd{margin:0}
+.cta{margin:clamp(28px,3vw,40px) 0 0}
+.cta-btn{display:inline-block;padding:16px 28px;border-radius:999px;background:var(--ink);color:var(--bg);font:500 16px/1 var(--sans);text-decoration:none;border:1px solid var(--ink)}
+.cta-btn:focus-visible{outline-offset:4px}
+@media (hover:hover) and (pointer:fine){.cta-btn:hover{background:transparent;color:var(--ink)}}
+@media (max-width:900px){.pins:not(.pins-two){grid-template-columns:1fr}.pins-two .callouts{grid-template-columns:1fr}}
+@media (max-width:720px){.pins-two .pin-shots{grid-template-columns:1fr}.pin{width:24px;height:24px;margin:-12px 0 0 -12px;font-size:12px}}
+@media print{.pin,.callout-n{box-shadow:0 0 0 2px #000}}

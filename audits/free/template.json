@@ -1,0 +1,93 @@
+{
+  "slug": "{slug}",
+  "brand": "{brand}",
+  "title": "{brand} Brand Audit",
+  "description": "A short brand audit of {brand}, prepared by Atla.",
+  "date": "{month year}",
+  "mailSubject": "{brand} brand audit",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to access the {brand} Brand Audit.",
+    "button": "View the audit",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "{brand}",
+          "Brand Audit"
+        ],
+        [
+          "{brand}",
+          "Brand",
+          "Audit"
+        ]
+      ],
+      "kicker": "Prepared for {brand} by Atla · {month year}",
+      "readTime": "2 minute read"
+    },
+    {
+      "type": "pins",
+      "id": "front-door",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.3,
+          "quote": "{verbatim quote from the brand}",
+          "what": "{what it is}",
+          "why": "{why it matters}",
+          "how": "{how to fix it}"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.3,
+          "quote": "{verbatim quote from the brand}",
+          "what": "{what it is}",
+          "why": "{why it matters}",
+          "how": "{how to fix it}"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.6000000000000001,
+          "y": 0.3,
+          "quote": "{verbatim quote from the brand}",
+          "what": "{what it is}",
+          "why": "{why it matters}",
+          "how": "{how to fix it}"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 25-minute conversation",
+      "href": "https://calendly.com/josepablo-atla/30min"
+    }
+  ]
+}

@@ -29,6 +29,8 @@ CONTENT = ROOT / "audits"
 OUT = ROOT / "client" / "public" / "audit"
 FONT_PATH = os.environ.get("ABC_SYNT_PATH", str(Path.home() / "Library/Fonts/ABCSyntVariableVF-Trial.ttf"))
 SITE = "https://www.atla.design"
+# Booking link for the free audit pages. The event lasts 25 minutes; keep the button text in step with it.
+CALENDLY_URL = "https://calendly.com/josepablo-atla/30min"
 
 BEVEL_MARK = (
     '<svg class="mark-svg" viewBox="0 0 50 41" aria-hidden="true">'
@@ -363,9 +365,52 @@ def r_chapter(o, s, d, n):
     )
 
 
+def pct(v):
+    """A 0..1 fraction as a CSS percentage, without trailing zeros."""
+    return f"{round(float(v) * 100, 2):g}%"
+
+
+def r_pins(o, s, d, n):
+    """A real screenshot of the brand's front door with numbered pins; each pin has a quote and what/why/how."""
+    imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
+    alts = s.get("alts") or []
+    figs = ""
+    for i, src in enumerate(imgs, 1):
+        marks = "".join(
+            f'<span class="pin" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true">{int(p["n"])}</span>'
+            for p in s["pins"]
+            if p.get("on", 1) == i
+        )
+        alt = alts[i - 1] if i <= len(alts) else f'Screenshot of {d["brand"]}, with numbered notes'
+        figs += (
+            f'<div class="pin-img"><img src="/audit/{d["slug"]}/img/{esc(src)}" alt="{esc(alt)}" loading="lazy">{marks}</div>'
+        )
+    items = "".join(
+        f'<li class="callout" value="{int(p["n"])}"><span class="callout-n" aria-hidden="true">{int(p["n"])}</span>'
+        f'<div class="callout-b"><blockquote>\u201c{esc(p["quote"])}\u201d</blockquote>'
+        f'<dl><dt>What</dt><dd>{esc(p["what"])}</dd><dt>Why</dt><dd>{esc(p["why"])}</dd><dt>How</dt><dd>{esc(p["how"])}</dd></dl></div></li>'
+        for p in s["pins"]
+    )
+    two = " pins-two" if len(imgs) == 2 else ""
+    return (
+        head(o, s, n)
+        + f'<div class="pins{two}"><div class="pin-shots">{figs}</div><ol class="callouts">{items}</ol></div>'
+        + note(s)
+    )
+
+
+def r_cta(o, s, d, n):
+    return (
+        f'<h2 class="sr" id="{s["id"]}-t">Next step</h2>'
+        + f'<p class="lead">{esc(s["text"])}</p>'
+        + f'<p class="cta"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a></p>'
+    )
+
+
 RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
     "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
+    "pins": r_pins, "cta": r_cta,
 }
 
 
@@ -582,7 +627,10 @@ __GLYPHS__
 
 
 def build(slug, o):
-    d = with_shared(json.loads((CONTENT / f"{slug}.json").read_text()))
+    src = CONTENT / f"{slug}.json"
+    if not src.exists():
+        src = CONTENT / "free" / f"{slug}.json"
+    d = with_shared(json.loads(src.read_text()))
     out = OUT / slug
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(page(o, d))
