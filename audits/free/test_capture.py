@@ -21,6 +21,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif self.path == "/password":
             self.path = "/password.html"
             super().do_GET()
+        elif self.path == "/forbidden":
+            self.send_response(403)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            self.wfile.write(b"<html><body><h1>Access denied</h1></body></html>")
+        elif self.path == "/empty":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            self.wfile.write(b"<html><body><div style='height:3000px'></div></body></html>")
+        elif self.path == "/to-localhost":
+            self.send_response(302)
+            self.send_header("Location", f"http://localhost:{self.server.server_address[1]}/")
+            self.end_headers()
         elif self.path == "/slow":
             time.sleep(6)
             self.path = "/site.html"
@@ -74,3 +88,23 @@ def test_password_page_is_unusable(base, tmp_path):
 def test_timeout_is_unusable(base, tmp_path):
     c = capture_site(base + "/slow", tmp_path, timeout_s=2)
     assert c["status"] == "unusable" and c["reason"] == "timeout"
+
+
+def test_redirect_into_link_in_bio_host_is_unusable(base, tmp_path, monkeypatch):
+    # initial host 127.0.0.1 is allowed; the redirect target localhost is the blocked host
+    monkeypatch.setattr(capture, "LINK_IN_BIO_HOSTS", {"localhost"})
+    assert not is_link_in_bio(base + "/")
+    c = capture_site(base + "/to-localhost", tmp_path)
+    assert c["status"] == "unusable" and c["reason"] == "link-in-bio"
+
+
+def test_http_403_is_blocked(base, tmp_path):
+    c = capture_site(base + "/forbidden", tmp_path)
+    assert c["status"] == "unusable" and c["reason"] == "blocked: HTTP 403"
+    assert c["image"] is None
+
+
+def test_empty_first_screen_is_unusable(base, tmp_path):
+    c = capture_site(base + "/empty", tmp_path)
+    assert c["status"] == "unusable" and c["reason"] == "empty"
+    assert not (tmp_path / "front-site.png").exists()

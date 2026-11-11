@@ -30,13 +30,18 @@ _FIRST_SCREEN_JS = """
     if (!t || !t.trim()) continue;
     const el = n.parentElement;
     if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
-    const cs = getComputedStyle(el);
-    if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) continue;
+    if (typeof el.checkVisibility === 'function') {
+      if (!el.checkVisibility({opacityProperty: true, visibilityProperty: true})) continue;
+    } else {
+      const cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) continue;
+    }
     const r = document.createRange();
     r.selectNodeContents(n);
     const b = r.getBoundingClientRect();
     if (b.width === 0 || b.height === 0) continue;
     if (b.bottom <= 0 || b.top >= vh) continue;
+    if (b.right <= 0 || b.left >= window.innerWidth) continue;
     out.push(t);
   }
   return out.join(' ');
@@ -48,7 +53,7 @@ class Capture(TypedDict):
     status: Literal["ok", "unusable"]
     reason: str | None
     image: str | None
-    text: str
+    text: str  # visible first-screen text in source casing (CSS text-transform is not applied)
 
 
 def is_link_in_bio(url: str) -> bool:
@@ -84,7 +89,9 @@ def capture_site(url: str, out_dir: Path, timeout_s: float = 20) -> Capture:
             try:
                 page = browser.new_context(viewport=VIEWPORT).new_page()
                 page.set_default_timeout(timeout_s * 1000)
-                page.goto(url, wait_until="load", timeout=timeout_s * 1000)
+                resp = page.goto(url, wait_until="load", timeout=timeout_s * 1000)
+                if resp is None or resp.status >= 400:
+                    return _unusable(f"blocked: HTTP {resp.status if resp else 'no response'}")
                 final = page.url
                 if is_link_in_bio(final):
                     return _unusable("link-in-bio")
@@ -93,6 +100,8 @@ def capture_site(url: str, out_dir: Path, timeout_s: float = 20) -> Capture:
                 page.wait_for_timeout(500)
                 _dismiss_banners(page)
                 text = re.sub(r"\s+", " ", page.evaluate(_FIRST_SCREEN_JS, VIEWPORT["height"])).strip()
+                if not text:
+                    return _unusable("empty")
                 image = out_dir / "front-site.png"
                 page.screenshot(path=str(image), full_page=False)
                 return {"status": "ok", "reason": None, "image": str(image), "text": text}
