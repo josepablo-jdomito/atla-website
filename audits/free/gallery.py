@@ -124,7 +124,7 @@ def _pin_list(audit: dict | None) -> str:
     if not sec:
         return ""
     lis = "".join(
-        f'<li><b>{_e(p["n"])}.</b> <span class="q">&ldquo;{_e(p.get("quote"))}&rdquo;</span><br>'
+        f'<li><b>{_e(p["n"])}.</b> <span class="q">{("&ldquo;" + _e(p.get("quote")) + "&rdquo;") if p.get("quote") else _e(p.get("area"))}</span><br>'
         f'<span class="k">Qué:</span> {_e(p.get("what"))} <span class="k">Por qué:</span> {_e(p.get("why"))} '
         f'<span class="k">Cómo:</span> {_e(p.get("how"))}</li>'
         for p in sec.get("pins", [])

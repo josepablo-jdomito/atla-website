@@ -73,10 +73,11 @@ def check(audit: dict, source_text: str) -> list[str]:
             for i, pin in enumerate(pins, 1):
                 n = pin.get("n", i)
                 q = _norm(pin.get("quote", "") or "")
-                if not q:
-                    errs.append(f"pin {n}: quote is empty")
-                elif q not in source:
+                area = (pin.get("area") or "").strip()
+                if q and q not in source:
                     errs.append(f"pin {n}: quote not found in source")
+                elif not q and len(area.split()) < 4:
+                    errs.append(f"pin {n}: needs a quote or an area of at least 4 words")
                 for k, v in pin.items():
                     if k not in SKIP_KEYS:
                         _walk(v, f"pin {n}", errs)

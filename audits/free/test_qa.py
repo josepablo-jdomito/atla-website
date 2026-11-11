@@ -144,3 +144,28 @@ def test_template_copy_is_clean():
     audit = json.loads(raw.replace("{brand}", "Acme").replace("{month year}", "November 2026"))
     source = "{verbatim quote from the brand}"
     assert check(audit, source) == []
+
+
+def _area_audit(area, quote=None):
+    import copy, json
+    from pathlib import Path
+    a = json.loads((Path(__file__).parent / "fixtures" / "pins.json").read_text())
+    sec = next(s for s in a["sections"] if s["type"] == "pins")
+    sec["pins"][0]["quote"] = quote
+    sec["pins"][0]["area"] = area
+    return a
+
+
+def test_area_pin_without_quote_passes():
+    import json
+    from pathlib import Path
+    from audits.free.qa import check
+    a = _area_audit("The logo sits in a stock sans serif")
+    src = " ".join(p.get("quote") or "" for s in a["sections"] if s["type"] == "pins" for p in s["pins"])
+    assert not [e for e in check(a, src) if "pin 1" in e]
+
+
+def test_pin_with_neither_quote_nor_area_fails():
+    from audits.free.qa import check
+    a = _area_audit("")
+    assert any("needs a quote or an area" in e for e in check(a, ""))

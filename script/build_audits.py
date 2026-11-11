@@ -387,8 +387,8 @@ def r_pins(o, s, d, n):
         )
     items = "".join(
         f'<li class="callout" value="{int(p["n"])}"><span class="callout-n" aria-hidden="true">{int(p["n"])}</span>'
-        f'<div class="callout-b"><blockquote>\u201c{esc(p["quote"])}\u201d</blockquote>'
-        f'<dl><dt>What</dt><dd>{esc(p["what"])}</dd><dt>Why</dt><dd>{esc(p["why"])}</dd><dt>How</dt><dd>{esc(p["how"])}</dd></dl></div></li>'
+        + (f'<div class="callout-b"><blockquote>\u201c{esc(p["quote"])}\u201d</blockquote>' if p.get("quote") else f'<div class="callout-b"><blockquote>{esc(p.get("area", ""))}</blockquote>')
+        + f'<dl><dt>What</dt><dd>{esc(p["what"])}</dd><dt>Why</dt><dd>{esc(p["why"])}</dd><dt>How</dt><dd>{esc(p["how"])}</dd></dl></div></li>'
         for p in s["pins"]
     )
     two = " pins-two" if len(imgs) == 2 else ""
