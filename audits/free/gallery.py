@@ -73,7 +73,7 @@ def _data_uri(path: Path) -> str | None:
 
 def _pins_section(audit: dict | None) -> dict | None:
     for s in (audit or {}).get("sections", []):
-        if s.get("type") == "pins":
+        if s.get("type") in ("pins", "memo"):
             return s
     return None
 

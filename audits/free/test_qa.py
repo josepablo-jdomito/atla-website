@@ -169,3 +169,14 @@ def test_pin_with_neither_quote_nor_area_fails():
     from audits.free.qa import check
     a = _area_audit("")
     assert any("needs a quote or an area" in e for e in check(a, ""))
+
+
+def test_memo_section_pins_are_checked():
+    import json
+    from pathlib import Path
+    from audits.free.qa import check
+    a = json.loads((Path(__file__).parent / "fixtures" / "pins.json").read_text())
+    for s in a["sections"]:
+        if s["type"] == "pins":
+            s["type"] = "memo"
+    assert any("quote not found" in e for e in check(a, ""))

@@ -66,7 +66,7 @@ def check(audit: dict, source_text: str) -> list[str]:
             if key in SKIP_KEYS or key == "pins":
                 continue
             _walk(v, f"{name} {key}", errs)
-        if kind == "pins":
+        if kind in ("pins", "memo"):
             pins = sec.get("pins", [])
             if len(pins) != 3:
                 errs.append(f"pins: exactly 3 pins required, found {len(pins)}")
