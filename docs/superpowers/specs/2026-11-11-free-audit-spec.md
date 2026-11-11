@@ -22,3 +22,12 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 ## Abierto
 - Oferta y precio del reporte pagado (después de la v1).
 - Captura de IG (prueba con Aside).
+
+## Qué se audita (entrevista JP, 2026-11-11)
+11. Lente: posicionamiento + identidad visual. Pregunta central: **¿por qué ellos y no el de al lado?** (en 5 segundos).
+12. Fallas de identidad a buscar: genérica (parece plantilla o su categoría), inconsistente (sitio, IG y empaque parecen marcas distintas), fuera de precio (el look no corresponde a su nivel).
+13. Se capturan sitio e IG siempre que existan, aunque hayan mandado uno; los pines pueden contrastarlos.
+14. Los 3 pines son los 3 hallazgos más fuertes, sin cuota por categoría.
+15. Evidencia: una cita textual **o** un área marcada de la captura descrita con precisión. Nunca opinión genérica.
+16. «Cómo» = dirección, no solución: qué cambiar y hacia dónde; el cómo es trabajo con Atla.
+17. Nunca se pinea: conversión pura (botones, checkout, velocidad, popups) ni descuentos y promociones.
