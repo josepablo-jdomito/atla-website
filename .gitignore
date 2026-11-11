@@ -13,3 +13,5 @@ attached_assets/
 .env
 .env.*
 !.env.example
+.venv-audit/
+audits/free/out/
