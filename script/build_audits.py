@@ -132,6 +132,7 @@ def r_cover(o, s, d, n):
         f'<div class="cover-mark">{mark(d)}</div>'
         + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
         + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
+        + (f'<img class="cover-art" src="/audit/landing/{esc(s["art"])}" alt="">' if s.get("art") else "")
     )
 
 
@@ -404,35 +405,56 @@ def r_cta(o, s, d, n):
         f'<h2 class="sr" id="{s["id"]}-t">Next step</h2>'
         + f'<p class="lead">{esc(s["text"])}</p>'
         + f'<p class="cta"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a></p>'
+        + (f'<p class="cta-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
+        + (f'<img class="cta-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
     )
 
 
-def r_memo(o, s, d, n):
-    """Free audit as a short note from JP: greeting, three findings with a zoomed crop, signature, CTA."""
-    imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
-    rows = ""
-    for p in s["pins"]:
-        src = imgs[min(int(p.get("on", 1)), len(imgs)) - 1]
-        cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
-        rows += (
-            f'<li class="memo-f"><div class="memo-crop" role="img" aria-label="{esc(cite)}" '
-            f'style="background-image:url(/audit/{d["slug"]}/img/{esc(src)});background-position:{pct(p["x"])} {pct(p["y"])}">'
-            f'<span class="memo-dot" aria-hidden="true">{int(p["n"])}</span></div>'
-            f'<div class="memo-t"><p class="memo-h">{esc(p["what"])}</p><p class="memo-w">{esc(p["why"])}</p>'
-            f'<p class="memo-c">{cite}</p></div></li>'
-        )
+def wrap_lines(text, width):
+    lines, cur = [], ""
+    for w in text.split():
+        if cur and len(cur) + 1 + len(w) > width:
+            lines.append(cur); cur = w
+        else:
+            cur = f"{cur} {w}".strip()
+    return lines + ([cur] if cur else [])
+
+
+def expand_memo(sections):
+    """A memo section becomes one Bevel-style finding section per pin (QA still reads the memo)."""
+    out = []
+    for s in sections:
+        if s["type"] != "memo":
+            out.append(s); continue
+        imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
+        for p in s["pins"]:
+            out.append({"type": "finding", "id": f'{s["id"]}-{p["n"]}', "label": p.get("label") or "Finding",
+                        "title": [wrap_lines(p["what"], 24), wrap_lines(p["what"], 14)],
+                        "img": imgs[min(int(p.get("on", 1)), len(imgs)) - 1], "pin": p})
+    return out
+
+
+def r_finding(o, s, d, n):
+    p = s["pin"]
+    cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
     return (
-        f'<h2 class="sr" id="{s["id"]}-t">{esc(d["brand"])}</h2>'
-        + f'<div class="memo"><p class="memo-hi">{esc(s.get("greeting", "Hi,"))}</p>'
-        + f'<p class="memo-in">{esc(s["intro"])}</p><ol class="memo-l">{rows}</ol>'
-        + f'<p class="memo-sig">{esc(s.get("signoff", "José Pablo"))}<span>{esc(d.get("authorRole", ""))}</span></p></div>'
+        head(o, s, n)
+        + f'<div class="find"><figure class="find-crop" role="img" aria-label="{cite}" '
+        f'style="background-image:url(/audit/{d["slug"]}/img/{esc(s["img"])});background-position:{pct(p["x"])} {pct(p["y"])}">'
+        f'<span class="find-dot" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"></span></figure>'
+        f'<div class="find-t"><p class="find-why">{esc(p["why"])}</p>'
+        f'<p class="find-cite"><span>What we saw</span>{cite}</p></div></div>'
     )
+
+
+def r_art(o, s, d, n):
+    return f'<img class="art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">'
 
 
 RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
     "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
-    "pins": r_pins, "cta": r_cta, "memo": r_memo,
+    "pins": r_pins, "cta": r_cta, "finding": r_finding,
 }
 
 
@@ -463,7 +485,7 @@ def page(o, d):
     o.used = {}
     sections = []
     n = 0
-    for s in d["sections"]:
+    for s in expand_memo(d["sections"]):
         if s.get("hidden"):
             continue
         if s["type"] not in ("cover", "chapter") and not s.get("part"):
