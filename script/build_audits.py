@@ -407,10 +407,32 @@ def r_cta(o, s, d, n):
     )
 
 
+def r_memo(o, s, d, n):
+    """Free audit as a short note from JP: greeting, three findings with a zoomed crop, signature, CTA."""
+    imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
+    rows = ""
+    for p in s["pins"]:
+        src = imgs[min(int(p.get("on", 1)), len(imgs)) - 1]
+        cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
+        rows += (
+            f'<li class="memo-f"><div class="memo-crop" role="img" aria-label="{esc(cite)}" '
+            f'style="background-image:url(/audit/{d["slug"]}/img/{esc(src)});background-position:{pct(p["x"])} {pct(p["y"])}">'
+            f'<span class="memo-dot" aria-hidden="true">{int(p["n"])}</span></div>'
+            f'<div class="memo-t"><p class="memo-h">{esc(p["what"])}</p><p class="memo-w">{esc(p["why"])}</p>'
+            f'<p class="memo-c">{cite}</p></div></li>'
+        )
+    return (
+        f'<h2 class="sr" id="{s["id"]}-t">{esc(d["brand"])}</h2>'
+        + f'<div class="memo"><p class="memo-hi">{esc(s.get("greeting", "Hi,"))}</p>'
+        + f'<p class="memo-in">{esc(s["intro"])}</p><ol class="memo-l">{rows}</ol>'
+        + f'<p class="memo-sig">{esc(s.get("signoff", "José Pablo"))}<span>{esc(d.get("authorRole", ""))}</span></p></div>'
+    )
+
+
 RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
     "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
-    "pins": r_pins, "cta": r_cta,
+    "pins": r_pins, "cta": r_cta, "memo": r_memo,
 }
 
 
@@ -442,6 +464,8 @@ def page(o, d):
     sections = []
     n = 0
     for s in d["sections"]:
+        if s.get("hidden"):
+            continue
         if s["type"] not in ("cover", "chapter") and not s.get("part"):
             n += 1
         body = RENDER[s["type"]](o, s, d, n)

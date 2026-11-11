@@ -342,3 +342,16 @@ a{color:inherit;text-underline-offset:3px}
 @media (max-width:900px){.pins:not(.pins-two){grid-template-columns:1fr}.pins-two .callouts{grid-template-columns:1fr}}
 @media (max-width:720px){.pins-two .pin-shots{grid-template-columns:1fr}.pin{width:24px;height:24px;margin:-12px 0 0 -12px;font-size:12px}}
 @media print{.pin,.callout-n{box-shadow:0 0 0 2px #000}}
+
+/* ---------- Free audit: memo layout ---------- */
+.memo{max-width:720px;margin:0 auto;font-size:clamp(18px,1.6vw,21px);line-height:1.5}
+.memo-hi{font-size:clamp(28px,3.4vw,44px);line-height:1.1;margin:0 0 .5em}
+.memo-in{margin:0 0 2.2em;opacity:.8}
+.memo-l{list-style:none;margin:0;padding:0;display:grid;gap:clamp(28px,4vw,48px)}
+.memo-f{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:clamp(16px,2.4vw,32px);align-items:start}
+.memo-crop{position:relative;aspect-ratio:4/3;border-radius:8px;background-size:260%;background-repeat:no-repeat;border:1px solid currentColor;border-color:rgba(127,127,127,.3)}
+.memo-dot{position:absolute;left:10px;top:10px;width:28px;height:28px;border-radius:50%;background:#15130f;color:#fff;font:600 14px/28px sans-serif;text-align:center}
+.memo-h{font-size:clamp(22px,2.2vw,28px);line-height:1.2;margin:0 0 .35em}
+.memo-w{margin:0 0 .5em}.memo-c{margin:0;font-size:.8em;opacity:.6}
+.memo-sig{margin:2.4em 0 0;font-size:clamp(22px,2.2vw,28px)}.memo-sig span{display:block;font-size:14px;opacity:.6;margin-top:4px}
+@media (max-width:640px){.memo-f{grid-template-columns:1fr}}
