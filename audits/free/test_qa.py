@@ -17,7 +17,7 @@ def clean():
                  {"n": 2, "quote": "Built for everyone", "what": "What two.", "why": "Why two.", "how": "How two."},
                  {"n": 3, "quote": "It's ours", "what": "What three.", "why": "Why three.", "how": "How three."},
              ]},
-            {"type": "cta", "id": "next", "text": "Want to talk it through?", "button": "Book a 25-minute conversation", "href": "https://x.test"},
+            {"type": "cta", "id": "next", "text": "Want to talk it through?", "button": "Book a 20-minute conversation", "href": "https://x.test"},
         ],
     }
 

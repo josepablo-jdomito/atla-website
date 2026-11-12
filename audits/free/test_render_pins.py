@@ -74,7 +74,7 @@ def test_callouts_carry_what_why_how(outliner):
 def test_cta_button(outliner):
     page = render(outliner)
     assert 'href="https://calendly.com/josepablo-atla/30min"' in page
-    assert ">Book a 25-minute conversation<" in page
+    assert ">Book a 20-minute conversation<" in page
     assert ba.CALENDLY_URL == "https://calendly.com/josepablo-atla/30min"
 
 
