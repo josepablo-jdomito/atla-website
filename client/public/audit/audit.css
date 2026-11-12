@@ -352,4 +352,13 @@ a{color:inherit;text-underline-offset:3px}
 .find-cite{margin:0;font-size:15px;line-height:1.5;color:var(--grey)}.find-cite span{display:block;font:500 12px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
 .cta-sig{margin-top:clamp(40px,5vw,64px)}.cta-sig svg{height:clamp(28px,3vw,40px);width:auto}.cta-sig>span:last-child{display:block;font-size:14px;color:var(--grey);margin-top:6px}
 .cta-art{display:block;width:clamp(120px,16vw,220px);margin-top:clamp(32px,4vw,56px)}
+.find-n{font:400 clamp(96px,16vw,220px)/.8 var(--serif,var(--sans));margin:0 0 16px;color:var(--ink)}
+.find-d{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(12px,3vw,48px);margin-top:clamp(24px,4vw,48px);align-items:center}
+.find-full{position:relative;margin:0}.find-full img{display:block;width:100%;height:auto}
+.find-ring{position:absolute;width:30%;aspect-ratio:6/5;transform:translate(-50%,-50%)}.find-ring svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff)}.s-finding .label .idx{display:none}
+.find-ring path{fill:none;stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+@supports (animation-timeline:view()){.find-ring path{stroke-dashoffset:1;animation:ring linear both;animation-timeline:view();animation-range:entry 20% cover 45%}}
+@keyframes ring{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.find-ring path{animation:none;stroke-dashoffset:0}}
+.find-art{width:100%;height:auto;display:block}
 @media (max-width:760px){.find{grid-template-columns:1fr}.cover-art{position:static;margin-top:32px}}

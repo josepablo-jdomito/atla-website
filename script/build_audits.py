@@ -435,12 +435,20 @@ def expand_memo(sections):
 
 
 def r_finding(o, s, d, n):
+    """Layout D (JP, 2026-11-12): big number, full capture with a hand-drawn circle beside one illustration, then the zoom and the text."""
     p = s["pin"]
     cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
+    src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
+    art = f'step-{(n - 1) % 3 + 1}.webp'
     return (
-        head(o, s, n)
-        + f'<div class="find"><figure class="find-crop" role="img" aria-label="{cite}" '
-        f'style="background-image:url(/audit/{d["slug"]}/img/{esc(s["img"])});background-position:{pct(p["x"])} {pct(p["y"])}">'
+        f'<p class="find-n" aria-hidden="true">{n:02d}</p>'
+        + head(o, s, n)
+        + f'<div class="find-d"><figure class="find-full"><img src="{src}" alt="" loading="lazy">'
+        f'<span class="find-ring" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"><svg viewBox="0 0 120 100">'
+        f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span></figure>'
+        f'<img class="find-art" src="/audit/landing/{art}" alt=""></div>'
+        f'<div class="find"><figure class="find-crop" role="img" aria-label="{cite}" '
+        f'style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}">'
         f'<span class="find-dot" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"></span></figure>'
         f'<div class="find-t"><p class="find-why">{esc(p["why"])}</p>'
         f'<p class="find-cite"><span>What we saw</span>{cite}</p></div></div>'
