@@ -442,7 +442,7 @@ def r_finding(o, s, d, n):
     src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
     where = "Instagram" if "ig" in s["img"] else "Website"
     return (
-        f'<header class="fd-head"><p class="fd-n"><span>{k}</span><small>of {of}</small></p>'
+        f'<header class="fd-head"><p class="fd-n">Finding {k} of {of}</p>'
         f'<p class="fd-where">{where}</p></header>'
         + title(o, s["title"], tid=f'{s["id"]}-t', cls="t fd-t")
         + f'<figure class="fd-plate"><div class="fd-frame"><img src="{src}" alt="" loading="lazy">'

@@ -362,32 +362,27 @@ a{color:inherit;text-underline-offset:3px}
 @media (prefers-reduced-motion:reduce){.find-ring path{animation:none;stroke-dashoffset:0}}
 .find-art{width:100%;height:auto;display:block}
 @media (max-width:760px){.find{grid-template-columns:1fr}.cover-art{position:static;margin-top:32px}}
-/* ---------- Free audit finding: plate (JP, 2026-11-12) ---------- */
-.s-finding .w{padding-top:0;padding-bottom:clamp(64px,10vw,128px)}
-.s-finding + .s-finding .w{padding-top:0}
-.fd-head{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--ink);padding-top:14px;margin-bottom:clamp(28px,4vw,48px)}
-.fd-n{display:flex;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
-.fd-n span{font:400 clamp(48px,7vw,88px)/.85 var(--sans);letter-spacing:-.03em}
-.fd-n small{font:500 13px/1 var(--sans);color:var(--grey)}
-.fd-where{font:500 13px/1 var(--sans);color:var(--grey);padding-bottom:4px}
-.fd-t{font-size:clamp(30px,4.4vw,60px);max-width:22ch;text-wrap:balance}
-.fd-plate{margin:clamp(32px,4vw,56px) 0 0}
-.fd-frame{position:relative;background:#fff;padding:10px;border:1px solid var(--rule);box-shadow:0 1px 2px rgb(15 15 15/.04),0 12px 32px -12px rgb(15 15 15/.14)}
-.fd-frame img{display:block;width:100%;height:auto}
-.fd-frame .find-ring{position:absolute;width:28%;aspect-ratio:6/5;transform:translate(-50%,-50%);margin:10px 0 0 10px}
-.fd-zoom{position:absolute;right:-6px;bottom:-22px;width:38%;aspect-ratio:1;border:4px solid #fff;outline:1px solid var(--rule);background-size:420%;background-repeat:no-repeat;background-color:#e9e7e1;box-shadow:0 10px 24px -8px rgb(15 15 15/.28)}
-.fd-zoom-l{right:auto;left:-6px}
-.fd-plate figcaption{margin-top:34px;font-size:13px;line-height:1.4;color:var(--grey);max-width:30ch}
-.fd-body{margin-top:clamp(28px,4vw,48px);display:grid;gap:clamp(24px,3vw,40px);border-top:1px solid var(--rule);padding-top:clamp(24px,3vw,36px)}
-.fd-why{font-size:clamp(19px,1.6vw,23px);line-height:1.5;max-width:38ch}
-.fd-cite{margin:0;padding:18px 20px;background:var(--zone);font-size:16px;line-height:1.5}
-.fd-k{font:500 12px/1 var(--sans);color:var(--grey);margin-bottom:10px}
-.fd-art{width:clamp(110px,22vw,200px);margin:clamp(32px,4vw,48px) 0 0 auto;opacity:.9}
+/* ---------- Free audit: Atla v2 system (DESIGN.md), paper and ink ---------- */
+html:has(.s-finding){--bg:#f6f3ec;--ink:#1b1a17;--grey:#6f6a61;--rule:rgb(27 26 23/.12);--zone:#efeae0}
+html:has(.s-finding) .bar-title,html:has(.s-finding) .bar-reply{text-transform:none;letter-spacing:0;font:500 14px/1 var(--sans)}
+html:has(.s-finding) .bar-reply{background:transparent;border-color:var(--ink)}
 .s-finding .label{display:none}
-::selection{background:var(--accent);color:var(--ink)}
-@media (min-width:900px){
-  .fd-plate{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:48px;align-items:end}
-  .fd-zoom-l{right:auto;left:-6px}
-.fd-plate figcaption{margin-top:0}
-  .fd-body{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}
-}
+.s-finding .w{max-width:760px;padding:0 var(--gutter) 72px}
+.fd-head{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:12px;margin-bottom:40px;font:500 14px/1.4 var(--sans);color:var(--grey);font-variant-numeric:tabular-nums}
+.fd-head .fd-n{color:var(--ink)}
+.fd-t{font-size:clamp(36px,6vw,56px);line-height:1.06;max-width:none;text-wrap:balance}
+.fd-plate{margin:40px 0 0}
+.fd-frame{position:relative}
+.fd-frame img{display:block;width:100%;height:auto;border-radius:3px;outline:1px solid var(--rule);outline-offset:-1px}
+.fd-frame .find-ring{position:absolute;width:28%;aspect-ratio:6/5;transform:translate(-50%,-50%)}
+.fd-zoom{position:absolute;right:12px;bottom:-32px;width:34%;aspect-ratio:1;border-radius:3px;background-size:420%;background-repeat:no-repeat;background-color:var(--zone);box-shadow:0 0 0 4px var(--bg),0 10px 30px rgba(27,26,23,.12)}
+.fd-zoom-l{right:auto;left:12px}
+.fd-plate figcaption{margin-top:48px;font:400 13px/1.4 var(--sans);color:var(--grey)}
+.fd-body{margin-top:40px}
+.fd-why{font:400 18px/1.6 var(--sans);max-width:44ch}
+.fd-cite{margin:40px 0 0;padding:24px 0 0;border-top:1px solid var(--rule)}
+.fd-k{font:500 14px/1.4 var(--sans);color:var(--grey);margin-bottom:12px}
+.fd-cite p:last-child{font-family:"ABC Synt",Georgia,serif;font-size:clamp(22px,3vw,28px);line-height:1.25;letter-spacing:-.01em}
+.fd-art{width:96px;margin:56px 0 0 auto;mix-blend-mode:multiply}
+.find-ring path{stroke:var(--ink)}
+::selection{background:#f6c428;color:#1b1a17}
