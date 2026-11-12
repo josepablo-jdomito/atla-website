@@ -430,28 +430,29 @@ def expand_memo(sections):
         for p in s["pins"]:
             out.append({"type": "finding", "id": f'{s["id"]}-{p["n"]}', "label": p.get("label") or "Finding",
                         "title": [wrap_lines(p["what"], 24), wrap_lines(p["what"], 14)],
-                        "img": imgs[min(int(p.get("on", 1)), len(imgs)) - 1], "pin": p})
+                        "img": imgs[min(int(p.get("on", 1)), len(imgs)) - 1], "pin": p, "of": len(s["pins"]), "k": len([o for o in out if o.get("type") == "finding"]) + 1})
     return out
 
 
 def r_finding(o, s, d, n):
-    """Layout D (JP, 2026-11-12): big number, full capture with a hand-drawn circle beside one illustration, then the zoom and the text."""
+    """Layout D, plate version (JP, 2026-11-12): rule + folio, title, framed capture with drawn ring and zoom inset, text, illustration as tailpiece."""
     p = s["pin"]
+    k, of = s.get("k", 1), s.get("of", 3)
     cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
     src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
-    art = f'step-{(n - 1) % 3 + 1}.webp'
+    where = "Instagram" if "ig" in s["img"] else "Website"
     return (
-        f'<p class="find-n" aria-hidden="true">{n:02d}</p>'
-        + head(o, s, n)
-        + f'<div class="find-d"><figure class="find-full"><img src="{src}" alt="" loading="lazy">'
+        f'<header class="fd-head"><p class="fd-n"><span>{k}</span><small>of {of}</small></p>'
+        f'<p class="fd-where">{where}</p></header>'
+        + title(o, s["title"], tid=f'{s["id"]}-t', cls="t fd-t")
+        + f'<figure class="fd-plate"><div class="fd-frame"><img src="{src}" alt="" loading="lazy">'
         f'<span class="find-ring" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"><svg viewBox="0 0 120 100">'
-        f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span></figure>'
-        f'<img class="find-art" src="/audit/landing/{art}" alt=""></div>'
-        f'<div class="find"><figure class="find-crop" role="img" aria-label="{cite}" '
-        f'style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}">'
-        f'<span class="find-dot" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"></span></figure>'
-        f'<div class="find-t"><p class="find-why">{esc(p["why"])}</p>'
-        f'<p class="find-cite"><span>What we saw</span>{cite}</p></div></div>'
+        f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span>'
+        f'<span class="fd-zoom{" fd-zoom-l" if p["x"] > 0.5 else ""}" role="img" aria-label="{cite}" style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}"></span></div>'
+        f'<figcaption>{where}, as we found it. Circle and close-up mark the point.</figcaption></figure>'
+        f'<div class="fd-body"><p class="fd-why">{esc(p["why"])}</p>'
+        f'<blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote></div>'
+        f'<img class="fd-art" src="/audit/landing/step-{(k - 1) % 3 + 1}.webp" alt="">'
     )
 
 

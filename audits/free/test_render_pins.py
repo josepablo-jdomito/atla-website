@@ -90,5 +90,5 @@ def test_page_is_noindex(outliner):
 def test_template_renders(outliner):
     d = json.loads((ROOT / "audits" / "free" / "template.json").read_text())
     page = ba.page(outliner, ba.with_shared(d))
-    assert page.count('class="find-dot"') == 3
+    assert page.count('class="fd-zoom"') == 3
     assert not re.search(r"\bcall\b", page, re.I)
