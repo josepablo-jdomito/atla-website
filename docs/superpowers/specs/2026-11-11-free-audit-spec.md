@@ -44,3 +44,17 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 26. CTA: book a 20-minute conversation (Calendly to be set to 20). One Atla case from their category. Never mention price. Page expires after 30 days. Shareable by link, no share button, no reactions.
 27. Review: daily, no batch limit, gallery shows the marked capture first, Sí/No plus a note (no inline edits). No delivery-time promise.
 28. Email carries finding 1 in the body. Follow-up if opened and not booked: Instagram DM (draft only). Success metric for the first 10: conversations booked.
+
+## Interview 3 (JP, 2026-11-12): what we audit
+29. Goal of the read: the owner ends wanting Atla to fix it. The audit diagnoses the brand, never the marketing.
+30. Defaults adopted by Claude, JP veto 24 h:
+- Every finding must fail the swap test: if you swap in a competitor's name and it still reads true, it is cut.
+- Obvious findings (pixelated logo, typo, slow site) are banned.
+- Two proofs per finding where possible (quote or marked area, plus a second surface or comment).
+- Numbers (followers, engagement) appear only when they are the finding.
+- Order is by weight, no severity labels.
+- Banned words in findings: generic, consistent, elevate, cohesive, modern, clean, premium.
+- A red-team agent reviews every audit before the gallery.
+- Budget: 45 minutes of agent time, 2 minutes of JP per audit.
+- No PDF. GA reads which finding was read.
+- Method reviewed every 10 audits.
