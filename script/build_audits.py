@@ -128,11 +128,24 @@ def head(o, s, n):
 
 
 def r_cover(o, s, d, n):
+    memo = next((m for m in d["sections"] if m.get("type") == "memo"), None)
+    if memo is None:
+        return (
+            f'<div class="cover-mark">{mark(d)}</div>'
+            + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
+            + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
+            + (f'<img class="cover-art" src="/audit/landing/{esc(s["art"])}" alt="">' if s.get("art") else "")
+        )
+    rows = "".join(
+        f'<li><a href="#{memo["id"]}-{p["n"]}"><span class="ix-n">{i:02d}</span>'
+        f'<span class="ix-t">{esc(p["what"])}</span><span class="ix-w">{esc(p.get("label", ""))}</span></a></li>'
+        for i, p in enumerate(memo["pins"], 1)
+    )
     return (
-        f'<div class="cover-mark">{mark(d)}</div>'
-        + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
-        + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
-        + (f'<img class="cover-art" src="/audit/landing/{esc(s["art"])}" alt="">' if s.get("art") else "")
+        f'<p class="ix-meta">{esc(s["kicker"])} · {esc(s["readTime"])}</p>'
+        + title(o, s["title"], tag="h1", cls="t ix-h", tid="cover-t")
+        + (f'<p class="ix-lead">{esc(s["lead"])}</p>' if s.get("lead") else "")
+        + f'<ol class="ix">{rows}</ol>'
     )
 
 
@@ -434,6 +447,10 @@ def expand_memo(sections):
     return out
 
 
+LENS_ART = {"Your site": "lens-website", "Your grid": "lens-instagram", "Your highlights": "lens-highlights",
+            "Your bio": "lens-instagram", "Your voice": "lens-voice", "Your photography": "lens-photography", "Your packaging": "lens-packaging"}
+
+
 def r_finding(o, s, d, n):
     """Layout D, plate version (JP, 2026-11-12): rule + folio, title, framed capture with drawn ring and zoom inset, text, illustration as tailpiece."""
     p = s["pin"]
@@ -442,17 +459,18 @@ def r_finding(o, s, d, n):
     src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
     where = "Instagram" if "ig" in s["img"] else "Website"
     return (
-        f'<header class="fd-head"><p class="fd-n">Finding {k} of {of}</p>'
-        f'<p class="fd-where">{where}</p></header>'
+        f'<header class="fd-head"><p class="fd-big" aria-hidden="true">{k:02d}</p>'
+        f'<p class="fd-meta"><span>Finding {k} of {of}</span><span>{where}</span></p></header>'
         + title(o, s["title"], tid=f'{s["id"]}-t', cls="t fd-t")
         + f'<figure class="fd-plate"><div class="fd-frame"><img src="{src}" alt="" loading="lazy">'
         f'<span class="find-ring" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"><svg viewBox="0 0 120 100">'
         f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span>'
         f'<span class="fd-zoom{" fd-zoom-l" if p["x"] > 0.5 else ""}" role="img" aria-label="{cite}" style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}"></span></div>'
         f'<figcaption>{where}, as we found it. Circle and close-up mark the point.</figcaption></figure>'
-        f'<div class="fd-body"><p class="fd-why">{esc(p["why"])}</p>'
-        f'<div class="fd-foot"><blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote>'
-        f'<img class="fd-art" src="/audit/landing/step-{(k - 1) % 3 + 1}.webp" alt=""></div></div>'
+        f'<div class="fd-body"><div class="fd-blk"><p class="fd-k">Why it matters</p><p class="fd-why">{esc(p["why"])}</p></div>'
+        + (f'<div class="fd-blk"><p class="fd-k">Where to take it</p><p class="fd-how">{esc(p["how"])}</p></div>' if p.get("how") else "")
+        + f'<div class="fd-foot"><blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote>'
+        f'<img class="fd-art" src="/audit/illus/{esc(p.get("illus") or LENS_ART.get(p.get("label", ""), "lens-website"))}.webp" alt=""></div></div>'
     )
 
 

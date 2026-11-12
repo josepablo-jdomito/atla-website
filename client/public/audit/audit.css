@@ -389,3 +389,26 @@ html:has(.s-finding) .bar-reply{background:transparent;border-color:var(--ink)}
 .find-ring path{stroke:var(--ink)}
 ::selection{background:#f6c428;color:#1b1a17}
 html:has(.s-finding) .kicker{text-transform:none;letter-spacing:0;font:500 14px/1.4 var(--sans)}
+/* ---------- Free audit v4: light index cover, numbered findings (JP, 2026-11-12) ---------- */
+html:has(.ix) .s-cover{background:var(--bg);color:var(--ink)}
+html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48px var(--gutter) 72px}
+.ix-meta{font:500 14px/1.4 var(--sans);color:var(--grey);margin-bottom:24px}
+.ix-h{font-size:clamp(36px,7vw,60px);line-height:1.06}
+.ix-lead{margin-top:24px;font:400 18px/1.55 var(--sans);color:var(--grey);max-width:40ch}
+.ix{margin-top:48px;border-top:1px solid var(--ink)}
+.ix li{border-bottom:1px solid var(--rule)}
+.ix a{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding:20px 0;text-decoration:none;transition:opacity 160ms var(--ease-out)}
+@media (hover:hover){.ix a:hover{opacity:.55}}
+.ix-n{grid-row:span 2;font:400 28px/1 "ABC Synt",Georgia,serif;font-variant-numeric:tabular-nums}
+.ix-t{font:500 18px/1.35 var(--sans)}
+.ix-w{font:400 14px/1.4 var(--sans);color:var(--grey)}
+.fd-head{display:grid;grid-template-columns:auto 1fr;align-items:end;gap:16px;border-top:1px solid var(--ink);padding-top:16px;margin-bottom:32px}
+.fd-big{font:400 clamp(64px,12vw,96px)/.8 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.fd-meta{display:flex;justify-content:space-between;font:500 14px/1.4 var(--sans);color:var(--grey)}
+.fd-meta span:first-child{color:var(--ink)}
+.fd-body{gap:0}
+.fd-blk{padding:24px 0;border-top:1px solid var(--rule)}
+.fd-blk:first-child{border-top:0;padding-top:0}
+.fd-how{font:400 17px/1.6 var(--sans);max-width:44ch}
+.s-finding{scroll-margin-top:56px}
+.fd-big{color:var(--ink)}
