@@ -161,6 +161,38 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
     ],
   },
+  startup: {
+    path: "/startup-branding",
+    name: "Startup branding for companies about to raise, or just done",
+    description:
+      "Atla builds brand strategy and identity for startups before and after a raise. See the work for Anything AI and Pathize Health.",
+    faqItems: [
+      {
+        question: "Should we rebrand before or after we raise?",
+        answer:
+          "If the round is close, fix what investors will see first: the story, the deck and the site. If the round just closed, rebrand before the money turns into hires and campaigns, so growth amplifies the right brand.",
+      },
+      {
+        question: "Do we need a full rebrand or just a new logo?",
+        answer: "Often neither on its own. We diagnose first. If the logo works and the messaging does not, we fix the messaging.",
+      },
+      {
+        question: "Can you work with our existing product design system?",
+        answer:
+          "Yes. We can align a new brand system to existing product tokens, or extend the brand into a broader product expression where it is needed.",
+      },
+      {
+        question: "Do you design pitch decks?",
+        answer:
+          "Yes. We build master templates and key slides so the team can keep the deck consistent after we hand it over.",
+      },
+      {
+        question: "We are pre-seed. Is it too early?",
+        answer:
+          "Usually, for a full rebrand. At that stage you need a clean, credible identity that does not work against you in a pitch meeting. The full system comes after product-market fit.",
+      },
+    ],
+  },
 } satisfies Record<string, ServiceSchemaInput & { faqItems: ServiceFaqItem[] }>;
 
 /** Prerendered JSON-LD by route, for script/build.ts. */
