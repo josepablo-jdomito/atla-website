@@ -33,7 +33,7 @@
       "readTime": "2 minute read",
       "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
       "thesis": "Geist proves its beer is good. It has not yet said why it is Geist.",
-      "keep": "The can art. POP FICTION is a world no other brewery in Bengaluru has."
+      "keep": "Your can art. No other brewery in Bengaluru has anything like the POP FICTION world."
     },
     {
       "type": "memo",
@@ -51,7 +51,7 @@
           "why": "Awards prove the beer is good. They do not say why Geist and not every other craft brewery in Bengaluru.",
           "how": "Lead with what only Geist stands for and keep the awards as proof under it.",
           "label": "Your site",
-          "cost": "Until it changes, Geist competes on medals, and every brewery that wins one shares them."
+          "cost": "As long as this stays, Geist competes on medals, and every brewery that wins one has them too."
         },
         {
           "n": 2,
@@ -60,7 +60,7 @@
           "y": 0.86,
           "quote": "Geist POP FICTION",
           "what": "Instagram has an illustrated world on the cans. The site opens with a stage photo.",
-          "why": "The two doors look like two different brands, and the most ownable asset is missing from the site.",
+          "why": "The two doors look like two different brands, and the best thing Geist owns is missing from the site.",
           "how": "Pick one world and carry it across every surface.",
           "label": "Your grid",
           "cost": "Someone who loves the cans lands on the site and meets a different brand."
@@ -72,7 +72,7 @@
           "y": 0.55,
           "area": "The highlights row is a list of city names",
           "what": "The first row of the brand world is a distribution map.",
-          "why": "It tells people where to buy, not why to care.",
+          "why": "It tells people where to buy Geist and gives them no reason to care.",
           "how": "Turn the highlights into the Geist world: the beers, the taprooms, the people behind them.",
           "label": "Your highlights",
           "cost": "The row people tap first keeps saying nothing about Geist.",
@@ -90,20 +90,19 @@
       "art": "step-3.webp",
       "title": [
         [
-          "All three are fixable.",
-          "This is what we do."
+          "We fix this kind of",
+          "thing for a living."
         ],
         [
-          "All three",
-          "are fixable.",
-          "This is what",
-          "we do."
+          "We fix this",
+          "kind of thing",
+          "for a living."
         ]
       ],
-      "body": "Twenty minutes with me. We open this page together, go through the three findings on Geist's own screens, and you leave with the first move.",
-      "note": "Or just reply to the email."
+      "body": "It is 20 minutes with me. We go through this page together, on Geist's own screens, and you leave knowing what to change first.",
+      "note": "You can also just reply to the email."
     }
   ],
   "path": "drinkgeist-bqhbzt7qggkn",
-  "reference": "Oatly, from another category: the voice on the carton is the brand, on every surface it touches."
+  "reference": "Oatly, from another category. Its cartons talk in one voice, and the site and the ads use that same voice."
 }

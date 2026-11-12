@@ -33,7 +33,7 @@
       "readTime": "2 minute read",
       "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
       "thesis": "kiimento already wrote its best line. The site has not used it yet.",
-      "keep": "Your bio line. “Their childhood, told by them. Theirs to keep.” It is the whole brand in nine words."
+      "keep": "Your bio line, \"Their childhood, told by them. Theirs to keep.\" It says why kiimento exists better than anything on the site."
     },
     {
       "type": "memo",
@@ -73,9 +73,9 @@
           "quote": "keep forever",
           "what": "On the site the same idea shrinks to a sticker on a photo.",
           "why": "The reason to pay more than a toy camera reads as decoration.",
-          "how": "Give the promise the weight of a headline, not a badge.",
+          "how": "Put the promise in the headline instead of on a badge.",
           "label": "Your site",
-          "cost": "The reason to pay more gets read as decoration and skipped."
+          "cost": "Parents scroll past the one line that justifies the price."
         },
         {
           "n": 3,
@@ -83,7 +83,7 @@
           "x": 0.75,
           "y": 0.6,
           "area": "Hello Kitty blind box unboxings fill most of the grid",
-          "what": "The grid sells a licensed toy, not a first camera that is theirs.",
+          "what": "The grid mostly sells someone else's toy.",
           "why": "Collabs bring reach, but a grid of someone else's character makes kiimento look like a toy shop.",
           "how": "Keep collabs as moments and let the children's own photos be the grid.",
           "label": "Your grid",
@@ -105,20 +105,19 @@
       "art": "step-3.webp",
       "title": [
         [
-          "All three are fixable.",
-          "This is what we do."
+          "We fix this kind of",
+          "thing for a living."
         ],
         [
-          "All three",
-          "are fixable.",
-          "This is what",
-          "we do."
+          "We fix this",
+          "kind of thing",
+          "for a living."
         ]
       ],
-      "body": "Twenty minutes with me. We open this page together, go through the three findings on kiimento's own screens, and you leave with the first move.",
-      "note": "Or just reply to the email."
+      "body": "It is 20 minutes with me. We go through this page together, on kiimento's own screens, and you leave knowing what to change first.",
+      "note": "You can also just reply to the email."
     }
   ],
   "path": "kiimento-of2qoowyen54",
-  "reference": "Moleskine, from another category: it sells the notebook as the place your ideas live, not as paper."
+  "reference": "Moleskine, from another category. It sells its notebook as the place your ideas live."
 }
