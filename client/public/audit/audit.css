@@ -368,9 +368,10 @@ html:has(.s-finding) .bar-title,html:has(.s-finding) .bar-reply{text-transform:n
 html:has(.s-finding) .bar-reply{background:transparent;border-color:var(--ink)}
 .s-finding .label{display:none}
 .s-finding .w{max-width:760px;padding:0 var(--gutter) 72px}
-.fd-head{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:12px;margin-bottom:40px;font:500 14px/1.4 var(--sans);color:var(--grey);font-variant-numeric:tabular-nums}
+.s-cover + .s-finding .w{padding-top:56px}
+.fd-head{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:12px;margin-bottom:32px;font:500 14px/1.4 var(--sans);color:var(--grey);font-variant-numeric:tabular-nums}
 .fd-head .fd-n{color:var(--ink)}
-.fd-t{font-size:clamp(36px,6vw,56px);line-height:1.06;max-width:none;text-wrap:balance}
+.fd-t{font-size:clamp(32px,5.4vw,52px);line-height:1.06;max-width:none;text-wrap:balance}
 .fd-plate{margin:40px 0 0}
 .fd-frame{position:relative}
 .fd-frame img{display:block;width:100%;height:auto;border-radius:3px;outline:1px solid var(--rule);outline-offset:-1px}
@@ -378,11 +379,13 @@ html:has(.s-finding) .bar-reply{background:transparent;border-color:var(--ink)}
 .fd-zoom{position:absolute;right:12px;bottom:-32px;width:34%;aspect-ratio:1;border-radius:3px;background-size:420%;background-repeat:no-repeat;background-color:var(--zone);box-shadow:0 0 0 4px var(--bg),0 10px 30px rgba(27,26,23,.12)}
 .fd-zoom-l{right:auto;left:12px}
 .fd-plate figcaption{margin-top:48px;font:400 13px/1.4 var(--sans);color:var(--grey)}
-.fd-body{margin-top:40px}
+.fd-body{margin-top:56px;display:grid;gap:32px}
 .fd-why{font:400 18px/1.6 var(--sans);max-width:44ch}
-.fd-cite{margin:40px 0 0;padding:24px 0 0;border-top:1px solid var(--rule)}
+.fd-foot{display:grid;grid-template-columns:1fr 72px;gap:24px;align-items:end;padding-top:24px;border-top:1px solid var(--rule)}
+.fd-cite{margin:0}
 .fd-k{font:500 14px/1.4 var(--sans);color:var(--grey);margin-bottom:12px}
-.fd-cite p:last-child{font-family:"ABC Synt",Georgia,serif;font-size:clamp(22px,3vw,28px);line-height:1.25;letter-spacing:-.01em}
-.fd-art{width:96px;margin:56px 0 0 auto;mix-blend-mode:multiply}
+.fd-cite p:last-child{font:400 15px/1.5 var(--sans);color:var(--ink);max-width:40ch}
+.fd-art{width:72px;mix-blend-mode:multiply}
 .find-ring path{stroke:var(--ink)}
 ::selection{background:#f6c428;color:#1b1a17}
+html:has(.s-finding) .kicker{text-transform:none;letter-spacing:0;font:500 14px/1.4 var(--sans)}

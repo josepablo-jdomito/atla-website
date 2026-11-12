@@ -429,7 +429,7 @@ def expand_memo(sections):
         imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
         for p in s["pins"]:
             out.append({"type": "finding", "id": f'{s["id"]}-{p["n"]}', "label": p.get("label") or "Finding",
-                        "title": [wrap_lines(p["what"], 24), wrap_lines(p["what"], 14)],
+                        "title": [wrap_lines(p["what"], 26), wrap_lines(p["what"], 19)],
                         "img": imgs[min(int(p.get("on", 1)), len(imgs)) - 1], "pin": p, "of": len(s["pins"]), "k": len([o for o in out if o.get("type") == "finding"]) + 1})
     return out
 
@@ -451,8 +451,8 @@ def r_finding(o, s, d, n):
         f'<span class="fd-zoom{" fd-zoom-l" if p["x"] > 0.5 else ""}" role="img" aria-label="{cite}" style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}"></span></div>'
         f'<figcaption>{where}, as we found it. Circle and close-up mark the point.</figcaption></figure>'
         f'<div class="fd-body"><p class="fd-why">{esc(p["why"])}</p>'
-        f'<blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote></div>'
-        f'<img class="fd-art" src="/audit/landing/step-{(k - 1) % 3 + 1}.webp" alt="">'
+        f'<div class="fd-foot"><blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote>'
+        f'<img class="fd-art" src="/audit/landing/step-{(k - 1) % 3 + 1}.webp" alt=""></div></div>'
     )
 
 
