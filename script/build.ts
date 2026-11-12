@@ -468,6 +468,7 @@ function routePageModule(pathname: string) {
     "/cpg-branding": "AtlaCpgBranding",
     "/wellness-branding": "AtlaWellnessBranding",
     "/saas-branding": "AtlaSaasBranding",
+    "/startup-branding": "AtlaStartupBranding",
     "/brand-strategy": "AtlaBrandStrategy",
     "/how-we-work": "AtlaHowWeWork",
     "/programs": "AtlaPrograms",
@@ -704,6 +705,14 @@ async function prerenderRoutes() {
       image: workFeaturedImage,
       includeInSitemap: true,
       structuredData: industryServiceSchemaForPath("/saas-branding"),
+    },
+    {
+      pathname: "/startup-branding",
+      title: formatMetaTitle("Startup Branding Agency", "Brand Identity for Funded Startups"),
+      description: "Atla builds brand strategy and identity for startups before and after a raise. See the work for Anything AI and Pathize Health.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/startup-branding"),
     },
     {
       pathname: "/brand-strategy",
