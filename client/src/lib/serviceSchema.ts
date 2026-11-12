@@ -166,28 +166,7 @@ export const INDUSTRY_SERVICE_PAGES = {
     name: "SaaS rebranding for software that has outgrown its launch brand",
     description:
       "Atla rebuilds brand strategy and identity for SaaS companies that have outgrown the launch brand. See the rebrand work for Anything AI.",
-    faqItems: [
-      {
-        question: "How do we know we need a rebrand, not just a new logo?",
-        answer:
-          "We diagnose first. If the logo works and the messaging does not, we fix the messaging. A new logo on a story that no longer matches the product will not hold.",
-      },
-      {
-        question: "Can you work with our existing product design system?",
-        answer:
-          "Yes. We can fit the new brand to your existing product tokens, or carry the brand further into the product where it needs it.",
-      },
-      {
-        question: "Do you design pitch decks?",
-        answer:
-          "Yes. We build a master template and the key slides, so the team can update the deck and keep it consistent.",
-      },
-      {
-        question: "What if we also need to change the name?",
-        answer:
-          "That can sit inside the same engagement. Anything was still called Create when the work began. The identity was built to carry the name they chose in the middle of the project.",
-      },
-    ],
+    faqItems: [],
   },
   startup: {
     path: "/startup-branding",

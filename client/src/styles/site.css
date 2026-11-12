@@ -1964,6 +1964,62 @@ html[data-consent="open"] .site-explore { display: none; }
 .site-root .longform-link:hover,
 .site-root .longform-prose a:hover { text-decoration-color: var(--site-accent); }
 
+/* SaaS rebranding: the four deliverables, then the two case studies at full width. */
+.site-root .rebrand-includes { width: 100%; }
+.site-root .rebrand-includes .how-step__body {
+  max-width: 46ch;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--site-ink);
+}
+.site-root .rebrand-cases {
+  display: grid;
+  gap: var(--space-8);
+  width: 100%;
+  min-width: 0;
+}
+.site-root .rebrand-case {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.site-root .rebrand-case__title { margin: 0; }
+.site-root .rebrand-case__media {
+  display: block;
+  min-width: 0;
+  color: inherit;
+}
+.site-root .rebrand-case__cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-media);
+  background: var(--site-line);
+}
+.site-root .rebrand-case__body {
+  margin: 0;
+  max-width: 68ch;
+  font-size: var(--t-lead);
+  line-height: var(--lh-prose);
+  text-wrap: pretty;
+}
+@media (max-width: 767px) {
+  /* The heroes run to the screen edge; the type stays in the gutter. */
+  .site-root .rebrand-case__media {
+    width: calc(100% + (var(--site-gutter) * 2));
+    margin-left: calc(var(--site-gutter) * -1);
+  }
+  .site-root .rebrand-case__cover { border-radius: 0; }
+}
+@media (min-width: 768px) {
+  /* Full width, so the two heroes are the page, not a column beside a label. */
+  .site-root .rebrand-work.page-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+  }
+  .site-root .rebrand-cases { gap: var(--space-9); }
+}
+
 /* Rows (Programs): title, muted body. No index numbers on the page. */
 .site-root .numbered-list {
   width: 100%;
