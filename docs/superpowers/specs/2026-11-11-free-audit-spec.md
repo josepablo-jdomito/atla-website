@@ -62,3 +62,5 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 32. Owned assets (character, color, phrase) are flagged only when they show up, not hunted.
 33. The third finding may be an opportunity instead of a fault.
 34. The "where to go" reference: an iconic brand from another category (JP: "ni sé"; Claude default, JP veto 24 h).
+
+35. Geist reference: Oatly approved by JP (2026-11-12).
