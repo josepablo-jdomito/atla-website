@@ -413,3 +413,26 @@ html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48p
 .s-finding{scroll-margin-top:56px}
 .fd-big{color:var(--ink)}
 .fd-foot{grid-template-columns:1fr 112px}.fd-art{width:112px}
+/* Free audit v5: verdict marks + calmer finding end (JP, 2026-11-12) */
+.mk{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.mk-fix{color:#b3261e}
+.mk-risk path:first-child{fill:#f6c428}.mk-risk{color:var(--ink)}
+.mk-gem path:first-child{fill:#f6c428}.mk-gem{color:var(--ink)}
+.mk-keep{color:#2f6b3a}
+.fd-meta{align-items:center}
+.fd-v{display:inline-flex;align-items:center;gap:8px;font:500 15px/1 var(--sans);color:var(--ink)}
+.fd-v .mk{width:24px;height:24px}
+.fd-meta span:last-child{color:var(--grey)}
+.fd-plate figcaption{display:flex;gap:10px;align-items:flex-start;font:400 15px/1.5 var(--sans);color:var(--ink);margin-top:16px}
+.fd-plate figcaption b{font-weight:500}
+.fd-plate figcaption .mk{color:var(--grey);margin-top:1px}
+.fd-blk{display:grid;grid-template-columns:24px 1fr;gap:14px;align-items:start}
+.fd-ic{color:var(--grey);margin-top:2px}
+.fd-tail{display:block;width:176px;margin:40px auto 0;mix-blend-mode:multiply}
+.ix a{align-items:baseline}
+.ix-mk{width:18px;height:18px;align-self:center}
+.fd-foot,.fd-art{display:none}
+.fd-meta{flex-direction:column;align-items:flex-end;justify-content:flex-end;gap:6px;text-align:right}
+.fd-v{white-space:nowrap}
+.ix-w{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.fd-plate figcaption{margin-top:72px}

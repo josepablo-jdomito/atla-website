@@ -138,7 +138,7 @@ def r_cover(o, s, d, n):
         )
     rows = "".join(
         f'<li><a href="#{memo["id"]}-{p["n"]}"><span class="ix-n">{i:02d}</span>'
-        f'<span class="ix-t">{esc(p["what"])}</span><span class="ix-w">{esc(p.get("label", ""))}</span></a></li>'
+        f'<span class="ix-t">{esc(p["what"])}</span><span class="ix-w">{mk(verdict(p, i, len(memo["pins"])), "ix-mk")}{VERDICT[verdict(p, i, len(memo["pins"]))]}</span></a></li>'
         for i, p in enumerate(memo["pins"], 1)
     )
     return (
@@ -447,6 +447,27 @@ def expand_memo(sections):
     return out
 
 
+# Verdict marks (JP, 2026-11-12): our drawn version of the emoji signals, so a reader gets the verdict at a glance.
+MARK_SVG = {
+    "fix": '<circle cx="12" cy="12" r="9.5"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/>',
+    "risk": '<path d="M12 3.5L21 19.5H3z"/><path d="M12 10v4.5M12 17.2v.1"/>',
+    "gem": '<path d="M7 4.5h10l4 5-9 10-9-10z"/><path d="M3 9.5h18M9.5 4.5L12 19.5l2.5-15"/>',
+    "keep": '<circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.5l3 3 6-6.5"/>',
+    "why": '<circle cx="12" cy="12" r="9.5"/><path d="M12 7v6M12 16.5v.1"/>',
+    "how": '<path d="M5 19L19 5M9 5h10v10"/>',
+    "saw": '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+}
+VERDICT = {"fix": "Fix this", "risk": "Costing you", "gem": "Opportunity", "keep": "Keep this"}
+
+
+def mk(kind, cls=""):
+    return f'<svg class="mk mk-{kind} {cls}" viewBox="0 0 24 24" aria-hidden="true">{MARK_SVG[kind]}</svg>'
+
+
+def verdict(p, k, of):
+    return p.get("kind") or ("gem" if k == of and of >= 3 and p.get("opportunity") else "fix")
+
+
 LENS_ART = {"Your site": "lens-website", "Your grid": "lens-instagram", "Your highlights": "lens-highlights",
             "Your bio": "lens-instagram", "Your voice": "lens-voice", "Your photography": "lens-photography", "Your packaging": "lens-packaging"}
 
@@ -458,19 +479,20 @@ def r_finding(o, s, d, n):
     cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
     src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
     where = "Instagram" if "ig" in s["img"] else "Website"
+    v = verdict(p, k, of)
+    art = esc(p.get("illus") or LENS_ART.get(p.get("label", ""), "lens-website"))
     return (
         f'<header class="fd-head"><p class="fd-big" aria-hidden="true">{k:02d}</p>'
-        f'<p class="fd-meta"><span>Finding {k} of {of}</span><span>{where}</span></p></header>'
+        f'<p class="fd-meta"><span class="fd-v fd-v-{v}">{mk(v)}{VERDICT[v]}</span><span>Finding {k} of {of} · {where}</span></p></header>'
         + title(o, s["title"], tid=f'{s["id"]}-t', cls="t fd-t")
         + f'<figure class="fd-plate"><div class="fd-frame"><img src="{src}" alt="" loading="lazy">'
         f'<span class="find-ring" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"><svg viewBox="0 0 120 100">'
         f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span>'
         f'<span class="fd-zoom{" fd-zoom-l" if p["x"] > 0.5 else ""}" role="img" aria-label="{cite}" style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}"></span></div>'
-        f'<figcaption>{where}, as we found it. Circle and close-up mark the point.</figcaption></figure>'
-        f'<div class="fd-body"><div class="fd-blk"><p class="fd-k">Why it matters</p><p class="fd-why">{esc(p["why"])}</p></div>'
-        + (f'<div class="fd-blk"><p class="fd-k">Where to take it</p><p class="fd-how">{esc(p["how"])}</p></div>' if p.get("how") else "")
-        + f'<div class="fd-foot"><blockquote class="fd-cite"><p class="fd-k">What we saw</p><p>{cite}</p></blockquote>'
-        f'<img class="fd-art" src="/audit/illus/{esc(p.get("illus") or LENS_ART.get(p.get("label", ""), "lens-website"))}.webp" alt=""></div></div>'
+        f'<figcaption>{mk("saw")}<span><b>What we saw.</b> {cite}</span></figcaption></figure>'
+        f'<div class="fd-body"><div class="fd-blk">{mk("why", "fd-ic")}<div><p class="fd-k">Why it matters</p><p class="fd-why">{esc(p["why"])}</p></div></div>'
+        + (f'<div class="fd-blk">{mk("how", "fd-ic")}<div><p class="fd-k">Where to take it</p><p class="fd-how">{esc(p["how"])}</p></div></div>' if p.get("how") else "")
+        + f'</div><img class="fd-tail" src="/audit/illus/{art}.webp" alt="" loading="lazy">'
     )
 
 
