@@ -2014,6 +2014,77 @@ html[data-consent="open"] .site-explore { display: none; }
   .site-root .hospitality-award { mix-blend-mode: normal; background: var(--site-paper); border-radius: var(--r-row); padding: 2px; box-sizing: border-box; }
 }
 
+/* ---- Austin branding page: longform sections, with the two cases as the pictures. ---- */
+.site-root .austin-reasons { display: flex; flex-direction: column; width: 100%; }
+.site-root .austin-reason { padding: var(--space-5) 0; border-top: 1px solid var(--site-line); }
+.site-root .austin-reason:last-child { padding-bottom: 0; }
+.site-root .austin-work {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-7) 0 var(--space-8);
+  border-top: 1px solid var(--site-line);
+}
+.site-root .austin-cases { display: flex; flex-direction: column; gap: var(--space-9); }
+.site-root .austin-case { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.site-root .austin-case__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: inherit;
+  text-decoration: none;
+}
+.site-root .austin-case__name {
+  margin: 0;
+  font-family: var(--site-display);
+  font-size: var(--t-h2);
+  font-weight: 400;
+  line-height: var(--lh-head);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.site-root .austin-case__media {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-media);
+  background: var(--site-line);
+}
+/* On a phone the picture runs edge to edge so the case is the page, not a thumbnail in the text column. */
+@media (max-width: 767px) {
+  .site-root .austin-case__media,
+  .site-root .austin-case__slot {
+    width: calc(100% + (2 * var(--site-gutter)));
+    max-width: none;
+    margin-left: calc(-1 * var(--site-gutter));
+    border-radius: 0;
+  }
+}
+.site-root .austin-case__slot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--r-media);
+  background: var(--site-line);
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-root .austin-case__name {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.12em;
+    transition: text-decoration-color var(--d-hover) var(--site-ease);
+  }
+  .site-root .austin-case__link:hover .austin-case__name,
+  .site-root .austin-case__link:focus-visible .austin-case__name { text-decoration-color: var(--site-accent); }
+}
+@media (min-width: 768px) {
+  .site-root .austin-work { gap: var(--space-8); padding: var(--space-8) 0 var(--space-10); }
+  .site-root .austin-cases { gap: var(--space-10); }
+  .site-root .austin-case,
+  .site-root .austin-case__link { gap: var(--space-5); }
+}
+
 /* ---- Journal index and article (v2) ---- */
 .site-root .journal-intro { max-width: 52rem; }
 .site-root .journal-intro__support { color: var(--site-muted); }

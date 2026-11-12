@@ -198,23 +198,8 @@ export const INDUSTRY_SERVICE_PAGES = {
     name: "A branding agency working from Austin",
     description:
       "A branding studio working from Austin. Brand strategy and identity for companies in the US and abroad. See work for Anything AI and Angeles Wellness.",
-    faqItems: [
-      {
-        question: "Do you work with clients in Austin?",
-        answer:
-          "Yes. We work with clients in Austin and in other cities. The studio is distributed, and the work is the same.",
-      },
-      {
-        question: "Do you have an office in Austin I can visit?",
-        answer:
-          "We work from Austin, as we do from Mexico City, Barcelona, Lima and Caracas. We do not publish a street address or run walk-in hours.",
-      },
-      {
-        question: "Can you work with a company that is not in Austin?",
-        answer:
-          "Yes. The two cases on this page are United States work, and neither is an Austin client. Angeles Wellness is from Los Angeles.",
-      },
-    ],
+    // The page has no FAQ, so buildServiceSchema emits the Service block only.
+    faqItems: [],
   },
 } satisfies Record<string, ServiceSchemaInput & { faqItems: ServiceFaqItem[] }>;
 

@@ -584,9 +584,9 @@ function getStaticRoutePrerenderData(
     categories: JournalCategory[];
   },
 ): PrerenderRouteData {
-  // /ventures shows each venture's project cover, and /services and /about show project covers too, so
-  // their prerender carries the lite list: the photos are in the HTML instead of arriving after a fetch.
-  if (["/", "/ventures", "/services", "/about"].includes(pathname)) {
+  // /ventures, /services, /about and /branding-agency-austin show project covers, so their prerender
+  // carries the lite list: the photos are in the HTML instead of arriving after a fetch.
+  if (["/", "/ventures", "/services", "/about", "/branding-agency-austin"].includes(pathname)) {
     return { projects: content.projects };
   }
 
