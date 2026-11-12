@@ -64,3 +64,4 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 34. The "where to go" reference: an iconic brand from another category (JP: "ni sé"; Claude default, JP veto 24 h).
 
 35. Geist reference: Oatly approved by JP (2026-11-12).
+36. Close headline approved by JP (2026-11-12): "We fix this kind of thing for a living." Same on every free audit.

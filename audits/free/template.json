@@ -82,7 +82,20 @@
       "button": "Book a 20-minute conversation",
       "href": "https://calendly.com/josepablo-atla/30min",
       "signoff": "José Pablo",
-      "art": "step-3.webp"
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on {brand}'s own screens, and you leave knowing what to change first.",
+      "note": "You can also just reply to the email."
     }
   ]
 }
