@@ -356,6 +356,7 @@ export async function registerRoutes(
           "/wellness-branding",
           "/saas-branding",
           "/startup-branding",
+          "/branding-agency-austin",
           "/brand-strategy",
           "/how-we-work",
           "/programs",
