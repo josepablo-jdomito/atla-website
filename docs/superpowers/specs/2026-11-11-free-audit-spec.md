@@ -31,3 +31,16 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 15. Evidencia: una cita textual **o** un área marcada de la captura descrita con precisión. Nunca opinión genérica.
 16. «Cómo» = dirección, no solución: qué cambiar y hacia dónde; el cómo es trabajo con Atla.
 17. Nunca se pinea: conversión pura (botones, checkout, velocidad, popups) ni descuentos y promociones.
+
+## Interview 2 (JP, 2026-11-11): UI/UX and method
+18. Feeling in the first 5 seconds: "they really saw my brand". Read time 2 to 3 minutes. Always 3 findings, plus one thing they do well at the top. One-line thesis at the top. No score.
+19. Tone: direct but respectful, founder to founder. Always English. Signed by José Pablo.
+20. Competitor comparison only for hot leads. One visual reference of "where to go" at the end. No mockups (that is paid work). No video, no generated voice.
+21. Extra lenses: tone of voice, photography, packaging. IG comments count as evidence. No TikTok.
+22. Capture: mobile, full homepage, IG grid of 9 plus highlights plus top reels.
+23. Good brand with no strong finding: look for the next level. Small business: audit anyway, no follow-up. Never audit politics.
+24. "Why it matters" is one sentence; "how" is a direction. One finding answers their stated frustration.
+25. Page: light paper background, Atla illustration on the cover, one illustration per finding, hand-drawn circle that draws itself on arrival, full capture plus zoom, one screen per finding, mobile first. Layout to be redesigned (JP asked for proposals).
+26. CTA: book a 20-minute conversation (Calendly to be set to 20). One Atla case from their category. Never mention price. Page expires after 30 days. Shareable by link, no share button, no reactions.
+27. Review: daily, no batch limit, gallery shows the marked capture first, Sí/No plus a note (no inline edits). No delivery-time promise.
+28. Email carries finding 1 in the body. Follow-up if opened and not booked: Instagram DM (draft only). Success metric for the first 10: conversations booked.
