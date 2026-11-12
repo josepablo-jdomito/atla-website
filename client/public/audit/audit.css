@@ -412,3 +412,4 @@ html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48p
 .fd-how{font:400 17px/1.6 var(--sans);max-width:44ch}
 .s-finding{scroll-margin-top:56px}
 .fd-big{color:var(--ink)}
+.fd-foot{grid-template-columns:1fr 112px}.fd-art{width:112px}
