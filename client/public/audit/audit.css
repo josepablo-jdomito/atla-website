@@ -459,3 +459,12 @@ html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48p
 .colo a{color:var(--grey);text-decoration:underline;text-underline-offset:3px}
 .end-act .cta-btn{white-space:nowrap;padding:16px 22px}
 html:has(.end) .s-cta{min-height:0;padding-top:clamp(48px,8vw,96px)}
+/* Final rhythm pass (JP, 2026-11-12): one 88px beat between findings, close sits one beat after the last one */
+html:has(.end) .s-finding>.w{padding-top:88px;padding-bottom:0}
+html:has(.end) .s-cta{padding-top:0}
+html:has(.end) .s-cta>.w{padding-top:88px;padding-bottom:40px}
+.end{margin-top:0}
+.ix-thesis{margin-top:20px}
+.ix{margin-top:40px}
+html:has(.end) .s-cover>.w{padding-bottom:0}
+html:has(.end) .s-cover{padding-bottom:0;min-height:0}
