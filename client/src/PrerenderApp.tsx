@@ -21,6 +21,7 @@ import AtlaCpgBranding from "./pages/AtlaCpgBranding";
 import AtlaWellnessBranding from "./pages/AtlaWellnessBranding";
 import AtlaSaasBranding from "./pages/AtlaSaasBranding";
 import AtlaStartupBranding from "./pages/AtlaStartupBranding";
+import AtlaBrandingAgencyAustin from "./pages/AtlaBrandingAgencyAustin";
 import AtlaBrandStrategy from "./pages/AtlaBrandStrategy";
 import AtlaHowWeWork from "./pages/AtlaHowWeWork";
 import AtlaPrograms from "./pages/AtlaPrograms";
@@ -115,6 +116,7 @@ export function renderPrerenderedRoute(
         AtlaWellnessBranding,
         AtlaSaasBranding,
         AtlaStartupBranding,
+        AtlaBrandingAgencyAustin,
         AtlaBrandStrategy,
         AtlaHowWeWork,
         AtlaPrograms,

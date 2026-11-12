@@ -469,6 +469,7 @@ function routePageModule(pathname: string) {
     "/wellness-branding": "AtlaWellnessBranding",
     "/saas-branding": "AtlaSaasBranding",
     "/startup-branding": "AtlaStartupBranding",
+    "/branding-agency-austin": "AtlaBrandingAgencyAustin",
     "/brand-strategy": "AtlaBrandStrategy",
     "/how-we-work": "AtlaHowWeWork",
     "/programs": "AtlaPrograms",
@@ -713,6 +714,14 @@ async function prerenderRoutes() {
       image: workFeaturedImage,
       includeInSitemap: true,
       structuredData: industryServiceSchemaForPath("/startup-branding"),
+    },
+    {
+      pathname: "/branding-agency-austin",
+      title: formatMetaTitle("Austin Branding Agency", "Strategy and Identity"),
+      description: "A branding studio working from Austin. Brand strategy and identity for companies in the US and abroad. See work for Anything AI and Angeles Wellness.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/branding-agency-austin"),
     },
     {
       pathname: "/brand-strategy",
