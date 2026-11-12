@@ -144,7 +144,9 @@ def r_cover(o, s, d, n):
     return (
         f'<p class="ix-meta">{esc(s["kicker"])} · {esc(s["readTime"])}</p>'
         + title(o, s["title"], tag="h1", cls="t ix-h", tid="cover-t")
+        + (f'<p class="ix-thesis">{esc(s["thesis"])}</p>' if s.get("thesis") else "")
         + (f'<p class="ix-lead">{esc(s["lead"])}</p>' if s.get("lead") else "")
+        + (f'<p class="ix-keep">{mk("keep")}<span><b>Keep this.</b> {esc(s["keep"])}</span></p>' if s.get("keep") else "")
         + f'<ol class="ix">{rows}</ol>'
     )
 
@@ -492,7 +494,9 @@ def r_finding(o, s, d, n):
         f'<figcaption>{mk("saw")}<span><b>What we saw.</b> {cite}</span></figcaption></figure>'
         f'<div class="fd-body"><div class="fd-blk">{mk("why", "fd-ic")}<div><p class="fd-k">Why it matters</p><p class="fd-why">{esc(p["why"])}</p></div></div>'
         + (f'<div class="fd-blk">{mk("how", "fd-ic")}<div><p class="fd-k">Where to take it</p><p class="fd-how">{esc(p["how"])}</p></div></div>' if p.get("how") else "")
+        + (f'<div class="fd-blk fd-cost">{mk("risk", "fd-ic")}<div><p class="fd-k">If it stays</p><p>{esc(p["cost"])}</p></div></div>' if p.get("cost") else "")
         + f'</div><img class="fd-tail" src="/audit/illus/{art}.webp" alt="" loading="lazy">'
+        + (f'<aside class="fd-ref"><p class="fd-k">One brand to look at</p><p>{esc(d["reference"])}</p></aside>' if k == of and d.get("reference") else "")
     )
 
 

@@ -31,7 +31,9 @@
       ],
       "kicker": "Prepared for kiimento by Atla · November 2026",
       "readTime": "2 minute read",
-      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight."
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "kiimento already wrote its best line. The site has not used it yet.",
+      "keep": "Your bio line. “Their childhood, told by them. Theirs to keep.” It is the whole brand in nine words."
     },
     {
       "type": "memo",
@@ -60,7 +62,8 @@
           "what": "Your Instagram bio holds the best line kiimento owns.",
           "why": "It answers why kiimento and not another kids camera. The site never says it.",
           "how": "Make this idea the first thing the site says, and build the rest of the page around it.",
-          "label": "Your bio"
+          "label": "Your bio",
+          "cost": "Parents compare kiimento to cheaper cameras on price, because the site gives them no other reason."
         },
         {
           "n": 2,
@@ -71,7 +74,8 @@
           "what": "On the site the same idea shrinks to a sticker on a photo.",
           "why": "The reason to pay more than a toy camera reads as decoration.",
           "how": "Give the promise the weight of a headline, not a badge.",
-          "label": "Your site"
+          "label": "Your site",
+          "cost": "The reason to pay more gets read as decoration and skipped."
         },
         {
           "n": 3,
@@ -82,7 +86,9 @@
           "what": "The grid sells a licensed toy, not a first camera that is theirs.",
           "why": "Collabs bring reach, but a grid of someone else's character makes kiimento look like a toy shop.",
           "how": "Keep collabs as moments and let the children's own photos be the grid.",
-          "label": "Your grid"
+          "label": "Your grid",
+          "cost": "Every unboxing builds a licensed character instead of kiimento.",
+          "kind": "gem"
         }
       ],
       "greeting": "Hi there,",
@@ -99,5 +105,6 @@
       "art": "step-3.webp"
     }
   ],
-  "path": "kiimento-of2qoowyen54"
+  "path": "kiimento-of2qoowyen54",
+  "reference": "Moleskine, from another category: it sells the notebook as the place your ideas live, not as paper."
 }

@@ -436,3 +436,11 @@ html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48p
 .fd-v{white-space:nowrap}
 .ix-w{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .fd-plate figcaption{margin-top:72px}
+.ix-thesis{font:400 22px/1.35 var(--sans);color:var(--ink);max-width:28ch;margin:24px 0 12px}
+.ix-keep{display:flex;gap:10px;align-items:flex-start;font:400 16px/1.5 var(--sans);color:var(--ink);padding:16px 0;margin:24px 0 0;border-top:1px solid var(--rule)}
+.ix-keep b,.fd-cost b{font-weight:500}
+.ix-keep .mk{margin-top:2px}
+.fd-cost .fd-ic{color:var(--ink)}
+.fd-cost p:last-child{font:500 17px/1.45 var(--sans);color:var(--ink)}
+.fd-ref{margin-top:56px;padding:24px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.fd-ref p:last-child{font:400 20px/1.4 var(--sans);color:var(--ink);max-width:32ch}
