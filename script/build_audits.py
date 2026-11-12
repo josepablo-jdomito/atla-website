@@ -416,12 +416,25 @@ def r_pins(o, s, d, n):
 
 
 def r_cta(o, s, d, n):
+    if not s.get("title"):
+        return (
+            f'<h2 class="sr" id="{s["id"]}-t">Next step</h2>'
+            + f'<p class="lead">{esc(s["text"])}</p>'
+            + f'<p class="cta"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a></p>'
+            + (f'<p class="cta-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
+            + (f'<img class="cta-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
+        )
+    # Free audit close (JP, 2026-11-12): one card that ends the read, then a quiet colophon.
     return (
-        f'<h2 class="sr" id="{s["id"]}-t">Next step</h2>'
-        + f'<p class="lead">{esc(s["text"])}</p>'
-        + f'<p class="cta"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a></p>'
-        + (f'<p class="cta-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
-        + (f'<img class="cta-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
+        '<div class="end">'
+        + (f'<img class="end-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
+        + title(o, s["title"], tid=f'{s["id"]}-t', cls="t end-t")
+        + f'<p class="end-body">{esc(s["body"])}</p>'
+        + f'<p class="end-act"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a>'
+        + (f'<span>{esc(s["note"])}</span>' if s.get("note") else "") + '</p>'
+        + (f'<p class="end-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
+        + '</div>'
+        + f'<footer class="colo"><span class="colo-m">Atla*</span><span>Prepared for {esc(d.get("brand", "").rstrip("."))}. Private link, not indexed.</span><a href="https://www.atla.design">atla.design</a></footer>'
     )
 
 

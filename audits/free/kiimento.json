@@ -102,7 +102,21 @@
       "button": "Book a 20-minute conversation",
       "href": "https://calendly.com/josepablo-atla/30min",
       "signoff": "José Pablo",
-      "art": "step-3.webp"
+      "art": "step-3.webp",
+      "title": [
+        [
+          "All three are fixable.",
+          "This is what we do."
+        ],
+        [
+          "All three",
+          "are fixable.",
+          "This is what",
+          "we do."
+        ]
+      ],
+      "body": "Twenty minutes with me. We open this page together, go through the three findings on kiimento's own screens, and you leave with the first move.",
+      "note": "Or just reply to the email."
     }
   ],
   "path": "kiimento-of2qoowyen54",

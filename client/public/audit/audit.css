@@ -444,3 +444,18 @@ html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48p
 .fd-cost p:last-child{font:500 17px/1.45 var(--sans);color:var(--ink)}
 .fd-ref{margin-top:56px;padding:24px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
 .fd-ref p:last-child{font:400 20px/1.4 var(--sans);color:var(--ink);max-width:32ch}
+/* Free audit close (JP, 2026-11-12) */
+.end{position:relative;margin-top:24px;padding:clamp(32px,6vw,64px) clamp(24px,5vw,56px);background:#fcfaf5;border:1px solid var(--ink);border-radius:3px}
+.end-art{display:block;width:clamp(120px,22vw,180px);margin:0 0 28px;mix-blend-mode:multiply}
+.end-t svg{height:auto}
+.end-body{font:400 18px/1.5 var(--sans);color:var(--ink);max-width:40ch;margin:20px 0 0}
+.end-act{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin:32px 0 0}
+.end-act span{font:400 15px/1.4 var(--sans);color:var(--grey)}
+.end-sig{margin:40px 0 0;padding-top:20px;border-top:1px solid var(--rule)}
+.end-sig svg{height:28px;width:auto}
+.end-sig>span:last-child{display:block;font:400 14px/1.4 var(--sans);color:var(--grey);margin-top:6px}
+.colo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin:40px 0 24px;padding-top:16px;border-top:1px solid var(--rule);font:400 13px/1.4 var(--sans);color:var(--grey)}
+.colo-m{font-weight:500;color:var(--ink)}
+.colo a{color:var(--grey);text-decoration:underline;text-underline-offset:3px}
+.end-act .cta-btn{white-space:nowrap;padding:16px 22px}
+html:has(.end) .s-cta{min-height:0;padding-top:clamp(48px,8vw,96px)}
