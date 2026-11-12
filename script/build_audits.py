@@ -31,6 +31,7 @@ FONT_PATH = os.environ.get("ABC_SYNT_PATH", str(Path.home() / "Library/Fonts/ABC
 SITE = "https://www.atla.design"
 # Booking link for the free audit pages. The event lasts 25 minutes; keep the button text in step with it.
 CALENDLY_URL = "https://calendly.com/josepablo-atla/30min"
+WAITLIST_URL = "https://www.atla.design/waitlist?utm_source=free-audit"  # free audits never get Calendly directly (JP, 2026-11-12)
 
 BEVEL_MARK = (
     '<svg class="mark-svg" viewBox="0 0 50 41" aria-hidden="true">'
@@ -430,7 +431,7 @@ def r_cta(o, s, d, n):
         + (f'<img class="end-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
         + title(o, s["title"], tid=f'{s["id"]}-t', cls="t end-t")
         + f'<p class="end-body">{esc(s["body"])}</p>'
-        + f'<p class="end-act"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a>'
+        + f'<p class="end-act"><a class="cta-btn" href="{esc(s.get("href") or WAITLIST_URL)}" data-track="cta">{esc(s["button"])}</a>'
         + (f'<span>{esc(s["note"])}</span>' if s.get("note") else "") + '</p>'
         + (f'<p class="end-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
         + '</div>'

@@ -65,3 +65,4 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 
 35. Geist reference: Oatly approved by JP (2026-11-12).
 36. Close headline approved by JP (2026-11-12): "We fix this kind of thing for a living." Same on every free audit.
+37. Free audits never link Calendly directly. The close goes to atla.design/waitlist so they answer the questions first (JP, 2026-11-12).

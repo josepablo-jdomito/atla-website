@@ -92,3 +92,11 @@ def test_template_renders(outliner):
     page = ba.page(outliner, ba.with_shared(d))
     assert page.count('class="fd-zoom') == 3
     assert not re.search(r"\bcall\b", page, re.I)
+
+
+def test_free_close_goes_to_waitlist():
+    import json, pathlib
+    for b in ("drinkgeist", "kiimento", "template"):
+        d = json.loads(pathlib.Path(__file__).with_name(f"{b}.json").read_text())
+        cta = next(s for s in d["sections"] if s["type"] == "cta")
+        assert "atla.design/waitlist" in cta["href"] and "calendly" not in cta["href"]
