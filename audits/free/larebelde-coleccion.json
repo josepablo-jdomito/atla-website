@@ -1,0 +1,123 @@
+{
+  "slug": "larebelde-coleccion",
+  "brand": "La Rebelde",
+  "title": "La Rebelde Branding Analysis",
+  "description": "A short look at La Rebelde's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "La Rebelde Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the La Rebelde Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Aesop, from another category. It sells soap with the tone of a well-read friend.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about La Rebelde"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about La Rebelde"
+        ]
+      ],
+      "kicker": "Prepared for La Rebelde by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "La Rebelde wrote its position in a caption. The bio and the site have not caught up.",
+      "keep": "The Winter Market art: plum, thin gold lines and pink letters. It looks like nobody else's."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "the hottest Home Décor Boutique in town",
+          "what": "Your bio calls La Rebelde the hottest home décor boutique in town.",
+          "why": "Every shop in every town says this about itself. It does not say what a rebel home is.",
+          "how": "Open the bio with the rebel idea you already wrote in a caption, and let the boutique line follow.",
+          "label": "Your bio",
+          "cost": "A shopper who cannot tell what makes La Rebelde different measures it against the nearest showroom."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.4,
+          "quote": "Because a home should feel like YOU, not a showroom.",
+          "what": "One caption states the real position of La Rebelde.",
+          "why": "Collected, loud and a little unexpected: this answers why La Rebelde and not the polished showroom next door.",
+          "how": "Make this line the first thing the bio and the site say.",
+          "label": "Your caption",
+          "cost": "The best line the brand owns sits inside one post that scrolls away.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "area": "The site opens on a pink gift card over a rug market photo",
+          "what": "The site's first screen is a pink gift card, in a different voice from your Instagram.",
+          "why": "The grid is plum, leopard and rugs. The site's first screen shows none of that world.",
+          "how": "Open the site on the rebel world from the grid and let the gift card sit lower.",
+          "label": "Your site",
+          "cost": "Someone who arrives from Instagram feels they landed in a different shop."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at La Rebelde. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=larebelde-coleccion",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on La Rebelde's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "larebelde-coleccion-6lokx7o44ylm"
+}

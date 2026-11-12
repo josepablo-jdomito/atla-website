@@ -1,0 +1,108 @@
+{
+  "slug": "thebouncetheory",
+  "brand": "The Bounce Theory",
+  "title": "The Bounce Theory Branding Analysis",
+  "description": "A short look at The Bounce Theory's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "The Bounce Theory Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the The Bounce Theory Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Bounce Theory"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Bounce Theory"
+        ]
+      ],
+      "kicker": "Prepared for The Bounce Theory by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "The Bounce Theory has a look of its own. The page does not say so.",
+      "keep": "The white bounce castle with peach and mauve balloons. No other rental in Southern California looks like it."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.76,
+          "y": 0.82,
+          "quote": "Here comes the party everyone will talk about...",
+          "what": "The headline promises a party. It does not say what kind.",
+          "why": "Any rental company can promise a party people will talk about. Only you have the white castle and the soft balloons.",
+          "how": "Name the world you build: all white, soft colours, styled down to the balloons.",
+          "label": "Your headline",
+          "cost": "You are compared with every rental in the county on price and availability, not on taste."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.22,
+          "y": 0.15,
+          "area": "The logo sits on a pale pink square that does not match the page background",
+          "what": "The logo sits on its own pale pink square, a slightly different shade from the page.",
+          "why": "Your best asset looks pasted on instead of part of the page.",
+          "how": "Supply the logo on a transparent background so it sits on the page the way it sits on a shirt.",
+          "label": "Your logo",
+          "cost": "The first thing a visitor sees looks unfinished."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.7,
+          "area": "The lavender bar and the bright blue pill sit above soft peach and white photography",
+          "what": "The photo is white, peach and mauve. The bar above it is lavender, the headline is hot coral and the pill is bright blue.",
+          "why": "The photo shows a softer brand than the page around it. People remember the photo.",
+          "how": "Take your colours from the photo and let the page fall quiet around it.",
+          "label": "Your colours",
+          "cost": "The palette people remember is not the one the site uses.",
+          "kind": "gem"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=thebouncetheory",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on The Bounce Theory's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It owns one palette and keeps every surface inside it.",
+  "path": "thebouncetheory-db7eddwymwvp"
+}

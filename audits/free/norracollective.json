@@ -1,0 +1,108 @@
+{
+  "slug": "norracollective",
+  "brand": "Norra Collective",
+  "title": "Norra Collective Branding Analysis",
+  "description": "A short look at Norra Collective's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Norra Collective Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Norra Collective Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Norra"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Norra"
+        ]
+      ],
+      "kicker": "Prepared for Norra Collective by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Norra Collective has a recognisable painted world in its prints and a headline that could sit on any art shop.",
+      "keep": "The flowers. The tulips and poppies in flat colour look like one hand, and it is a clear style."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.45,
+          "area": "The italic Curated Art headline over the left half of the room photo",
+          "what": "The headline is a category line in italic type across the photo.",
+          "why": "Curated art is what every print shop says, and it names no one and no point of view.",
+          "how": "Name the eye behind the curation and what it looks for.",
+          "label": "Your headline",
+          "cost": "A shopper who wants something unusual finds the same sentence everywhere."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.75,
+          "y": 0.55,
+          "area": "Four framed flower prints in flat colour hung on one white wall",
+          "what": "Four framed prints of flowers on one wall look as though a single artist made them.",
+          "why": "That is the brand's strongest signal and the page does not name the artist or the idea.",
+          "how": "Say who makes these and why this style.",
+          "label": "Your prints",
+          "cost": "The one thing that sets Norra apart is shown and never explained.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.15,
+          "quote": "Shop by Collection",
+          "what": "The menu sorts the shop by room and collection.",
+          "why": "It is the way furniture stores sort, and it hides the artists.",
+          "how": "Sort at least one path by artist or story.",
+          "label": "Your menu",
+          "cost": "Shoppers browse by room and never learn who made what."
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=norracollective",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Norra Collective's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Heath Ceramics, from another category. It knows whose hands made the thing, and says so.",
+  "path": "norracollective-vqzbczcw1hau"
+}

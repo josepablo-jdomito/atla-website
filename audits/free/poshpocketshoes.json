@@ -1,0 +1,124 @@
+{
+  "slug": "poshpocketshoes",
+  "brand": "POSH Pocket Shoes",
+  "title": "POSH Pocket Shoes Branding Analysis",
+  "description": "A short look at POSH Pocket Shoes's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "POSH Pocket Shoes Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the POSH Pocket Shoes Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about POSH Pocket Shoes"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about POSH Pocket Shoes"
+        ]
+      ],
+      "kicker": "Prepared for POSH Pocket Shoes by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram and your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "POSH has sixteen years of craft. The site opens with a sentence that could belong to any shoe brand.",
+      "keep": "The workshop story. \"16 years of Marikina craftsmanship\" is the line that only POSH can say."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.28,
+          "quote": "This is what makes our everyday.",
+          "what": "The first words on the site are about style, not about POSH.",
+          "why": "Classics, comfort and minimal design describe any shoe label, so a visitor sees shoes, not a maker.",
+          "how": "Open with the workshop and the people who make each pair.",
+          "label": "Your site",
+          "cost": "Shoppers compare POSH with shoes at any price in a mall."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.69,
+          "y": 0.3,
+          "quote": "Wish I was able to take photos of all of the custom pairs that we make",
+          "what": "Made to order is the strongest thing POSH does, and it hides in a highlight.",
+          "why": "Almost nobody makes your own colour and your own leather at this size, which answers why POSH and not the shop next door.",
+          "how": "Make custom pairs the way the brand introduces itself.",
+          "label": "Your highlights",
+          "cost": "The best reason to choose POSH is a small circle most visitors scroll past.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.47,
+          "y": 0.13,
+          "quote": "@posheveryday @brethrenheritage",
+          "what": "The bio points to two other brands.",
+          "why": "Posh, Posh Everyday and Brethren Heritage compete for the same attention.",
+          "how": "Decide which name carries the story and how the others relate to it.",
+          "label": "Your bio",
+          "cost": "Followers are not sure which brand they are following.",
+          "kind": "risk"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at POSH Pocket Shoes. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=poshpocketshoes",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on POSH Pocket Shoes's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Hermes, from another category. The workshop is the brand.",
+  "path": "poshpocketshoes-7urttgrlrbz8"
+}

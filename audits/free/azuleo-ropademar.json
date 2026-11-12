@@ -1,0 +1,123 @@
+{
+  "slug": "azuleo-ropademar",
+  "brand": "Azuleo",
+  "title": "Azuleo Branding Analysis",
+  "description": "A short look at Azuleo's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Azuleo Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Azuleo Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Kinfolk, from another category. It sells a magazine as a way of spending a Sunday.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Azuleo"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Azuleo"
+        ]
+      ],
+      "kicker": "Prepared for Azuleo by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Azuleo has an editorial world. The captions still talk like any bikini shop.",
+      "keep": "The caption voice of Ola de Calor: Paso 02, prepárese un refresco y ajústese los breteles. It is funny and nobody else sounds like it."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.5,
+          "quote": "las bikinis más lindas",
+          "what": "The captions say Azuleo's bikinis are the prettiest.",
+          "why": "Every swimwear label says it. The ownable names are Ola de Calor and the editorials, and they come second.",
+          "how": "Describe the bikinis in the voice of the editorials.",
+          "label": "Your captions",
+          "cost": "Shoppers compare on price, because the only thing they are told is that the bikinis are pretty."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.4,
+          "area": "Ola de Calor in yellow script over a striped bikini",
+          "what": "Ola de Calor in yellow script over the striped bikini is the strongest look Azuleo has.",
+          "why": "A named campaign with a retro script gives Azuleo a look that beachwear brands rarely have.",
+          "how": "Carry the yellow script and the editorial naming into the rest of the site and the grid.",
+          "label": "Your site",
+          "cost": "The campaign look stays on one hero and never reaches the rest.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Hecho en Argentina",
+          "what": "The bio holds the origin. The site's first screen does not repeat it.",
+          "why": "Made in Argentina is a real reason to choose Azuleo over imported swimwear.",
+          "how": "Say where the cloth and the sewing happen, in the editorial voice.",
+          "label": "Your bio",
+          "cost": "Azuleo reads as bikinis from anywhere."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Azuleo. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=azuleo-ropademar",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Azuleo's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "azuleo-ropademar-j0pn56skerrz"
+}

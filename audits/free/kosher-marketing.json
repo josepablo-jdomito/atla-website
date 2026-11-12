@@ -1,0 +1,123 @@
+{
+  "slug": "kosher-marketing",
+  "brand": "Kosher Marketing",
+  "title": "Kosher Marketing Branding Analysis",
+  "description": "A short look at Kosher Marketing's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Kosher Marketing Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Kosher Marketing Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Kosher Marketing"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Kosher Marketing"
+        ]
+      ],
+      "kicker": "Prepared for Kosher Marketing by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "He lives in the kosher space. The front door looks like any consultant's.",
+      "keep": "The line \"Most marketers don't understand this community.\" It names the competition without naming anyone."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.04,
+          "quote": "Kosher MARKETING",
+          "what": "The name is the category, written out.",
+          "why": "Kosher Marketing describes the service, so it is hard to remember and hard to tell from the next kosher marketer.",
+          "how": "Lead with the person and the story, not the label of the category.",
+          "label": "Your name",
+          "cost": "Referrals use the description and not the name, so people cannot find you again."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.62,
+          "y": 0.22,
+          "quote": "Kosher Dad Eats",
+          "what": "The audience-building brand is tucked into a card on the right.",
+          "why": "Kosher Dad Eats is the proof that he lives in this community, and it sits in a side panel instead of the headline.",
+          "how": "Move the face and the handle up to the first screen.",
+          "label": "Your side card",
+          "cost": "A visitor sees a marketer instead of the kosher voice they already follow.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.4,
+          "quote": "The kosher market is unique. Your marketing should be too.",
+          "what": "The page says unique, in a layout every consultant site uses.",
+          "why": "Cream background, navy type and a rust button are the usual look for solo consultants, so the look contradicts the line.",
+          "how": "Let the visual world come from the kosher community itself.",
+          "label": "Your headline area",
+          "cost": "The promise of a unique approach is made by a standard layout."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Kosher Marketing. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=kosher-marketing",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Kosher Marketing's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Kinfolk, from another category. It looks like the community it writes about.",
+  "path": "kosher-marketing-zvm5y6q1h5lx"
+}

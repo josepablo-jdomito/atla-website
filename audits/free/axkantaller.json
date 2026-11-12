@@ -1,0 +1,123 @@
+{
+  "slug": "axkantaller",
+  "brand": "Axkan Taller",
+  "title": "Axkan Taller Branding Analysis",
+  "description": "A short look at Axkan Taller's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Axkan Taller Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Axkan Taller Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Patagonia, from another category. It sells a jacket by telling who made it and why.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Axkan Taller"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Axkan Taller"
+        ]
+      ],
+      "kicker": "Prepared for Axkan Taller by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Axkan has a story no one else can tell. The captions leave it out.",
+      "keep": "The black and white garment portraits. They look like one brand and nobody else's."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Clothing / Home • Exhibits • Workshops • Gifting",
+          "what": "The bio lists four businesses in one line.",
+          "why": "A new visitor cannot tell if Axkan is a clothing label, a gallery or a school.",
+          "how": "Pick the one thing Axkan is first and let the others hang from it.",
+          "label": "Your bio",
+          "cost": "Visitors file it under the nearest category, a shop with nice textiles."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.5,
+          "quote": "#telar #loom #textile #textilelover #oaxaca",
+          "what": "Several captions are hashtags and nothing else.",
+          "why": "The people, the valley and the loom behind the pieces never speak, so they look like any handwoven textile.",
+          "how": "Let one sentence of the story lead, and keep the tags small.",
+          "label": "Your captions",
+          "cost": "Hashtags describe the category. Only the story says why Axkan and not another weaver."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.75,
+          "y": 0.45,
+          "quote": "tejidas en telar de pedal en los Valles Centrales de Oaxaca y bordadas a mano por mujeres Wixárikas de la Sierra Norte de Jalisco",
+          "what": "One older caption holds the real story: Oaxaca weavers and Wixárika embroiderers on the same piece.",
+          "why": "Two living traditions on one garment is something no other label can claim.",
+          "how": "Give that collaboration its own name and its own place at the top of the grid.",
+          "label": "Your caption",
+          "cost": "The strongest fact about the work sits in a caption from an old post.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Axkan Taller. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=axkantaller",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Axkan Taller's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "axkantaller-trtexr50oomo"
+}

@@ -1,0 +1,108 @@
+{
+  "slug": "karliereitano",
+  "brand": "Karlie Reitano",
+  "title": "Karlie Reitano Branding Analysis",
+  "description": "A short look at Karlie Reitano's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Karlie Reitano Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Karlie Reitano Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Karlie"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Karlie"
+        ]
+      ],
+      "kicker": "Prepared for Karlie Reitano by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Karlie Reitano has a personality that fills a sentence and a site that gives it a stock photo.",
+      "keep": "The handwritten signature logo. It is the one element that is only hers."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.7,
+          "quote": "PR & Marketing Consultant, Storyteller, Brand Cheerleader,",
+          "what": "Four titles stack in one sentence.",
+          "why": "Consultant, storyteller, cheerleader and hype woman each describe a different job, and none says what she is the best at.",
+          "how": "Pick the one title a client would hire her for and let the rest become her tone.",
+          "label": "Your headline",
+          "cost": "A founder looking for a publicist cannot tell which one she is hiring."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "area": "A blue-tinted photo of blurred people on a stone staircase behind the headline",
+          "what": "The hero is a blue-tinted photo of strangers on a staircase.",
+          "why": "It is the kind of image any agency in any city could use, and it has no trace of her warmth.",
+          "how": "Replace it with something only her work or her clients could have made.",
+          "label": "Your hero photo",
+          "cost": "The first image says that she could be anyone."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.65,
+          "y": 0.18,
+          "quote": "JOIN OUR TEAM",
+          "what": "The menu says join our team under a name and a tagline that say for hire.",
+          "why": "One voice is a solo consultant and the other is an agency, and a new client has to guess which they are getting.",
+          "how": "Decide whether the brand is her or a team, and let the language follow.",
+          "label": "Your menu",
+          "cost": "The scale of the business is unclear before anyone has talked to her.",
+          "kind": "risk"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=karliereitano",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Karlie Reitano's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Glossier, from another category. It started as one voice talking directly to one person and never lost it.",
+  "path": "karliereitano-wy15n3nr96ej"
+}

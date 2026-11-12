@@ -1,0 +1,107 @@
+{
+  "slug": "hairbrella",
+  "brand": "Hairbrella",
+  "title": "Hairbrella Branding Analysis",
+  "description": "A short look at Hairbrella's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Hairbrella Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Hairbrella Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Hairbrella"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Hairbrella"
+        ]
+      ],
+      "kicker": "Prepared for Hairbrella by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Hairbrella is named for the idea of an umbrella for hair. The hero sells a scarf.",
+      "keep": "Two women with different hair textures, each framed by the product. They show who this is for."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "area": "The hero headline reads Superior Warmth Ultimate Protection above the new infinity rain scarf",
+          "what": "The hero sells warmth and a new scarf. The name promises protection for hair.",
+          "why": "Hairbrella is a strong idea in the name. The headline drops it for a product feature.",
+          "how": "Lead with the idea in the name and let the scarf prove it.",
+          "label": "Your hero",
+          "cost": "A visitor sees a scarf. They do not see the idea that makes you Hairbrella."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.35,
+          "area": "Both models wear black hoods and black tops against a pale grey backdrop",
+          "what": "Both models wear black hoods and black tops against a pale grey backdrop.",
+          "why": "The product disappears into the wardrobe, and the brand pink of the button is nowhere in the photo.",
+          "how": "Put the brand colour into the photograph and let the product stand out.",
+          "label": "Your photos",
+          "cost": "The product is hard to see in the picture that sells it."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.18,
+          "area": "The soft lowercase hairbrella wordmark sits above a headline in heavy black capitals",
+          "what": "The wordmark is a soft lowercase. The headline under it is heavy black capitals.",
+          "why": "The logo and the headline sound like two different brands.",
+          "how": "Choose the voice that sounds like you and carry it through.",
+          "label": "Your type",
+          "cost": "The brand has no single voice for people to remember."
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=hairbrella",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Hairbrella's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Dove, from another category. It started with the people it was for.",
+  "path": "hairbrella-jzdzktkusb3b"
+}

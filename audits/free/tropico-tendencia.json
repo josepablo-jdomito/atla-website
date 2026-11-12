@@ -1,0 +1,123 @@
+{
+  "slug": "tropico-tendencia",
+  "brand": "Trópico",
+  "title": "Trópico Branding Analysis",
+  "description": "A short look at Trópico's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Trópico Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Trópico Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Trópico"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Trópico"
+        ]
+      ],
+      "kicker": "Prepared for Trópico by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Trópico has thirty years of curation. Its captions say beauty could be anything.",
+      "keep": "The line on the site: Diseño que permanece. It says what the house stands for in three words."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.42,
+          "quote": "Diseño que permanece.",
+          "what": "The site holds the brand idea. The Instagram never repeats it.",
+          "why": "Design that lasts is a clear promise. The captions talk about beauty in general.",
+          "how": "Bring the headline into the bio and into the first line of every caption.",
+          "label": "Your site",
+          "cost": "Instagram shoppers meet a lifestyle brand, not the house with a promise.",
+          "kind": "keep"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.12,
+          "quote": "30 años seleccionando piezas con carácter.",
+          "what": "Thirty years of selecting is the strongest proof, and the feed barely uses it.",
+          "why": "Few Lima furniture brands can say it. The grid shows no maker, no workshop and no year.",
+          "how": "Show the selecting: who chose it, where it was made, why it stayed.",
+          "label": "Your bio",
+          "cost": "Thirty years of authority reads as a showroom."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.62,
+          "quote": "Hay una belleza que no necesita imponerse.",
+          "what": "Poetic captions fit any furniture brand.",
+          "why": "Texts about beauty that does not need to impose itself could sit under any sofa in Latin America.",
+          "how": "Write one fact per caption: the wood, the weave, the workshop.",
+          "label": "Your voice",
+          "cost": "The look is polished and the voice is interchangeable."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Trópico. I spent some time on your site and your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=tropico-tendencia",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Trópico's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Hermès, from another category. It lets craft and time do the talking.",
+  "path": "tropico-tendencia-kav4ikuahvnt"
+}

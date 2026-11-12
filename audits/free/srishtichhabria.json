@@ -1,0 +1,123 @@
+{
+  "slug": "srishtichhabria",
+  "brand": "Srishti Chhabria",
+  "title": "Srishti Chhabria Branding Analysis",
+  "description": "A short look at Srishti Chhabria's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Srishti Chhabria Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Srishti Chhabria Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Srishti"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Srishti"
+        ]
+      ],
+      "kicker": "Prepared for Srishti Chhabria by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Srishti's work has a point of view. The front page does not say it yet.",
+      "keep": "The gold DIRECTOR & PRODUCER headline on the dark page. It carries the weight of a film title card."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.25,
+          "y": 0.21,
+          "quote": "DIRECTOR & PRODUCER",
+          "what": "The headline names her job, not her work.",
+          "why": "Every director and producer can claim this headline. It does not say why her and not the next one.",
+          "how": "Say what kind of story she tells, in her own words.",
+          "label": "Your headline",
+          "cost": "Anyone browsing sees a list of credits and no point of view."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.27,
+          "y": 0.62,
+          "quote": "SUCH A NICE GIRL",
+          "what": "The film titles sit over bright stills, and the first one nearly disappears.",
+          "why": "The work is the pitch, and its names are the hardest thing on the screen to read.",
+          "how": "Give titles a steady place to sit that does not depend on the still behind them.",
+          "label": "Your titles",
+          "cost": "Visitors skim past the names of the films that should be remembered."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.22,
+          "y": 0.06,
+          "quote": "ADVOCACY",
+          "what": "A third tab holds the one signal no other director's site has.",
+          "why": "Advocacy tells us what her stories are for, and it sits last in the menu as a single word.",
+          "how": "Let the thread between the films and the advocacy show on the front page.",
+          "label": "Your menu",
+          "cost": "The reason to hire her over the next director stays one click away.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Srishti Chhabria. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=srishtichhabria",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Srishti Chhabria's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "A24, from another category. Its name tells you what you will feel before you see the film.",
+  "path": "srishtichhabria-hrzdlnvv1y55"
+}

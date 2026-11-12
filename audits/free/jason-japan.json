@@ -1,0 +1,124 @@
+{
+  "slug": "jason-japan",
+  "brand": "Jason Japan",
+  "title": "Jason Japan Branding Analysis",
+  "description": "A short look at Jason Japan's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Jason Japan Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Jason Japan Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Monocle, from another category. It sells a magazine as one editor's taste in cities.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Jason Japan"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Jason Japan"
+        ]
+      ],
+      "kicker": "Prepared for Jason Japan by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Jason Japan speaks like a best friend. The bio speaks like a travel guide.",
+      "keep": "The cream tiles with serif italic overlays. They read as one hand and a Japan of its own."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Its like having a Japan obsessed best friend in the palm of your hand",
+          "what": "One caption names what the app is: a Japan obsessed best friend.",
+          "why": "That answers why this guide and not the big travel sites, and it appears once.",
+          "how": "Put it in the bio and in the first image of the grid.",
+          "label": "Your caption",
+          "cost": "The bio calls it a Curated Japan Guide APP, which is what every guide app says.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.15,
+          "quote": "Hidden gems, best recommendations, tips & all you need to know",
+          "what": "The bio lists what every travel guide lists.",
+          "why": "The ownable part is one person's taste, and the bio gives it no face.",
+          "how": "Lead with who is guiding and what he refuses to include.",
+          "label": "Your bio",
+          "cost": "Travelers choose between guides on price and star rating."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.5,
+          "quote": "Hello it’s @mrjasongrant here",
+          "what": "The account is Jason Japan, and the voice switches between Jason and mrjasongrant.",
+          "why": "Readers cannot tell whose taste they are buying, a brand or a person.",
+          "how": "Decide whether the guide is a person or a name, and say it the same way everywhere.",
+          "label": "Your captions",
+          "cost": "An unclear owner makes the guide look like a fan account.",
+          "kind": "risk"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Jason Japan. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=jason-japan",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Jason Japan's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "jason-japan-ffgqwv8ztm73"
+}

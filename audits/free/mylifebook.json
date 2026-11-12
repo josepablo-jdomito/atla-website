@@ -1,0 +1,123 @@
+{
+  "slug": "mylifebook",
+  "brand": "Lifebook",
+  "title": "Lifebook Branding Analysis",
+  "description": "A short look at Lifebook's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Lifebook Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Lifebook Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Lifebook"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Lifebook"
+        ]
+      ],
+      "kicker": "Prepared for Lifebook by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Lifebook promises a life you love. So does everyone in the category.",
+      "keep": "The asterisk mark next to the wordmark. It is a small, memorable symbol that works anywhere."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.7,
+          "quote": "Design & build a life you truly love",
+          "what": "The headline is the promise of every coaching brand.",
+          "why": "A visitor cannot tell what is different here from the next course, podcast or retreat.",
+          "how": "Say who Lifebook is for and what changes first.",
+          "label": "Your headline",
+          "cost": "Lifebook sits in a crowded category with no sentence to separate it."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "area": "A woman at a railing facing the sea beside overwater huts",
+          "what": "The hero photo is a woman looking at an ocean from a resort.",
+          "why": "It sells a holiday more than a method. The viewer sees the destination and not the process.",
+          "how": "Show the work: the book, the session, the person doing it.",
+          "label": "Your hero image",
+          "cost": "Visitors take Lifebook for a travel brand."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.12,
+          "y": 0.06,
+          "area": "The Lifebook wordmark with a bold asterisk to its right",
+          "what": "The logo pairs a plain wordmark with a bold asterisk.",
+          "why": "The asterisk is distinctive and could carry the brand. The site uses it once and drops it.",
+          "how": "Let the asterisk appear wherever Lifebook shows up.",
+          "label": "Your logo",
+          "cost": "The most ownable mark stays in the corner.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Lifebook. I spent some time on your site. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=mylifebook",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Lifebook's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Notion, from another category. A simple mark and a plain promise that fits one idea.",
+  "path": "mylifebook-lejxeucpqlvj"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "receiptable",
+  "brand": "Receiptable",
+  "title": "Receiptable Branding Analysis",
+  "description": "A short look at Receiptable's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Receiptable Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Receiptable Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Receiptable"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Receiptable"
+        ]
+      ],
+      "kicker": "Prepared for Receiptable by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Receiptable's name says receipt. Its headline says engagement.",
+      "keep": "The teal ribbon. It is a mark of its own and looks like nothing else in payments."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.27,
+          "quote": "Turn every transaction into engagement.",
+          "what": "The headline could sit on any loyalty or marketing tool.",
+          "why": "Engagement is the vaguest word in retail software, so it does not say why Receiptable and not the one next door.",
+          "how": "Name the receipt in the headline, since the receipt is what only Receiptable owns.",
+          "label": "Your headline",
+          "cost": "Buyers file it with every other tool that promises engagement."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.27,
+          "y": 0.42,
+          "quote": "Switch from paper to digital",
+          "what": "The one phrase that says what the product is sits in the pale grey subline.",
+          "why": "The name promises receipts. This is the only place the page talks about paper, and it is the quietest text on screen.",
+          "how": "Make the receipt the hero of the page and show one on screen.",
+          "label": "Your subline",
+          "cost": "The most ownable idea is a footnote.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.71,
+          "quote": "Trusted By",
+          "what": "The logo strip sets Apple Pay, Google Pay and Samsung Pay beside retail names.",
+          "why": "A reader cannot tell customers from payment methods, so the strongest social proof blurs.",
+          "how": "Show customers alone and say what each one does with Receiptable.",
+          "label": "Your logo strip",
+          "cost": "The proof reads as a list of payment logos."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Receiptable. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=receiptable",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Receiptable's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Stripe, from another category. Its first line describes the exact thing it does.",
+  "path": "receiptable-cd0fm55u1m8q"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "casa-colora",
+  "brand": "Casa Colora",
+  "title": "Casa Colora Branding Analysis",
+  "description": "A short look at Casa Colora's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Casa Colora Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Casa Colora Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Casa Colora"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Casa Colora"
+        ]
+      ],
+      "kicker": "Prepared for Casa Colora by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Casa Colora has a belief about children and creativity. It appears once, in a pinned post.",
+      "keep": "The logo and the house shape. The rounded wordmark in a brown house is friendly and easy to spot on the grid."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.41,
+          "y": 0.106,
+          "quote": "art + play",
+          "what": "The bio speaks Spanish and the tagline switches to English.",
+          "why": "Parents in San Pedro read two languages in one profile, so the voice is unclear.",
+          "how": "Choose the language of the brand and use it in tiles and captions.",
+          "label": "Your bio",
+          "cost": "The brand feels borrowed from somewhere else."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.22,
+          "y": 0.51,
+          "quote": "En Casa Colora creemos que la creatividad no se enseña",
+          "what": "The belief that makes Casa Colora different lives in one pinned caption.",
+          "why": "It says creativity is explored, not taught, and that is why this studio and not the one next door.",
+          "how": "Turn this line into the bio and the first words on the grid.",
+          "label": "Your pinned post",
+          "cost": "It is the only post that explains the studio, and it will scroll out of sight.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.78,
+          "y": 0.51,
+          "quote": "Life at Colora",
+          "what": "The name changes between posts.",
+          "why": "Casa Colora, Colora and CasaColora show up in captions and tiles.",
+          "how": "Pick the full name and use it everywhere.",
+          "label": "Your name",
+          "cost": "A short name nobody agreed on is hard to remember."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Casa Colora. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=casa-colora",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Casa Colora's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "LEGO, from another category. It sells play as a way of thinking.",
+  "path": "casa-colora-gcf7gy4wv1jb"
+}

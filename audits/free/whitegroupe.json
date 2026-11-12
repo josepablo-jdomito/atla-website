@@ -1,0 +1,123 @@
+{
+  "slug": "whitegroupe",
+  "brand": "White Groupe",
+  "title": "White Groupe Branding Analysis",
+  "description": "A short look at White Groupe's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "White Groupe Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the White Groupe Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Leica, from another category. It sells a camera by how little it shows.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about White Groupe"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about White Groupe"
+        ]
+      ],
+      "kicker": "Prepared for White Groupe by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "White has a verification idea no concierge has. The front door leads with adjectives.",
+      "keep": "The W monogram in its oval and the quiet cream pages. It looks like a house you would trust with your keys."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Lifestyle concierge & Transport.",
+          "what": "The bio calls White a lifestyle concierge and transport company.",
+          "why": "The site calls the same business Carte Blanche. Neither says what White does that a hotel concierge does not.",
+          "how": "Choose one line for both places, built on what members cannot get elsewhere.",
+          "label": "Your bio",
+          "cost": "Every request starts as a price comparison with a driver."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.62,
+          "quote": "Private services designed around you, with discretion, precision and availability.",
+          "what": "The site's promise is three adjectives.",
+          "why": "Discretion and precision are what every private service claims. They do not say why White.",
+          "how": "Replace the adjectives with one thing White does that the others do not.",
+          "label": "Your site",
+          "cost": "The promise sounds like every other concierge."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.83,
+          "quote": "Verified profiles",
+          "what": "WhiteVerify is the one idea only White has, shown as a small pill under the button.",
+          "why": "Vetted people behind every service answers why White and not a concierge a friend recommends.",
+          "how": "Give WhiteVerify the headline and say what a verified profile means.",
+          "label": "Your site",
+          "cost": "The idea that sets White apart is the smallest thing on the page.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at White Groupe. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=whitegroupe",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on White Groupe's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "whitegroupe-ciwb0wv8ru37"
+}

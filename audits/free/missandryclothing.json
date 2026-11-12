@@ -1,0 +1,123 @@
+{
+  "slug": "missandryclothing",
+  "brand": "Missandry",
+  "title": "Missandry Branding Analysis",
+  "description": "A short look at Missandry's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Missandry Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Missandry Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Missandry"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Missandry"
+        ]
+      ],
+      "kicker": "Prepared for Missandry by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Missandry has a sharp line. The site does not say it.",
+      "keep": "The tagline. Wear what you say is a complete brand idea in four words."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "wear what you say™",
+          "what": "The best line lives in the bio, not on the site.",
+          "why": "It says why Missandry and not any other tee brand: the clothes speak for you.",
+          "how": "Put the line on the first screen and build the page around it.",
+          "label": "Your bio",
+          "cost": "The site reads as any apparel shop.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.5,
+          "quote": "Featured Products",
+          "what": "The site opens with a label that fits any store.",
+          "why": "A pastoral tote and a stock heading do not match the loud voice on Instagram.",
+          "how": "Open with a statement in the same voice as the posts.",
+          "label": "Your site",
+          "cost": "A first visit from Instagram feels like a different brand."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.72,
+          "quote": "AI might be the biggest net negative since patriarchy!",
+          "what": "Voting, stickers, AI and tanks all share one feed.",
+          "why": "Each cause is real, and together they blur what Missandry stands for first.",
+          "how": "Choose the one stance that anchors the brand and let the rest orbit it.",
+          "label": "Your grid",
+          "cost": "The position is felt but never summed up, so it cannot be repeated."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Missandry. I spent some time on your site and your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=missandryclothing",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Missandry's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Supreme, from another category. A voice and a logo are enough.",
+  "path": "missandryclothing-d6zts0zyrq9w"
+}

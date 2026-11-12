@@ -1,0 +1,123 @@
+{
+  "slug": "jointrellishealth",
+  "brand": "Trellis",
+  "title": "Trellis Branding Analysis",
+  "description": "A short look at Trellis's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Trellis Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Trellis Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Trellis"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Trellis"
+        ]
+      ],
+      "kicker": "Prepared for Trellis by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Trellis names a structure that supports growth. Its headline says framework.",
+      "keep": "The photograph of a pregnant body in a bright orange swimsuit. It is the one warm thing on the screen."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.67,
+          "y": 0.46,
+          "area": "The headline reads Your health is a framework for your life",
+          "what": "The headline calls health a framework.",
+          "why": "A trellis holds something up while it grows. Framework is a cold word that drops the picture the name already gives.",
+          "how": "Use the language of growth that the name already carries.",
+          "label": "Your headline",
+          "cost": "The name and the line say different things."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.06,
+          "area": "Monospaced menu beside a light serif headline",
+          "what": "The menu is set in a typewriter face while the headline uses a light serif.",
+          "why": "Two type voices, one clinical and one warm, meet on the first screen, and a new parent cannot tell which one speaks for Trellis.",
+          "how": "Choose the voice a family would trust and use it for both.",
+          "label": "Your type",
+          "cost": "The brand sounds like two companies."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.83,
+          "y": 0.9,
+          "quote": "BUMPS TO BABIES",
+          "what": "The one phrase that sounds like a person sits in the bottom corner in small type.",
+          "why": "Bumps to babies says who Trellis is for in three words, and it is the smallest thing on the screen.",
+          "how": "Bring it forward as the line the rest of the page answers to.",
+          "label": "Your corner line",
+          "cost": "Who the brand is for stays at the edge of the page.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Trellis. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=jointrellishealth",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Trellis's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Oura, from another category. It speaks about the body in the same plain, calm words everywhere.",
+  "path": "jointrellishealth-1dem96gqh07u"
+}

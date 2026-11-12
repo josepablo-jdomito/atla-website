@@ -1,0 +1,122 @@
+{
+  "slug": "corporaterebels",
+  "brand": "The Corporate Rebels",
+  "title": "The Corporate Rebels Branding Analysis",
+  "description": "A short look at The Corporate Rebels's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "The Corporate Rebels Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the The Corporate Rebels Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about The Corporate Rebels"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about The Corporate Rebels"
+        ]
+      ],
+      "kicker": "Prepared for The Corporate Rebels by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "The best line is the founder's. The profile still says concept store.",
+      "keep": "The voice. First person, plain and specific, straight from fifteen years in an office."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.15,
+          "quote": "Italy-based concept store for women who dress on their own terms",
+          "what": "The bio opens with a store claim the feed never shows.",
+          "why": "The feed is a person talking to camera. No store, no shelves, no place appears in the grid.",
+          "how": "Say what it truly is: one woman's edit, chosen for you.",
+          "label": "Your bio",
+          "cost": "People expect a shop and find a founder, and the gap costs trust."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.2,
+          "quote": "I do the looking. You do the deciding.",
+          "what": "The best positioning is in the second line of the bio.",
+          "why": "It tells a buyer who does the work and who decides. No other store says it.",
+          "how": "Make this the first line and cut the store descriptor.",
+          "label": "Your bio",
+          "cost": "The idea that separates the brand sits under a stock opener.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.5,
+          "area": "Bold yellow sans titles beside italic serif and script overlays",
+          "what": "Yellow sans, italic serif and handwriting all share the grid.",
+          "why": "Three type voices on one grid make the brand look like three accounts.",
+          "how": "Choose one display face and one text face.",
+          "label": "Your grid",
+          "cost": "The look changes every row, so no single tile says whose it is."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at The Corporate Rebels. I spent some time on your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=corporaterebels",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on The Corporate Rebels's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Glossier, from another category. It started as a person with a point of view.",
+  "path": "corporaterebels-ox0sir6ro849"
+}

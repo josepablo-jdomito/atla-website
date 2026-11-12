@@ -15,3 +15,5 @@ attached_assets/
 !.env.example
 .venv-audit/
 audits/free/out/
+audits/free/review-*.html
+audits/free/shots/

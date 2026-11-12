@@ -1,0 +1,123 @@
+{
+  "slug": "saccro",
+  "brand": "Saccro",
+  "title": "Saccro Branding Analysis",
+  "description": "A short look at Saccro's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Saccro Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Saccro Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Saccro"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Saccro"
+        ]
+      ],
+      "kicker": "Prepared for Saccro by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Saccro has a real reason to exist. It is on a ticker, below the fold.",
+      "keep": "The sourcing line, \"Cuerpo fructífero, no micelio sobre grano\". It is a hard fact most mushroom brands cannot say."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.15,
+          "y": 0.97,
+          "quote": "Cuerpo fructífero, no micelio sobre grano",
+          "what": "The strongest claim on the page runs by in the bottom ticker.",
+          "why": "It is the reason to pick Saccro over every other mushroom powder, and it moves past in small type.",
+          "how": "Make this the headline and explain it in one plain sentence.",
+          "label": "Your ticker",
+          "cost": "Shoppers cannot tell Saccro from a cheaper mushroom powder."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.15,
+          "y": 0.7,
+          "quote": "Convierta cualquier bebida en una infusión de hongos.",
+          "what": "The hero describes a use, in a formal voice.",
+          "why": "Convierta is the usted form. It sounds like a pharmacy, while the panela and the wooden box say craft.",
+          "how": "Pick one voice for the product and use it on the box, the site and Instagram.",
+          "label": "Your headline",
+          "cost": "The product looks handmade and sounds like a supplement."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "area": "A box printed with map coordinates on a rough wooden shelf",
+          "what": "The box carries coordinates and a stamped saccro mark.",
+          "why": "It is a distinct, specific detail no wellness brand copies. The site never explains it.",
+          "how": "Tell the story of the coordinates and use them as a signature.",
+          "label": "Your packaging",
+          "cost": "The most original thing on the box is left unexplained.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Saccro. I spent some time on your site. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=saccro",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Saccro's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. Packaging detail does the storytelling before any copy.",
+  "path": "saccro-6bapqfs7clt0"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "studiooctava-architects",
+  "brand": "Studio Octava",
+  "title": "Studio Octava Branding Analysis",
+  "description": "A short look at Studio Octava's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Studio Octava Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Studio Octava Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Studio Octava"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Studio Octava"
+        ]
+      ],
+      "kicker": "Prepared for Studio Octava by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Studio Octava says its best line in Spanish on Instagram. The site says what every studio says.",
+      "keep": "Your project photography, like the dark house that vanishes into the canopy. It shows the idea better than any sentence."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.7,
+          "quote": "from first sketch to keys in hand",
+          "what": "The site describes a service chain any studio in Costa Rica could list.",
+          "why": "Design, plan and manage is the process. It does not say why this studio and not the one next door.",
+          "how": "Lead with the belief that shapes the work, then the process.",
+          "label": "Your site",
+          "cost": "Clients compare studios on process and fee, because the site gives them nothing else."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.45,
+          "y": 0.42,
+          "quote": "diseño que no busca destacar, sino pertenecer",
+          "what": "Your best positioning line lives in one Spanish caption.",
+          "why": "Design that seeks to belong, not to stand out, is a real point of view for homes in the jungle.",
+          "how": "Move this idea to the top of the site and the bio, in both languages.",
+          "label": "Your caption",
+          "cost": "The idea that sets you apart is read by followers and missed by buyers.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.4,
+          "area": "Pale leaf photo under a washed out headline on the site",
+          "what": "The site hides the dark, sharp houses the Instagram shows.",
+          "why": "A grey veil sits over the one thing that differs from other studios, the work itself.",
+          "how": "Open with a project photograph at full strength.",
+          "label": "Your site",
+          "cost": "First impressions look like a template, not like a studio with a point of view."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Studio Octava. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=studiooctava-architects",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Studio Octava's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Kinfolk, from another category. It never explains its taste, it shows it.",
+  "path": "studiooctava-architects-6mj2uhpf2fid"
+}

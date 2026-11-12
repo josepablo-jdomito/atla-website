@@ -1,0 +1,123 @@
+{
+  "slug": "shop-beta5chocolates",
+  "brand": "BETA5",
+  "title": "BETA5 Branding Analysis",
+  "description": "A short look at BETA5's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "BETA5 Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the BETA5 Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about BETA5"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about BETA5"
+        ]
+      ],
+      "kicker": "Prepared for BETA5 Chocolates by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "BETA5 makes chocolates that look hand-painted. The front door hides both the chocolate and the name.",
+      "keep": "The painted bonbons themselves. Reindeer, gingerbread and peppermint swirls are unlike any chocolate box."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.09,
+          "area": "The BETA5 wordmark sits in a pale grey box and fades into the photo behind it",
+          "what": "The logo is the faintest thing at the top of the page.",
+          "why": "The name is the least readable element on the front door. A new visitor sees chocolate but not whose.",
+          "how": "Give the wordmark its own solid ground and let it be the first thing read.",
+          "label": "Your logo",
+          "cost": "People enjoy the photo and cannot say whose chocolate it was."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.16,
+          "quote": "Polygon Bars",
+          "what": "The menu lists Polygon Bars next to Bespoke, Collections and Event Orders.",
+          "why": "The names read like a catalogue. Nothing says why this chocolate and not another maker's, or what a polygon bar is.",
+          "how": "Name each line by what it is to the person eating it.",
+          "label": "Your menu",
+          "cost": "Newcomers browse labels they cannot decode and leave without learning what BETA5 is."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.35,
+          "y": 0.55,
+          "area": "A repeating grid of painted bonbons: reindeer faces, gingerbread men and peppermint swirls",
+          "what": "The hero is rows of hand-painted chocolates in identical boxes.",
+          "why": "The painted surface is what BETA5 owns. The page never says so in words, so the craft reads as decoration.",
+          "how": "Say in one line how these are made and let the painting lead the brand.",
+          "label": "Your hero",
+          "cost": "A craft no one else has gets read as seasonal packaging.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at BETA5. I spent some time on your site. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=shop-beta5chocolates",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on BETA5's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Hermes, from another category. The craft is shown and named, so the product explains the price.",
+  "path": "shop-beta5chocolates-94xk1uz3ddw2"
+}
