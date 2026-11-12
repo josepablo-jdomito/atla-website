@@ -586,6 +586,7 @@ def page(o, d):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500&display=swap">
 <link rel="stylesheet" href="/audit/audit.css">
+<script defer src="/_vercel/insights/script.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
 <script defer src="/audit/audit.js"></script>
 </head>
@@ -709,6 +710,7 @@ def questionnaire_page(o, d):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500&display=swap">
 <link rel="stylesheet" href="/audit/audit.css">
 <link rel="stylesheet" href="/audit/questionnaire.css">
+<script defer src="/_vercel/insights/script.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
 <script defer src="/audit/questionnaire.js"></script>
 </head>
