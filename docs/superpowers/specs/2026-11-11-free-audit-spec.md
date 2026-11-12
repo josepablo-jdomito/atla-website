@@ -58,3 +58,7 @@ Fuente: notas de Attio «Free audit: <marca>» + «Audit answers: <marca>» (ser
 - Budget: 45 minutes of agent time, 2 minutes of JP per audit.
 - No PDF. GA reads which finding was read.
 - Method reviewed every 10 audits.
+31. Every finding carries one line on what not fixing it costs the brand.
+32. Owned assets (character, color, phrase) are flagged only when they show up, not hunted.
+33. The third finding may be an opportunity instead of a fault.
+34. The "where to go" reference: an iconic brand from another category (JP: "ni sé"; Claude default, JP veto 24 h).
