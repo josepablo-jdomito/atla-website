@@ -355,6 +355,7 @@ export async function registerRoutes(
           "/cpg-branding",
           "/wellness-branding",
           "/saas-branding",
+          "/saas-rebranding",
           "/startup-branding",
           "/brand-strategy",
           "/how-we-work",
