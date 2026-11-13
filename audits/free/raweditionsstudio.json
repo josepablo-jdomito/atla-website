@@ -1,0 +1,122 @@
+{
+  "slug": "raweditionsstudio",
+  "brand": "Raw Editions",
+  "title": "Raw Editions Branding Analysis",
+  "description": "A short look at Raw Editions's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Raw Editions Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Raw Editions Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Raw Editions"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Raw Editions"
+        ]
+      ],
+      "kicker": "Prepared for Raw Editions by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Raw Editions looks like a studio with a point of view. Its bio does not say what it is.",
+      "keep": "The grid. Warm timber, stone and texture in one palette, from the first post to the last."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.13,
+          "quote": "A Global Lifestyle Design Studio",
+          "what": "The bio describes a category, not a studio.",
+          "why": "Every interior studio is a lifestyle studio doing bespoke work. It does not say why Raw Editions and not the one next door.",
+          "how": "Write one line about what Raw Editions believes about a room, and let it lead the bio.",
+          "label": "Your bio",
+          "cost": "Clients compare Raw Editions with other bespoke studios on portfolio alone."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.62,
+          "quote": "Every project begins quietly.",
+          "what": "Captions lean on the same word, quietly, until it stops meaning anything.",
+          "why": "A strong tone becomes a tic. The studio sounds calm but never says what it does differently.",
+          "how": "Keep the calm and add one concrete decision per caption: a material, a refusal, a reason.",
+          "label": "Your voice",
+          "cost": "The voice reads as mood, and mood is easy for another studio to copy."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.55,
+          "area": "Warm timber, stone and textured surfaces in one palette across the grid",
+          "what": "One earthy palette runs through every tile, from stone to timber to bronze.",
+          "why": "Few studios hold a visual world this tightly. It is the asset that already answers why Raw Editions.",
+          "how": "Name that palette and make it the first thing the bio and highlights say.",
+          "label": "Your grid",
+          "cost": "The best owned asset stays unnamed, so it never becomes the reason people choose you.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Raw Editions. I spent some time on your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=raweditionsstudio",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Raw Editions's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It lets materials and one calm voice stand in for a pitch.",
+  "path": "raweditionsstudio-ue1mds2yopsl"
+}

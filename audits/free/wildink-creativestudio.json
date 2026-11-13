@@ -1,0 +1,123 @@
+{
+  "slug": "wildink-creativestudio",
+  "brand": "Wild Ink",
+  "title": "Wild Ink Branding Analysis",
+  "description": "A short look at Wild Ink's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Wild Ink Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Wild Ink Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Wild Ink"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Wild Ink"
+        ]
+      ],
+      "kicker": "Prepared for Wild Ink by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Wild Ink tells clients to say who they are for. Its own bio does not.",
+      "keep": "The visual world. Ornament, a deep maroon and cobalt, and a script wordmark that look the same on packaging, posts and logo."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.15,
+          "quote": "Creative studio | Brand Design | Illustration",
+          "what": "The bio lists three disciplines and no client.",
+          "why": "Brand design and illustration is what thousands of studios write. It does not say who Wild Ink is for.",
+          "how": "Name the kind of founder or product this studio is best for.",
+          "label": "Your bio",
+          "cost": "Prospects hear a service list when they want a reason."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.62,
+          "quote": "What makes you different and why people would choose you over competition.",
+          "what": "Your own checklist sets a standard your profile does not meet.",
+          "why": "Wild Ink says to know who you are for and what makes you different. The bio does neither.",
+          "how": "Apply the same checklist to the studio and publish the answer.",
+          "label": "Your voice",
+          "cost": "The advice sounds right and the proof is missing.",
+          "kind": "risk"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.35,
+          "y": 0.52,
+          "area": "Maroon, cobalt and ornamental patterns on the logo, packaging and posts",
+          "what": "Ornament, maroon and cobalt repeat across logo, pack and post.",
+          "why": "The look is distinct and recognisable in a feed of minimal studios.",
+          "how": "Name it as the studio's signature and lead the highlights with it.",
+          "label": "Your grid",
+          "cost": "A strong signature stays unlabelled and looks like taste instead of a method.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Wild Ink. I spent some time on your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=wildink-creativestudio",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Wild Ink's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Mailchimp, from another category. It turned a personal hand into a brand.",
+  "path": "wildink-creativestudio-ebw8d0ouy5fq"
+}

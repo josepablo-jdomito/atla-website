@@ -1,0 +1,123 @@
+{
+  "slug": "thawr-com",
+  "brand": "THAWR",
+  "title": "THAWR Branding Analysis",
+  "description": "A short look at THAWR's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "THAWR Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the THAWR Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about THAWR"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about THAWR"
+        ]
+      ],
+      "kicker": "Prepared for THAWR by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "THAWR has a mood. The front door does not say what the brand makes.",
+      "keep": "The black and white film. A dark brick room and one figure in a heavy tee is a world of its own."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "area": "A silent black and white film of a brick room, one man in a black tee at the right edge",
+          "what": "The hero is a moody film with no words on it.",
+          "why": "It sets a tone, but a visitor cannot tell if THAWR is workwear, streetwear or a label for something else.",
+          "how": "Add one line to the film that says what THAWR is and for whom.",
+          "label": "Your hero",
+          "cost": "Visitors enjoy the mood and cannot repeat what THAWR sells."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.14,
+          "y": 0.08,
+          "quote": "Collections",
+          "what": "The menu is Shop, Collections, Brand, Support.",
+          "why": "This is how every clothing site names its menu. It says nothing about THAWR's point of view.",
+          "how": "Name the collections after what they stand for, not what they are.",
+          "label": "Your menu",
+          "cost": "The words people read first could belong to any other label in Australia."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.08,
+          "area": "A tall narrow condensed wordmark, THAWR, in white on black",
+          "what": "The logo is a tight condensed wordmark that suits the film.",
+          "why": "It matches the mood exactly and is the only branded element on the front door.",
+          "how": "Use it as the system: same weight and tone on every surface.",
+          "label": "Your logo",
+          "cost": "The sharpest asset THAWR has is used once and then left alone.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at THAWR. I spent some time on your site. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=thawr-com",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on THAWR's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Acne Studios, from another category. A few clear signals tell you the world you are in before you read a word.",
+  "path": "thawr-com-t2k0fchadgd3"
+}

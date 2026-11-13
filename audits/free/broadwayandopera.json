@@ -1,0 +1,122 @@
+{
+  "slug": "broadwayandopera",
+  "brand": "Broadway and Opera",
+  "title": "Broadway and Opera Branding Analysis",
+  "description": "A short look at Broadway and Opera's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Broadway and Opera Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Broadway and Opera Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Broadway and Opera"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Broadway and Opera"
+        ]
+      ],
+      "kicker": "Prepared for Broadway and Opera by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Broadway and Opera owns a good line. The posts sometimes sound like another school.",
+      "keep": "The serif type and the teal and purple tiles. They look like a studio with taste."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.45,
+          "y": 0.095,
+          "quote": "Do it from Love.",
+          "what": "A short line in the bio holds the whole philosophy.",
+          "why": "It is the reason to choose this teacher over a school with a better location.",
+          "how": "Make it the first thing every post and page says.",
+          "label": "Your bio",
+          "cost": "Students pick by price and distance, because nothing else is clear.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.41,
+          "y": 0.45,
+          "quote": "MOST SINGERS GET THIS WRONG!",
+          "what": "One caption shouts in capital letters.",
+          "why": "It sounds like a different account from the quiet serif tile it sits under.",
+          "how": "Write the captions in the voice of the tiles.",
+          "label": "Your captions",
+          "cost": "The warm teacher voice breaks the moment someone reads the caption."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.106,
+          "quote": "Vocal Studio from Boston to BKK",
+          "what": "The bio describes where, but not who it is for.",
+          "why": "Boston to BKK is a story that only people who know the abbreviation can read.",
+          "how": "Say who the studio is for and where, in plain words.",
+          "label": "Your bio",
+          "cost": "New visitors cannot tell if this is a studio for children, adults or both."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Broadway and Opera. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=broadwayandopera",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Broadway and Opera's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "MasterClass, from another category. It makes the teacher the reason you join.",
+  "path": "broadwayandopera-j7630ql1k0ls"
+}

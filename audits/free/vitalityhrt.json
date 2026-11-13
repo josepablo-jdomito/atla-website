@@ -1,0 +1,123 @@
+{
+  "slug": "vitalityhrt",
+  "brand": "Renew Vitality",
+  "title": "Renew Vitality Branding Analysis",
+  "description": "A short look at Renew Vitality's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Renew Vitality Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Renew Vitality Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Renew Vitality"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Renew Vitality"
+        ]
+      ],
+      "kicker": "Prepared for Renew Vitality by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Renew Vitality sounds like every hormone clinic. Its best line is hiding in a hero paragraph.",
+      "keep": "The headline, \"Stop guessing. Start measuring.\" Short, confident and a clear stance."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.4,
+          "quote": "Physician-Supervised Hormone Optimization",
+          "what": "The line above the headline describes the category, not Renew.",
+          "why": "Every men's health clinic uses these words. A man comparing five clinics sees the same sentence five times.",
+          "how": "Say what Renew does differently in a sentence only Renew could write.",
+          "label": "Your descriptor",
+          "cost": "Renew competes on category words, and the clinic that spends most on ads wins."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.6,
+          "quote": "a coordinator who knows your name",
+          "what": "The paragraph holds the one human detail on the page.",
+          "why": "It is the real difference from a faceless clinic and it sits in the third line of body copy.",
+          "how": "Show the coordinator, give them a name and put that where the headline is.",
+          "label": "Your paragraph",
+          "cost": "The most distinctive promise reads as small print.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.85,
+          "area": "A dusk golf course with palm trees fills the hero behind the headline",
+          "what": "The hero photo is a golf course at dusk.",
+          "why": "It says leisure and wealth, not labs or measuring. The image pulls against the headline that says measure.",
+          "how": "Choose imagery that shows the measuring, the people or the result.",
+          "label": "Your photo",
+          "cost": "The picture says resort while the words say clinic, so neither sticks."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Renew Vitality. I spent some time on your site. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=vitalityhrt",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Renew Vitality's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Oura, from another category. It makes a measuring product feel personal and calm.",
+  "path": "vitalityhrt-hf7ui7fpkj0e"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "moracuya",
+  "brand": "Moracuyá",
+  "title": "Moracuyá Branding Analysis",
+  "description": "A short look at Moracuyá's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Moracuyá Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Moracuyá Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Moracuyá"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Moracuyá"
+        ]
+      ],
+      "kicker": "Prepared for Moracuyá by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Moracuyá has a name for its idea. The profile hides it.",
+      "keep": "The naming. Healthy Dealer is a line no other cafe in Monterrey can use."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.2,
+          "area": "The bio lists five branch names and no line about what Moracuyá is",
+          "what": "The bio is a list of branch names.",
+          "why": "Five locations tell people where to go. They do not say why Moracuyá and not the other healthy menu in town.",
+          "how": "Open the bio with what Moracuyá is, then list the branches.",
+          "label": "Your bio",
+          "cost": "Visitors find an address book and no reason."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.33,
+          "y": 0.25,
+          "area": "The round profile photo carries the line where fresh meets tasty in tiny type",
+          "what": "The only tagline lives inside the profile photo.",
+          "why": "Where fresh meets tasty is small, round and unreadable at feed size.",
+          "how": "Move the line into the bio and the pinned posts.",
+          "label": "Your bio",
+          "cost": "The best summary is on a surface nobody reads."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.9,
+          "quote": "Ya tienes a tu Healthy Dealer de confianza más cerca de ti.",
+          "what": "A caption gives the brand a person: your Healthy Dealer.",
+          "why": "It is playful, specific and ownable. It is the voice to build on.",
+          "how": "Use it as the recurring character across captions and highlights.",
+          "label": "Your voice",
+          "cost": "The idea appears once, so it never becomes the brand.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Moracuyá. I spent some time on your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=moracuya",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Moracuyá's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Sweetgreen, from another category. It makes eating well sound like a choice you are proud of.",
+  "path": "moracuya-yi7a2hx1gnfl"
+}

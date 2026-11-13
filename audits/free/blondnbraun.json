@@ -1,0 +1,123 @@
+{
+  "slug": "blondnbraun",
+  "brand": "blond & braun",
+  "title": "blond & braun Branding Analysis",
+  "description": "A short look at blond & braun's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "blond & braun Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the blond & braun Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about blond & braun"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about blond & braun"
+        ]
+      ],
+      "kicker": "Prepared for blond & braun by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "blond & braun already has a colour and an idea. The page leads with a title.",
+      "keep": "The deep plum on the banner, the book and the button. It is the one colour that makes the brand recognisable."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.8,
+          "y": 0.4,
+          "quote": "Knjiga za parove koja potiče jednostavne i duboke razgovore kroz ljudsko osmišljena pitanja",
+          "what": "The description holds a real difference: the questions are written by people.",
+          "why": "On a shelf of conversation card decks, human-written questions are the reason to pick this one, and the idea sits in the middle of a sentence.",
+          "how": "Pull the human-made idea out and make it the headline.",
+          "label": "Your description",
+          "cost": "The book reads as one more question deck.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.18,
+          "y": 0.41,
+          "quote": "THE DISTANCE CLOSER",
+          "what": "The book title is the loudest thing on the page, bigger than the brand name.",
+          "why": "Two names compete at the top, the product and blond & braun, and a buyer remembers only one.",
+          "how": "Decide which name people should repeat, then make it the larger one.",
+          "label": "Your title",
+          "cost": "Word of mouth carries a book title and not the brand."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.82,
+          "area": "Living room photographed through a reflective window under the hero",
+          "what": "The photo under the hero is shot through a window, with reflections across the room.",
+          "why": "The plum book image is composed, and the next one looks like a phone snapshot, so the look changes in one scroll.",
+          "how": "Use one photographic style from the first image to the last.",
+          "label": "Your photography",
+          "cost": "The brand looks designed in one place and casual in the next."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at blond & braun. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=blondnbraun",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on blond & braun's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Penguin Books, from another category. Its orange spines made a publisher recognisable before anyone read a title.",
+  "path": "blondnbraun-kx3eaksvkt64"
+}

@@ -1,0 +1,108 @@
+{
+  "slug": "moonkraftstudio",
+  "brand": "Moonkraft",
+  "title": "Moonkraft Branding Analysis",
+  "description": "A short look at Moonkraft's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Moonkraft Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Moonkraft Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Moonkraft"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Moonkraft"
+        ]
+      ],
+      "kicker": "Prepared for Moonkraft by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Moonkraft shows great work. Its headline could sit on any branding studio's site.",
+      "keep": "The big capital headline and the lowercase moonkraft wordmark. The type is sure of itself."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.45,
+          "y": 0.25,
+          "quote": "Designing systems that help brands think, grow, and stay relevant.",
+          "what": "The headline describes what every branding studio says.",
+          "why": "A studio's own front door is the one place its position has to show. Thinking, growing and staying relevant fits a hundred studios.",
+          "how": "Say who you do your best work for and what you will not do, in one line.",
+          "label": "Your headline",
+          "cost": "Founders compare you with every other studio on price, because the line gives them no other reason."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.45,
+          "quote": "We partner with founders and brand teams worldwide",
+          "what": "The next sentence widens the headline again: founders, brand teams, worldwide.",
+          "why": "Everyone, everywhere is nobody in particular. The picture below it is far more specific than the words.",
+          "how": "Pick the kind of founder you have done your best work for and name them.",
+          "label": "Your intro",
+          "cost": "The right client cannot tell the page is meant for them."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.8,
+          "area": "The first image is a mockup of a musician's website with the name nuevayu in large lowercase letters",
+          "what": "The first image is a real piece of work: a musician's own site, his name in big lowercase letters beside his portrait.",
+          "why": "Your work says more about who you are than your words do. It is also the one thing here that no other studio has.",
+          "how": "Let the work open the page and let it state your position.",
+          "label": "Your work",
+          "cost": "The proof sits under the fold while the weakest line sits on top.",
+          "kind": "gem"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=moonkraftstudio",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Moonkraft's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It never explains what it believes. The shops and the texts show it.",
+  "path": "moonkraftstudio-7t4887xfy23g"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "wayoutvisuals",
+  "brand": "Way Out Visual Co.",
+  "title": "Way Out Visual Co. Branding Analysis",
+  "description": "A short look at Way Out Visual Co.'s front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Way Out Visual Co. Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Way Out Visual Co. Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Way Out Visual Co."
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Way Out Visual Co."
+        ]
+      ],
+      "kicker": "Prepared for Way Out Visual Co. by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Way Out's photos already sell hotels. The bio sells three services.",
+      "keep": "The warm film-style colour of the grid. It looks like one eye across Sicily, Paris and Palm Springs."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.11,
+          "quote": "Storytelling + social strategy for hotels, travel + hospitality brands.",
+          "what": "The bio lists three services for three kinds of client.",
+          "why": "Storytelling, strategy and hotels, travel and hospitality read like a menu, so a hotel cannot tell what it is hiring.",
+          "how": "Say the one thing Way Out does best for hotels.",
+          "label": "Your bio",
+          "cost": "They are compared with every hotel photographer on price."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.78,
+          "y": 0.74,
+          "quote": "Hospitality is experienced digitally long before the guest arrives.",
+          "what": "The best sentence is on a tile that does not look like the rest.",
+          "why": "The blue sea tile in typewriter type breaks the warm photo grid.",
+          "how": "Say it in the same visual language as the photographs.",
+          "label": "Your grid",
+          "cost": "The idea is separate from the work that proves it."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.22,
+          "y": 0.5,
+          "quote": "shot for @marlowespalmsprings grand opening last week",
+          "what": "The clients are named in the captions only.",
+          "why": "Marlowe, Proper and Drift are the proof that hotels already trust Way Out.",
+          "how": "Put two or three of the names in the profile.",
+          "label": "Your captions",
+          "cost": "A new hotel sees a photographer, not a photographer hotels already hire.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Way Out Visual Co.. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=wayoutvisuals",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Way Out Visual Co.'s own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Kinfolk, from another category. It is one point of view applied to everything.",
+  "path": "wayoutvisuals-fydwfgne62w7"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "housebalthazar",
+  "brand": "House Balthazar",
+  "title": "House Balthazar Branding Analysis",
+  "description": "A short look at House Balthazar's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "House Balthazar Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the House Balthazar Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about House Balthazar"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about House Balthazar"
+        ]
+      ],
+      "kicker": "Prepared for House Balthazar by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "House Balthazar has a voice with an opinion. The profile keeps it to itself.",
+      "keep": "Your caption \"We're not trying to be everyone's cup of tea. We prefer Champagne.\" It is the clearest reason to pick you over any wine room nearby."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.12,
+          "quote": "Signature Macarons • Grower Champagne • 21+",
+          "what": "The bio lists two products and none of the attitude.",
+          "why": "Woodinville has other places to drink champagne. The reason to choose yours lives in your captions, not in the bio.",
+          "how": "Open the bio with the stance, then the products.",
+          "label": "Your bio",
+          "cost": "A stranger reads the bio and sees a macaron counter with a wine list."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.27,
+          "area": "Yellow heavy sans slide next to a white serif gratitude slide",
+          "what": "The grid speaks in three typographic voices.",
+          "why": "The navy and gold monogram promises a quiet champagne house. The big yellow block type says something louder.",
+          "how": "Pick the voice of the monogram and let it carry every slide.",
+          "label": "Your grid",
+          "cost": "The house reads like three small brands sharing one feed."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.85,
+          "y": 0.2,
+          "quote": "Buttercream need not apply.",
+          "what": "Your sharpest line about the macarons never reaches the grid.",
+          "why": "It tells a buyer in four words why these macarons are not the ones in the pastry case.",
+          "how": "Give lines like this a repeatable slide next to the product shot.",
+          "label": "Your captions",
+          "cost": "The best joke you own is read by the few who open the caption.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at House Balthazar. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=housebalthazar",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on House Balthazar's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It sells soap by sounding like a good bookshop.",
+  "path": "housebalthazar-uj65dk6lwvvn"
+}

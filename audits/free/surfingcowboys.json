@@ -1,0 +1,123 @@
+{
+  "slug": "surfingcowboys",
+  "brand": "Surfing Cowboys",
+  "title": "Surfing Cowboys Branding Analysis",
+  "description": "A short look at Surfing Cowboys's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Surfing Cowboys Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Surfing Cowboys Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Surfing Cowboys"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Surfing Cowboys"
+        ]
+      ],
+      "kicker": "Prepared for Surfing Cowboys by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Surfing Cowboys has had a point of view since 1995. The hero shows hills, not the label.",
+      "keep": "\"Made in Los Angeles. Found in California. Shipped from Malibu.\" Three places in one line give the label a real map."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.43,
+          "y": 0.2,
+          "quote": "DEFENDERS OF THE CALIFORNIA DREAM",
+          "what": "The headline is a big promise over a landscape with no clothing in it.",
+          "why": "Only this label could write the line, and then the page shows empty hills instead of anything it makes.",
+          "how": "Put the label's own graphics where the hills are, so the line and its proof sit together.",
+          "label": "Your hero",
+          "cost": "The strongest line on the page stays a slogan."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.33,
+          "quote": "Vintage clothing, art & objects found along the way.",
+          "what": "The label also runs a vintage shop, an art corner and a home section, in the same breath.",
+          "why": "Original graphics and vintage finds are two different reasons to visit, and the front door never says which one leads.",
+          "how": "Decide which one is the front of the house and let the others support it.",
+          "label": "Your subline",
+          "cost": "A new visitor cannot tell if this is a label or a general store."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.15,
+          "y": 0.71,
+          "quote": "Original graphics. Easy California fits. Made close to home.",
+          "what": "The best proof of why Surfing Cowboys and not another beach label sits below the hero as a small line.",
+          "why": "Original graphics, made close to home since 1995, are what no other California label can copy.",
+          "how": "Move this promise up and show the graphics as the first thing on the page.",
+          "label": "Your collection",
+          "cost": "The graphics that set the label apart wait below the fold.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Surfing Cowboys. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=surfingcowboys",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Surfing Cowboys's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Patagonia, from another category. Its front door shows what the company stands for before it shows a jacket.",
+  "path": "surfingcowboys-2kska4xr5p23"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "espro-coffee",
+  "brand": "Espro Coffee House",
+  "title": "Espro Coffee House Branding Analysis",
+  "description": "A short look at Espro Coffee House's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Espro Coffee House Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Espro Coffee House Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Espro Coffee House"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Espro Coffee House"
+        ]
+      ],
+      "kicker": "Prepared for Espro Coffee House by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Espro already wrote its idea. It sits in a caption, not in the bio.",
+      "keep": "The dark amber grid. The cups, the bar and the serif wordmark all look like the same room."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.12,
+          "quote": "your neighborhood café",
+          "what": "The bio is the line every cafe writes.",
+          "why": "Anyone can say neighborhood and specialty coffee. It does not say why Espro and not the cafe down the road.",
+          "how": "Lead the bio with the idea that is already in your captions.",
+          "label": "Your bio",
+          "cost": "Customers file Espro next to every other neighborhood cafe."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.3,
+          "quote": "espro is our city’s living room",
+          "what": "The strongest idea Espro owns lives in one caption.",
+          "why": "A shared living room is a reason to choose a place. It belongs in the bio, the highlights and the first post.",
+          "how": "Make the living room the thread and let house rules and hours sit under it.",
+          "label": "Your voice",
+          "cost": "The one line that separates Espro stays buried in a post people scroll past.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.62,
+          "area": "Dark amber tones and the serif wordmark on cups, bar and posters",
+          "what": "Warm dark tones and a serif wordmark run through almost every tile.",
+          "why": "The look is already recognisable at thumbnail size, which most new cafes never reach.",
+          "how": "Keep it, and protect it from template posts that break the palette.",
+          "label": "Your grid",
+          "cost": "A recognisable look erodes one off-palette post at a time.",
+          "kind": "keep"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Espro Coffee House. I spent some time on your Instagram. Three things stood out, and all three point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=espro-coffee",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Espro Coffee House's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Muji, from another category. It lets one calm room do the talking.",
+  "path": "espro-coffee-e93hhpzx3a65"
+}

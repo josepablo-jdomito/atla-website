@@ -1,0 +1,122 @@
+{
+  "slug": "tierradefrutos",
+  "brand": "Tierra de Frutos",
+  "title": "Tierra de Frutos Branding Analysis",
+  "description": "A short look at Tierra de Frutos's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Tierra de Frutos Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Tierra de Frutos Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Tierra de Frutos"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Tierra de Frutos"
+        ]
+      ],
+      "kicker": "Prepared for Tierra de Frutos by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Tierra de Frutos has a farm, a fermentation and green apples. The bio says cafecito bien rico.",
+      "keep": "Your opening tiles of green apples and red coffee cherries. They tie the name to the taste."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "TU CAFECITO BIEN RICO, ACÁ",
+          "what": "The bio says tasty, which every café says.",
+          "why": "Nothing here says why a Tierra de Frutos cup is different from another café in Medellín.",
+          "how": "Say the fermentation or the farm in the first line.",
+          "label": "Your bio",
+          "cost": "The bio could belong to any coffee seller in town."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.65,
+          "quote": "Cafecito especial para los fans de lo buenooo",
+          "what": "The caption for a limited coffee never says what makes it special.",
+          "why": "The bag says double fermentation, and the caption does not explain it.",
+          "how": "Say in one sentence what the process does to the cup.",
+          "label": "Your captions",
+          "cost": "The strongest product idea stays on the bag."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.3,
+          "quote": "Todo este esfuerzo de manos amigas campesinas",
+          "what": "Farmer hands are mentioned and never shown.",
+          "why": "The grid shows leaves, fruit and bags, with no people from El Retiro.",
+          "how": "Show the hands and faces that grow the coffee.",
+          "label": "Your captions",
+          "cost": "The human origin is the one story a big roaster cannot tell.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Tierra de Frutos. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=tierradefrutos",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Tierra de Frutos's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Innocent, from another category. It sells fruit by sounding like a friend.",
+  "path": "tierradefrutos-18n8r8zvmq7k"
+}

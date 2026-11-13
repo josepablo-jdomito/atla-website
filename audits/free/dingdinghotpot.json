@@ -1,0 +1,122 @@
+{
+  "slug": "dingdinghotpot",
+  "brand": "Ding Ding Hot Pot",
+  "title": "Ding Ding Hot Pot Branding Analysis",
+  "description": "A short look at Ding Ding Hot Pot's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Ding Ding Hot Pot Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Ding Ding Hot Pot Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Ding Ding Hot Pot"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Ding Ding Hot Pot"
+        ]
+      ],
+      "kicker": "Prepared for Ding Ding Hot Pot by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Ding Ding already sounds like nobody else. The bio does not yet.",
+      "keep": "The caption voice. \"It’s a tough life being a chopstick at Ding Ding.\" is a restaurant talking like a person."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.48,
+          "y": 0.095,
+          "quote": "Chinese Hotpot Reimagined",
+          "what": "The bio's headline promises a twist on a category.",
+          "why": "\"Reimagined\" says what changed, but not into what. A guest cannot tell Ding Ding from the hotpot next door in five seconds.",
+          "how": "Name the one thing that is different, and let it lead the bio.",
+          "label": "Your bio",
+          "cost": "People pick the closest hotpot, because nothing says why this one."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.78,
+          "y": 0.47,
+          "quote": "A is for Alaskan, still on the table at Ding Ding.",
+          "what": "King crab shows up again and again, and the bio never mentions it.",
+          "why": "It is the one dish nobody else leads with, so it works as the reason to choose Ding Ding.",
+          "how": "Make the crab part of how the brand introduces itself.",
+          "label": "Your grid",
+          "cost": "The signature dish stays a caption instead of the identity."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.41,
+          "y": 0.47,
+          "quote": "It’s a tough life being a chopstick at Ding Ding.",
+          "what": "Your captions are written in a real voice.",
+          "why": "Wit like this is hard to copy, and it sits in captions while the bio reads like a listing.",
+          "how": "Let the bio sound like the captions.",
+          "label": "Your captions",
+          "cost": "The best thing about the brand is only found by people who already follow.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Ding Ding Hot Pot. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=dingdinghotpot",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Ding Ding Hot Pot's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It sounds like a library before it sounds like a shop.",
+  "path": "dingdinghotpot-z04dp23n49jb"
+}

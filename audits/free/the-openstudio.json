@@ -1,0 +1,108 @@
+{
+  "slug": "the-openstudio",
+  "brand": "Open Studio",
+  "title": "Open Studio Branding Analysis",
+  "description": "A short look at Open Studio's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Open Studio Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Open Studio Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Open Studio"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Open Studio"
+        ]
+      ],
+      "kicker": "Prepared for Open Studio by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Open Studio says it lets everything in, and a studio that welcomes everything has not chosen anything.",
+      "keep": "The two filled circles in the wordmark. They are a simple and ownable idea."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.9,
+          "quote": "we let it all in",
+          "what": "The intro lists ideas, perspectives and possibilities.",
+          "why": "Saying yes to everything is the opposite of a position, and it leaves a client with no reason to pick this studio.",
+          "how": "Say what Open Studio turns down and what it does better than anyone.",
+          "label": "Your intro",
+          "cost": "Every studio that welcomes ideas sounds the same, so Open Studio competes on being friendly."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.93,
+          "quote": "make something extraordinary",
+          "what": "The sentence ends on a promise of something extraordinary.",
+          "why": "Every studio says the same, and the line offers no sign of what that thing looks like.",
+          "how": "Replace it with one specific result.",
+          "label": "Your intro",
+          "cost": "A claim that anyone can make cannot be remembered."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.3,
+          "area": "The word OPEN STUDIO with a solid white circle in place of each O over black and white footage",
+          "what": "The O at each end of the name is a filled circle over blurred black and white footage of a glass door.",
+          "why": "The circle is the one distinctive mark, and the footage does not show anything the studio has made.",
+          "how": "Let the circle carry the identity and put real work behind it.",
+          "label": "Your wordmark",
+          "cost": "The idea that could be theirs is used as decoration over footage.",
+          "kind": "gem"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=the-openstudio",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Open Studio's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Pentagram, from another category. Its name is the point of view, and the work proves it.",
+  "path": "the-openstudio-ewfnbrxuairq"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "galpaotecidos",
+  "brand": "Galpão Tecidos",
+  "title": "Galpão Tecidos Branding Analysis",
+  "description": "A short look at Galpão Tecidos's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Galpão Tecidos Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Galpão Tecidos Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Galpão Tecidos"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Galpão Tecidos"
+        ]
+      ],
+      "kicker": "Prepared for Galpão Tecidos by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Galpão Tecidos describes its category. Its real customer, the one who sews, is named by someone else.",
+      "keep": "Your close-ups of fabric. The fuchsia texture is the most striking image on the grid."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Tecidos e Malhas exclusivas",
+          "what": "The bio names the category, not the person it is for.",
+          "why": "Every fabric shop writes this. The line that fits you, a place for people who sew and create, appears only in a partner's caption.",
+          "how": "Write the bio to the creator and let the fabric support it.",
+          "label": "Your bio",
+          "cost": "A new customer sees one more fabric shop in Fortaleza."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "area": "Fuchsia fabric, black logo tile, yellow and cream layouts in one grid",
+          "what": "Each post gets a different layout, so the fabric does not lead.",
+          "why": "The textures are your best asset. The changing type and colors around them hide it.",
+          "how": "Fix one layout and let a fabric close-up lead every post.",
+          "label": "Your grid",
+          "cost": "The feed looks like several shops, not one place to be inspired."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.2,
+          "y": 0.25,
+          "quote": "Conte-nos, mostre-nos suas criaturas e suas histórias como criadores.",
+          "what": "You ask customers to show what they made, and the grid shows none of it.",
+          "why": "What your customers make is the proof that no other fabric shop has.",
+          "how": "Give customer pieces the grid and keep your fabric as the supporting shot.",
+          "label": "Your grid",
+          "cost": "You keep the best evidence out of sight.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Galpão Tecidos. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=galpaotecidos",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Galpão Tecidos's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Muji, from another category. It lets the material do the selling.",
+  "path": "galpaotecidos-uj1yd8irvtc0"
+}

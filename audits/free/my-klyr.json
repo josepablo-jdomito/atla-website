@@ -1,0 +1,123 @@
+{
+  "slug": "my-klyr",
+  "brand": "KLYR",
+  "title": "KLYR Branding Analysis",
+  "description": "A short look at KLYR's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "KLYR Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the KLYR Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about KLYR"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about KLYR"
+        ]
+      ],
+      "kicker": "Prepared for KLYR by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "KLYR has a distinct color world. The site first screen does not say what the product is.",
+      "keep": "Your grid. Each bottle sits against a bold flat color, and you recognise it as KLYR before reading the name."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.08,
+          "quote": "Yours, klyrly.",
+          "what": "The bio is a pun on the name and says nothing about the product.",
+          "why": "A stranger cannot tell it is a bottle, nor that it has swappable lids.",
+          "how": "Add one line that says what KLYR is, then keep the pun.",
+          "label": "Your bio",
+          "cost": "The wordplay is read by people who already know you."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "Our interchangeable lids keep your KLYR dressed for every mood.",
+          "what": "Your real difference sits in one caption.",
+          "why": "Lids you change are why KLYR and not another bottle on the shelf.",
+          "how": "Make the lid idea the first thing the brand shows.",
+          "label": "Your captions",
+          "cost": "Visitors see another bottle in good colors.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "area": "Orange centre panel reading FUN between two cropped product close-ups",
+          "what": "The first screen says fun and shows no bottle.",
+          "why": "Close-ups of lids and an engraving do not tell a first visitor what KLYR makes.",
+          "how": "Show the whole bottle and say the idea in the headline.",
+          "label": "Your site",
+          "cost": "A visitor from Instagram does not recognise the product they saw."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at KLYR. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=my-klyr",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on KLYR's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Glossier, from another category. It made a product feel like a color you belong to.",
+  "path": "my-klyr-i9pwikjhggx8"
+}

@@ -1,0 +1,22 @@
+{
+  "slug": "zz-pins-fixture",
+  "brand": "Fixture Co",
+  "title": "Fixture Co Branding Analysis",
+  "description": "A short look at Fixture Co's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Fixture Co Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "sections": [
+    {"type": "cover", "id": "cover", "title": [["Fixture Co", "Branding Analysis"]], "kicker": "Prepared for Fixture Co by Atla · November 2026", "readTime": "2 minute read"},
+    {"type": "pins", "id": "front-door", "label": "Front door", "title": [["Where Fixture Co", "meets people."]],
+     "image": "pixel.png", "image2": null,
+     "pins": [
+       {"n": 1, "on": 1, "x": 0.25, "y": 0.4, "quote": "We <3 \"craft\" & care", "what": "What one.", "why": "Why one.", "how": "How one."},
+       {"n": 2, "on": 1, "x": 0.5, "y": 0.5, "quote": "Built for everyone", "what": "What two.", "why": "Why two.", "how": "How two."},
+       {"n": 3, "on": 1, "x": 0.75, "y": 0.1, "quote": "Since 1999", "what": "What three.", "why": "Why three.", "how": "How three."}
+     ]},
+    {"type": "cta", "id": "next", "text": "Want to talk it through?", "button": "Book a 20-minute conversation", "href": "https://calendly.com/josepablo-atla/30min"}
+  ]
+}

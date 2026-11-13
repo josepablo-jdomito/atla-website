@@ -29,6 +29,9 @@ CONTENT = ROOT / "audits"
 OUT = ROOT / "client" / "public" / "audit"
 FONT_PATH = os.environ.get("ABC_SYNT_PATH", str(Path.home() / "Library/Fonts/ABCSyntVariableVF-Trial.ttf"))
 SITE = "https://www.atla.design"
+# Booking link for the free audit pages. The event lasts 25 minutes; keep the button text in step with it.
+CALENDLY_URL = "https://calendly.com/josepablo-atla/30min"
+WAITLIST_URL = "https://www.atla.design/waitlist?utm_source=free-audit"  # free audits never get Calendly directly (JP, 2026-11-12)
 
 BEVEL_MARK = (
     '<svg class="mark-svg" viewBox="0 0 50 41" aria-hidden="true">'
@@ -126,10 +129,26 @@ def head(o, s, n):
 
 
 def r_cover(o, s, d, n):
+    memo = next((m for m in d["sections"] if m.get("type") == "memo"), None)
+    if memo is None:
+        return (
+            f'<div class="cover-mark">{mark(d)}</div>'
+            + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
+            + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
+            + (f'<img class="cover-art" src="/audit/landing/{esc(s["art"])}" alt="">' if s.get("art") else "")
+        )
+    rows = "".join(
+        f'<li><a href="#{memo["id"]}-{p["n"]}"><span class="ix-n">{i:02d}</span>'
+        f'<span class="ix-t">{esc(p["what"])}</span><span class="ix-w">{mk(verdict(p, i, len(memo["pins"])), "ix-mk")}{VERDICT[verdict(p, i, len(memo["pins"]))]}</span></a></li>'
+        for i, p in enumerate(memo["pins"], 1)
+    )
     return (
-        f'<div class="cover-mark">{mark(d)}</div>'
-        + title(o, s["title"], tag="h1", cls="t t-display", tid="cover-t")
-        + f'<p class="kicker">{esc(s["kicker"])}<span>{esc(s["readTime"])}</span></p>'
+        f'<p class="ix-meta">{esc(s["kicker"])} · {esc(s["readTime"])}</p>'
+        + title(o, s["title"], tag="h1", cls="t ix-h", tid="cover-t")
+        + (f'<p class="ix-thesis">{esc(s["thesis"])}</p>' if s.get("thesis") else "")
+        + (f'<p class="ix-lead">{esc(s["lead"])}</p>' if s.get("lead") else "")
+        + (f'<p class="ix-keep">{mk("keep")}<span><b>Keep this.</b> {esc(s["keep"])}</span></p>' if s.get("keep") else "")
+        + f'<ol class="ix">{rows}</ol>'
     )
 
 
@@ -363,9 +382,146 @@ def r_chapter(o, s, d, n):
     )
 
 
+def pct(v):
+    """A 0..1 fraction as a CSS percentage, without trailing zeros."""
+    return f"{round(float(v) * 100, 2):g}%"
+
+
+def r_pins(o, s, d, n):
+    """A real screenshot of the brand's front door with numbered pins; each pin has a quote and what/why/how."""
+    imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
+    alts = s.get("alts") or []
+    figs = ""
+    for i, src in enumerate(imgs, 1):
+        marks = "".join(
+            f'<span class="pin" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true">{int(p["n"])}</span>'
+            for p in s["pins"]
+            if p.get("on", 1) == i
+        )
+        alt = alts[i - 1] if i <= len(alts) else f'Screenshot of {d["brand"]}, with numbered notes'
+        figs += (
+            f'<div class="pin-img"><img src="/audit/{d["slug"]}/img/{esc(src)}" alt="{esc(alt)}" loading="lazy">{marks}</div>'
+        )
+    items = "".join(
+        f'<li class="callout" value="{int(p["n"])}"><span class="callout-n" aria-hidden="true">{int(p["n"])}</span>'
+        + (f'<div class="callout-b"><blockquote>\u201c{esc(p["quote"])}\u201d</blockquote>' if p.get("quote") else f'<div class="callout-b"><blockquote>{esc(p.get("area", ""))}</blockquote>')
+        + f'<dl><dt>What</dt><dd>{esc(p["what"])}</dd><dt>Why</dt><dd>{esc(p["why"])}</dd><dt>How</dt><dd>{esc(p["how"])}</dd></dl></div></li>'
+        for p in s["pins"]
+    )
+    two = " pins-two" if len(imgs) == 2 else ""
+    return (
+        head(o, s, n)
+        + f'<div class="pins{two}"><div class="pin-shots">{figs}</div><ol class="callouts">{items}</ol></div>'
+        + note(s)
+    )
+
+
+def r_cta(o, s, d, n):
+    if not s.get("title"):
+        return (
+            f'<h2 class="sr" id="{s["id"]}-t">Next step</h2>'
+            + f'<p class="lead">{esc(s["text"])}</p>'
+            + f'<p class="cta"><a class="cta-btn" href="{esc(s.get("href") or CALENDLY_URL)}" data-track="cta">{esc(s["button"])}</a></p>'
+            + (f'<p class="cta-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
+            + (f'<img class="cta-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
+        )
+    # Free audit close (JP, 2026-11-12): one card that ends the read, then a quiet colophon.
+    return (
+        '<div class="end">'
+        + (f'<img class="end-art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">' if s.get("art") else "")
+        + title(o, s["title"], tid=f'{s["id"]}-t', cls="t end-t")
+        + f'<p class="end-body">{esc(s["body"])}</p>'
+        + f'<p class="end-act"><a class="cta-btn" href="{esc(s.get("href") or WAITLIST_URL)}" data-track="cta">{esc(s["button"])}</a>'
+        + (f'<span>{esc(s["note"])}</span>' if s.get("note") else "") + '</p>'
+        + (f'<p class="end-sig">{o.svg([s["signoff"]], "tv")}<span class="sr">{esc(s["signoff"])}</span><span>{esc(d.get("authorRole", ""))}</span></p>' if s.get("signoff") else "")
+        + '</div>'
+        + f'<footer class="colo"><span class="colo-m">Atla*</span><span>Prepared for {esc(d.get("brand", "").rstrip("."))}. Private link, not indexed.</span><a href="https://www.atla.design">atla.design</a></footer>'
+    )
+
+
+def wrap_lines(text, width):
+    lines, cur = [], ""
+    for w in text.split():
+        if cur and len(cur) + 1 + len(w) > width:
+            lines.append(cur); cur = w
+        else:
+            cur = f"{cur} {w}".strip()
+    return lines + ([cur] if cur else [])
+
+
+def expand_memo(sections):
+    """A memo section becomes one Bevel-style finding section per pin (QA still reads the memo)."""
+    out = []
+    for s in sections:
+        if s["type"] != "memo":
+            out.append(s); continue
+        imgs = [s["image"]] + ([s["image2"]] if s.get("image2") else [])
+        for p in s["pins"]:
+            out.append({"type": "finding", "id": f'{s["id"]}-{p["n"]}', "label": p.get("label") or "Finding",
+                        "title": [wrap_lines(p["what"], 26), wrap_lines(p["what"], 19)],
+                        "img": imgs[min(int(p.get("on", 1)), len(imgs)) - 1], "pin": p, "of": len(s["pins"]), "k": len([o for o in out if o.get("type") == "finding"]) + 1})
+    return out
+
+
+# Verdict marks (JP, 2026-11-12): our drawn version of the emoji signals, so a reader gets the verdict at a glance.
+MARK_SVG = {
+    "fix": '<circle cx="12" cy="12" r="9.5"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/>',
+    "risk": '<path d="M12 3.5L21 19.5H3z"/><path d="M12 10v4.5M12 17.2v.1"/>',
+    "gem": '<path d="M7 4.5h10l4 5-9 10-9-10z"/><path d="M3 9.5h18M9.5 4.5L12 19.5l2.5-15"/>',
+    "keep": '<circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.5l3 3 6-6.5"/>',
+    "why": '<circle cx="12" cy="12" r="9.5"/><path d="M12 7v6M12 16.5v.1"/>',
+    "how": '<path d="M5 19L19 5M9 5h10v10"/>',
+    "saw": '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+}
+VERDICT = {"fix": "Fix this", "risk": "Costing you", "gem": "Opportunity", "keep": "Keep this"}
+
+
+def mk(kind, cls=""):
+    return f'<svg class="mk mk-{kind} {cls}" viewBox="0 0 24 24" aria-hidden="true">{MARK_SVG[kind]}</svg>'
+
+
+def verdict(p, k, of):
+    return p.get("kind") or ("gem" if k == of and of >= 3 and p.get("opportunity") else "fix")
+
+
+LENS_ART = {"Your site": "lens-website", "Your grid": "lens-instagram", "Your highlights": "lens-highlights",
+            "Your bio": "lens-instagram", "Your voice": "lens-voice", "Your photography": "lens-photography", "Your packaging": "lens-packaging"}
+
+
+def r_finding(o, s, d, n):
+    """Layout D, plate version (JP, 2026-11-12): rule + folio, title, framed capture with drawn ring and zoom inset, text, illustration as tailpiece."""
+    p = s["pin"]
+    k, of = s.get("k", 1), s.get("of", 3)
+    cite = f'\u201c{esc(p["quote"])}\u201d' if p.get("quote") else esc(p.get("area", ""))
+    src = f'/audit/{d["slug"]}/img/{esc(s["img"])}'
+    where = "Instagram" if "ig" in s["img"] else "Website"
+    v = verdict(p, k, of)
+    art = esc(p.get("illus") or LENS_ART.get(p.get("label", ""), "lens-website"))
+    return (
+        f'<header class="fd-head"><p class="fd-big" aria-hidden="true">{k:02d}</p>'
+        f'<p class="fd-meta"><span class="fd-v fd-v-{v}">{mk(v)}{VERDICT[v]}</span><span>Finding {k} of {of} · {where}</span></p></header>'
+        + title(o, s["title"], tid=f'{s["id"]}-t', cls="t fd-t")
+        + f'<figure class="fd-plate"><div class="fd-frame"><img src="{src}" alt="" loading="lazy">'
+        f'<span class="find-ring" style="left:{pct(p["x"])};top:{pct(p["y"])}" aria-hidden="true"><svg viewBox="0 0 120 100">'
+        f'<path pathLength="1" d="M14,52 C10,18 104,10 110,46 C116,84 24,96 12,60 C8,44 30,26 52,22"/></svg></span>'
+        f'<span class="fd-zoom{" fd-zoom-l" if p["x"] > 0.5 else ""}" role="img" aria-label="{cite}" style="background-image:url({src});background-position:{pct(p["x"])} {pct(p["y"])}"></span></div>'
+        f'<figcaption>{mk("saw")}<span><b>What we saw.</b> {cite}</span></figcaption></figure>'
+        f'<div class="fd-body"><div class="fd-blk">{mk("why", "fd-ic")}<div><p class="fd-k">Why it matters</p><p class="fd-why">{esc(p["why"])}</p></div></div>'
+        + (f'<div class="fd-blk">{mk("how", "fd-ic")}<div><p class="fd-k">Where to take it</p><p class="fd-how">{esc(p["how"])}</p></div></div>' if p.get("how") else "")
+        + (f'<div class="fd-blk fd-cost">{mk("risk", "fd-ic")}<div><p class="fd-k">If it stays</p><p>{esc(p["cost"])}</p></div></div>' if p.get("cost") else "")
+        + f'</div><img class="fd-tail" src="/audit/illus/{art}.webp" alt="" loading="lazy">'
+        + (f'<aside class="fd-ref"><p class="fd-k">One brand to look at</p><p>{esc(d["reference"])}</p></aside>' if k == of and d.get("reference") else "")
+    )
+
+
+def r_art(o, s, d, n):
+    return f'<img class="art" src="/audit/landing/{esc(s["art"])}" alt="" loading="lazy">'
+
+
 RENDER = {
     "cover": r_cover, "stats": r_stats, "table": r_table, "map": r_map, "gallery": r_gallery, "cult": r_cult,
     "statement": r_statement, "threats": r_threats, "journey": r_journey, "process": r_process, "chapter": r_chapter, "columns": r_columns, "system": r_system, "globe": r_globe, "close": r_close,
+    "pins": r_pins, "cta": r_cta, "finding": r_finding,
 }
 
 
@@ -396,7 +552,9 @@ def page(o, d):
     o.used = {}
     sections = []
     n = 0
-    for s in d["sections"]:
+    for s in expand_memo(d["sections"]):
+        if s.get("hidden"):
+            continue
         if s["type"] not in ("cover", "chapter") and not s.get("part"):
             n += 1
         body = RENDER[s["type"]](o, s, d, n)
@@ -428,6 +586,7 @@ def page(o, d):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500&display=swap">
 <link rel="stylesheet" href="/audit/audit.css">
+<script defer src="/_vercel/insights/script.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
 <script defer src="/audit/audit.js"></script>
 </head>
@@ -551,6 +710,7 @@ def questionnaire_page(o, d):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500&display=swap">
 <link rel="stylesheet" href="/audit/audit.css">
 <link rel="stylesheet" href="/audit/questionnaire.css">
+<script defer src="/_vercel/insights/script.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4ZD7PGXE3"></script>
 <script defer src="/audit/questionnaire.js"></script>
 </head>
@@ -582,7 +742,16 @@ __GLYPHS__
 
 
 def build(slug, o):
-    d = with_shared(json.loads((CONTENT / f"{slug}.json").read_text()))
+    src = CONTENT / f"{slug}.json"
+    free = not src.exists()
+    if free:
+        src = CONTENT / "free" / f"{slug}.json"
+    d = with_shared(json.loads(src.read_text()))
+    if free:
+        # Free audits live at an unguessable address; `path` is set once by audits.free.privacy.
+        if not d.get("path") or not d["path"].startswith(f"{slug}-"):
+            sys.exit(f"{src}: free audit needs a private 'path' (audits.free.privacy.private_path)")
+        d["slug"] = slug = d["path"]
     out = OUT / slug
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(page(o, d))

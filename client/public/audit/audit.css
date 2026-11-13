@@ -318,3 +318,153 @@ a{color:inherit;text-underline-offset:3px}
 .tile .mark-img{width:78%}
 .plot .pt em{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);font:500 10px/1 var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;color:var(--grey)}
 .plot .pt.focus em{color:var(--ink)}
+
+/* ---------- Free audit: pins and CTA ---------- */
+.pins{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,3.2vw,56px);margin-top:clamp(40px,5vw,72px);align-items:start}
+.pins.pins-two{grid-template-columns:1fr}
+.pin-shots{display:grid;gap:clamp(16px,2.4vw,32px)}
+.pins-two .pin-shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pin-img{position:relative;line-height:0}
+.pin-img img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--rule);background:#fff}
+.pin{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:var(--accent);color:var(--ink);box-shadow:0 0 0 2px var(--ink),0 2px 8px rgba(0,0,0,.25);display:grid;place-items:center;font:500 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.callouts{list-style:none;margin:0;padding:0;display:grid;gap:clamp(20px,2.4vw,32px)}
+.pins-two .callouts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.callout{display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px}
+.callout-n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--ink);box-shadow:0 0 0 2px var(--ink);display:grid;place-items:center;font:500 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.callout blockquote{margin:0 0 10px;font-weight:500;font-size:17px;line-height:1.4}
+.callout dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:15px;color:var(--grey)}
+.callout dt{font:500 11px/1.9 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.callout dd{margin:0}
+.cta{margin:clamp(28px,3vw,40px) 0 0}
+.cta-btn{display:inline-block;padding:16px 28px;border-radius:999px;background:var(--ink);color:var(--bg);font:500 16px/1 var(--sans);text-decoration:none;border:1px solid var(--ink)}
+.cta-btn:focus-visible{outline-offset:4px}
+@media (hover:hover) and (pointer:fine){.cta-btn:hover{background:transparent;color:var(--ink)}}
+@media (max-width:900px){.pins:not(.pins-two){grid-template-columns:1fr}.pins-two .callouts{grid-template-columns:1fr}}
+@media (max-width:720px){.pins-two .pin-shots{grid-template-columns:1fr}.pin{width:24px;height:24px;margin:-12px 0 0 -12px;font-size:12px}}
+@media print{.pin,.callout-n{box-shadow:0 0 0 2px #000}}
+
+/* ---------- Free audit: findings ---------- */
+.s-cover{position:relative}.cover-art{position:absolute;right:clamp(16px,6vw,96px);bottom:clamp(24px,6vw,96px);width:clamp(140px,22vw,320px);filter:invert(1);pointer-events:none}
+.find{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(24px,4vw,72px);margin-top:clamp(32px,4vw,56px);align-items:end}
+.find-crop{position:relative;margin:0;aspect-ratio:16/10;background-size:230%;background-repeat:no-repeat;background-color:#e9e7e1}
+.find-dot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border:2px solid var(--ink);border-radius:50%}
+.find-why{font-size:clamp(19px,1.5vw,22px);line-height:1.45;margin:0 0 1.4em;max-width:30ch}
+.find-cite{margin:0;font-size:15px;line-height:1.5;color:var(--grey)}.find-cite span{display:block;font:500 12px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.cta-sig{margin-top:clamp(40px,5vw,64px)}.cta-sig svg{height:clamp(28px,3vw,40px);width:auto}.cta-sig>span:last-child{display:block;font-size:14px;color:var(--grey);margin-top:6px}
+.cta-art{display:block;width:clamp(120px,16vw,220px);margin-top:clamp(32px,4vw,56px)}
+.find-n{font:400 clamp(96px,16vw,220px)/.8 var(--serif,var(--sans));margin:0 0 16px;color:var(--ink)}
+.find-d{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(12px,3vw,48px);margin-top:clamp(24px,4vw,48px);align-items:center}
+.find-full{position:relative;margin:0}.find-full img{display:block;width:100%;height:auto}
+.find-ring{position:absolute;width:30%;aspect-ratio:6/5;transform:translate(-50%,-50%)}.find-ring svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff)}.s-finding .label .idx{display:none}
+.find-ring path{fill:none;stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+@supports (animation-timeline:view()){.find-ring path{stroke-dashoffset:1;animation:ring linear both;animation-timeline:view();animation-range:entry 20% cover 45%}}
+@keyframes ring{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.find-ring path{animation:none;stroke-dashoffset:0}}
+.find-art{width:100%;height:auto;display:block}
+@media (max-width:760px){.find{grid-template-columns:1fr}.cover-art{position:static;margin-top:32px}}
+/* ---------- Free audit: Atla v2 system (DESIGN.md), paper and ink ---------- */
+html:has(.s-finding){--bg:#f6f3ec;--ink:#1b1a17;--grey:#6f6a61;--rule:rgb(27 26 23/.12);--zone:#efeae0}
+html:has(.s-finding) .bar-title,html:has(.s-finding) .bar-reply{text-transform:none;letter-spacing:0;font:500 14px/1 var(--sans)}
+html:has(.s-finding) .bar-reply{background:transparent;border-color:var(--ink)}
+.s-finding .label{display:none}
+.s-finding .w{max-width:760px;padding:0 var(--gutter) 72px}
+.s-cover + .s-finding .w{padding-top:56px}
+.fd-head{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:12px;margin-bottom:32px;font:500 14px/1.4 var(--sans);color:var(--grey);font-variant-numeric:tabular-nums}
+.fd-head .fd-n{color:var(--ink)}
+.fd-t{font-size:clamp(32px,5.4vw,52px);line-height:1.06;max-width:none;text-wrap:balance}
+.fd-plate{margin:40px 0 0}
+.fd-frame{position:relative}
+.fd-frame img{display:block;width:100%;height:auto;border-radius:3px;outline:1px solid var(--rule);outline-offset:-1px}
+.fd-frame .find-ring{position:absolute;width:28%;aspect-ratio:6/5;transform:translate(-50%,-50%)}
+.fd-zoom{position:absolute;right:12px;bottom:-32px;width:34%;aspect-ratio:1;border-radius:3px;background-size:420%;background-repeat:no-repeat;background-color:var(--zone);box-shadow:0 0 0 4px var(--bg),0 10px 30px rgba(27,26,23,.12)}
+.fd-zoom-l{right:auto;left:12px}
+.fd-plate figcaption{margin-top:48px;font:400 13px/1.4 var(--sans);color:var(--grey)}
+.fd-body{margin-top:56px;display:grid;gap:32px}
+.fd-why{font:400 18px/1.6 var(--sans);max-width:44ch}
+.fd-foot{display:grid;grid-template-columns:1fr 72px;gap:24px;align-items:end;padding-top:24px;border-top:1px solid var(--rule)}
+.fd-cite{margin:0}
+.fd-k{font:500 14px/1.4 var(--sans);color:var(--grey);margin-bottom:12px}
+.fd-cite p:last-child{font:400 15px/1.5 var(--sans);color:var(--ink);max-width:40ch}
+.fd-art{width:72px;mix-blend-mode:multiply}
+.find-ring path{stroke:var(--ink)}
+::selection{background:#f6c428;color:#1b1a17}
+html:has(.s-finding) .kicker{text-transform:none;letter-spacing:0;font:500 14px/1.4 var(--sans)}
+/* ---------- Free audit v4: light index cover, numbered findings (JP, 2026-11-12) ---------- */
+html:has(.ix) .s-cover{background:var(--bg);color:var(--ink)}
+html:has(.ix) .s-cover .w{min-height:0;display:block;max-width:760px;padding:48px var(--gutter) 72px}
+.ix-meta{font:500 14px/1.4 var(--sans);color:var(--grey);margin-bottom:24px}
+.ix-h{font-size:clamp(36px,7vw,60px);line-height:1.06}
+.ix-lead{margin-top:24px;font:400 18px/1.55 var(--sans);color:var(--grey);max-width:40ch}
+.ix{margin-top:48px;border-top:1px solid var(--ink)}
+.ix li{border-bottom:1px solid var(--rule)}
+.ix a{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding:20px 0;text-decoration:none;transition:opacity 160ms var(--ease-out)}
+@media (hover:hover){.ix a:hover{opacity:.55}}
+.ix-n{grid-row:span 2;font:400 28px/1 "ABC Synt",Georgia,serif;font-variant-numeric:tabular-nums}
+.ix-t{font:500 18px/1.35 var(--sans)}
+.ix-w{font:400 14px/1.4 var(--sans);color:var(--grey)}
+.fd-head{display:grid;grid-template-columns:auto 1fr;align-items:end;gap:16px;border-top:1px solid var(--ink);padding-top:16px;margin-bottom:32px}
+.fd-big{font:400 clamp(64px,12vw,96px)/.8 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.fd-meta{display:flex;justify-content:space-between;font:500 14px/1.4 var(--sans);color:var(--grey)}
+.fd-meta span:first-child{color:var(--ink)}
+.fd-body{gap:0}
+.fd-blk{padding:24px 0;border-top:1px solid var(--rule)}
+.fd-blk:first-child{border-top:0;padding-top:0}
+.fd-how{font:400 17px/1.6 var(--sans);max-width:44ch}
+.s-finding{scroll-margin-top:56px}
+.fd-big{color:var(--ink)}
+.fd-foot{grid-template-columns:1fr 112px}.fd-art{width:112px}
+/* Free audit v5: verdict marks + calmer finding end (JP, 2026-11-12) */
+.mk{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.mk-fix{color:#b3261e}
+.mk-risk path:first-child{fill:#f6c428}.mk-risk{color:var(--ink)}
+.mk-gem path:first-child{fill:#f6c428}.mk-gem{color:var(--ink)}
+.mk-keep{color:#2f6b3a}
+.fd-meta{align-items:center}
+.fd-v{display:inline-flex;align-items:center;gap:8px;font:500 15px/1 var(--sans);color:var(--ink)}
+.fd-v .mk{width:24px;height:24px}
+.fd-meta span:last-child{color:var(--grey)}
+.fd-plate figcaption{display:flex;gap:10px;align-items:flex-start;font:400 15px/1.5 var(--sans);color:var(--ink);margin-top:16px}
+.fd-plate figcaption b{font-weight:500}
+.fd-plate figcaption .mk{color:var(--grey);margin-top:1px}
+.fd-blk{display:grid;grid-template-columns:24px 1fr;gap:14px;align-items:start}
+.fd-ic{color:var(--grey);margin-top:2px}
+.fd-tail{display:block;width:176px;margin:40px auto 0;mix-blend-mode:multiply}
+.ix a{align-items:baseline}
+.ix-mk{width:18px;height:18px;align-self:center}
+.fd-foot,.fd-art{display:none}
+.fd-meta{flex-direction:column;align-items:flex-end;justify-content:flex-end;gap:6px;text-align:right}
+.fd-v{white-space:nowrap}
+.ix-w{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.fd-plate figcaption{margin-top:72px}
+.ix-thesis{font:400 22px/1.35 var(--sans);color:var(--ink);max-width:28ch;margin:24px 0 12px}
+.ix-keep{display:flex;gap:10px;align-items:flex-start;font:400 16px/1.5 var(--sans);color:var(--ink);padding:16px 0;margin:24px 0 0;border-top:1px solid var(--rule)}
+.ix-keep b,.fd-cost b{font-weight:500}
+.ix-keep .mk{margin-top:2px}
+.fd-cost .fd-ic{color:var(--ink)}
+.fd-cost p:last-child{font:500 17px/1.45 var(--sans);color:var(--ink)}
+.fd-ref{margin-top:56px;padding:24px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.fd-ref p:last-child{font:400 20px/1.4 var(--sans);color:var(--ink);max-width:32ch}
+/* Free audit close (JP, 2026-11-12) */
+.end{position:relative;margin-top:24px;padding:clamp(32px,6vw,64px) clamp(24px,5vw,56px);background:#fcfaf5;border:1px solid var(--ink);border-radius:3px}
+.end-art{display:block;width:clamp(120px,22vw,180px);margin:0 0 28px;mix-blend-mode:multiply}
+.end-t svg{height:auto}
+.end-body{font:400 18px/1.5 var(--sans);color:var(--ink);max-width:40ch;margin:20px 0 0}
+.end-act{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin:32px 0 0}
+.end-act span{font:400 15px/1.4 var(--sans);color:var(--grey)}
+.end-sig{margin:40px 0 0;padding-top:20px;border-top:1px solid var(--rule)}
+.end-sig svg{height:28px;width:auto}
+.end-sig>span:last-child{display:block;font:400 14px/1.4 var(--sans);color:var(--grey);margin-top:6px}
+.colo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin:40px 0 24px;padding-top:16px;border-top:1px solid var(--rule);font:400 13px/1.4 var(--sans);color:var(--grey)}
+.colo-m{font-weight:500;color:var(--ink)}
+.colo a{color:var(--grey);text-decoration:underline;text-underline-offset:3px}
+.end-act .cta-btn{white-space:nowrap;padding:16px 22px}
+html:has(.end) .s-cta{min-height:0;padding-top:clamp(48px,8vw,96px)}
+/* Final rhythm pass (JP, 2026-11-12): one 88px beat between findings, close sits one beat after the last one */
+html:has(.end) .s-finding>.w{padding-top:88px;padding-bottom:0}
+html:has(.end) .s-cta{padding-top:0}
+html:has(.end) .s-cta>.w{padding-top:88px;padding-bottom:40px}
+.end{margin-top:0}
+.ix-thesis{margin-top:20px}
+.ix{margin-top:40px}
+html:has(.end) .s-cover>.w{padding-bottom:0}
+html:has(.end) .s-cover{padding-bottom:0;min-height:0}

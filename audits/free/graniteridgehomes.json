@@ -1,0 +1,123 @@
+{
+  "slug": "graniteridgehomes",
+  "brand": "Granite Ridge Builders",
+  "title": "Granite Ridge Builders Branding Analysis",
+  "description": "A short look at Granite Ridge Builders's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Granite Ridge Builders Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Granite Ridge Builders Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Airstream, from another category. It sells a trailer as a place with a name and a past.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Granite Ridge Builders"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Granite Ridge Builders"
+        ]
+      ],
+      "kicker": "Prepared for Granite Ridge Builders by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Granite Ridge has named homes and its own show. The words around them are the ones every builder uses.",
+      "keep": "The Breckenridge Lodge at dusk on the site. It looks like a home worth walking through."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.12,
+          "quote": "We design & build custom homes tailored to your life.",
+          "what": "The bio says Granite Ridge builds custom homes tailored to your life.",
+          "why": "Every custom builder says this. It does not say why Granite Ridge and not the builder in the next subdivision.",
+          "how": "Say what a Granite Ridge home feels like that others do not, with the lodge and the named models as proof.",
+          "label": "Your bio",
+          "cost": "Buyers compare builders on floor plans and price because nothing else is on offer."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.53,
+          "y": 0.09,
+          "quote": "Between The Studs",
+          "what": "Between the Studs is a show only Granite Ridge makes, and the site files it as one more menu item.",
+          "why": "A builder that films its own process has something no other builder has.",
+          "how": "Let the show be how the brand introduces itself, not a link.",
+          "label": "Your site",
+          "cost": "The one thing that shows how Granite Ridge works gets the same weight as Contact.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.7,
+          "quote": "distinctive architecture, thoughtful interior design, and spaces created for gathering",
+          "what": "Captions describe each home with words every builder uses.",
+          "why": "Lodge, Monaco, Greyson Heights: the models have names and the words around them do not.",
+          "how": "Write one sentence per model about who it is for and what it feels like to walk in.",
+          "label": "Your captions",
+          "cost": "The named homes read as floor plans."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Granite Ridge Builders. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=graniteridgehomes",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Granite Ridge Builders's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "graniteridgehomes-pr7lec51hswj"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "dayybreak",
+  "brand": "DAYY/BREAK",
+  "title": "DAYY/BREAK Branding Analysis",
+  "description": "A short look at DAYY/BREAK's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "DAYY/BREAK Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the DAYY/BREAK Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about DAYY/BREAK"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about DAYY/BREAK"
+        ]
+      ],
+      "kicker": "Prepared for DAYY/BREAK by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "DAYY/BREAK has a real place behind it. The hero never says Colombia.",
+      "keep": "The street photograph in the hero. Colombian jerseys worn in a real corner shop, with a Poker beer sign behind. It shows a place, not a studio."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.1,
+          "y": 0.81,
+          "quote": "Worn as streetwear. Built on history.",
+          "what": "The line that says what DAYY/BREAK is sits in the smallest type on the page.",
+          "why": "It is the best positioning line the brand has, and it is set tiny in orange on a dark photo.",
+          "how": "Give the line the size the collection name has now.",
+          "label": "Your hero line",
+          "cost": "Visitors read a collection name and miss what the brand stands for."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.22,
+          "y": 0.72,
+          "quote": "Project D/B",
+          "what": "The biggest words are a collection name, not the brand.",
+          "why": "DAYY/BREAK, D/B and a slash logo all appear on one screen, so a visitor meets three names.",
+          "how": "Pick the name people should repeat and show it first.",
+          "label": "Your headline",
+          "cost": "People remember the drop and not the brand that made it."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.56,
+          "y": 0.04,
+          "quote": "Colombia Football Jersey",
+          "what": "Colombia only appears in the scrolling banner, in small capitals.",
+          "why": "The Colombian football jerseys are the story only this brand can tell, and the hero never says the word.",
+          "how": "Say Colombia near the headline and let the photograph prove it.",
+          "label": "Your banner",
+          "cost": "A shopper takes it for another streetwear drop.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at DAYY/BREAK. I spent some time on your site. Three things stood out, and they point the same way.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=dayybreak",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on DAYY/BREAK's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Stüssy, from another category. Its name and its mark are the same thing wherever you meet it.",
+  "path": "dayybreak-jx0eo5eqmwmw"
+}

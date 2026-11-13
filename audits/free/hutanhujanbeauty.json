@@ -1,0 +1,122 @@
+{
+  "slug": "hutanhujanbeauty",
+  "brand": "Hutan Hujan Beauty",
+  "title": "Hutan Hujan Beauty Branding Analysis",
+  "description": "A short look at Hutan Hujan Beauty's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Hutan Hujan Beauty Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Hutan Hujan Beauty Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Hutan Hujan Beauty"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Hutan Hujan Beauty"
+        ]
+      ],
+      "kicker": "Prepared for Hutan Hujan Beauty by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Hutan Hujan has a world. Its name for itself leaves people outside it.",
+      "keep": "The rainforest idea. \"A ritual skincare house rooted in Indonesian biodiversity\" is specific and nobody else can say it."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.45,
+          "y": 0.055,
+          "quote": "Skincare Beyond Physical",
+          "what": "The profile name says what the skincare is not.",
+          "why": "\"Beyond Physical\" is abstract. A new visitor learns the mood, not the product.",
+          "how": "Put a plain word for what you sell next to the poetic one.",
+          "label": "Your name",
+          "cost": "Search and first glances land on a mood, not on a skincare house."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.75,
+          "area": "Founder's Diary tiles switch between lime, teal and olive backgrounds",
+          "what": "The Founder's Diary tiles change colour from one to the next.",
+          "why": "Lime, teal and olive backgrounds make the series look like three different accounts.",
+          "how": "Pick one background for the series and keep it.",
+          "label": "Your grid",
+          "cost": "The grid reads as scattered, and a house with a ritual should look like one."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.78,
+          "y": 0.46,
+          "quote": "it was created to become a gentle pause",
+          "what": "The strongest positioning line is buried in a caption.",
+          "why": "It says the serum is a pause, not another product, which is exactly why not the one next door.",
+          "how": "Move this idea to the bio and the first tile.",
+          "label": "Your captions",
+          "cost": "Most visitors never open the caption where the reason lives.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Hutan Hujan Beauty. I spent some time on what people see first. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=hutanhujanbeauty",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Hutan Hujan Beauty's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Le Labo, from another category. It tells you where it is made before it tells you what it is.",
+  "path": "hutanhujanbeauty-kq4utf0kk86k"
+}

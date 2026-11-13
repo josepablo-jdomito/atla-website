@@ -1,0 +1,123 @@
+{
+  "slug": "michellekalifdesign",
+  "brand": "Michelle Kalif",
+  "title": "Michelle Kalif Branding Analysis",
+  "description": "A short look at Michelle Kalif's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Michelle Kalif Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Michelle Kalif Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "reference": "Penguin Books, from another category. Orange spines turned a catalog into one recognizable shelf.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Michelle Kalif"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Michelle Kalif"
+        ]
+      ],
+      "kicker": "Prepared for Michelle Kalif by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Michelle asks her clients to stand apart. Her own front door has not done it yet.",
+      "keep": "The red and black positioning posts. They read as a studio style in one glance."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.1,
+          "quote": "Cuido da forma como a sua marca se comunica, se apresenta e é percebida.",
+          "what": "The bio describes the service, not who it is for or what is different.",
+          "why": "Every branding studio cares for how a brand is perceived. The bio does not say why Michelle.",
+          "how": "Name the client you do your best work for and the one thing you change in their brand.",
+          "label": "Your bio",
+          "cost": "Prospects hear the same sentence from every designer on their feed."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.65,
+          "quote": "Querer uma marca mais reconhecida não combina com ser igual à de todo mundo",
+          "what": "She writes that a recognizable brand should not look like everyone else's. Her grid changes look from tile to tile.",
+          "why": "Maroon, blue, cream and black, posters and travel photographs. The studio asks for a look and does not show one.",
+          "how": "Choose two colors and one layout for the posts that carry the studio's voice, and keep life photos in highlights.",
+          "label": "Your grid",
+          "cost": "A visitor sees a person with taste and has to guess what the studio looks like."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.85,
+          "quote": "o que todo mundo deixou de fazer, mas ainda faria diferença para o seu cliente",
+          "what": "Her best idea is a question about her market: recover what everyone stopped doing.",
+          "why": "It is a point of view only she has written, and it lives in one post, not in the studio's position.",
+          "how": "Make this the studio's stance and give the method a name.",
+          "label": "Your caption",
+          "cost": "A strong idea stays a post instead of becoming the reason to hire her.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Michelle Kalif. I spent some time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=michellekalifdesign",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Michelle Kalif's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "path": "michellekalifdesign-o986ml2d8kzs"
+}

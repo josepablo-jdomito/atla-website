@@ -1,0 +1,109 @@
+{
+  "slug": "thenurserystore",
+  "brand": "The Nursery Store",
+  "title": "The Nursery Store Branding Analysis",
+  "description": "A short look at The Nursery Store's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "The Nursery Store Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the The Nursery Store Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about The Nursery Store"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about The Nursery Store"
+        ]
+      ],
+      "kicker": "Prepared for The Nursery Store by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "The Nursery Store has a warm voice and thirty eight years of history, and both are in small type under the loudest banner.",
+      "keep": "The line about being there since 1987. It sounds like a person, and no competitor can copy it."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "image": "front-site.png",
+      "image2": null,
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.89,
+          "quote": "You've got this. We've got you - since 1987.",
+          "what": "The tagline is the only line with a voice.",
+          "why": "It is the reassurance a nervous parent needs, and it is set small beneath a banner that sounds nothing like it.",
+          "how": "Give the line the headline position and let it set the tone.",
+          "label": "Your tagline",
+          "cost": "The warmest thing on the page is read after the loudest.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.24,
+          "y": 0.14,
+          "quote": "Puggle",
+          "what": "Puggle is the store's own pushchair brand, listed beside ordinary categories.",
+          "why": "A shop that makes its own product has something no other retailer can sell, and the menu treats it as one more shelf.",
+          "how": "Introduce Puggle as the brand's own point of view.",
+          "label": "Your menu",
+          "cost": "A retailer that sells the same brands as everyone else competes on the shelf."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.1,
+          "y": 0.08,
+          "area": "The serif The Nursery Store wordmark at top left of the header",
+          "what": "The name is a description of the shop.",
+          "why": "A nursery store is what a dozen retailers are called, and the serif wordmark carries a softness that the name does not.",
+          "how": "Let the wordmark and the 1987 story do the naming.",
+          "label": "Your name",
+          "cost": "Parents remember a store by its name, and this one reads as a category.",
+          "kind": "risk"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=thenurserystore",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on The Nursery Store's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "John Lewis, from another category. Its history and its warmth are the brand, and it says so in a few words.",
+  "path": "thenurserystore-ox6zqt6r5drb"
+}
