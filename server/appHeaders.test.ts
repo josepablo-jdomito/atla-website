@@ -55,10 +55,8 @@ describe("sitemap and feed origin", () => {
       { "x-forwarded-host": "evil.attacker.example", "x-forwarded-proto": "http" },
     ]) {
       const sitemap = await get("/api/sitemap.xml", headers);
-      expect(sitemap.status).toBe(200);
-      const locs = Array.from(sitemap.body.matchAll(/<loc>([^<]*)<\/loc>/g), (m) => m[1]);
-      expect(locs.length).toBeGreaterThan(0);
-      for (const loc of locs) expect(loc.startsWith(`${SITE_ORIGIN}/`), loc).toBe(true);
+      expect(sitemap.status).toBe(301);
+      expect(sitemap.headers.location).toBe(`${SITE_ORIGIN}/sitemap.xml`);
       expect(sitemap.body).not.toMatch(/phish\.example|attacker/);
 
       const feed = await get("/api/feed.xml", headers);

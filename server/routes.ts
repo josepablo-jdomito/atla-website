@@ -94,19 +94,6 @@ function escapeXml(value: string) {
     .replaceAll("'", "&apos;");
 }
 
-function createSitemapXml(origin: string, staticPaths: string[], projectSlugs: string[], articleSlugs: string[]) {
-  const urls = [
-    ...staticPaths,
-    ...projectSlugs.map((slug) => `/projects/${slug}`),
-    ...articleSlugs.map((slug) => `/journal/${slug}`),
-  ]
-    .filter((value, index, all) => all.indexOf(value) === index)
-    .map((pathname) => `  <url>\n    <loc>${escapeXml(`${origin}${pathname}`)}</loc>\n  </url>`)
-    .join("\n");
-
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
-}
-
 function createRssFeedXml(origin: string, articles: Awaited<ReturnType<typeof fetchJournalArticlesFromSanity>>) {
   const items = articles.slice(0, 20).map((article) => {
     const publishedAt = article.publishedAt ? new Date(article.publishedAt) : null;
@@ -333,50 +320,12 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/sitemap.xml", async (req, res) => {
-    try {
-      const origin = SITE_ORIGIN;
-      // Three independent reads, in parallel; the projects come from the lite list (slugs only needed).
-      const [projects, articles, categories] = await Promise.all([
-        isProjectSanityConfigured() ? fetchProjectListFromSanity() : storage.getAllProjects(),
-        fetchJournalArticlesFromSanity(),
-        fetchJournalCategoriesFromSanity(),
-      ]);
-      const xml = createSitemapXml(
-        origin,
-        [
-          "/",
-          "/about",
-          "/services",
-          "/brand-check",
-          "/audit",
-          "/hospitality",
-          "/hospitality-branding",
-          "/cpg-branding",
-          "/wellness-branding",
-          "/saas-branding",
-          "/saas-rebranding",
-          "/startup-branding",
-          "/branding-agency-austin",
-          "/brand-strategy",
-          "/how-we-work",
-          "/programs",
-          "/journal",
-          "/privacy",
-          "/terms",
-          ...categories.map((category) => `/journal/category/${category.slug}`),
-        ],
-        projects.map((project) => project.slug),
-        articles.map((article) => article.slug),
-      );
-
-      res.setHeader("Content-Type", "application/xml");
-      res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
-      res.send(xml);
-    } catch (err) {
-      console.error("Failed to generate sitemap:", err);
-      res.status(500).send("Failed to generate sitemap");
-    }
+  // The file robots.txt names is /sitemap.xml, written at build time. This path only
+  // exists so an old Search Console submission lands on that file. Absolute on purpose:
+  // the location must not follow Host (appHeaders.test.ts).
+  app.get("/api/sitemap.xml", (_req, res) => {
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.redirect(301, `${SITE_ORIGIN}/sitemap.xml`);
   });
 
   app.get("/api/feed.xml", async (req, res) => {

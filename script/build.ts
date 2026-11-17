@@ -22,6 +22,7 @@ import { industryServiceSchemaForPath } from "../client/src/lib/serviceSchema.ts
 import { buildServicesStructuredData } from "../client/src/lib/sitePageSchema.ts";
 import { siteCopy } from "../client/src/content/siteCopy.ts";
 import { withSelectedWork } from "../client/src/lib/llmsTxt.ts";
+import { pathnameRedirects, type RedirectRule } from "../shared/indexablePath.ts";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -914,11 +915,15 @@ async function prerenderRoutes() {
     await writeRoutePage(pathname, html);
   }
 
+  const redirectRules = (
+    JSON.parse(await readFile(path.resolve("vercel.json"), "utf8")) as { redirects?: RedirectRule[] }
+  ).redirects ?? [];
   const sitemapXml = createSitemapXml({
     staticPaths: staticRoutes.filter((route) => route.includeInSitemap).map((route) => route.pathname),
     projects,
     articles,
     categories,
+    redirectRules,
   });
   await writeFile(path.resolve("dist/public/sitemap.xml"), sitemapXml, "utf8");
 
@@ -990,19 +995,26 @@ function createSitemapXml({
   projects,
   articles,
   categories,
+  redirectRules,
 }: {
   staticPaths: string[];
   projects: Project[];
   articles: JournalArticle[];
   categories: JournalCategory[];
+  redirectRules: readonly RedirectRule[];
 }) {
-  const urls = [
+  const paths = [
     ...staticPaths,
     ...projects.map((project) => `/projects/${project.slug}`),
     ...articles.map((article) => `/journal/${article.slug}`),
     ...categories.map((category) => `/journal/category/${category.slug}`),
-  ]
-    .filter((value, index, all) => all.indexOf(value) === index)
+  ].filter((value, index, all) => all.indexOf(value) === index);
+  const dropped = paths.filter((pathname) => pathnameRedirects(pathname, redirectRules));
+  if (dropped.length > 0) {
+    console.warn(`[sitemap] omitted ${dropped.length} redirecting URL(s): ${dropped.join(", ")}`);
+  }
+  const urls = paths
+    .filter((pathname) => !pathnameRedirects(pathname, redirectRules))
     .map((pathname) => `  <url>\n    <loc>${SITE_ORIGIN}${pathname}</loc>\n  </url>`)
     .join("\n");
 
