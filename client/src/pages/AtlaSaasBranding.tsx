@@ -129,6 +129,13 @@ export default function AtlaSaasBranding() {
           </a>
           .
         </LongformParagraph>
+        <LongformParagraph>
+          If the product is already in market and the brand no longer matches it, see{" "}
+          <a href="/saas-rebranding" className="longform-link">
+            SaaS rebranding
+          </a>
+          .
+        </LongformParagraph>
       </LongformSection>
 
       <LongformCta

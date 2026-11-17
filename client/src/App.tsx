@@ -27,6 +27,7 @@ const pages: AppPages = {
   AtlaCpgBranding: lazy(() => import("@/pages/AtlaCpgBranding")),
   AtlaWellnessBranding: lazy(() => import("@/pages/AtlaWellnessBranding")),
   AtlaSaasBranding: lazy(() => import("@/pages/AtlaSaasBranding")),
+  AtlaSaasRebranding: lazy(() => import("@/pages/AtlaSaasRebranding")),
   AtlaStartupBranding: lazy(() => import("@/pages/AtlaStartupBranding")),
   AtlaBrandingAgencyAustin: lazy(() => import("@/pages/AtlaBrandingAgencyAustin")),
   AtlaBrandStrategy: lazy(() => import("@/pages/AtlaBrandStrategy")),

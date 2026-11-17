@@ -161,6 +161,13 @@ export const INDUSTRY_SERVICE_PAGES = {
       },
     ],
   },
+  saasRebranding: {
+    path: "/saas-rebranding",
+    name: "SaaS rebranding for software that has outgrown its launch brand",
+    description:
+      "Atla rebuilds brand strategy and identity for SaaS companies that have outgrown the launch brand. See the rebrand work for Anything AI.",
+    faqItems: [],
+  },
   startup: {
     path: "/startup-branding",
     name: "Startup branding for companies about to raise, or just done",

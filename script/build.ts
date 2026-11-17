@@ -468,6 +468,7 @@ function routePageModule(pathname: string) {
     "/cpg-branding": "AtlaCpgBranding",
     "/wellness-branding": "AtlaWellnessBranding",
     "/saas-branding": "AtlaSaasBranding",
+    "/saas-rebranding": "AtlaSaasRebranding",
     "/startup-branding": "AtlaStartupBranding",
     "/branding-agency-austin": "AtlaBrandingAgencyAustin",
     "/brand-strategy": "AtlaBrandStrategy",
@@ -706,6 +707,14 @@ async function prerenderRoutes() {
       image: workFeaturedImage,
       includeInSitemap: true,
       structuredData: industryServiceSchemaForPath("/saas-branding"),
+    },
+    {
+      pathname: "/saas-rebranding",
+      title: formatMetaTitle("SaaS Rebranding Agency", "Identity for Growing Software Teams"),
+      description: "Atla rebuilds brand strategy and identity for SaaS companies that have outgrown the launch brand. See the rebrand work for Anything AI.",
+      image: workFeaturedImage,
+      includeInSitemap: true,
+      structuredData: industryServiceSchemaForPath("/saas-rebranding"),
     },
     {
       pathname: "/startup-branding",
