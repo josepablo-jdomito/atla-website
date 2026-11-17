@@ -82,6 +82,11 @@
   ],
   "redirects": [
     {
+      "source": "/api/sitemap.xml",
+      "destination": "https://www.atla.design/sitemap.xml",
+      "statusCode": 301
+    },
+    {
       "source": "/",
       "has": [
         {
