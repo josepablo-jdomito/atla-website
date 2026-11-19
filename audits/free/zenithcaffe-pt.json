@@ -1,0 +1,122 @@
+{
+  "slug": "zenithcaffe-pt",
+  "brand": "Zenith Caffè",
+  "title": "Zenith Caffè Branding Analysis",
+  "description": "A short look at Zenith Caffè's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Zenith Caffè Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Zenith Caffè Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Zenith Caffè"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Zenith Caffè"
+        ]
+      ],
+      "kicker": "Prepared for Zenith Caffè by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new guest would. Here is what stood out, in order of weight.",
+      "thesis": "Zenith has 48K followers and four cafés. The bio reads like every brunch spot in Lisbon.",
+      "keep": "Your highlight \"Our People\". It shows the team, which few brunch places bother to do."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.27,
+          "quote": "Brunch Culture",
+          "what": "The headline is the category.",
+          "why": "Brunch culture describes the whole street, not Zenith.",
+          "how": "Say what a morning at Zenith is that the café next door is not.",
+          "label": "Your bio",
+          "cost": "Tourists choose by photo and price, and you are one of many."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.4,
+          "quote": "www.boringbagel.com/lp/zenithhome",
+          "what": "The bio link goes to another brand's page.",
+          "why": "Your most valuable click lands on a bagel shop's site.",
+          "how": "Give Zenith its own page and keep sister brands as guests.",
+          "label": "Your link",
+          "cost": "Followers learn a second name before they learn yours.",
+          "kind": "risk"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "quote": "Mindful Bites",
+          "what": "Nine highlights mix menus, pets, press and gift cards.",
+          "why": "Without a clear order nothing tells a guest what Zenith stands for.",
+          "how": "Lead with the two that show your idea.",
+          "label": "Your highlights",
+          "cost": "Guests see a busy café, not a brand."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Zenith, and you said you want to look like the brand you are. I spent time on your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=zenithcaffe-pt",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Zenith Caffè's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Blue Bottle, from coffee. One idea about care, held across every café and cup.",
+  "path": "zenithcaffe-pt-wfyi3nhcv2xd"
+}

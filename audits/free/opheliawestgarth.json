@@ -1,0 +1,122 @@
+{
+  "slug": "opheliawestgarth",
+  "brand": "Ophelia Westgarth",
+  "title": "Ophelia Westgarth Branding Analysis",
+  "description": "A short look at Ophelia Westgarth's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Ophelia Westgarth Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Ophelia Westgarth Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Ophelia Westgarth"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Ophelia Westgarth"
+        ]
+      ],
+      "kicker": "Prepared for Ophelia Westgarth by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Your posters look like Ophelia. Your bio looks like every café.",
+      "keep": "The hand drawn posters for supper club, steak night and pasta night. Nobody else on the street has them."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.45,
+          "y": 0.24,
+          "quote": "Your neighbourhood café by day, wine bar by night.",
+          "what": "The bio describes a format, not Ophelia.",
+          "why": "This is why it looks like everyone else: café by day, wine bar by night is the line half of Melbourne uses.",
+          "how": "Write the one sentence only Ophelia could say, in the voice of the posters.",
+          "label": "Your bio",
+          "cost": "New neighbours file you with every other all day café."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.45,
+          "y": 0.265,
+          "quote": "Mon: 7am till 4pm",
+          "what": "Opening hours take the space of a promise.",
+          "why": "Hours are useful, but they push out any reason to choose you.",
+          "how": "Move hours to the link and give the bio to the idea.",
+          "label": "Your bio",
+          "cost": "The most read words on your profile are a timetable."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.6,
+          "area": "Three hand drawn posters for supper club, steak night and pasta night",
+          "what": "The illustrated posters are the most Ophelia thing you own.",
+          "why": "They already have a hand, a palette and a voice that no neighbour shares.",
+          "how": "Make that drawing style the identity: signage, menus, bio and site.",
+          "label": "Your grid",
+          "cost": "It stays a weekly poster instead of becoming the brand.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us Ophelia looks like everyone else and you want it to look like the place you are. I agree with half of that.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=opheliawestgarth",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Ophelia Westgarth's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Noma, from another category. Every menu and poster reads like the same hand drew it.",
+  "path": "opheliawestgarth-6cauzetl87sa"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "theoryofease",
+  "brand": "Theory of Ease",
+  "title": "Theory of Ease Branding Analysis",
+  "description": "A short look at Theory of Ease's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Theory of Ease Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Theory of Ease Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Theory of Ease"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Theory of Ease"
+        ]
+      ],
+      "kicker": "Prepared for Theory of Ease by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way someone who just found you after the rename would. Here is what stood out.",
+      "thesis": "Theory of Ease has a lovely line and a product name that pull in two directions.",
+      "keep": "Your line \"For the air you live in.\" It is short, unexpected, and nobody in skincare owns air yet."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "For the air you live in.",
+          "what": "The best line asks the reader to solve a riddle.",
+          "why": "Without a word on what air does to skin, a new visitor has to guess why this moisturizer is different from Eadem or anyone else.",
+          "how": "Keep the line, and put one plain sentence next to it about the problem it solves.",
+          "label": "Your line",
+          "cost": "People who arrive from Instagram still cannot say what you do after the first screen."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.55,
+          "quote": "Reservoir, a morning moisturizer.",
+          "what": "The product, the brand and the idea each have a different name.",
+          "why": "Theory of Ease, Reservoir and the air are three ideas, and a pre launch brand can only teach one at a time.",
+          "how": "Choose the idea the rest serve, and let the product name prove it.",
+          "label": "Your names",
+          "cost": "After a rename, every extra name is one more thing people confuse."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.06,
+          "quote": "THE FORMULA THE AIR",
+          "what": "The menu already hints at the story you want to tell.",
+          "why": "A formula and the air as two pages is the start of a point of view a competitor cannot copy.",
+          "how": "Build the whole front door around that pair, before launch, so Instagram and the site say the same thing.",
+          "label": "Your structure",
+          "cost": "Without it, January arrives with a product and no reason to remember it.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said the messaging across platforms is not landing, and that the rename made things harder. I spent some time on your site. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=theoryofease",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Theory of Ease's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category of its own making. Every product name and every line points back to one idea.",
+  "path": "theoryofease-03oe3mw9guro"
+}

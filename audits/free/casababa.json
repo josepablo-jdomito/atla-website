@@ -1,0 +1,122 @@
+{
+  "slug": "casababa",
+  "brand": "Casa Baba",
+  "title": "Casa Baba Branding Analysis",
+  "description": "A short look at Casa Baba's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Casa Baba Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Casa Baba Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Casa Baba"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Casa Baba"
+        ]
+      ],
+      "kicker": "Prepared for Casa Baba by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Casa Baba already has its punchy line. It is in small type.",
+      "keep": "\"No needles, no machines.\" Five words that set you apart from most clinics."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.55,
+          "quote": "Sculpt & Release. By hand.",
+          "what": "Your clearest message sits below the booking line.",
+          "why": "Four words say what you do and how, faster than any paragraph.",
+          "how": "Make it the headline and let everything else support it.",
+          "label": "Your site",
+          "cost": "People read the method name and miss the message."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.4,
+          "quote": "The Face Up™ Method is a hands-on sculpting treatment designed to release tension and highlight your natural features.",
+          "what": "The opening explains a method other practitioners also offer.",
+          "why": "The reason to book Casa Baba is Barbora, and she appears later.",
+          "how": "Lead with her hands and her studio, then name the method.",
+          "label": "Your site",
+          "cost": "You compete with every Face Up practitioner on price and distance."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.4,
+          "y": 0.25,
+          "quote": "Face Up™ Method & Biofield Tuning",
+          "what": "The bio lists two methods and four body areas.",
+          "why": "A list is the opposite of punchy.",
+          "how": "Use the same four words as the site, and nothing else.",
+          "label": "Your bio",
+          "cost": "Followers cannot say in one line what you do."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something is off and you want a clear, punchy message, after trying different ways to say it. You already wrote it. Here is where.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=casababa",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Casa Baba's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. It says less and lets the hands and materials speak.",
+  "path": "casababa-ndk3bg014bg2"
+}

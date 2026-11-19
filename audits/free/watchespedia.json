@@ -1,0 +1,122 @@
+{
+  "slug": "watchespedia",
+  "brand": "Watchespedia",
+  "title": "Watchespedia Branding Analysis",
+  "description": "A short look at Watchespedia's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Watchespedia Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Watchespedia Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Watchespedia"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Watchespedia"
+        ]
+      ],
+      "kicker": "Prepared for Watchespedia by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a collector in the Gulf would on a first visit. Here is what stood out, in order of weight.",
+      "thesis": "Watchespedia covers the best watches in the world. The front page does not yet say whose voice that is.",
+      "keep": "Your regional buying guides, like \"Rolex Prices in Saudi Arabia 2026 | SAR Cost Guide\". Nobody in the global press serves that reader this directly."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.25,
+          "quote": "Maximum Brilliance: The Franck Muller × Barbie™ Vintage Diamond-Diamond",
+          "what": "The first screen is a press release with the brand's own name on it.",
+          "why": "Every watch site runs the same launch news on the same day, so the lead story says nothing about why read it here.",
+          "how": "Open with what only Watchespedia says: your take, your region, your reader.",
+          "label": "Your lead story",
+          "cost": "Readers treat you as one more feed and leave for the brand's own page."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.06,
+          "quote": "HOME E-SHOP WATCHES JEWELLERY LIFESTYLE BRANDS PORTRAITS PRESS",
+          "what": "The menu tries to be a shop, a magazine and a directory at once.",
+          "why": "When a site is everything, a reader cannot say in one line what it is for.",
+          "how": "Decide which of these is the brand and let the others sit under it.",
+          "label": "Your menu",
+          "cost": "The thing you are best at gets the same weight as the things you do on the side."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.8,
+          "quote": "Prices & buying guides",
+          "what": "Your most useful section is a list of links near the bottom.",
+          "why": "Prices in SAR and where to buy in Saudi Arabia and the UAE is the gap the global titles leave open.",
+          "how": "Make the Gulf buyer the center of the brand, not a footer block.",
+          "label": "Your gem",
+          "cost": "You keep competing with Hodinkee on their ground while your own ground sits unclaimed.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something is off and you cannot name it. I spent some time on your site. Here is my best attempt to name it.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=watchespedia",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Watchespedia's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Monocle, from another category. Its point of view on a city matters more than the news it reports.",
+  "path": "watchespedia-2s97r0qlgrsj"
+}

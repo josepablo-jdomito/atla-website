@@ -1,0 +1,123 @@
+{
+  "slug": "officialstreetcoffeebar",
+  "brand": "Street Coffee Bar",
+  "title": "Street Coffee Bar Branding Analysis",
+  "description": "A short look at Street Coffee Bar's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Street Coffee Bar Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Street Coffee Bar Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Street Coffee Bar"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Street Coffee Bar"
+        ]
+      ],
+      "kicker": "Prepared for Street Coffee Bar by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way someone planning a Tulsa wedding would. Here is what stood out.",
+      "thesis": "Street Coffee Bar says DIY in its brief and catering company on its site.",
+      "keep": "Your line \"Built for the way Tulsa gathers.\" It is local, warm and yours."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.3,
+          "quote": "Tulsa Coffee Cart Catering and Espresso Bar",
+          "what": "The headline reads like a search listing.",
+          "why": "A DIY brand is chosen for its attitude, and this line could belong to any cart in town.",
+          "how": "Lead with the street, the people and the attitude, and let the search words sit lower down.",
+          "label": "Your headline",
+          "cost": "Couples compare you on price with every other cart in Tulsa."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.6,
+          "quote": "Built for the way Tulsa gathers.",
+          "what": "Your best line is buried mid page.",
+          "why": "It already says who you are for and sounds like a person, not a company.",
+          "how": "Promote it to the headline.",
+          "label": "Your line",
+          "cost": "The one sentence with the brand's voice is the one most people miss.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.3,
+          "y": 0.25,
+          "quote": "Street Coffee Bar | Tulsa Mobile Coffee Catering",
+          "what": "The Instagram name is a job title.",
+          "why": "Street Coffee Bar is a name with edge, and the suffix turns it into a directory entry.",
+          "how": "Let the name stand alone and show the DIY side in the grid and bio.",
+          "label": "Your profile",
+          "cost": "The brand reads as a service, not a scene people want to be part of."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us the DIY feel is part of the brand's DNA. I spent some time on your site and your Instagram. Here is where that DNA goes missing.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=officialstreetcoffeebar",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Street Coffee Bar's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Supreme, from streetwear. It kept the handmade, local edge even as it grew, and that edge is what people pay for.",
+  "path": "officialstreetcoffeebar-ad8ifehjw0ac"
+}

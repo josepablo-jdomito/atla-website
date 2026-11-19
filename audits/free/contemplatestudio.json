@@ -1,0 +1,123 @@
+{
+  "slug": "contemplatestudio",
+  "brand": "Contemplate",
+  "title": "Contemplate Branding Analysis",
+  "description": "A short look at Contemplate's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Contemplate Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Contemplate Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Contemplate"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Contemplate"
+        ]
+      ],
+      "kicker": "Prepared for Contemplate by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new client would. Here is what stood out, in order of weight.",
+      "thesis": "Contemplate's strength is two founders from two crafts. Neither the site nor Instagram says so.",
+      "keep": "Your Instagram highlight names, \"Contemplations\" and \"On site\". They already show a point of view on hospitality."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.32,
+          "quote": "@mirefood+@alicia.finet",
+          "what": "The two founders appear as two tags at the end.",
+          "why": "The pairing of an interior architect and a food designer is the reason to pick you, and it reads as a footnote.",
+          "how": "Say who you are and what the two crafts make together, in the first line.",
+          "label": "Your bio",
+          "cost": "Clients book a design studio, not the rare pair you are."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "shaping places , drawing spaces , curating atmospheres",
+          "what": "The site sentence lists verbs any studio could claim.",
+          "why": "Shaping, drawing and curating describe many studios; food, sound and space together describe only you.",
+          "how": "Rewrite this line around the full sensory scope you offer.",
+          "label": "Your site",
+          "cost": "Your widest offer is sold as the narrowest one."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.29,
+          "quote": "Vision Strategy | Concept Creation |",
+          "what": "The service list leaves out food and sound.",
+          "why": "Those are the services no interior studio next door can offer.",
+          "how": "Name food design and sound in the service line.",
+          "label": "Your services",
+          "cost": "Prospects never learn the work only you can do.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Contemplate, and you said people find it a pity that your pairing of profiles does not show. I agree, and it is the first finding below.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=contemplatestudio",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Contemplate's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Studio KO, from architecture. Two founders, one signature, and every project shows both minds at work.",
+  "path": "contemplatestudio-3tz3wicu5bs4"
+}

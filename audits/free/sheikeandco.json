@@ -1,0 +1,124 @@
+{
+  "slug": "sheikeandco",
+  "brand": "Sheike",
+  "title": "Sheike Branding Analysis",
+  "description": "A short look at Sheike's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Sheike Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Sheike Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Sheike"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Sheike"
+        ]
+      ],
+      "kicker": "Prepared for Sheike by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Sheike's Instagram is a world. The site is a catalogue.",
+      "keep": "Your Instagram highlights, from FLORAL ATELIER to SCENT WORKSHOP. They show a house with events, not just a rack of dresses."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.2,
+          "quote": "Discover our Resort 27 Collection, ATTESA Chapter I",
+          "what": "Instagram tells the season as a story, with a name and a chapter.",
+          "why": "That story is why someone picks Sheike over the next dress label. It is the thing that feels off when it goes missing.",
+          "how": "Carry the ATTESA chapter onto the first screen of the site, in the same words.",
+          "label": "Your bio",
+          "cost": "Visitors who arrive from Instagram land somewhere that no longer feels like Sheike."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "",
+          "what": "The first screen of the site is a banner over rows of product tiles.",
+          "why": "Nothing on it speaks in Sheike's own voice, so it reads like any fashion store.",
+          "how": "Open with one image and one line from the current chapter before the grid.",
+          "label": "Your site",
+          "cost": "The homepage looks interchangeable with stores that sell for less.",
+          "area": "a banner over rows of product tiles with names and sizes"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.6,
+          "y": 0.45,
+          "quote": "SHEIKE SPA",
+          "what": "Spa days, a scent workshop and a styling suite live only in your highlights.",
+          "why": "These are experiences no fast fashion rival owns.",
+          "how": "Give them a place on the site as part of who Sheike is.",
+          "label": "Your highlights",
+          "cost": "The richest part of the brand stays a story that disappears in a day.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something feels off and you can't name it. I think I can: your site and your Instagram read like two different brands. Here is where it shows.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=sheikeandco",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Sheike's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from another category. Every store and every page reads like the same room.",
+  "path": "sheikeandco-h3vz4oe0nyx2"
+}

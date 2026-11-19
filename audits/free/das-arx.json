@@ -1,0 +1,123 @@
+{
+  "slug": "das-arx",
+  "brand": "ARX Hotel",
+  "title": "ARX Hotel Branding Analysis",
+  "description": "A short look at ARX Hotel's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "ARX Hotel Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the ARX Hotel Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about ARX Hotel"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about ARX Hotel"
+        ]
+      ],
+      "kicker": "Prepared for ARX Hotel by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a guest planning a winter week would. Here is what stood out.",
+      "thesis": "ARX Hotel looks like a ski hotel, and the restaurant you are proud of is nowhere on the first screen.",
+      "keep": "The hero film and the tall ARX HOTEL wordmark. It looks confident and nothing like the chalets next door."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.55,
+          "area": "A skier on a groomed slope fills the whole first screen",
+          "what": "The first screen sells the mountain.",
+          "why": "Every hotel in Schladming can show a skier, so the film does not say why stay at ARX.",
+          "how": "Let the first screen show what only ARX has: the table.",
+          "label": "Your hero",
+          "cost": "Guests compare you to every ski hotel on price and location."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.08,
+          "y": 0.66,
+          "area": "ARX HOTEL wordmark in the lower left corner",
+          "what": "The wordmark says hotel, not restaurant concept.",
+          "why": "If the food is the concept, the name and the line under it have to carry it.",
+          "how": "Add one line under ARX HOTEL that names the kitchen.",
+          "label": "Your name",
+          "cost": "Half board reads as a meal plan instead of the reason to book.",
+          "kind": "risk"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.9,
+          "y": 0.74,
+          "quote": "Rohrmoos Schladming",
+          "what": "Your place is your best ingredient.",
+          "why": "Rohrmoos and Schladming give the kitchen a story about the valley that no city restaurant has.",
+          "how": "Tie the food to the place, and let half board become an experience of the valley.",
+          "label": "Your place",
+          "cost": "The local story stays a caption.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said people do not get the concept fast enough, and that the fine dining half board feels old fashioned. I spent some time on your site. Here is where the concept gets lost.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=das-arx",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on ARX Hotel's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Noma, from another world. It made a place on the map because of what is on the plate.",
+  "path": "das-arx-r6i9n5wrb8b4"
+}
