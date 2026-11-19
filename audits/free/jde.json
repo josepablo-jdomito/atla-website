@@ -1,0 +1,123 @@
+{
+  "slug": "jde",
+  "brand": "JDE",
+  "title": "JDE Branding Analysis",
+  "description": "A short look at JDE's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "JDE Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the JDE Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about JDE"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about JDE"
+        ]
+      ],
+      "kicker": "Prepared for JDE by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "JDE already has a point of view with a museum show behind it. The site opens with a list of services.",
+      "keep": "Your project names, ONI CHAIR and COLECCIÓN MALINCHE. Real work with real names, shown first."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.4,
+          "quote": "Somos un estudio de diseño y consultoría que desarrolla proyectos de mobiliario, producto, y espacios públicos y comerciales desde una perspectiva estratégica.",
+          "what": "The first sentence lists four kinds of work.",
+          "why": "A list makes people do the sorting, which is why they do not get it fast.",
+          "how": "Say in one line what a client walks away with, then show the categories.",
+          "label": "Your site",
+          "cost": "Prospects leave before they know what JDE is for."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.75,
+          "quote": "DESIGNBOOM DESTACA MOCKUPS BEFORE FUCKUPS EN EL MUSEO FRANZ MAYER",
+          "what": "A museum exhibition and a designboom feature sit at the bottom, under News.",
+          "why": "That is the clearest proof of a point of view any studio could ask for.",
+          "how": "Bring the exhibition's idea to the top as the studio's belief.",
+          "label": "Your news",
+          "cost": "The strongest reason to hire JDE reads like a footnote.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.4,
+          "y": 0.2,
+          "quote": "research → strategy → concept → production",
+          "what": "The Instagram bio describes a process every consultancy claims.",
+          "why": "Process is how you work, not why someone should pick you.",
+          "how": "Swap it for the belief behind the process, in your own words.",
+          "label": "Your bio",
+          "cost": "Followers see a studio that could be any studio."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said people do not get it fast enough, and that a new website did not fix it. The words were the issue, not the site. Here is where it shows.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=jde",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on JDE's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Vitra, from another category. It sells chairs as a point of view on how people live.",
+  "path": "jde-hdue3k6zoxba"
+}

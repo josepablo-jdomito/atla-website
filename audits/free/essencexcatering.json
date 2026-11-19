@@ -1,0 +1,123 @@
+{
+  "slug": "essencexcatering",
+  "brand": "Essence Catering",
+  "title": "Essence Catering Branding Analysis",
+  "description": "A short look at Essence Catering's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Essence Catering Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Essence Catering Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Essence Catering"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Essence Catering"
+        ]
+      ],
+      "kicker": "Prepared for Essence Catering by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Essence has an idea nobody else in catering owns. The site says it once and moves on.",
+      "keep": "The phrase \"Responsible gastronomy.\" It is a real stance in a category that mostly sells menus."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "Responsible gastronomy",
+          "what": "Your strongest idea is two words with no explanation.",
+          "why": "This is why people do not get it fast: responsible could mean local, low waste or ethical, and the site never says which.",
+          "how": "Say in one plain sentence what responsible means at Essence.",
+          "label": "Your site",
+          "cost": "Clients book on price because the reason to pay more stays vague.",
+          "kind": "gem"
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.5,
+          "quote": "quality catering for all of your events",
+          "what": "The second half of the line could belong to any caterer.",
+          "why": "Serving every kind of event tells planners you are not the specialist for theirs.",
+          "how": "Name the events you do best and let the rest follow.",
+          "label": "Your site",
+          "cost": "Planners pick the caterer who looks made for their event."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.25,
+          "area": "The bio is written in decorative italic and typewriter unicode letters",
+          "what": "The bio is set in decorative unicode letters.",
+          "why": "Fancy letters read as a party flyer and make the same line harder to read and to find.",
+          "how": "Use plain text and let photos carry the mood.",
+          "label": "Your bio",
+          "cost": "Searches and quick readers miss the one line meant to explain you."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us people do not get Essence fast enough, and a new website did not change that. Here is why.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=essencexcatering",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Essence Catering's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Chez Panisse, from another category. One belief about sourcing became the whole brand.",
+  "path": "essencexcatering-9leaak4bpmkc"
+}

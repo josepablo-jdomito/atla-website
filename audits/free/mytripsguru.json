@@ -1,0 +1,123 @@
+{
+  "slug": "mytripsguru",
+  "brand": "Tripsguru",
+  "title": "Tripsguru Branding Analysis",
+  "description": "A short look at Tripsguru's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Tripsguru Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Tripsguru Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Tripsguru"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Tripsguru"
+        ]
+      ],
+      "kicker": "Prepared for Tripsguru by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Tripsguru has a name with an idea in it. The site speaks like every luxury agency.",
+      "keep": "Your bio line, \"TRAVEL LIKE A GURU.\" It turns the name into a reason."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.35,
+          "quote": "Luxury journeys, Meticulously planned, Seamlessly delivered",
+          "what": "The site headline is the line every luxury agency writes.",
+          "why": "This is the thing that feels off: nothing in it says Tripsguru or Kenya.",
+          "how": "Write the headline from the guru idea, not from luxury adjectives.",
+          "label": "Your site",
+          "cost": "Travellers compare you on price with every agency using the same words."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.3,
+          "quote": "TRAVEL LIKE A GURU",
+          "what": "Your best line lives only on Instagram.",
+          "why": "It is the one sentence that only Tripsguru can say.",
+          "how": "Make it the core of the site and every itinerary page.",
+          "label": "Your bio",
+          "cost": "The name keeps working without its meaning.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.26,
+          "quote": "Safaris • Holidays • Flights • MICE",
+          "what": "The bio sells four businesses in one line.",
+          "why": "Safaris next to MICE makes a luxury agency read as a general travel desk.",
+          "how": "Lead with the one you want to be known for and keep the rest as services.",
+          "label": "Your bio",
+          "cost": "Luxury clients see a booking office, not a curator."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something feels off, even after a new website. I think it is the voice, not the site.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=mytripsguru",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Tripsguru's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aman, from another category. It never says luxury; it describes how the stay feels.",
+  "path": "mytripsguru-kevnsf2jjbxw"
+}

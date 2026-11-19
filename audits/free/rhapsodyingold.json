@@ -1,0 +1,123 @@
+{
+  "slug": "rhapsodyingold",
+  "brand": "Rhapsody in Gold",
+  "title": "Rhapsody in Gold Branding Analysis",
+  "description": "A short look at Rhapsody in Gold's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Rhapsody in Gold Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Rhapsody in Gold Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Rhapsody in Gold"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Rhapsody in Gold"
+        ]
+      ],
+      "kicker": "Prepared for Rhapsody in Gold by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Rhapsody in Gold has a rare idea: Chinese characters in gold. Instagram says only fine jewellery.",
+      "keep": "Your line, \"Poems stitched together in gold\". It is the brand in five words."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "Contemporary Chinese character jewellery in 18k gold",
+          "what": "Your real difference is on the site.",
+          "why": "Chinese character jewellery is a reason no other fine jeweller can claim.",
+          "how": "Make this the first thing every channel says.",
+          "label": "Your site",
+          "cost": "Instagram visitors compare you with every bespoke jeweller."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.27,
+          "quote": "Fine Jewellery that tells your story.",
+          "what": "The bio says what thousands of jewellers say.",
+          "why": "Fine and bespoke tell a visitor nothing about the characters.",
+          "how": "Bring the character idea into the bio.",
+          "label": "Your bio",
+          "cost": "The followers you have never learn what makes you rare."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.4,
+          "quote": "Poems stitched together in gold",
+          "what": "The strongest phrase sits in small print.",
+          "why": "A line this good can carry the whole brand.",
+          "how": "Promote it to the headline on the site and bio.",
+          "label": "Your line",
+          "cost": "Your best words stay unread.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Rhapsody in Gold. I spent some time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=rhapsodyingold",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Rhapsody in Gold's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Tiffany, from jewellery. One colour and one idea, repeated until people own it.",
+  "path": "rhapsodyingold-o6yfj83hro3u"
+}

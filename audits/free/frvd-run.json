@@ -1,0 +1,122 @@
+{
+  "slug": "frvd-run",
+  "brand": "FRVD",
+  "title": "FRVD Branding Analysis",
+  "description": "A short look at FRVD's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "FRVD Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the FRVD Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about FRVD"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about FRVD"
+        ]
+      ],
+      "kicker": "Prepared for FRVD by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new runner would. Here is what stood out, in order of weight.",
+      "thesis": "FRVD has a manifesto in its name. The club page hides it behind a schedule.",
+      "keep": "Your line, \"Forever Ready Versus Delayed.\" Few run clubs have a name that means something."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.28,
+          "quote": "Forever Ready Versus Delayed.",
+          "what": "The meaning of FRVD sits in quotes and then disappears.",
+          "why": "It is the reason a runner joins you instead of another Tuesday club.",
+          "how": "Make the line the voice of everything you post and launch.",
+          "label": "Your name",
+          "cost": "Your launch arrives as a new product, not as FRVD."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.22,
+          "quote": "FRVD RUNNING | NJ RUN CLUB",
+          "what": "The account calls itself a run club first.",
+          "why": "Any new launch needs FRVD to stand for more than a meeting time.",
+          "how": "Decide what FRVD is beyond Tuesdays before you launch.",
+          "label": "Your title",
+          "cost": "The launch inherits the label of a local club."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.6,
+          "y": 0.38,
+          "quote": "forms.gle/cWkvPiumaDcKduad9",
+          "what": "New members go to a plain form.",
+          "why": "The first owned touch with a runner looks like a survey.",
+          "how": "Give joining FRVD its own branded page.",
+          "label": "Your link",
+          "cost": "The welcome feels like admin instead of a team.",
+          "kind": "risk"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at FRVD, and you said you are launching something new. I spent time on your Instagram. Three things stood out, and they matter before a launch.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=frvd-run",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on FRVD's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Nike, from sport. It turned one short line into a reason to show up.",
+  "path": "frvd-run-m86gc15wh9tp"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "superbloomlabs",
+  "brand": "Superbloom Labs",
+  "title": "Superbloom Labs Branding Analysis",
+  "description": "A short look at Superbloom Labs's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Superbloom Labs Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Superbloom Labs Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Superbloom Labs"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Superbloom Labs"
+        ]
+      ],
+      "kicker": "Prepared for Superbloom Labs by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Superbloom has a poetic name. The site sounds like every hangover supplement.",
+      "keep": "Your name. Superbloom suggests recovery as something beautiful, which no rival in the aisle does."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.35,
+          "y": 0.45,
+          "quote": "Your 100% natural herbal solution for hangover recovery & liver support",
+          "what": "The headline is a category description.",
+          "why": "Natural, herbal and liver support is what every hangover brand says.",
+          "how": "Say what only Superbloom believes about the morning after.",
+          "label": "Your headline",
+          "cost": "Shoppers compare you on price per sachet."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.85,
+          "quote": "No Sugar. Vegan. Gluten Free.",
+          "what": "The scrolling line repeats a list of free from claims.",
+          "why": "These are table stakes, and repeating them six times makes them the brand.",
+          "how": "Use this strip for your voice, not for compliance.",
+          "label": "Your ticker",
+          "cost": "The page sounds like a label, not a brand."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.05,
+          "quote": "OUR STORY",
+          "what": "The name promises bloom; the site never uses it.",
+          "why": "A brand name that sets a mood is a rare asset in a functional aisle.",
+          "how": "Build the words and imagery around the bloom idea.",
+          "label": "Your name",
+          "cost": "You pay for a name and get none of its value.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Superbloom Labs, and you said something is off even after a new website. I spent time on the site. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=superbloomlabs",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Superbloom Labs's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Aesop, from skincare. Its botanicals are told with a voice, so the product never reads as a commodity.",
+  "path": "superbloomlabs-fb57jntcdpua"
+}
