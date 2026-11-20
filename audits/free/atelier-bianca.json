@@ -1,0 +1,123 @@
+{
+  "slug": "atelier-bianca",
+  "brand": "Atelier Bianca",
+  "title": "Atelier Bianca Branding Analysis",
+  "description": "A short look at Atelier Bianca's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Atelier Bianca Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Atelier Bianca Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Atelier Bianca"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Atelier Bianca"
+        ]
+      ],
+      "kicker": "Prepared for Atelier Bianca by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Instagram sounds like a seamstress. The new site sounds like a shop.",
+      "keep": "Your bio line, \"Ti chiederanno dove hai preso i tuoi vestiti.\" It is a promise only a made to measure atelier can make."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.4,
+          "quote": "Welcome to our store",
+          "what": "The new site opens like any online store.",
+          "why": "It answers the feeling that something is off: the site talks like a shop while Instagram talks like Carlotta at the bench.",
+          "how": "Open the site in your own voice, with the atelier and the fitting, not the store.",
+          "label": "Your site",
+          "cost": "Visitors meet a shop with no name behind it and compare prices with every other shop."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.2,
+          "quote": "Ti chiederanno dove hai preso i tuoi vestiti",
+          "what": "Your best promise lives only in the Instagram bio.",
+          "why": "It says why Bianca and not a rack: clothes people ask about.",
+          "how": "Make it the first line people read on the site.",
+          "label": "Your bio",
+          "cost": "The line that earns the order never reaches the people who land on the site."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.55,
+          "y": 0.25,
+          "quote": "ORDINI SU MISURA: Aperti",
+          "what": "Made to measure shows up as a status line.",
+          "why": "Tailoring to one body is the reason to choose an atelier over fast fashion, and it reads like opening hours.",
+          "how": "Name the made to measure service as the core of Bianca, on both front doors.",
+          "label": "Your bio",
+          "cost": "The service that sets you apart looks like a footnote.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Atelier Bianca. You said something feels off and a new website did not fix it. I think I can name it.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=atelier-bianca",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Atelier Bianca's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Hermès, from another category. It sells the hands that make the bag before the bag.",
+  "path": "atelier-bianca-x754kt17no6m"
+}

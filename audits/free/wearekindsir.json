@@ -1,0 +1,122 @@
+{
+  "slug": "wearekindsir",
+  "brand": "Kind Sir",
+  "title": "Kind Sir Branding Analysis",
+  "description": "A short look at Kind Sir's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Kind Sir Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Kind Sir Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Kind Sir"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Kind Sir"
+        ]
+      ],
+      "kicker": "Prepared for Kind Sir by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a company buying gifts would. Here is what stood out.",
+      "thesis": "Kind Sir has a sharp offer on Instagram and an empty front door on the site.",
+      "keep": "The stamped tags in your hero shot. The words on the leather show care before anyone reads a line."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.69,
+          "quote": "SHOP NOW",
+          "what": "The site opens with a logo and two words.",
+          "why": "A corporate buyer cannot tell from the first screen that you make custom pieces or that they are made in Australia.",
+          "how": "Say what Kind Sir makes and for whom in one line on the hero.",
+          "label": "Your hero",
+          "cost": "Gift buyers compare you on price because the site gives them nothing else."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.3,
+          "y": 0.25,
+          "quote": "Custom LEATHER GOODS worth keeping Made in Australia with human hands",
+          "what": "Instagram has the line the site is missing.",
+          "why": "Worth keeping and made by human hands is the reason to pay more than a promo supplier.",
+          "how": "Move this line to the site, word for word.",
+          "label": "Your bio",
+          "cost": "The reason to choose you lives in a bio most buyers never open."
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.3,
+          "y": 0.2,
+          "quote": "CUSTOM LEATHER GOODS & CORPORATE GIFTING",
+          "what": "The profile name pulls two ways.",
+          "why": "Custom leather goods and corporate gifting are two different buyers, and the name asks both to fit.",
+          "how": "Choose the lead buyer, and let the other become a line inside it.",
+          "label": "Your name",
+          "cost": "Each buyer sees a brand that is half for someone else."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said your messaging is not clear. I spent some time on your site and your Instagram. Here is where it gets lost.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=wearekindsir",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Kind Sir's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Smythson, from the stationery shelf. It sells leather as something you give to mark a moment, not an accessory.",
+  "path": "wearekindsir-rnxooefvxze5"
+}

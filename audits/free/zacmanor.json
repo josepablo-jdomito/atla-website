@@ -1,0 +1,122 @@
+{
+  "slug": "zacmanor",
+  "brand": "Zac Manor",
+  "title": "Zac Manor Branding Analysis",
+  "description": "A short look at Zac Manor's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Zac Manor Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Zac Manor Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Zac Manor"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Zac Manor"
+        ]
+      ],
+      "kicker": "Prepared for Zac Manor by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Your headline is the promise every brand studio makes. Your clients are better proof than it.",
+      "keep": "The serif headline with the italic turn. The type already looks considered."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.28,
+          "quote": "Be known as the obvious choice",
+          "what": "The headline is a promise any studio could make.",
+          "why": "This is what reads as mediocre: obvious choice is the line of the category.",
+          "how": "Say what you make people the obvious choice for, and for whom.",
+          "label": "Your headline",
+          "cost": "Prospects meet a promise they have seen on ten other studio sites."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.47,
+          "quote": "I partner with teams to build their trust",
+          "what": "The subline describes campaigns, the name describes a person.",
+          "why": "It is unclear whether Zac Manor is a brand studio, a campaign shop or a freelancer.",
+          "how": "Pick one frame and name it the same way everywhere.",
+          "label": "Your subline",
+          "cost": "Prospects cannot tell what they would hire you for."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.77,
+          "area": "Client logos Kona Ice and Pillar Architecture sit in light grey under the hero",
+          "what": "Real client logos sit in light grey under the hero.",
+          "why": "Kona Ice and Pillar Architecture are proof, and they are faded almost out of sight.",
+          "how": "Show the work behind those names right after the headline.",
+          "label": "Your clients",
+          "cost": "Your best evidence reads as a watermark.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us you worry the brand is mediocre and you want it to look like the studio you are. It is not mediocre. It is unspecific.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=zacmanor",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Zac Manor's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Pentagram, from another category. It shows the work first and lets the work make the claim.",
+  "path": "zacmanor-31y6870e001g"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "madebylorena",
+  "brand": "Made By Lorena",
+  "title": "Made By Lorena Branding Analysis",
+  "description": "A short look at Made By Lorena's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Made By Lorena Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Made By Lorena Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Made By Lorena"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Made By Lorena"
+        ]
+      ],
+      "kicker": "Prepared for Made By Lorena by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a business owner in Sydney would. Here is what stood out.",
+      "thesis": "Made By Lorena shows the work beautifully and never says what she does.",
+      "keep": "Your project lines, like \"Commercial property, taken seriously.\" Each one shows you understood the client before the design."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.08,
+          "quote": "Made By Lorena Work About Services Contact",
+          "what": "The first screen is a name and a menu.",
+          "why": "A visitor has to open Services to learn you do brand and websites, which is the slow start you described.",
+          "how": "Put one line under the name that says who you work for and what you make for them.",
+          "label": "Your first screen",
+          "cost": "Business owners skim the photos and leave unsure if you would take their job."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.3,
+          "y": 0.25,
+          "quote": "Your Creative Department.",
+          "what": "Your Instagram says it in one line. The site does not.",
+          "why": "\"Your Creative Department.\" is the clearest offer you have, and it is the reason to pick you over a freelancer with one skill.",
+          "how": "Bring this line to the top of the site and build the work around it.",
+          "label": "Your Instagram",
+          "cost": "The best explanation of the business lives where fewer clients look."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.7,
+          "y": 0.95,
+          "quote": "Booked for the support, stayed for the headliner",
+          "what": "Your captions are the voice, and they are tiny.",
+          "why": "Booked for the support, stayed for the headliner has wit that a template portfolio cannot copy.",
+          "how": "Give these lines the size of a headline.",
+          "label": "Your voice",
+          "cost": "The part that sounds like you reads like a footnote.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said people do not get it fast enough. I spent some time on your site and your Instagram. Here is where the time goes.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=madebylorena",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Made By Lorena's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Pentagram, from another scale entirely. Its home page is the work, but the line under each piece tells you the problem it solved.",
+  "path": "madebylorena-7juk4mp4swdx"
+}

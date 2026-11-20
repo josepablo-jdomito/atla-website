@@ -1,0 +1,123 @@
+{
+  "slug": "designaholic-mx",
+  "brand": "Designaholic",
+  "title": "Designaholic Branding Analysis",
+  "description": "A short look at Designaholic's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Designaholic Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Designaholic Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Designaholic"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Designaholic"
+        ]
+      ],
+      "kicker": "Prepared for Designaholic by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Designaholic has six seasons of Mexican design voices. The front door talks like any design newsletter.",
+      "keep": "Your bio, \"Amplificamos la conversación sobre la cultura de diseño y las industrias creativas a través de sus protagonistas\". It names the people, not the trends."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.6,
+          "quote": "Lo más relevante del diseño, cada semana.",
+          "what": "The site's promise is a line any design outlet could print.",
+          "why": "Your edge is the protagonists of Mexican design, and this line leaves them out.",
+          "how": "Put the people and the country in the promise.",
+          "label": "Your site",
+          "cost": "New visitors read you as one more design digest."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.35,
+          "quote": "Temporada 06 | Episodio 287",
+          "what": "287 episodes is an archive nobody else in Mexico has.",
+          "why": "It is proof of authority, shown as one more item in a feed.",
+          "how": "Present the episodes as a library of Mexican design, searchable by person.",
+          "label": "Your podcast",
+          "cost": "The archive works as content once and then disappears.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 2,
+          "x": 0.5,
+          "y": 0.25,
+          "quote": "linktr.ee/Designaholic",
+          "what": "Instagram sends 81K people to a link page template.",
+          "why": "A design culture brand hands its front door to a tool with no design of its own.",
+          "how": "Point the bio to your own site, where the voice is yours.",
+          "label": "Your bio",
+          "cost": "The first click after the grid looks like everyone else's."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at Designaholic. I spent time on your site and your Instagram. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=designaholic-mx",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Designaholic's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Criterion, from another category. It sells its back catalogue as a library worth owning.",
+  "path": "designaholic-mx-qdbauc6d0lso"
+}

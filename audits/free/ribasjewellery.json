@@ -1,0 +1,122 @@
+{
+  "slug": "ribasjewellery",
+  "brand": "RIBAS",
+  "title": "RIBAS Branding Analysis",
+  "description": "A short look at RIBAS's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "RIBAS Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the RIBAS Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about RIBAS"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about RIBAS"
+        ]
+      ],
+      "kicker": "Prepared for RIBAS by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site and your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "RIBAS says it is not for everyone on the site and for everyone on Instagram.",
+      "keep": "Your boutiques, \"where you will be met with our professional attention and knowledge.\" A physical world most online jewellers lack."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "image2": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.45,
+          "quote": "Desire to stand out begins with a choice. Not for everyone. Exactly as intended.",
+          "what": "The site speaks to the few.",
+          "why": "This is a clear stance, and it is the RIBAS that justifies fine jewellery prices.",
+          "how": "Keep it, and make everything else follow it.",
+          "label": "Your site",
+          "cost": "The stance gets lost under the rest of the page."
+        },
+        {
+          "n": 2,
+          "on": 2,
+          "x": 0.4,
+          "y": 0.2,
+          "quote": "Fine jewellery for everyday and every occasion",
+          "what": "Instagram speaks to everyone.",
+          "why": "Everyday and every occasion is the opposite of not for everyone. That clash is what feels off.",
+          "how": "Pick one voice for both front doors.",
+          "label": "Your bio",
+          "cost": "People meet two brands and trust neither fully."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.65,
+          "quote": "Diamond Ring in White Gold",
+          "what": "Most pieces are named by material only.",
+          "why": "Names make a piece desirable and memorable; materials make it a commodity.",
+          "how": "Name collections and pieces like the house that wrote \"Not for everyone\".",
+          "label": "Your products",
+          "cost": "Shoppers compare carats, not RIBAS."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something is off and you can't name it, and an agency did not fix it. I think it is a contradiction. Here is where it shows.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=ribasjewellery",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on RIBAS's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Hermès, from another category. It never says it is for every occasion.",
+  "path": "ribasjewellery-sue5du5wshtf"
+}

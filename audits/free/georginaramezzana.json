@@ -1,0 +1,122 @@
+{
+  "slug": "georginaramezzana",
+  "brand": "Georgina Ramezzana",
+  "title": "Georgina Ramezzana Branding Analysis",
+  "description": "A short look at Georgina Ramezzana's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Georgina Ramezzana Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Georgina Ramezzana Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Georgina Ramezzana"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Georgina Ramezzana"
+        ]
+      ],
+      "kicker": "Prepared for Georgina Ramezzana by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new client would. Here is what stood out, in order of weight.",
+      "thesis": "Georgina says she makes value evident. Her own site does not yet say what her value is.",
+      "keep": "Your line, \"Construyo marcas que despiertan deseo.\" It is a clear promise to a client."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.4,
+          "quote": "Hago evidente el valor.",
+          "what": "The headline is a promise every brand designer makes.",
+          "why": "Clients compare you with every studio that also says it makes value visible.",
+          "how": "Say whose value you make evident, and how your way differs.",
+          "label": "Your headline",
+          "cost": "Prospects pick on price because the headline gives them nothing else."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.6,
+          "quote": "Branding, estrategia de marca y dirección creativa.",
+          "what": "Three services listed as a menu.",
+          "why": "Branding, strategy and direction is what most studios list; a menu does not show your point of view.",
+          "how": "Lead with the one result clients hire you for.",
+          "label": "Your services",
+          "cost": "You read as one more option in a long list."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.5,
+          "y": 0.75,
+          "quote": "Branding para hospitality",
+          "what": "Hospitality is hidden in the navigation.",
+          "why": "A clear specialty is the fastest reason to choose one designer over another.",
+          "how": "Consider making hospitality the front of the brand.",
+          "label": "Your niche",
+          "cost": "Your strongest niche is invisible to the clients who would pay for it.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You asked for a look at your studio, and you said something is off but you could not name it, even after a new website. I spent time on the site. Three things stood out.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=georginaramezzana",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Georgina Ramezzana's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Pentagram, from design. Each partner is known for one kind of problem, and clients arrive for that.",
+  "path": "georginaramezzana-orox6vmewdih"
+}

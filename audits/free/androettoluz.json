@@ -1,0 +1,122 @@
+{
+  "slug": "androettoluz",
+  "brand": "Luz Androetto",
+  "title": "Luz Androetto Branding Analysis",
+  "description": "A short look at Luz Androetto's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Luz Androetto Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Luz Androetto Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Luz Androetto"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Luz Androetto"
+        ]
+      ],
+      "kicker": "Prepared for Luz Androetto by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your Instagram the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "You do something few designers do. Your bio leads with what every designer does.",
+      "keep": "Your second line, \"Combino fotografía y diseño para construir universos visuales.\" That is the reason to hire Luz."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-ig.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.24,
+          "quote": "Branding e Identidad visual para tu próximo proyecto",
+          "what": "The bio opens with the line every branding designer uses.",
+          "why": "To charge more, the first line has to say why Luz, and this one could be anyone.",
+          "how": "Lead with the photo and design combination.",
+          "label": "Your bio",
+          "cost": "Clients compare you with every designer on price."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.26,
+          "quote": "Combino fotografía y diseño para construir universos visuales",
+          "what": "Your real difference sits in the second line.",
+          "why": "Building a visual world with your own photos is rare and worth more.",
+          "how": "Make it the headline and name the offer around it.",
+          "label": "Your bio",
+          "cost": "The reason to pay more is read second, if at all.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.55,
+          "y": 0.15,
+          "quote": "Luz | Diseño gráfico & fotografía",
+          "what": "The name line lists two trades.",
+          "why": "Graphic design and photography read as two jobs, not one point of view.",
+          "how": "Name the one thing you do that joins them.",
+          "label": "Your name",
+          "cost": "Clients book you for one of the two, at the price of one."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You said something feels off and you want to charge more. Here is what a client sees on your Instagram.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=androettoluz",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Luz Androetto's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Kinfolk, from another category. Photography and design read as one voice.",
+  "path": "androettoluz-i67kby3e1uk2"
+}

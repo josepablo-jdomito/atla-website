@@ -1,0 +1,122 @@
+{
+  "slug": "munch",
+  "brand": "Munch",
+  "title": "Munch Branding Analysis",
+  "description": "A short look at Munch's front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "Munch Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the Munch Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about Munch"
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about Munch"
+        ]
+      ],
+      "kicker": "Prepared for Munch by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "Munch has a voice in a sticker and an idea in the subline. The headline has neither.",
+      "keep": "The speech bubble, \"Your local best is PROPERLY on MUNCH!\" It sounds like a person, not an app."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.25,
+          "y": 0.41,
+          "quote": "Trọn vẹn trải nghiệm, dành riêng cho bạn.",
+          "what": "The headline could sit on any lifestyle app.",
+          "why": "This is why it looks like everyone else: a complete experience just for you is what every app promises.",
+          "how": "Write the headline about restaurants and the city, in the voice of your bubble.",
+          "label": "Your headline",
+          "cost": "Diners and restaurants file Munch with every other deals app."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.8,
+          "y": 0.39,
+          "area": "A speech bubble on the photo says your local best is properly on Munch",
+          "what": "Your best line is a sticker on a photo.",
+          "why": "It has attitude and local pride, the opposite of a template.",
+          "how": "Promote this voice to the headline and the whole page.",
+          "label": "Your bubble",
+          "cost": "The line with character stays decoration.",
+          "kind": "gem"
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.3,
+          "y": 0.52,
+          "quote": "thử thách thành phố",
+          "what": "City challenges come last in the subline.",
+          "why": "It is the part EatClub and Luma do not lead with, so it is where Munch can own a place.",
+          "how": "Build the brand around the city challenge, not the offer.",
+          "label": "Your subline",
+          "cost": "Munch competes on deals, where the larger players win."
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us Munch looks like everyone else, and that you want to be the center of restaurant loyalty in Vietnam. Here is what the front door says today.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=munch",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on Munch's own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Nike Run Club, from another category. It made a city into a challenge you join.",
+  "path": "munch-pxqq69braqpt"
+}

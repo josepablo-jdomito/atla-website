@@ -1,0 +1,122 @@
+{
+  "slug": "faces",
+  "brand": "faces.",
+  "title": "faces. Branding Analysis",
+  "description": "A short look at faces.'s front door, prepared by Atla.",
+  "date": "November 2026",
+  "mailSubject": "faces. Branding Analysis",
+  "email": "josepablo@atla.design",
+  "author": "José Pablo Domínguez",
+  "authorRole": "Founder and Creative Director, Atla",
+  "gate": {
+    "text": "Please enter your name and email to view the faces. Branding Analysis.",
+    "button": "View the analysis",
+    "privacy": "We save your name and email in our CRM to follow up on this analysis, and we measure which sections are read. We never sell them or use them for ads."
+  },
+  "privacy": "We measure which sections of this page are read, to follow up. We never sell that data or use it for ads.",
+  "sections": [
+    {
+      "type": "cover",
+      "id": "cover",
+      "title": [
+        [
+          "Three things we",
+          "noticed about faces."
+        ],
+        [
+          "Three things",
+          "we noticed",
+          "about faces."
+        ]
+      ],
+      "kicker": "Prepared for faces. by Atla · November 2026",
+      "readTime": "2 minute read",
+      "lead": "We looked at your site the way a new customer would. Here is what stood out, in order of weight.",
+      "thesis": "faces. has an idea of its own: a scan. The page hides it behind the startup look.",
+      "keep": "Your line \"see what actually works.\" It speaks to people tired of buying products that promise everything."
+    },
+    {
+      "type": "memo",
+      "id": "note",
+      "label": "Front door",
+      "title": [
+        [
+          "Three things people",
+          "meet first."
+        ],
+        [
+          "Three things",
+          "people meet",
+          "first."
+        ]
+      ],
+      "image": "front-site.png",
+      "pins": [
+        {
+          "n": 1,
+          "on": 1,
+          "x": 0.25,
+          "y": 0.45,
+          "quote": "Your new skin health membership.",
+          "what": "The headline names a category, not faces.",
+          "why": "Skin health membership could describe several new skincare startups.",
+          "how": "Lead with what faces. does that others do not, then name the format.",
+          "label": "Your site",
+          "cost": "At launch, you get filed with every other skincare subscription."
+        },
+        {
+          "n": 2,
+          "on": 1,
+          "x": 0.4,
+          "y": 0.5,
+          "area": "Black sans serif headline, white space and a single portrait on the right",
+          "what": "The page uses the default startup layout.",
+          "why": "This is why it looks like everyone else: black sans headline, white space and one portrait are the look of the category.",
+          "how": "Find one visual idea that only faces. would use and repeat it everywhere.",
+          "label": "Your site",
+          "cost": "Visitors remember the look of the category, not the name."
+        },
+        {
+          "n": 3,
+          "on": 1,
+          "x": 0.68,
+          "y": 0.57,
+          "area": "Thin scan brackets frame the cheek in the portrait",
+          "what": "Faint scan brackets frame the cheek in the portrait.",
+          "why": "It is the one ownable idea on the page: faces. reads skin.",
+          "how": "Make the scan frame the brand mark, large and everywhere.",
+          "label": "Your hero",
+          "cost": "Your most distinct idea stays a detail nobody notices.",
+          "kind": "gem"
+        }
+      ],
+      "greeting": "Hi there,",
+      "intro": "You told us faces. looks like everyone else, and you are about to launch. Here is what a first visitor sees.",
+      "hidden": false
+    },
+    {
+      "type": "cta",
+      "id": "next",
+      "text": "Want to talk it through?",
+      "button": "Book a 20-minute conversation",
+      "href": "https://www.atla.design/waitlist?utm_source=free-audit&utm_campaign=faces",
+      "signoff": "José Pablo",
+      "art": "step-3.webp",
+      "title": [
+        [
+          "We fix this kind of",
+          "thing for a living."
+        ],
+        [
+          "We fix this",
+          "kind of thing",
+          "for a living."
+        ]
+      ],
+      "body": "It is 20 minutes with me. We go through this page together, on faces.'s own screens, and you leave knowing what to change first.",
+      "note": "A few short questions first, then you pick a time. You can also just reply to the email."
+    }
+  ],
+  "reference": "Oura, from another category. It made data about your body feel like a personal object.",
+  "path": "faces-7epdqbpckjih"
+}
