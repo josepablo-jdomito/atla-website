@@ -4,7 +4,10 @@
     python3 script/build_audits.py bevel      # one brand
 
 Content lives in audits/<slug>.json; copy that is the same for every brand lives in audits/shared.json. This script writes
-client/public/audit/<slug>/index.html and og.png. Edit the JSON, never the output.
+client/public/audit/<slug>/index.html and og.png. For a free audit it also copies the
+screenshots the page references from audits/free/shots/<slug>/ into
+client/public/audit/<private-path>/img/, which is what gets committed and deployed.
+shots/ stays gitignored. Edit the JSON, never the output.
 
 Titles are set in ABC Synt and drawn as SVG outlines here, at build time. The font
 license does not allow serving the font file from a public server, so the file stays
@@ -25,8 +28,13 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from audits.free.publish import publish_free_shots
+
 CONTENT = ROOT / "audits"
 OUT = ROOT / "client" / "public" / "audit"
+SHOTS = CONTENT / "free" / "shots"
 FONT_PATH = os.environ.get("ABC_SYNT_PATH", str(Path.home() / "Library/Fonts/ABCSyntVariableVF-Trial.ttf"))
 SITE = "https://www.atla.design"
 # Booking link for the free audit pages. The event lasts 25 minutes; keep the button text in step with it.
@@ -746,11 +754,19 @@ def build(slug, o):
     free = not src.exists()
     if free:
         src = CONTENT / "free" / f"{slug}.json"
+    content_slug = slug
     d = with_shared(json.loads(src.read_text()))
     if free:
         # Free audits live at an unguessable address; `path` is set once by audits.free.privacy.
         if not d.get("path") or not d["path"].startswith(f"{slug}-"):
             sys.exit(f"{src}: free audit needs a private 'path' (audits.free.privacy.private_path)")
+        # Refuse to rewrite the page when a referenced screenshot is neither captured nor already published.
+        _copied, missing = publish_free_shots(content_slug, d["path"], d, SHOTS, OUT)
+        if missing:
+            sys.exit(
+                f"{src}: missing {', '.join(missing)} in {SHOTS / content_slug} "
+                f"and in {OUT / d['path'] / 'img'}. The page references these files."
+            )
         d["slug"] = slug = d["path"]
     out = OUT / slug
     out.mkdir(parents=True, exist_ok=True)
@@ -759,6 +775,12 @@ def build(slug, o):
         (out / "questionnaire").mkdir(exist_ok=True)
         (out / "questionnaire" / "index.html").write_text(questionnaire_page(o, d))
     og_image(d, out / "og.png")
+    if free:
+        copied, missing = publish_free_shots(content_slug, slug, d, SHOTS, OUT)
+        if missing:
+            sys.exit(f"{src}: missing screenshots after build: {', '.join(missing)}")
+        if copied:
+            print(f"  img: {', '.join(copied)}")
     print(f"built /audit/{slug}/")
 
 

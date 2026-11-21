@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from audits.free import capture
-from audits.free.capture import capture_site, is_link_in_bio
+from audits.free.capture import capture_site, is_instagram_login_wall, is_link_in_bio
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -102,6 +102,15 @@ def test_http_403_is_blocked(base, tmp_path):
     c = capture_site(base + "/forbidden", tmp_path)
     assert c["status"] == "unusable" and c["reason"] == "blocked: HTTP 403"
     assert c["image"] is None
+
+
+def test_instagram_login_wall_is_not_a_profile():
+    wall = "Log in to Instagram. Phone number, username, or email. Password. Log in."
+    assert is_instagram_login_wall("https://www.instagram.com/accounts/login/", "Sheike 12 posts")
+    assert is_instagram_login_wall("https://www.instagram.com/sheikeandco/", wall)
+    # The profile header still says Log in. Counts mean the profile itself loaded.
+    profile = "sheikeandco 1,204 posts 593K followers 800 following Log in Sign up"
+    assert not is_instagram_login_wall("https://www.instagram.com/sheikeandco/", profile)
 
 
 def test_empty_first_screen_is_unusable(base, tmp_path):
