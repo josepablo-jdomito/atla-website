@@ -2,7 +2,11 @@
 
 One JSON file per brand. `script/build_audits.py` turns it into
 `client/public/audit/<slug>/index.html`, `og.png` and, when `"questionnaire": true`,
-`client/public/audit/<slug>/questionnaire/index.html`.
+`client/public/audit/<slug>/questionnaire/index.html`. A free audit's screenshots
+are captured into `audits/free/shots/<slug>/` (gitignored). The build copies every
+image the page references into `client/public/audit/<private-path>/img/`, which is
+the path the HTML uses and the directory that gets committed. The build stops if
+one of those files is neither in `shots/` nor already published.
 
 ```
 pip install uharfbuzz fonttools pillow
