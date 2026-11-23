@@ -70,7 +70,15 @@ export function SiteFooter({ slim = false }: { slim?: boolean } = {}) {
             <h2 className="site-footer__head">{footer.citiesLabel}</h2>
             <ul className="site-footer__list site-footer__cities">
               {SITE_CITIES.map((city) => (
-                <li key={city.label}>{city.label}</li>
+                <li key={city.label}>
+                  {city.label === "Austin" ? (
+                    <Link href="/branding-agency-austin" className="site-footer__link">
+                      Austin
+                    </Link>
+                  ) : (
+                    city.label
+                  )}
+                </li>
               ))}
             </ul>
           </div>

@@ -156,6 +156,16 @@
       "permanent": true
     },
     {
+      "source": "/hospitality",
+      "destination": "/hospitality-branding",
+      "permanent": true
+    },
+    {
+      "source": "/hospitality/",
+      "destination": "/hospitality-branding",
+      "permanent": true
+    },
+    {
       "source": "/work",
       "destination": "/",
       "permanent": true
