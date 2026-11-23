@@ -213,10 +213,18 @@ export default function AtlaBrandStrategy() {
           By industry:{" "}
           <a href="/hospitality-branding" className="longform-link">
             hospitality branding
-          </a>{" "}
-          and{" "}
+          </a>
+          ,{" "}
           <a href="/cpg-branding" className="longform-link">
             CPG branding
+          </a>
+          ,{" "}
+          <a href="/wellness-branding" className="longform-link">
+            wellness branding
+          </a>{" "}
+          and{" "}
+          <a href="/saas-branding" className="longform-link">
+            SaaS branding
           </a>
           . Everything else is in the{" "}
           <a href="/" className="longform-link">

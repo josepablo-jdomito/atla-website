@@ -11,6 +11,10 @@ import { formatMetaTitle, ORGANIZATION_SCHEMA } from "@shared/siteSeo";
  */
 const copy = siteCopy.about;
 const engagements = siteCopy.services;
+// The lead's first "Austin" links to /branding-agency-austin; the text itself does not change.
+const AUSTIN_AT = copy.lead.indexOf("Austin");
+const leadBefore = AUSTIN_AT < 0 ? copy.lead : copy.lead.slice(0, AUSTIN_AT);
+const leadAfter = AUSTIN_AT < 0 ? undefined : copy.lead.slice(AUSTIN_AT + "Austin".length);
 
 /** The project page a proof line is about, when that project is on the site. */
 function proofSlug(line: string, slugs: Set<string>) {
@@ -32,7 +36,17 @@ export default function About() {
       <div className="site-page-body why">
         <header className="page-intro why-intro">
           <h1 className="page-intro__title why-intro__title">{copy.title}</h1>
-          <p className="page-intro__lead">{copy.lead}</p>
+          <p className="page-intro__lead">
+            {leadBefore}
+            {leadAfter !== undefined ? (
+              <>
+                <Link href="/branding-agency-austin" className="longform-link">
+                  Austin
+                </Link>
+                {leadAfter}
+              </>
+            ) : null}
+          </p>
         </header>
 
         <section className="page-section" aria-labelledby="why-thesis">

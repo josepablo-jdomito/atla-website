@@ -20,6 +20,16 @@ const copy = siteCopy.services;
 const structuredData = buildServicesStructuredData();
 const COVER_WIDTHS = [480, 720, 960, 1280];
 
+/** The industry pages, linked from /services so each is two clicks from home. Anchors are the page names. */
+const INDUSTRY_LINKS = [
+  { href: "/hospitality-branding", label: "Hospitality branding" },
+  { href: "/cpg-branding", label: "CPG branding" },
+  { href: "/wellness-branding", label: "Wellness branding" },
+  { href: "/saas-branding", label: "SaaS branding" },
+  { href: "/startup-branding", label: "Startup branding" },
+  { href: "/saas-rebranding", label: "SaaS rebranding" },
+] as const;
+
 export type MomentId = (typeof copy.moments)[number]["id"];
 type Discipline = (typeof copy.disciplines)[number];
 type Engagement = (typeof copy.engagements)[number];
@@ -155,6 +165,13 @@ export default function Services() {
         {row.title}
       </h3>
       <p className="discipline__line">{moment ? row.byMoment[moment] : row.line}</p>
+      {row.id === "strategy" ? (
+        <p className="discipline__more">
+          <Link href="/brand-strategy" className="longform-link">
+            Brand strategy
+          </Link>
+        </p>
+      ) : null}
       {example && current?.id === row.id ? (
         <Link href={`/projects/${example.slug}`} className="discipline__example discipline__example--inline">
           <img
@@ -304,6 +321,11 @@ export default function Services() {
                   </li>
                 ))}
               </ol>
+              <p className="engagements__more">
+                <Link href="/how-we-work" className="longform-link">
+                  How we work
+                </Link>
+              </p>
             </div>
           </section>
 
@@ -360,6 +382,21 @@ export default function Services() {
                     </ul>
                   </details>
                 </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="services-industries" aria-labelledby="services-industries-title">
+          <h2 id="services-industries-title" className="site-section-title">
+            By industry
+          </h2>
+          <ul className="services-industries__list">
+            {INDUSTRY_LINKS.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="longform-link">
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>

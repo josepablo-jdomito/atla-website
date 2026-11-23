@@ -464,7 +464,6 @@ function routePageModule(pathname: string) {
     "/about": "About",
     "/ventures": "Ventures",
     "/services": "Services",
-    "/hospitality": "AtlaHospitality",
     "/hospitality-branding": "AtlaHospitalityBranding",
     "/cpg-branding": "AtlaCpgBranding",
     "/wellness-branding": "AtlaWellnessBranding",
@@ -669,13 +668,6 @@ async function prerenderRoutes() {
       includeInSitemap: true,
       // Same JSON-LD as the live page's SeoHead: breadcrumb + one Service per moment.
       structuredData: buildServicesStructuredData(),
-    },
-    {
-      pathname: "/hospitality",
-      title: formatMetaTitle("Hospitality", "Atla"),
-      description: "Hospitality audits, rebrands and new openings for hotels and restaurants. Clients include a MICHELIN Key hotel and a MICHELIN Green Star restaurant.",
-      image: workFeaturedImage,
-      includeInSitemap: true,
     },
     {
       pathname: "/hospitality-branding",
