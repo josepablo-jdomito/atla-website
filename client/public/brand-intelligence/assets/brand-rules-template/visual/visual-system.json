@@ -1,0 +1,36 @@
+{
+  "$description": "[Brand] colors and type. Only change the text inside the quotes; keep the quotes and commas. Replace each [#000000] with your hex code and drop the brackets, like \"#B5532B\". Don't know your hex codes? Ask your designer, or look in your website builder's color settings. Values marked Optional can stay as they are.",
+  "color": {
+    "primary":    { "$type": "color", "$value": "[#000000]", "$description": "[where it's used, e.g. the one main button]" },
+    "secondary":  { "$type": "color", "$value": "[#000000]", "$description": "[where it's used]" },
+    "background": { "$type": "color", "$value": "[#FFFFFF]", "$description": "main background" },
+    "text":       { "$type": "color", "$value": "[#000000]", "$description": "body text" },
+    "chart": {
+      "$description": "Optional. Colors for charts and graphs, in order of use.",
+      "1": { "$type": "color", "$value": "[#000000]" },
+      "2": { "$type": "color", "$value": "[#000000]" },
+      "3": { "$type": "color", "$value": "[#000000]" }
+    }
+  },
+  "font": {
+    "heading": { "$type": "fontFamily", "$value": "[Font name]", "$description": "[weights you use, e.g. Medium]" },
+    "body":    { "$type": "fontFamily", "$value": "[Font name]", "$description": "[weights you use, e.g. Regular]" },
+    "fallback": { "$type": "fontFamily", "$value": "Arial", "$description": "Used when the brand fonts aren't installed, e.g. in Google Slides" }
+  },
+  "space": {
+    "$description": "Optional. Spacing steps in pixels. Leave as is if you're not sure.",
+    "small":  { "$type": "dimension", "$value": "8px" },
+    "medium": { "$type": "dimension", "$value": "16px" },
+    "large":  { "$type": "dimension", "$value": "32px" }
+  },
+  "radius": {
+    "$description": "Optional. How round corners are on buttons and cards. 0px means square.",
+    "default": { "$type": "dimension", "$value": "8px" }
+  },
+  "$extensions": {
+    "banned_colors": {
+      "$description": "Colors the AI must never use, e.g. a competitor's or an old brand color. None? Change the list to [] and don't delete anything.",
+      "values": ["[#000000]"]
+    }
+  }
+}
